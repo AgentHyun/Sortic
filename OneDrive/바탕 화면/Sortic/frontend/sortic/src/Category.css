@@ -1,0 +1,186 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff; /* White background */
+    color: #333; /* Dark text for readability */
+    margin: 0;
+    padding: 0;
+}
+
+/* Card Section */
+.card-section {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff; /* White background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #000; /* Black title text */
+    margin-bottom: 20px;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.category-btn {
+    font-size: 18px;
+    color: #fff;
+    background-color: #4C585B; /* Black button */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.category-btn:hover {
+    background-color: #4C585B; /* Darker shade on hover */
+}
+
+.category-btn i {
+    margin-right: 8px;
+}
+
+.category-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000; /* Black text for category title */
+}
+
+/* Category Box Section */
+.box-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.category-box {
+    flex-grow: 1;
+    height: 150px;
+    background-color: #f9f9f9; /* Light gray background for the box */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px;
+}
+
+.category-btn-box {
+    background-color: #4C585B; /* Black button for adding products */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    height : 130px;
+}
+
+.category-btn-box:hover {
+    background-color: #4C585B; /* Darker shade on hover */
+}
+
+/* Modal Styling */
+.ant-modal-body {
+    background-color: #fff; /* White background for modal */
+    padding: 20px;
+}
+
+.ant-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Light gray border */
+    margin-bottom: 15px;
+    background-color: #fff; /* White background for inputs */
+    color: #333; /* Dark text inside inputs */
+}
+
+/* Card List */
+.card-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card-item {
+    width: calc(33.33% - 10px);
+    background-color: #fff; /* White background for cards */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #e0e0e0; /* Light border for cards */
+}
+
+.card-item p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #333; /* Dark text for card details */
+}
+/* Category Item */
+.category-item {
+    display: inline-block; /* Align items horizontally within the category box */
+    background-color: #f0f0f0; /* Light gray background for the blocks */
+    color: #333; /* Dark text color */
+    height : 55px;
+    width : 75px;
+    
+    margin: 5px; /* Space between blocks */
+    border-radius: 8px; /* Rounded corners for the blocks */
+    font-size: 16px; /* Font size for the text */
+    font-weight: 500; /* Medium font weight */
+    border: 1px solid #d0d0d0; /* Light border around the block */
+    transition: background-color 0.3s, transform 0.3s ease-in-out; /* Smooth transition on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    
+}
+
+.category-item:hover {
+    background-color: #4C585B; /* Darken background on hover */
+    color: white; /* Change text color on hover */
+    transform: scale(1.05); /* Slightly scale up the block on hover */
+}
+
+/* Category Box */
+.category-box {
+    flex-grow: 1;
+    height: 150px;
+    background-color: #f9f9f9; /* Light gray background for the box */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px;
+    padding: 10px; /* Add some padding inside the box */
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap onto the next line if needed */
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center; /* Vertically center the items */
+}
+
+.category-item-info {
+    text-align: center; /* Center align the text within the item */
+}
+
+.category-item-info h3 {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.category-item-info p {
+    font-size: 14px;
+    color: #777; /* Lighter color for the price */
+}
+
+/* Font Awesome for icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
