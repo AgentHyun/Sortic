@@ -15,9 +15,9 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/add_category")
-    public String addCategory(@RequestBody Category category) {
-        categoryService.addCategory(category);
-        return "카테고리가 성공적으로 등록되었습니다!";
+    public Category addCategory(@RequestBody Category category) {
+
+        return categoryService.addCategory(category);
     }
 
     @PostMapping("/delete_category")

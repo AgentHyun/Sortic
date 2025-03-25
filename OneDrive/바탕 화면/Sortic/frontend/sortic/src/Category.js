@@ -14,6 +14,7 @@ function Category() {
     const [newCategory, setNewCategory] = useState('');
     const [categories, setCategories] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(0);
+    const [currentCategoryName, setCurrentCategoryName] = useState('');
     const [newProductName, setNewProductName] = useState('');
     const [newProductCost, setNewProductCost] = useState('');
     const [cards, setCards] = useState([]);
@@ -57,17 +58,19 @@ function Category() {
                 category_name: newCategory
             });
     
-            // Assuming the response contains the new category's ID
-            const newCategoryId = response.data.category_id;
-            console.log(newCategoryId)
-            // Set new category as the current category
+           
+            
+        
             setCategories([...categories, newCategory]);
-            setCurrentCategory(newCategoryId);  // Update current category to the newly added one
-    
+            console.log(response)
+            setCurrentCategory(response.data.category_id);
+            setCurrentCategoryName(response.data.category_name);
+            console.log(response.category_name)
             success('카테고리가 추가되었습니다!');
             setAddCategoryModalVisible(false);
             setNewCategory('');
-    
+            setCards([]);
+            const newCategoryId = response.data.category_id;
             // Fetch elements for the newly added category
             fetchElementsByCategory(newCategoryId);
     
@@ -139,23 +142,38 @@ function Category() {
                 const response = await axios.get('http://localhost:8080/api/categories/get_category_by_id', {
                     params: {
                         user_id: 'user123',
-                        category_id: 3
+                        category_id: 1
                     }
                 });
-                const category = response.data;
-                setCurrentCategory(category.category_id);
+    
+                console.log("API 응답 데이터:", response.data); // 디버깅용 콘솔 로그
+    
+                if (response.data) {
+                    const category = response.data;
+                    setCurrentCategory(category.category_id);  // ID를 저장
+                    setCurrentCategoryName(category.category_name)
+                    setCategories([...categories, category.category_name]); // 카테고리 목록 추가
+                } else {
+                    console.error("카테고리 데이터가 없습니다.");
+                }
             } catch (error) {
-                console.error('카테고리 조회 실패', error);
+                console.error('카테고리 조회 실패:', error);
             }
         };
+    
         fetchCategoryById();
-    }, []);
-
+    }, []); // 첫 마운트 시 한 번만 실행
+    
+    // currentCategory가 변경될 때마다 해당 카테고리의 요소를 가져옴
     useEffect(() => {
         if (currentCategory) {
+            console.log("현재 카테고리 ID:", currentCategory); // 디버깅 로그
             fetchElementsByCategory(currentCategory);
         }
-    }, [currentCategory]);
+    }, [currentCategory]); 
+    
+
+   
 
     return (
         <>
@@ -172,7 +190,7 @@ function Category() {
                     </button>
                     
                     <button type="text" className="category-btn" onClick={addCategory}>+</button>
-                    <div className="category-title">{currentCategory || '오류'}</div>
+                    <div className="category-title">{currentCategoryName || '오류'}</div>
                     <button type="text" className="category-btn">-</button>
 
                     <button 

@@ -14,8 +14,10 @@ public class CategoryService {
     private CategoryMapper categoryMapper;
 
     // 카테고리 추가
-    public void addCategory(Category category) {
+    public Category addCategory(Category category) {
+        
         categoryMapper.insertCategory(category);
+        return category;
     }
 
     // 카테고리 삭제
