@@ -28,8 +28,8 @@ public class ElementService {
     }
 
     // 상품 수정
-    public void updateElement(Element element) {
-        elementMapper.updateElement(element);
+    public void updateElement(int category_id, String elements_name ) {
+        elementMapper.updateElement(category_id, elements_name);
     }
 
     // 상품 삭제

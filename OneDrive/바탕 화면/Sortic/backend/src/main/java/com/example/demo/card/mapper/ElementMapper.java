@@ -3,6 +3,7 @@ package com.example.demo.card.mapper;
 import com.example.demo.card.dto.Element;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -38,13 +39,15 @@ public interface ElementMapper {
         @Result(property = "elements_image", column = "elements_image")
     })
     List<Element> getElementsByCategoryId(int category_id);
-
+   
     // 상품 수정
-    @Update("UPDATE Elements_name SET elements_name = #{elements_name}, elements_price = #{elements_price}, elements_image = #{elements_image} " +
-            "WHERE elements_name_id = #{elements_name_id}")
-    void updateElement(Element element);
+    @Update("UPDATE Elements_name SET elements_name = #{elements_name}" +
+            "WHERE category_id = #{category_id}")
+    void updateElement(@Param("category_id") int elements_name_id, @Param("elements_name") String elements_name);
 
     // 상품 삭제
     @Delete("DELETE FROM Elements_name WHERE elements_name_id = #{elements_name_id}")
     void deleteElement(int elements_name_id);
+
+    
 }
