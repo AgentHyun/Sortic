@@ -15,7 +15,6 @@ public class ElementsDataController {
     @Autowired
     private ElementsDataService elementsDataService;
 
-    // ✅ 요소 데이터 추가 (동적 Key-Value)
     @PostMapping("/add_elements_data")
     public String addElementsData(@RequestBody ElementsDataRequest request) {
         int id = request.getElements_name_id();
@@ -29,6 +28,7 @@ public class ElementsDataController {
 
         return "요소 데이터가 성공적으로 추가되었습니다!";
     }
+
 
     // ✅ 요소 데이터 조회
     @GetMapping("/get_elements_data")

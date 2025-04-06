@@ -163,11 +163,8 @@ const SorterPage = () => {
 
                 return;
             }
-
-            // ✅ 최신 카테고리로 변경
             setCurrentCategory(newCategory.category_id);
 
-            // ✅ 해당 카테고리의 요소 즉시 불러오기
             await fetchElementsByCategory(newCategory.category_id);
 
         } catch (error) {
@@ -283,8 +280,11 @@ const SorterPage = () => {
         setKeyValuePairs(updatedPairs);
     };
 
-    // 속성 추가 핸들러
     const addKeyValuePair = () => {
+        if (keyValuePairs.length >= 10) {
+            message.warning("최대 10개의 속성만 추가할 수 있습니다.");
+            return;
+        }
         setKeyValuePairs([...keyValuePairs, { key: '', value: '' }]);
     };
 
@@ -297,6 +297,8 @@ const SorterPage = () => {
     const handleRegister = async () => {
         try {
             await addElementData();
+
+
         } catch (error) {
             console.error("📌 서버 응답 데이터:", error.response?.data || error.message);
         } finally {
@@ -448,7 +450,7 @@ const SorterPage = () => {
                 cancelText="취소"
             >
                 {keyValuePairs.map((pair, index) => (
-                    <div key={index} style={{ display: "flex", marginBottom: 12 }}>
+                    <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
                         <Input
                             placeholder="속성 입력"
                             value={pair.key}

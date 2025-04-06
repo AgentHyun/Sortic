@@ -405,19 +405,22 @@
 .slide-out-right {
     opacity: 0;
 }
-/* 페이드 인-아웃 효과 */
 .box-section-fade-in-out {
     opacity: 0;
-    animation: fadeInOut 0.6s ease-in-out forwards;
+    transform: translateY(20px);
+    animation: fadeInOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+
 }
 
 @keyframes fadeInOut {
     0% {
         opacity: 0;
-        transform: translateY(10px); /* 살짝 아래서 올라오는 느낌 */
+        transform: translateY(20px);
     }
     100% {
         opacity: 1;
         transform: translateY(0);
     }
-} 
+}

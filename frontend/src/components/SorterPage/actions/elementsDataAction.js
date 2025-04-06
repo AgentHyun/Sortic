@@ -34,12 +34,17 @@ export const elementsDataAction = atom(
             return;
         }
 
-        // 전송할 데이터 포맷
-        const requestData = filteredPairs.map(pair => ({
+        // ✅ 속성 개수 제한
+        if (filteredPairs.length > 10) {
+            set(messageAtom, { type: 'warning', content: '속성은 최대 10개까지 등록할 수 있습니다!' });
+            return;
+        }
+
+        // ✅ 서버에 보낼 데이터 형식 맞추기
+        const requestData = {
             elements_name_id: elementId,
-            key_name: pair.key,
-            value_name: pair.value,
-        }));
+            data: filteredPairs.map(pair => ({ [pair.key]: pair.value }))
+        };
 
         try {
             const response = await axios.post(
@@ -60,6 +65,7 @@ export const elementsDataAction = atom(
         } catch (error) {
             console.error('🚨 속성 추가 실패:', error.response?.data || error.message);
             set(messageAtom, { type: 'error', content: '속성 추가에 실패했습니다.' });
+            set(keyValuePairsAtom, []);
         }
     }
 );

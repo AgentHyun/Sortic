@@ -3,6 +3,8 @@ package org.sortic.sorticproject.Entity;
 
 
 public class Element {
+
+
     private int elements_name_id;  // 요소 이름 ID
     private int category_id;       // 카테고리 ID (외래키)
     private String elements_name;  // 요소 이름

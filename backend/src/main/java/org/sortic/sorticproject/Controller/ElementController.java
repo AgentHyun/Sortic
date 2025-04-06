@@ -19,9 +19,9 @@ public class ElementController {
 
     // 상품 추가
     @PostMapping("/add_element")
-    public String addElement(@RequestBody Element element) {
+    public Element addElement(@RequestBody Element element) {
         elementService.addElement(element);
-        return "상품이 성공적으로 추가되었습니다!";
+        return element;
     }
 
     // 상품 조회

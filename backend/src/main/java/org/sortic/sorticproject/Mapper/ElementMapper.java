@@ -8,9 +8,10 @@ import java.util.List;
 @Mapper
 public interface ElementMapper {
 
-    // 상품 추가
+    // ✅ 상품 추가 + 자동 생성된 ID 반환
     @Insert("INSERT INTO Elements_name (category_id, elements_name, elements_price, elements_image) " +
             "VALUES (#{category_id}, #{elements_name}, #{elements_price}, #{elements_image})")
+    @Options(useGeneratedKeys = true, keyProperty = "elements_name_id")
     void insertElement(Element element);
 
     // 상품 조회
