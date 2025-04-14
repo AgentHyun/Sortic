@@ -38,7 +38,7 @@
     align-items: center;
 
     background-color: transparent;
-    margin-left: auto; /* 여기! */
+    margin-left: -10vh;
 }
 
 
@@ -56,9 +56,12 @@
 .element-btn-section {
     display: flex;
     justify-content: space-between;
-    margin-top : 20px;
-    width: 80%; /* 또는 적당한 너비 */
+    margin-left: 14.7vw;
+    width: 70vw; /* 또는 적당한 너비 */
     padding: 0 20px;
+    margin-top : -20vh;
+
+
 }
 
 .category-item.selected {

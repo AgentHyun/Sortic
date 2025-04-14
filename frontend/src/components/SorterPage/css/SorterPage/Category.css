@@ -6,49 +6,46 @@
 }
 
 /* Category Buttons */
- .category-btn-box {
-    font-size: 18px;
-    color: #fff;
-    background-color: #4C585B;
+.category-btn-box,
+.category-btn {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    background-color: #4C585B;
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-/* 카테고리 이름 이상하게 여백 들어가있음*/
-.category-name-title{
-    margin-top: -3px;
-}
-.category-btn {
 
-    justify-content: center;
+.category-btn-box {
+    font-size: 18px;
+    padding: 12px 22px;
+    height: 130px;
+}
+
+.category-btn {
     display: flex;
+    justify-content: center;
     align-items: center;
     width: 10vw;
     height: 4.5vh;
-    background-color: #4C585B;
-    border: none;
-    border-radius: 8px;
-    color : #fff;
     font-size: 30px;
 }
 
-.category-btn:hover, .category-btn-box:hover {
-
+.category-btn:hover,
+.category-btn-box:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
     background-color: #e0e0e0;
-    color : black;
-    cursor:pointer;
+    color: black;
 }
 
 .category-btn i {
     margin-right: 10px;
 }
 
-.category-btn-box {
-    padding: 12px 22px;
-    height: 130px;
+/* Fix for weird spacing */
+.category-name-title {
+    margin-top: -3px;
 }
 
 /* Category Title */
@@ -61,29 +58,30 @@
 /* Category Name */
 .category-name {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     font-family: "Orbit", sans-serif;
     font-size: 1.6rem;
     font-weight: bold;
     color: white;
     background-color: #4C585B;
-    width : 30vw;
-    height : 10vh;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
+    width: 30vw;
+    height: 10vh;
     border-radius: 10px;
-
     cursor: pointer;
-
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .category-name:hover {
     background-color: #e0e0e0;
-    color: #000;
+    color: #000000;
     transform: scale(1.08);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+
+
 
 .category-name input,
 .category-item input {
@@ -92,15 +90,15 @@
     color: #333;
     background-color: transparent;
     padding: 6px 12px;
-    border-radius: 8px;
     border: none;
+    border-radius: 8px;
     width: auto;
     min-width: 90px;
     max-width: 160px;
     text-align: center;
     outline: none;
-    transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .category-name input:focus,
@@ -122,15 +120,77 @@
     will-change: transform, opacity;
 }
 
-
-
 .box-section-fade-in-out {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
 }
+:root {
+    --bg: #3C465C;
+    --primary: #78FFCD;
+    --solid: #fff;
+    --btn-w: 10em;
+    --dot-w: calc(var(--btn-w)*.2);
+    --tr-X: calc(var(--btn-w) - var(--dot-w));
+}
+* {box-sizing: border-box;}
+*:before, *:after {box-sizing: border-box;}
 
+
+h1 {
+    color: var(--solid);
+    font-size: 2.5rem;
+    margin-top: 6rem;
+}
+.btn {
+    position: relative;
+    margin: 0 auto;
+    width: var(--btn-w);
+    color: var(--primary);
+    border: .15em solid var(--primary);
+    border-radius: 5em;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 1.3em;
+    line-height: 2em;
+    cursor: pointer;
+}
+.dot {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: var(--dot-w);
+    height: 100%;
+    border-radius: 100%;
+    transition: all 300ms ease;
+    display: none;
+}
+.dot:after {
+    content: '';
+    position: absolute;
+    left: calc(50% - .4em);
+    top: -.4em;
+    height: .8em;
+    width: .8em;
+    background: var(--primary);
+    border-radius: 1em;
+    border: .25em solid var(--solid);
+    box-shadow: 0 0 .7em var(--solid),
+    0 0 2em var(--primary);
+}
+.btn:hover .dot,
+.btn:focus .dot {
+    animation: atom 2s infinite linear;
+    display: block;
+}
+@keyframes atom {
+    0% {transform: translateX(0) rotate(0);}
+    30%{transform: translateX(var(--tr-X)) rotate(0);}
+    50% {transform: translateX(var(--tr-X)) rotate(180deg);}
+    80% {transform: translateX(0) rotate(180deg);}
+    100% {transform: translateX(0) rotate(360deg);}
+}
 .category-box {
     flex-grow: 1;
     min-height: 150px;
@@ -146,8 +206,8 @@
 
 .category-item {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     background-color: white;
     color: #333;
     padding: 12px 18px;
@@ -155,7 +215,7 @@
     font-size: 16px;
     font-weight: 500;
     border: 1px solid #d0d0d0;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     min-width: 90px;
     max-width: calc(33.33% - 20px);
@@ -171,8 +231,6 @@
     transform: scale(1.1);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
-
-
 
 /* Animation Classes */
 .slide-out-left {

@@ -74,7 +74,10 @@ export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
-
+export const isComittingSorterAtom = atom(false);
+export const edtingSorterIdAtom = atom(null);
+export const editedSorterNameAtom = atom("");
+export const sorterInputValueAtom = atom("");
 
 
 

@@ -55,6 +55,7 @@ import {
     attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
+    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom
 } from '../atoms/atoms';
 
 
@@ -82,7 +83,7 @@ import {
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction} from '../actions/sorterAction';
+import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction} from '../actions/sorterAction';
 
 const { Title } = Typography;
 const SorterPage = () => {
@@ -148,11 +149,16 @@ const SorterPage = () => {
     const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
 
 
+    const [isCommittingSorter, setIsCommittingSorter] = useAtom(isComittingSorterAtom);
+    const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
+    const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
+    const [, updateSorterName] = useAtom(updateSorterNameAction)
     const sorterRef = useRef(null);
     const [arrowHeight, setArrowHeight] = useState(0);
-
+    const setUpdateSorterName = useSetAtom(updateSorterNameAction);
     const navigate = useNavigate();
     const { confirm } = Modal;
+
     const settings = {
         dots: true,
         infinite: true, // 무한 루프
@@ -421,6 +427,11 @@ const SorterPage = () => {
     const isRightRed =
         nextCategoryIndex === firstCategoryIndex || nextCategoryIndex === lastCategoryIndex;
 
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
@@ -464,6 +475,25 @@ const SorterPage = () => {
 
         setDeleteSorter(sorterId);
     }
+
+    const handleSorterNameDoubleClick = (id, name) => {
+
+        setEditingSorterId(id);  // 편집할 ID 설정
+        setInputValue(name);      // 입력 필드에 기존 이름 설정
+    };
+    const handleSaveSorterName = async (id) => {
+        const value = inputValue ?? '';
+        if (value.trim()) {
+            try {
+                await updateSorterName({ sorter_id: id, newName: value });
+                console.log('Sorter name updated successfully');
+            } catch (error) {
+                console.error('Error updating sorter name:', error);
+            }
+        }
+        setEditingSorterId(null);  // 편집 모드 종료
+    };
+
 
 
 
@@ -525,9 +555,8 @@ const SorterPage = () => {
                     <div className='sorter-header'>
 
 
-
                         {/* + 추가 버튼 */}
-                        <Tooltip title="카테고리를 추가" overlayClassName="custom-tooltip">
+                        <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
                             <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
                                 +
                             </button>
@@ -560,7 +589,7 @@ const SorterPage = () => {
                         </Popover>
 
                         {/* - 삭제 버튼 */}
-                        <Tooltip title="카테고리를 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
+                        <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
                             <button className="category-btn" onClick={handleDeleteCategory}>-</button>
                         </Tooltip>
 
@@ -611,27 +640,7 @@ const SorterPage = () => {
                         </div>
                     </div>
                     <ContextMenu />
-                    <div className = "element-btn-section">
-                        <Tooltip title="카테고리 요소 추가"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
-                        </Tooltip>
 
-                        <Tooltip title="카테고리 요소 삭제"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button
-                                type="text"
-                                className="element-btn-delete"
-                                onClick={handleDeleteSelectedElements}
-                            >
-                                <Trash className = "trash" size={20} />
-                            </button>
-                        </Tooltip>
-                    </div>
 
                     <Modal
                         title="카테고리 추가"
@@ -763,12 +772,32 @@ const SorterPage = () => {
                 )}
 
 
-
-
-
-
-
             </div>
+
+
+
+            <div className = "element-btn-section">
+                <Tooltip title="카테고리 요소 추가"
+                         overlayClassName="custom-tooltip"
+                         placement="bottom"
+                         arrow={true}>
+                    <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
+                </Tooltip>
+
+                <Tooltip title="카테고리 요소 삭제"
+                         overlayClassName="custom-tooltip"
+                         placement="bottom"
+                         arrow={true}>
+                    <button
+                        type="text"
+                        className="element-btn-delete"
+                        onClick={handleDeleteSelectedElements}
+                    >
+                        <Trash className = "trash" size={20} />
+                    </button>
+                </Tooltip>
+            </div>
+
 
 
 
@@ -777,16 +806,53 @@ const SorterPage = () => {
             <div className="sorter-sort-section">
 
 
-                <button type="text" className="sorter-btn" onClick={addSorter}>
-                    + Sorter 추가
-                </button>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={addSorter}
+                    className="sorter-btn"
+                >
+                    Sorter 추가
+                </Button>
+
+
 
                 <div className="sorter-scroll-wrapper">
                     <Slider {...settings}>
-                        {sorters.map((sorter, index) => (
-                            <div key={index}>
+                        {sorters.map((sorter) => (
+                            <div key={sorter.sorter_id}>
                                 <div className="sorter-wrapper">
-                                    <div className="sorter-title -section">{sorter.sorter_name}</div>
+                                    <div
+                                        className={`sorter-title -section`}
+                                        onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
+                                    >
+                                        {editingSorterId === sorter.sorter_id ? (
+                                            <input
+                                                autoFocus
+                                                value={inputValue ?? ''} // 입력 필드 값 설정
+                                                onChange={(e) => setInputValue(e.target.value)} // 값 변경 시 업데이트
+                                                onBlur={(e) => {
+                                                    // 값이 변경된 경우에만 저장하도록 체크
+                                                    if (inputValue !== sorter.sorter_name) {
+                                                        handleSaveSorterName(sorter.sorter_id); // 값이 변경되었으면 저장
+                                                    } else {
+
+                                                    }
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleSaveSorterName(sorter.sorter_id);
+                                                    } else if (e.key === 'Escape') {
+                                                        setEditingSorterId(null); // 또는 입력창을 닫는 함수
+                                                    }
+                                                }}// Enter 눌렀을 때 저장
+                                            />
+                                        ) : (
+                                            sorter.sorter_name
+                                        )}
+                                    </div>
+
+
                                     <div className="sorter-box">
                                         <button
                                             className="delete-btn"

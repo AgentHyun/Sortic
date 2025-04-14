@@ -67,7 +67,7 @@ const SorterDefaultPage = () => {
     return (
         <>
             <div className="sorter-section-default" onClick={handleClick}>
-                Create Category
+                <a href="#" data-text="Create-Category" className='create-category-title'>Create-Category</a>
             </div>
 
             <Modal

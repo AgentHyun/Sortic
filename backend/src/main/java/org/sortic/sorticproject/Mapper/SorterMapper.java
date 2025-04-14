@@ -37,4 +37,8 @@ public interface SorterMapper {
     // 사용자별 정렬자 전체 삭제
     @Delete("DELETE FROM Sorter WHERE user_id = #{user_id}")
     void deleteAllSortersForUser(String user_id);
+
+    @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
+    void updateSorterName(@Param("sorter_id") int sorter_id, @Param("sorter_name") String sorter_name);
+
 }

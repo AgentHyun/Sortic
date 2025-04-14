@@ -5,10 +5,8 @@
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
-    background-color: #5e6d71;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
 
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,16 +23,7 @@
     transition: all 0.3s ease;
 }
 
-.sorter-section-default:hover {
-    background-color: #5e6d71;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
 
-    color: #e0f7fa;
-    letter-spacing: 1.2px;
-    transform: scale(1.02);
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
-}
 .sorter-guide-section {
     margin-top: 40px;
     padding: 30px;
@@ -97,3 +86,81 @@
     color: #37474f;
     font-family: 'Courier New', monospace;
 }
+
+.create-category-title {
+    width: 60vw;
+    height: 35vh;
+    border-radius: 16px;
+    padding: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, #3e4c59, #263238); /* 차분한 그레이블루 */
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    position: relative;
+    overflow: hidden;
+
+    cursor: pointer;
+}
+.create-category-title:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.create-category-title::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    background: #6c7a89; /* 어두운 그레이네이비 */
+    color: #ffffff;
+    transition: 0.5s;
+    transform-origin: bottom;
+    transform: translateY(-100%) rotateX(90deg);
+}
+
+.create-category-title:hover::before {
+    transform: translateY(0) rotateX(0deg);
+}
+
+.create-category-title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: #3e4c59; /* 베이스보다 살짝 밝은 딥그레이 */
+    color: #ffffff;
+    transition: 0.5s;
+    transform-origin: top;
+    transform: translateY(0) rotateX(0deg);
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.create-category-title:hover::after {
+    transform: translateY(100%) rotateX(90deg);
+}
+
+
+
