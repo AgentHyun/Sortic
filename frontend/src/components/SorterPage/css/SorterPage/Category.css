@@ -18,7 +18,7 @@
 
 .category-btn-box {
     font-size: 18px;
-    padding: 12px 22px;
+    padding: 8px 22px;
     height: 130px;
 }
 
@@ -26,14 +26,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 10vw;
-    height: 4.5vh;
+    width: 8.5vw;
+    height : 40px;
     font-size: 30px;
+    min-width : 60px;
 }
 
 .category-btn:hover,
 .category-btn-box:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
     background-color: #e0e0e0;
     color: black;
@@ -67,7 +68,8 @@
     color: white;
     background-color: #4C585B;
     width: 30vw;
-    height: 10vh;
+    height: 80px;
+    min-width: 180px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
@@ -108,17 +110,27 @@
     transform: scale(1.05);
 }
 
-/* Box Section */
+
 .box-section {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    align-items: center;
-    margin-top: 20px;
+    align-content: flex-start; /* 여러 줄 정렬 시 상단 기준 */
     gap: 10px;
+    /* 스크롤 처리 */
+    overflow-y: auto;  /* 세로 스크롤 필요 시 나타남 */
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+    padding-right: 20px;
+    padding-left :2.5px;
+    margin-right : -1.5vw;
+    box-sizing: border-box;
+    width: 100%; /* 부모 요소의 너비에 맞게 채움 */
+    height: 100%; /* 부모 높이에 맞게 채움 */
+    max-height: 100%; /* 부모 요소의 최대 높이에 맞게 제한 */
     transition: transform 0.3s ease, opacity 0.3s ease;
     will-change: transform, opacity;
 }
+
 
 .box-section-fade-in-out {
     opacity: 0;
@@ -126,71 +138,8 @@
     animation: fadeInOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
 }
-:root {
-    --bg: #3C465C;
-    --primary: #78FFCD;
-    --solid: #fff;
-    --btn-w: 10em;
-    --dot-w: calc(var(--btn-w)*.2);
-    --tr-X: calc(var(--btn-w) - var(--dot-w));
-}
-* {box-sizing: border-box;}
-*:before, *:after {box-sizing: border-box;}
 
 
-h1 {
-    color: var(--solid);
-    font-size: 2.5rem;
-    margin-top: 6rem;
-}
-.btn {
-    position: relative;
-    margin: 0 auto;
-    width: var(--btn-w);
-    color: var(--primary);
-    border: .15em solid var(--primary);
-    border-radius: 5em;
-    text-transform: uppercase;
-    text-align: center;
-    font-size: 1.3em;
-    line-height: 2em;
-    cursor: pointer;
-}
-.dot {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: var(--dot-w);
-    height: 100%;
-    border-radius: 100%;
-    transition: all 300ms ease;
-    display: none;
-}
-.dot:after {
-    content: '';
-    position: absolute;
-    left: calc(50% - .4em);
-    top: -.4em;
-    height: .8em;
-    width: .8em;
-    background: var(--primary);
-    border-radius: 1em;
-    border: .25em solid var(--solid);
-    box-shadow: 0 0 .7em var(--solid),
-    0 0 2em var(--primary);
-}
-.btn:hover .dot,
-.btn:focus .dot {
-    animation: atom 2s infinite linear;
-    display: block;
-}
-@keyframes atom {
-    0% {transform: translateX(0) rotate(0);}
-    30%{transform: translateX(var(--tr-X)) rotate(0);}
-    50% {transform: translateX(var(--tr-X)) rotate(180deg);}
-    80% {transform: translateX(0) rotate(180deg);}
-    100% {transform: translateX(0) rotate(360deg);}
-}
 .category-box {
     flex-grow: 1;
     min-height: 150px;
@@ -226,9 +175,9 @@ h1 {
 }
 
 .category-item:hover {
-    background-color: #3b4a4d;
+    background-color: #edc540;
     color: white;
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -279,4 +228,32 @@ h1 {
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+/* 스크롤바 자체의 너비 설정 */
+/* 스크롤바 자체의 너비 설정 */
+.box-section::-webkit-scrollbar {
+    width: 13px; /* 스크롤바의 너비 */
+    height: 10px; /* 가로 스크롤바의 높이 */
+}
+
+/* 스크롤바의 배경 설정 (트랙) */
+.box-section::-webkit-scrollbar-track {
+    background-color: white; /* 트랙의 배경색을 #4C585B 계열로 */
+    border-radius: 12px; /* 트랙의 모서리 둥글게 처리 */
+    border : 2px solid #505050;
+}
+
+/* 스크롤바의 핸들 (thumb) */
+.box-section::-webkit-scrollbar-thumb {
+    background: #505050;
+
+    border-radius: 12px; /* 핸들의 모서리 둥글게 처리 */
+    border: 1px solid #3C465C; /* 트랙과 구분되도록 여백 추가 */
+}
+
+
+
+/* 스크롤바를 눌렀을 때 핸들 디자인 */
+.box-section::-webkit-scrollbar-thumb:active {
+    background-color: #3B4A4D; /* 눌렀을 때 색상 */
 }

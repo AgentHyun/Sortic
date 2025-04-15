@@ -3,9 +3,9 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from "react-slick";
 import { useAtom, useAtomValue, useSetAtom} from 'jotai';
-import { Input, Modal, message , Button, Popover, Tooltip, Typography } from 'antd';
-import {  DeleteOutlined, PlusOutlined,  LeftOutlined ,RightOutlined} from "@ant-design/icons";
-import { ArrowLeftLine, ArrowRightLine, Plus, Minus } from '@rsuite/icons';
+import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
+import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ import "../css/SorterPage/Category.css";
 import "../css/SorterPage/Element.css";
 import "../css/SorterPage/ContextMenu.css"
 import 'font-awesome/css/font-awesome.min.css';
-import { Trash,X ,SlidersHorizontal} from 'lucide-react';
+import { Trash,X } from 'lucide-react';
 
 import {
     messageApiAtom,
@@ -518,7 +518,17 @@ const SorterPage = () => {
         });
     };
 
+    // beautiful-dnd
 
+    const handleDragEnd = (result) => {
+        const { destination, source } = result;
+        if (!destination) return;
+
+        const updatedCards = Array.from(cards);
+        const [moved] = updatedCards.splice(source.index, 1);
+        updatedCards.splice(destination.index, 0, moved);
+        setCards(updatedCards); // cards를 useState로 선언했을 경우
+    };
 
 
     return (
@@ -620,49 +630,42 @@ const SorterPage = () => {
 
                     </div>
 
+                    <div className="box-section" style={{
+                        maxHeight: 'calc(28vh - 80px)', // 80px는 sorter-header의 높이(버튼들 포함)로 가정, 필요에 맞게 조정
+                        overflowY: 'auto', // 세로 스크롤이 필요하면 나타나도록 설정
+                        flexGrow: 1, // 남은 공간을 차지하도록 설정
+                    }}>
 
-                    <div className={`box-section-${fadeInOut}`}>
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                            <Droppable droppableId="box-section-wrapper">
+                                {(provided) => (
+                                    <div
+                                        className="box-section"
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                    >
+                                        {cards.map((card, index) => (
+                                            <Draggable key={card.elements_name_id} draggableId={card.elements_name_id.toString()} index={index}>
+                                                {(provided) => (
+                                                    <div
+                                                        className={`category-item ${selectedElementIds.includes(card.elements_name_id) ? 'selected' : ''}`}
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                    >
+                                                        {card.elements_name}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
 
-                        <div className="box-section">
-                            {cards.map((card, index) => (
-                                <div
-                                    className={`category-item ${selectedElementIds.includes(card.elements_name_id) ? 'selected' : ''}`}
-
-                                    key={card.elements_name_id || `card-${index}`}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        openContextMenu({
-                                            x: e.clientX,
-                                            y: e.clientY,
-                                            target : card,
-                                            elementId: card.elements_name_id,
-                                        });
-                                        setNewElementName(card.elements_name);
-                                        setNewElementPrice(card.elements_price);
-
-                                        setSelectedElementId(card.elements_name_id);
-                                        setSetSelectedElementAction(card.elements_name_id);
-                                    }}
-                                    onDoubleClick={() => handleDoubleClickElementName(card.elements_name_id)}
-                                    onClick={() => setToggleSelectElementAction(card.elements_name_id)}
-
-                                >
-                                    {isEditingElement && editingElementIndex === card.elements_name_id ? (
-                                        <input
-                                            value={newElementName}
-                                            onChange={handleElementNameChange}
-
-                                            onBlur={() => handleElementSaveName(card.elements_name_id)}
-                                            onKeyDown={(e) => e.key === "Enter" && handleElementSaveName(card.elements_name_id)}
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        card.elements_name
-                                    )}
-                                </div>
-                            ))}
-                        </div>
                     </div>
+
                     <ContextMenu />
 
 
@@ -807,7 +810,14 @@ const SorterPage = () => {
                          arrow={true}>
                     <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
                 </Tooltip>
-
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={addSorter}
+                    className="sorter-btn"
+                >
+                    Sorter
+                </Button>
                 <Tooltip title="카테고리 요소 삭제"
                          overlayClassName="custom-tooltip"
                          placement="bottom"
@@ -830,14 +840,7 @@ const SorterPage = () => {
             <div className="sorter-sort-section">
 
 
-                <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={addSorter}
-                    className="sorter-btn"
-                >
-                    Sorter 추가
-                </Button>
+
 
 
 

@@ -6,32 +6,29 @@ body {
     margin: 0;
     padding: 0;
 }
-
-
 .sorter-section {
     margin-top: 20px;
     padding: 20px;
-    width : 70vw;
-
-    background-color: white; /* White background */
+    width: 70vw;
+    background-color: white; /* 배경색 흰색 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: auto;
-
+    height: 34vh; /* 고정 높이 */
+    box-sizing: border-box; /* 패딩 포함된 박스 크기 */
 }
-
-
-
 /* Sorter Header */
 .sorter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    width: 100%;
+    margin-right: 12px;
+
+    width: 96%;
+
 }
 
 .sorter-btn {
@@ -210,7 +207,7 @@ body {
 
 .arrow-left-btn:hover,
 .arrow-right-btn:hover {
-    transform: scaleY(1.125);
+    transform: scaleY(1.13);
    background-color: #f1f0f0;
     color : white;
     cursor : pointer;
@@ -222,5 +219,5 @@ body {
     justify-content: center;
     align-items: center;
 
-    margin-bottom : 12vw;
+    margin-bottom : 1.5vw;
 }
