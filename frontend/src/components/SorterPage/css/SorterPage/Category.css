@@ -111,25 +111,6 @@
 }
 
 
-.box-section {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start; /* 여러 줄 정렬 시 상단 기준 */
-    gap: 10px;
-    /* 스크롤 처리 */
-    overflow-y: auto;  /* 세로 스크롤 필요 시 나타남 */
-    overflow-x: hidden; /* 가로 스크롤 방지 */
-    padding-right: 20px;
-    padding-left :2.5px;
-    margin-right : -1.5vw;
-    box-sizing: border-box;
-    width: 100%; /* 부모 요소의 너비에 맞게 채움 */
-    height: 100%; /* 부모 높이에 맞게 채움 */
-    max-height: 100%; /* 부모 요소의 최대 높이에 맞게 제한 */
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    will-change: transform, opacity;
-}
 
 
 .box-section-fade-in-out {
@@ -153,33 +134,7 @@
     gap: 10px;
 }
 
-.category-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    color: #333;
-    padding: 12px 18px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    border: 1px solid #d0d0d0;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    min-width: 90px;
-    max-width: calc(33.33% - 20px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-grow: 1;
-}
 
-.category-item:hover {
-    background-color: #edc540;
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
 
 /* Animation Classes */
 .slide-out-left {
@@ -229,31 +184,4 @@
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
 }
-/* 스크롤바 자체의 너비 설정 */
-/* 스크롤바 자체의 너비 설정 */
-.box-section::-webkit-scrollbar {
-    width: 13px; /* 스크롤바의 너비 */
-    height: 10px; /* 가로 스크롤바의 높이 */
-}
 
-/* 스크롤바의 배경 설정 (트랙) */
-.box-section::-webkit-scrollbar-track {
-    background-color: white; /* 트랙의 배경색을 #4C585B 계열로 */
-    border-radius: 12px; /* 트랙의 모서리 둥글게 처리 */
-    border : 2px solid #505050;
-}
-
-/* 스크롤바의 핸들 (thumb) */
-.box-section::-webkit-scrollbar-thumb {
-    background: #505050;
-
-    border-radius: 12px; /* 핸들의 모서리 둥글게 처리 */
-    border: 1px solid #3C465C; /* 트랙과 구분되도록 여백 추가 */
-}
-
-
-
-/* 스크롤바를 눌렀을 때 핸들 디자인 */
-.box-section::-webkit-scrollbar-thumb:active {
-    background-color: #3B4A4D; /* 눌렀을 때 색상 */
-}
