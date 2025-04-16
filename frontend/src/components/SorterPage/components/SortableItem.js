@@ -28,10 +28,15 @@ const SortableItem = ({
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition: transform ? 'transform 500ms ease-in-out' : undefined,// ✅ 부드러운 트랜지션
+        transition: transform ? 'transform 500ms ease-in-out' : undefined,
         cursor: isDragging ? 'grabbing' : 'grab',
-        opacity: isDragging ? 0.7 : 1, // ✅ 드래그 중 시각 피드백
+        opacity: isDragging ? 0 : 1, // 드래그 중인 아이템 숨기기
     };
+
+    // 드래그 중일 때 렌더링하지 않도록 설정
+    if (isDragging) {
+        return null;
+    }
 
     return (
         <div
@@ -70,5 +75,6 @@ const SortableItem = ({
         </div>
     );
 };
+
 
 export default SortableItem;

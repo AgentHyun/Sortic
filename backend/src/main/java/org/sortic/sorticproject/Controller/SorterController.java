@@ -54,6 +54,18 @@ public class SorterController {
         return ResponseEntity.ok("다중 삭제 완료");
     }
 
+    @PutMapping("/update-elements")
+    public ResponseEntity<Sorter> updateElementsId(@RequestBody Map<String, Integer> payload) {
+        int sorterId = payload.get("sorter_id");
+        int elementsId = payload.get("elements_id");
 
+        Sorter updatedSorter = sorterService.updateElementsId(sorterId, elementsId);
+        return ResponseEntity.ok(updatedSorter);
+    }
+    @GetMapping("/elements/{sorter_id}")
+    public ResponseEntity<Integer> getElementsIdBySorterId(@PathVariable int sorter_id) {
+        Integer elementsId = sorterService.getElementsIdBySorterId(sorter_id);
+        return ResponseEntity.ok(elementsId);
+    }
 
 }

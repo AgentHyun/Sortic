@@ -65,5 +65,29 @@ public class SorterService {
     public void deleteMultipleSorters(List<Integer> sorterIds) {
         sorterMapper.deleteMultipleSorters(sorterIds);
     }
+    @Transactional
+    public Sorter updateElementsId(int sorterId, int elementsId) {
+        // sorterId로 해당 Sorter 객체 조회
+        Sorter sorter = sorterMapper.getSorterById(sorterId);
+
+        // 만약 Sorter가 존재하지 않으면 예외 처리
+        if (sorter == null) {
+            throw new RuntimeException("해당 sorterId에 해당하는 정렬자가 존재하지 않습니다.");
+        }
+
+        // elements_id 업데이트
+        sorter.setElements_id(elementsId);
+
+        // 데이터베이스에 elements_id 업데이트
+        sorterMapper.updateElementsId(sorterId, elementsId);
+
+        // 업데이트된 Sorter 객체 반환
+        return sorterMapper.getSorterById(sorterId);
+    }
+
+    public Integer getElementsIdBySorterId(int sorterId) {
+        Sorter sorter = sorterMapper.getSorterById(sorterId);
+        return sorter != null ? sorter.getElements_id() : null;
+    }
 
 }

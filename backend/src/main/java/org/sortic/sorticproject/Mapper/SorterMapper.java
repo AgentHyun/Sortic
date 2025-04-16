@@ -49,4 +49,8 @@ public interface SorterMapper {
             "</script>"
     })
     void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
+
+    @Update("UPDATE Sorter SET elements_id = #{elements_id} WHERE sorter_id = #{sorter_id}")
+    void updateElementsId(@Param("sorter_id") int sorter_id, @Param("elements_id") int elements_id);
+
 }
