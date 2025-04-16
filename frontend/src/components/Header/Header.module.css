@@ -26,6 +26,7 @@
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(12px);
+    transition: background-color 0.3s ease; /* 다크모드 전환 시 부드럽게 */
 }
 
 .logo {

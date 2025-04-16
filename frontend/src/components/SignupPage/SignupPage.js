@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Typography, Select } from 'antd';
+import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
 
@@ -12,7 +12,32 @@ function SignupPage() {
 
   const onFinish = (values) => {
     console.log('회원가입 정보:', values);
+    // TODO: 백엔드 연동
     navigate('/login');
+  };
+
+  const handleCheckId = async (form) => {
+    const id = form.getFieldValue('username');
+    if (!id) return;
+
+    try {
+      // 실제 서버 요청으로 바꿔야 함
+      const isDuplicate = await fakeCheckIdAPI(id); // 임시 함수
+      if (isDuplicate) {
+        message.error('이미 사용 중인 아이디입니다.');
+      } else {
+        message.success('사용 가능한 아이디입니다.');
+      }
+    } catch (err) {
+      message.error('서버 오류가 발생했습니다.');
+    }
+  };
+
+// 임시 mock API
+  const fakeCheckIdAPI = async (id) => {
+    const used = ['admin', 'test', 'user123'];
+    await new Promise((r) => setTimeout(r, 500));
+    return used.includes(id);
   };
 
   return (
@@ -26,13 +51,28 @@ function SignupPage() {
           requiredMark="true"
           className={styles.form}
         >
-          <Form.Item label="아이디" name="username" rules={[{ required: true, validator: (_, value) => {
-              if (!value || value.length < 4) return Promise.reject("아이디는 최소 4글자 이상입니다.");
-              if (/[^a-zA-Z0-9_.]/.test(value)) return Promise.reject("한글/특수문자 불가 (_ . 제외)");
-              if (/^[0-9]+$/.test(value)) return Promise.reject("숫자로만 된 아이디는 불가합니다.");
-              return Promise.resolve();
-            } }]}>
-            <Input className={styles.input} allowClear placeholder="아이디" />
+          <Form.Item label="아이디" required>
+            {/* ✅ inline 정렬용 wrapper */}
+            <div className={styles.inlineWrap}>
+              <Form.Item
+                name="username"
+                noStyle /* ✅ 레이아웃 겹침 방지 */
+                rules={[{
+                  required: true,
+                  validator: (_, value) => {
+                    if (!value || value.length < 4) return Promise.reject("아이디는 최소 4글자 이상입니다.");
+                    if (/[^a-zA-Z0-9_.]/.test(value)) return Promise.reject("한글/특수문자 불가 (_ . 제외)");
+                    if (/^[0-9]+$/.test(value)) return Promise.reject("숫자로만 된 아이디는 불가합니다.");
+                    return Promise.resolve();
+                  }
+                }]}
+              >
+                <Input className={styles.inputShort} allowClear placeholder="아이디" />
+              </Form.Item>
+              <Button className={styles.checkButton} onClick={() => handleCheckId(form)} type="default">
+                중복확인
+              </Button>
+            </div>
           </Form.Item>
 
           <Form.Item label="비밀번호" name="password" rules={[{ required: true, validator: (_, value) => {
