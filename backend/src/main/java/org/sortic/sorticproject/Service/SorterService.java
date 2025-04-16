@@ -1,6 +1,8 @@
 package org.sortic.sorticproject.Service;
 
+import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Entity.Sorter;
+import org.sortic.sorticproject.Mapper.ElementMapper;
 import org.sortic.sorticproject.Mapper.SorterMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ public class SorterService {
 
     @Autowired
     private SorterMapper sorterMapper;
+    @Autowired
+    private ElementMapper elementMapper;
 
     public void addSorter(Sorter sorter) {
         sorterMapper.insertSorter(sorter);
@@ -89,5 +93,13 @@ public class SorterService {
         Sorter sorter = sorterMapper.getSorterById(sorterId);
         return sorter != null ? sorter.getElements_id() : null;
     }
+    public String getSorterNameById(int sorterId) {
+        return sorterMapper.getSorterNameById(sorterId);
+    }
+    public List<Integer> getElementsIdBySorterName(String sorterName) {
+        // sorterMapper에서 여러 개의 elements_id를 가져오는 메소드 호출
+        return sorterMapper.getElementsIdBySorterName(sorterName);
+    }
+
 
 }

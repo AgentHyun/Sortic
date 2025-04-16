@@ -53,4 +53,8 @@ public interface SorterMapper {
     @Update("UPDATE Sorter SET elements_id = #{elements_id} WHERE sorter_id = #{sorter_id}")
     void updateElementsId(@Param("sorter_id") int sorter_id, @Param("elements_id") int elements_id);
 
+    @Select("SELECT sorter_name FROM Sorter WHERE sorter_id = #{sorter_id}")
+    String getSorterNameById(@Param("sorter_id") int sorter_id);
+    @Select("SELECT elements_id FROM Sorter WHERE sorter_name = #{sorter_name}")
+    List<Integer> getElementsIdBySorterName(@Param("sorter_name") String sorterName);
 }

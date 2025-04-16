@@ -44,34 +44,6 @@ export const fetchElementsByCategoryAction = atom(
 );
 
 
-export const fetchElementsByCategoryToCardAction = atom(
-    null,
-    async (get, set, categoryId) => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/elements/get_elements_by_category', {
-                params: { category_id: categoryId },
-            });
-
-            if (Array.isArray(response.data)) {
-                const prev = get(cardsByCategoryAtom); // Get the previous state of the atom
-
-                // Update the state with the new category data
-                set(cardsByCategoryAtom, {
-                    ...prev,
-                    [categoryId]: response.data,  // categoryId를 key로 저장
-                });
-
-                // Log the updated state after setting it
-                const updatedState = get(cardsByCategoryAtom);
-                console.log("디앤디 : ", updatedState); // Now logs the updated state
-            } else {
-                console.error('잘못된 데이터 형식:', response.data);
-            }
-        } catch (error) {
-            console.error('카테고리 요소 조회 실패 ㅜ', error);
-        }
-    }
-);
 
 
 
@@ -430,3 +402,4 @@ export const closeContextMenuAction = atom(
         });
     }
 );
+

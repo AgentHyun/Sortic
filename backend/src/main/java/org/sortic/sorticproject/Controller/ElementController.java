@@ -66,5 +66,14 @@ public class ElementController {
         elementService.deleteElementsByIds(ids);
         return ResponseEntity.ok("요소들이 성공적으로 삭제되었습니다!");
     }
-
+    // 요소 이름 조회
+    @GetMapping("/{elementsId}")
+    public ResponseEntity<String> getElementNameById(@PathVariable int elementsId) {
+        String elementName = elementService.getElementNameById(elementsId);
+        if (elementName != null) {
+            return ResponseEntity.ok(elementName);  // 요소가 존재하면 이름 반환
+        } else {
+            return ResponseEntity.notFound().build();  // 요소가 없으면 404 반환
+        }
+    }
 }

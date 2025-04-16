@@ -67,5 +67,17 @@ public class SorterController {
         Integer elementsId = sorterService.getElementsIdBySorterId(sorter_id);
         return ResponseEntity.ok(elementsId);
     }
+    @GetMapping("/name/{sorter_id}")
+    public ResponseEntity<String> getSorterNameById(@PathVariable int sorter_id) {
+        String sorterName = sorterService.getSorterNameById(sorter_id);
+        return ResponseEntity.ok(sorterName);
+    }
+    @GetMapping("/element-id/{sorter_name}")
+    public ResponseEntity<List<Integer>> getElementsIdBySorterName(@PathVariable String sorter_name) {
+        List<Integer> elementsIds = sorterService.getElementsIdBySorterName(sorter_name);
+        return ResponseEntity.ok(elementsIds);
+    }
+
+
 
 }

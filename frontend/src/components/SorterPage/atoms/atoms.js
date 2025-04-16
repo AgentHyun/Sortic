@@ -46,12 +46,15 @@ export const contextMenuAtom = atom({
     targetId: null,
 });
 export const costErrorAtom = atom('');
+export const elementsIdListAtom = atom([]);
 
+// element name을 저장할 atom
+export const elementNameAtom = atom(null);
 export const elementDetailDataAtom = atom(null);
 export const isEditingAtom = atom(false);
 export const tempValueAtom = atom('');
 export const editingElementIdAtom = atom(null);
-
+export const elementsIdMapAtom = atom({});
 
 // 카드 관련 상태
 export const cardsAtom = atom([]);

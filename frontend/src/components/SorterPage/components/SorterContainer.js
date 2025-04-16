@@ -1,22 +1,23 @@
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core";
-import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
-import React, { useState } from 'react';
-import Slider from "react-slick";
+import React, { useState, useEffect } from 'react';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
+import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { X } from 'lucide-react';
 import { edtingSorterIdAtom } from '../atoms/atoms';
 import { useAtom } from 'jotai';
+import { getElementsIdBySorterNameAction, getElementNameByIdAction } from "../actions/sorterAction"; // 액션 확인 필요
 
 const settings = {
     dots: true,
-    infinite: true, // 무한 루프
+    infinite: true,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
     swipeToSlide: true,
     centerMode: true,
-    centerPadding: '40px' // 터치 이동을 비활성화하여 드래그 시 슬라이드 전환을 막습니다.
+    centerPadding: '40px'
 };
 
 const SorterContainer = ({
@@ -34,16 +35,63 @@ const SorterContainer = ({
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 1,
-            },
+            activationConstraint: { distance: 1 }
         })
     );
 
     const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
     const [activeId, setActiveId] = useState(null);
-    const [draggingOverBox, setDraggingOverBox] = useState(false);  // 드래그가 `sorter-box`에 올려졌는지 여부 확인
+    const [draggingOverBox, setDraggingOverBox] = useState(false);
+    const [elementNamesBySorter, setElementNamesBySorter] = useState({});
+
+    // 액션 함수를 set으로 사용하여 atom을 업데이트하도록 수정
+    const [, setGetElementsIdBySorterName] = useAtom(getElementsIdBySorterNameAction);
+    const [, setGetElementNameById] = useAtom(getElementNameByIdAction);
+
     const activeSorter = sorters.find(sorter => sorter.sorter_id === activeId);
+
+    useEffect(() => {
+        const fetchAllElementNames = async () => {
+            console.log("📦 [useEffect] sorters 변경 감지됨. 현재 sorters:", sorters);
+
+            const result = {};
+            for (const sorter of sorters) {
+                try {
+                    console.log(`🔍 Fetching sorter_name for sorter_id: ${sorter.sorter_id}`);
+
+                    // sorter_name으로 element_ids 조회
+                    const ids = await setGetElementsIdBySorterName(sorter.sorter_name);
+                    console.log(`✅ Elements IDs for sorter_name ${sorter.sorter_name}:`, ids);
+
+                    const idList = Array.isArray(ids) ? ids : [];
+                    console.log(`🔍 idList:`, idList);
+
+                    // element names를 id로부터 가져오기
+                    const names = await Promise.all(
+                        idList.map(async (id) => {
+                            console.log(`🔎 Fetching name for element with id: ${id}`);
+                            const name = await setGetElementNameById(id);
+                            console.log(`🧩 Element name for id ${id}:`, name);
+                            return name;
+                        })
+                    );
+
+                    result[sorter.sorter_id] = names;
+                    console.log(`🎯 Finished fetching names for sorter ${sorter.sorter_id}:`, names);
+
+                } catch (err) {
+                    console.error(`❌ Error fetching for sorter ${sorter.sorter_id}:`, err);
+                    result[sorter.sorter_id] = [];
+                }
+            }
+
+            // 상태 업데이트
+            setElementNamesBySorter(result);
+            console.log("🧾 전체 element 이름 매핑 완료:", result);
+        };
+
+        fetchAllElementNames();
+    }, [sorters, setGetElementsIdBySorterName, setGetElementNameById]);
 
     const handleDragStart = (event) => {
         const { active } = event;
@@ -59,17 +107,13 @@ const SorterContainer = ({
         const oldIndex = sorters.findIndex((s) => s.sorter_id === active.id);
         const newIndex = sorters.findIndex((s) => s.sorter_id === over.id);
 
-        // 드롭 위치가 `sorter-box`인지 확인
         if (draggingOverBox) {
-            // `sorter-box`에 추가하는 로직
-            // 예를 들어, 드래그한 sorter를 해당 위치에 추가하는 로직
             setSorters([...sorters, { ...active, sorter_id: new Date().getTime() }]);
         } else {
             setSorters(arrayMove(sorters, oldIndex, newIndex));
         }
     };
 
-    // `sorter-box`에 드래그가 올라가면 상태 변경
     const handleDragOverBox = (isOver) => {
         setDraggingOverBox(isOver);
     };
@@ -122,8 +166,8 @@ const SorterContainer = ({
 
                                     <div
                                         className="sorter-box"
-                                        onDragEnter={() => handleDragOverBox(true)} // 드래그가 `sorter-box`에 올라갔을 때
-                                        onDragLeave={() => handleDragOverBox(false)} // 드래그가 `sorter-box`에서 벗어났을 때
+                                        onDragEnter={() => handleDragOverBox(true)}
+                                        onDragLeave={() => handleDragOverBox(false)}
                                     >
                                         <button
                                             className="delete-btn"
@@ -131,6 +175,14 @@ const SorterContainer = ({
                                         >
                                             <X size={18} />
                                         </button>
+
+                                        <div className="element-names">
+                                            {elementNamesBySorter[sorter.sorter_id]?.map((name, idx) => (
+                                                <div key={idx} className="element-item">
+                                                    {name}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

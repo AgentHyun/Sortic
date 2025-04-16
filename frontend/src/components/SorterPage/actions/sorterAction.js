@@ -1,8 +1,9 @@
 import { atom } from 'jotai';
 import axios from 'axios';
-import { sortersAtom, messageAtom } from '../atoms/atoms';
+import { sortersAtom, messageAtom, elementNameAtom, elementsIdListAtom } from '../atoms/atoms';
 import { message } from 'antd';
-// sorter_number와 sorter_name 재정렬 함수
+
+
 
 
 const renumberSorters = (list) => {
@@ -169,56 +170,48 @@ export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIds
     set(messageAtom, { type: 'error', content: '정렬자 삭제 실패' });
   }
 });
-export const updateElementsIdAction = atom(null, async (get, set, { sorter_id, elements_id }) => {
-  const currentSorters = get(sortersAtom);
 
-  // 업데이트할 정렬자가 존재하는지 확인
-  const sorterToUpdate = currentSorters.find(s => s.sorter_id === sorter_id);
+export const getElementNameByIdAction = atom(
+    null,
+    async (get, set, elementsId) => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/elements/${elementsId}`);
+        const elementName = response.data;  // 반환되는 데이터에서 `name`만 추출한다고 가정
+      
+        // element name을 atom에 설정합니다.
+        set(elementNameAtom, elementName);  // elementNameAtom에 설정
+        return elementName;
+      } catch (error) {
+        console.error('🚨 elements_name 조회 실패:', error);
+        set(messageAtom, { type: 'error', content: 'elements_name 조회에 실패했습니다.' });
+        message.error("elements_name 조회 실패");
+        return null;
+      }
+    }
+);
 
-  if (!sorterToUpdate) {
-    console.error('🚨 업데이트할 정렬자를 찾을 수 없습니다:', sorter_id);
-    set(messageAtom, { type: 'error', content: '업데이트할 정렬자가 존재하지 않습니다.' });
-    return;
-  }
 
-  try {
-    // elements_id 업데이트 요청
-    await axios.put('http://localhost:8080/api/sorter/update-elements', {
-      sorter_id,
-      elements_id,
-    });
 
-    // 상태에서 정렬자 업데이트
-    const updatedSorters = currentSorters.map(s =>
-        s.sorter_id === sorter_id ? { ...s, elements_id } : s
-    );
 
-    // 상태 업데이트
-    set(sortersAtom, updatedSorters);
+export const getElementsIdBySorterNameAction = atom(
+    null,
+    async (_get, set, sorterName) => {
+      try {
+        // sorterName에 해당하는 elements_id 리스트를 가져오는 API 호출
+        const response = await axios.get(`http://localhost:8080/api/sorter/element-id/${sorterName}`);
+        const elementsIds = response.data; // 여러 개의 element-id 리스트
 
-    // 성공 메시지
-    message.success(`정렬자 ID ${sorter_id}의 elements_id가 업데이트되었습니다.`);
-    set(messageAtom, { type: 'success', content: '정렬자 elements_id 수정 완료' });
+        // 여러 개의 elementsId를 출력
+        message.success(`elements_id 조회 성공: ${elementsIds.length}개의 element_id 조회됨.`);
+        set(messageAtom, { type: 'success', content: `elements_id 조회 성공: ${elementsIds.length}개의 element_id 조회됨.` });
 
-  } catch (err) {
-    console.error('🚨 elements_id 업데이트 실패:', err);
-    message.error("정렬자 elements_id 업데이트 실패");
-    set(messageAtom, { type: 'error', content: '정렬자 elements_id 수정 실패' });
-  }
-});
-export const getElementsIdBySorterIdAction = atom(null, async (get, set, sorterId) => {
-  try {
-    const response = await axios.get(`http://localhost:8080/api/sorter/elements/${sorterId}`);
-    const elementsId = response.data;
-
-    set(messageAtom, { type: 'success', content: `elements_id: ${elementsId} 조회 성공` });
-    message.success(`elements_id: ${elementsId} 조회 성공`);
-
-    return elementsId;
-  } catch (error) {
-    console.error('🚨 elements_id 조회 실패:', error);
-    set(messageAtom, { type: 'error', content: 'elements_id 조회에 실패했습니다.' });
-    message.error("elements_id 조회 실패");
-    return null;
-  }
-});
+        // 여러 개의 element_id 반환
+        return elementsIds;
+      } catch (error) {
+        console.error('🚨 elements_id 조회 실패:', error);
+        message.error("elements_id 조회 실패");
+        set(messageAtom, { type: 'error', content: 'elements_id 조회 실패' });
+        return null;
+      }
+    }
+);
