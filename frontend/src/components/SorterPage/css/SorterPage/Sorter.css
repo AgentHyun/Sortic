@@ -237,3 +237,31 @@
 .delete-selected-btn:hover svg {
     fill: #fff;
 }
+
+.element-names {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: calc(33.33% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.element-names:hover {
+    background-color: #edc540;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}

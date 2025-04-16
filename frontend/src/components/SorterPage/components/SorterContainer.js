@@ -108,11 +108,28 @@ const SorterContainer = ({
         const newIndex = sorters.findIndex((s) => s.sorter_id === over.id);
 
         if (draggingOverBox) {
-            setSorters([...sorters, { ...active, sorter_id: new Date().getTime() }]);
+            // 드래그된 아이템이 새로운 정렬자 상자에 추가되는 경우
+            const existingSorter = sorters.find((sorter) => sorter.sorter_name === active.sorter_name);
+
+            if (existingSorter) {
+                // 기존 sorter에 요소 추가
+                setSorters((prevSorters) =>
+                    prevSorters.map((sorter) =>
+                        sorter.sorter_id === existingSorter.sorter_id
+                            ? { ...sorter, elements: [...sorter.elements, { element_id: new Date().getTime() }] }
+                            : sorter
+                    )
+                );
+            } else {
+                // 새로운 sorter 추가
+                setSorters([...sorters, { ...active, sorter_id: new Date().getTime(), elements: [{ element_id: new Date().getTime() }] }]);
+            }
         } else {
+            // 기존 정렬자 순서 변경
             setSorters(arrayMove(sorters, oldIndex, newIndex));
         }
     };
+
 
     const handleDragOverBox = (isOver) => {
         setDraggingOverBox(isOver);

@@ -177,14 +177,14 @@ export const getElementNameByIdAction = atom(
       try {
         const response = await axios.get(`http://localhost:8080/api/elements/${elementsId}`);
         const elementName = response.data;  // 반환되는 데이터에서 `name`만 추출한다고 가정
-      
+
         // element name을 atom에 설정합니다.
         set(elementNameAtom, elementName);  // elementNameAtom에 설정
         return elementName;
       } catch (error) {
         console.error('🚨 elements_name 조회 실패:', error);
         set(messageAtom, { type: 'error', content: 'elements_name 조회에 실패했습니다.' });
-        message.error("elements_name 조회 실패");
+
         return null;
       }
     }
@@ -202,14 +202,14 @@ export const getElementsIdBySorterNameAction = atom(
         const elementsIds = response.data; // 여러 개의 element-id 리스트
 
         // 여러 개의 elementsId를 출력
-        message.success(`elements_id 조회 성공: ${elementsIds.length}개의 element_id 조회됨.`);
+
         set(messageAtom, { type: 'success', content: `elements_id 조회 성공: ${elementsIds.length}개의 element_id 조회됨.` });
 
         // 여러 개의 element_id 반환
         return elementsIds;
       } catch (error) {
         console.error('🚨 elements_id 조회 실패:', error);
-        message.error("elements_id 조회 실패");
+
         set(messageAtom, { type: 'error', content: 'elements_id 조회 실패' });
         return null;
       }
