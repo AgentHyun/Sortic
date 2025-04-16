@@ -55,7 +55,7 @@ export const editingElementIdAtom = atom(null);
 
 // 카드 관련 상태
 export const cardsAtom = atom([]);
-
+export const cardsByCategoryAtom = atom({});
 // 정렬기 관련 상태
 export const updatedSortersAtom = atom({});
 export const sorterNameAtom = atom('');
