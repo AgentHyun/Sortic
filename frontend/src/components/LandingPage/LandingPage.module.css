@@ -100,4 +100,10 @@
   display: block;
   margin: 0 auto;
 }
-
+/* LandingPage.module.css */
+.fullHeight {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;  /* ✅ 추가 */
+  flex-direction: row; /* ✅ 추가 */
+}
