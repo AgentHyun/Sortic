@@ -68,7 +68,7 @@
 }
 
 .category-item.selected {
-    color : #505050;
+    color : #6e5047;
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
     background: #edc540; /* ✅ 부드러운 컬러 그라데이션 */
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
