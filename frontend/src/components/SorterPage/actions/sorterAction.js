@@ -104,7 +104,7 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
     const response = await axios.get(`http://localhost:8080/api/sorter/user/user123`);
     const data = response.data;
 
-    console.log(data);
+
     set(sortersAtom, data);
 
   } catch (error) {

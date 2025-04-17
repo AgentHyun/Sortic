@@ -36,10 +36,11 @@ public class SorterController {
     }
 
     @GetMapping("/user/{user_id}")
-    public ResponseEntity<List<Sorter>> getUserSorters(@PathVariable String user_id) {
-        return ResponseEntity.ok(sorterService.getSortersByUserId(user_id));
+    public ResponseEntity<List<Sorter>> getUserSorters(@PathVariable("user_id") String userId) {
+        // 중복된 sorter_name만 하나씩 반환하는 서비스 호출
+        List<Sorter> uniqueSorters = sorterService.getUniqueSortersByUserId(userId);
+        return ResponseEntity.ok(uniqueSorters);
     }
-
     @PutMapping("/update-name")
     public ResponseEntity<Sorter> updateSorterName(@RequestBody Map<String, Object> payload) {
         int sorterId = (int) payload.get("sorter_id");

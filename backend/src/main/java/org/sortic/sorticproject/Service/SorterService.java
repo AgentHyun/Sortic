@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class SorterService {
@@ -96,6 +94,11 @@ public class SorterService {
     public String getSorterNameById(int sorterId) {
         return sorterMapper.getSorterNameById(sorterId);
     }
+    public List<Sorter> getUniqueSortersByUserId(String userId) {
+        return sorterMapper.getSortersByUserId(userId);
+    }
+
+
     public List<Integer> getElementsIdBySorterName(String sorterName) {
         // sorterMapper에서 여러 개의 elements_id를 가져오는 메소드 호출
         return sorterMapper.getElementsIdBySorterName(sorterName);

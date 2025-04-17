@@ -88,6 +88,9 @@ const SorterContainer = ({
             // 상태 업데이트
             setElementNamesBySorter(result);
             console.log("🧾 전체 element 이름 매핑 완료:", result);
+
+            // 상태 업데이트 후 확인
+            console.log("🧾 Updated state:", elementNamesBySorter);
         };
 
         fetchAllElementNames();
@@ -192,14 +195,21 @@ const SorterContainer = ({
                                         >
                                             <X size={18} />
                                         </button>
-
                                         <div className="element-names">
-                                            {elementNamesBySorter[sorter.sorter_id]?.map((name, idx) => (
-                                                <div key={idx} className="element-item">
-                                                    {name}
-                                                </div>
-                                            ))}
+                                            {elementNamesBySorter[sorter.sorter_id]?.map((name, idx) => {
+                                                if (name !== null) {  // null을 먼저 처리
+                                                    return (
+                                                        <div key={idx} className="element-item">
+                                                            {name}
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;  // null이면 아무것도 렌더링하지 않음
+                                            })}
                                         </div>
+
+
+
                                     </div>
                                 </div>
                             </div>
