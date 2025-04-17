@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { X } from 'lucide-react';
-import { edtingSorterIdAtom } from '../atoms/atoms';
+import { edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom, newElementNameAtom, editingElementIdAtom, editingElementIndexAtom } from '../atoms/atoms';
 import { useAtom } from 'jotai';
-import { getElementsIdBySorterNameAction, getElementNameByIdAction } from "../actions/sorterAction"; // 액션 확인 필요
+import { handleElementDoubleClickAtSorterAction, handleElementNameSaveAction, handleElement } from "../actions/elementAction";
+import { getElementsIdBySorterNameAction, getElementNameByIdAction } from "../actions/sorterAction";
 
 const settings = {
     dots: true,
@@ -30,75 +31,84 @@ const SorterContainer = ({
                              inputValue,
                              setInputValue,
                              handleSaveSorterName,
-                             handleSorterNameDoubleClick
+                             handleSorterNameDoubleClick,
                          }) => {
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: { distance: 1 }
-        })
-    );
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 1 } }));
 
     const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
     const [activeId, setActiveId] = useState(null);
     const [draggingOverBox, setDraggingOverBox] = useState(false);
     const [elementNamesBySorter, setElementNamesBySorter] = useState({});
-
-    // 액션 함수를 set으로 사용하여 atom을 업데이트하도록 수정
+    const [selectedElementIds, setSelectedElementIds] = useAtom(selectedElementIdsAtom);
+    const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
     const [, setGetElementsIdBySorterName] = useAtom(getElementsIdBySorterNameAction);
     const [, setGetElementNameById] = useAtom(getElementNameByIdAction);
+    const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
 
+    const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
+    const [clickTimeout, setClickTimeout] = useState(null); // 클릭 타이머 상태
+    const [handleElementDoubleClick, setHandleElementDoubleClick] = useAtom(handleElementDoubleClickAtSorterAction);
+    const [isEditingElement, setIsEditingElement] = useAtom(isEditingElementAtom);
+    const [editingElementIndex, setEditingElementIndex] = useAtom(editingElementIndexAtom);
     const activeSorter = sorters.find(sorter => sorter.sorter_id === activeId);
+    const inputRef = useRef(null); // input 요소를 위한 ref
+
+    const handleElementNameChange = (e) => {
+        setNewElementName(e.target.value);
+    };
+
+    useEffect(() => {
+        // 편집 모드일 때, input에 포커스를 설정
+        if (isEditingElement && inputRef.current) {
+            inputRef.current.focus();  // 수동으로 포커스를 설정
+        }
+    }, [isEditingElement]); // isEditingElement가 변경될 때마다 실행
 
     useEffect(() => {
         const fetchAllElementNames = async () => {
-            console.log("📦 [useEffect] sorters 변경 감지됨. 현재 sorters:", sorters);
-
             const result = {};
+
             for (const sorter of sorters) {
                 try {
-                    console.log(`🔍 Fetching sorter_name for sorter_id: ${sorter.sorter_id}`);
-
-                    // sorter_name으로 element_ids 조회
+                    // sorter 이름에 해당하는 element_id를 가져오기
                     const ids = await setGetElementsIdBySorterName(sorter.sorter_name);
-                    console.log(`✅ Elements IDs for sorter_name ${sorter.sorter_name}:`, ids);
+                    console.log(`📦 sorter ${sorter.sorter_name}에 대한 element ids:`, ids);
 
                     const idList = Array.isArray(ids) ? ids : [];
-                    console.log(`🔍 idList:`, idList);
-
-                    // element names를 id로부터 가져오기
+                    // 각 element_id에 대해 element 이름을 가져오기
                     const names = await Promise.all(
                         idList.map(async (id) => {
-                            console.log(`🔎 Fetching name for element with id: ${id}`);
                             const name = await setGetElementNameById(id);
-                            console.log(`🧩 Element name for id ${id}:`, name);
+                            console.log(`🔍 element id ${id}에 대한 이름:`, name);
                             return name;
                         })
                     );
 
-                    result[sorter.sorter_id] = names;
-                    console.log(`🎯 Finished fetching names for sorter ${sorter.sorter_id}:`, names);
+                    result[sorter.sorter_id] = { ids: idList, names: names };
+                    console.log(`🎯 sorter ${sorter.sorter_id}에 대한 element names:`, names);
 
                 } catch (err) {
-                    console.error(`❌ Error fetching for sorter ${sorter.sorter_id}:`, err);
-                    result[sorter.sorter_id] = [];
+                    console.error(`❌ sorter ${sorter.sorter_id}에 대한 fetch 에러:`, err);
+                    result[sorter.sorter_id] = { ids: [], names: [] };
                 }
             }
 
             // 상태 업데이트
             setElementNamesBySorter(result);
-            console.log("🧾 전체 element 이름 매핑 완료:", result);
+            console.log("🧾 element 이름 매핑 완료:", result);
 
-            // 상태 업데이트 후 확인
-            console.log("🧾 Updated state:", elementNamesBySorter);
+            // sorterCardsAtom에 sorters 값 저장
+            setSorterCards(result); // 이 줄을 추가하여 sorterCardsAtom에 데이터 저장
         };
 
         fetchAllElementNames();
-    }, [sorters, setGetElementsIdBySorterName, setGetElementNameById]);
+    }, [sorters, elementsRefreshTrigger]);
+
+    // sorterCardsAtom에 데이터 설정
+    const [, setSorterCards] = useAtom(sorterCardsAtom);
 
     const handleDragStart = (event) => {
-        const { active } = event;
-        setActiveId(active.id);
+        setActiveId(event.active.id);
     };
 
     const handleDragEnd = (event) => {
@@ -111,11 +121,8 @@ const SorterContainer = ({
         const newIndex = sorters.findIndex((s) => s.sorter_id === over.id);
 
         if (draggingOverBox) {
-            // 드래그된 아이템이 새로운 정렬자 상자에 추가되는 경우
             const existingSorter = sorters.find((sorter) => sorter.sorter_name === active.sorter_name);
-
             if (existingSorter) {
-                // 기존 sorter에 요소 추가
                 setSorters((prevSorters) =>
                     prevSorters.map((sorter) =>
                         sorter.sorter_id === existingSorter.sorter_id
@@ -124,18 +131,66 @@ const SorterContainer = ({
                     )
                 );
             } else {
-                // 새로운 sorter 추가
                 setSorters([...sorters, { ...active, sorter_id: new Date().getTime(), elements: [{ element_id: new Date().getTime() }] }]);
             }
         } else {
-            // 기존 정렬자 순서 변경
             setSorters(arrayMove(sorters, oldIndex, newIndex));
         }
     };
 
+    const handleElementSaveName = async (elementId) => {
+        try {
+            await setHandleElementNameSave(elementId);
 
-    const handleDragOverBox = (isOver) => {
-        setDraggingOverBox(isOver);
+            // 저장 후 로컬 상태도 직접 업데이트
+            setElementNamesBySorter((prev) => {
+                const updated = { ...prev };
+                for (const sorterId in updated) {
+                    const index = updated[sorterId].ids.indexOf(elementId);
+                    if (index !== -1) {
+                        updated[sorterId].names[index] = newElementName; // 입력된 이름으로 바로 반영
+                    }
+                }
+                return updated;
+            });
+
+            setIsEditingElement(false);
+        } catch (error) {
+            console.log("요소 수정 실패");
+        }
+    };
+
+    const handleElementClick = (elementId, event) => {
+        event.stopPropagation();
+
+        // 더블 클릭 이벤트와 구분하기 위한 flag 설정
+        if (clickTimeout) {
+            clearTimeout(clickTimeout); // 이전 타이머 제거
+        }
+
+        setClickTimeout(setTimeout(() => {
+            setSelectedElementIds((prev) => {
+                if (Array.isArray(prev)) {
+                    return prev.includes(elementId)
+                        ? prev.filter((id) => id !== elementId) // 이미 선택된 상태라면 해제
+                        : [...prev, elementId]; // 선택 추가
+                }
+                return [elementId]; // 첫 선택
+            });
+        }, 200)); // 200ms 후에 선택 상태 업데이트
+    };
+
+    const handleElementsDoubleClick = (elementId) => {
+        setHandleElementDoubleClick(elementId);
+        setEditingElementIndex(elementId);
+    };
+
+    const handleBlur = () => {
+        if (newElementName !== '') {
+            handleElementSaveName(editingElementIndex); // 수정된 값을 저장
+        } else {
+            setIsEditingElement(false); // 값이 없으면 편집 모드 종료
+        }
     };
 
     return (
@@ -145,10 +200,7 @@ const SorterContainer = ({
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <SortableContext
-                items={sorters.map((s) => s.sorter_id)}
-                strategy={rectSortingStrategy}
-            >
+            <SortableContext items={sorters.map((s) => s.sorter_id)} strategy={rectSortingStrategy}>
                 <div className="sorter-scroll-wrapper">
                     <Slider {...settings}>
                         {sorters.map((sorter) => (
@@ -163,7 +215,6 @@ const SorterContainer = ({
                                     >
                                         {editingSorterId === sorter.sorter_id ? (
                                             <input
-                                                autoFocus
                                                 value={inputValue ?? ''}
                                                 onChange={(e) => setInputValue(e.target.value)}
                                                 onBlur={() => {
@@ -186,53 +237,36 @@ const SorterContainer = ({
 
                                     <div
                                         className="sorter-box"
-                                        onDragEnter={() => handleDragOverBox(true)}
-                                        onDragLeave={() => handleDragOverBox(false)}
                                     >
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => deleteSorter(sorter.sorter_id)}
-                                        >
+                                        <button className="delete-btn" onClick={() => deleteSorter(sorter.sorter_id)}>
                                             <X size={18} />
                                         </button>
                                         <div className="element-names">
-                                            {elementNamesBySorter[sorter.sorter_id]?.map((name, idx) => {
-                                                if (name !== null) {  // null을 먼저 처리
-                                                    return (
-                                                        <div key={idx} className="element-item">
-                                                            {name}
-                                                        </div>
-                                                    );
-                                                }
-                                                return null;  // null이면 아무것도 렌더링하지 않음
+                                            {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
+                                                const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
+                                                return name !== null && elementId != null ? (
+                                                    <div
+                                                        key={elementId}
+                                                        className={`element-item ${selectedElementIds?.includes(elementId) ? 'selected' : ''}`}
+                                                        onClick={(event) => handleElementClick(elementId, event)}
+                                                        onDoubleClick={() => handleElementsDoubleClick(elementId)}
+                                                    >
+                                                        {editingElementIndex === elementId ? (
+                                                            <input
+                                                                ref={inputRef}
+                                                                value={newElementName}
+                                                                onChange={handleElementNameChange}
+                                                                onBlur={handleBlur} // blur 시 저장
+                                                                onKeyDown={(e) => e.key === "Enter" && handleElementSaveName(editingElementIndex)}
+
+                                                            />
+                                                        ) : (
+                                                            name
+                                                        )}
+                                                    </div>
+                                                ) : null;
                                             })}
                                         </div>
 
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </Slider>
-
-                    {selectedSorters.length > 0 && (
-                        <button className="delete-selected-btn" onClick={multiDeleteSorters}>
-                           Delete
-                        </button>
-                    )}
-                </div>
-            </SortableContext>
-
-            <DragOverlay>
-                {activeSorter ? (
-                    <div className="sorter-item dragging">
-                        {activeSorter.sorter_name}
-                    </div>
-                ) : null}
-            </DragOverlay>
-        </DndContext>
-    );
-};
-
+                                    </div> </div> </div> ))} </Slider> </div> </SortableContext> </DndContext> ); };
 export default SorterContainer;

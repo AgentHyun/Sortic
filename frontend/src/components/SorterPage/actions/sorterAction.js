@@ -182,7 +182,7 @@ export const getElementNameByIdAction = atom(
         set(elementNameAtom, elementName);  // elementNameAtom에 설정
         return elementName;
       } catch (error) {
-        console.error('🚨 elements_name 조회 실패:', error);
+
         set(messageAtom, { type: 'error', content: 'elements_name 조회에 실패했습니다.' });
 
         return null;

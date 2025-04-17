@@ -242,9 +242,10 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    gap: 8px;
-    justify-content: flex-start;
-    align-content: flex-start;
+    gap: 20px;
+    justify-content: center;
+    align-content: center;
+
 }
 
 
@@ -294,3 +295,4 @@
     box-shadow: 0 6px 18px rgba(76, 88, 91, 0.4);
     transform: scale(1.05);
 }
+

@@ -86,7 +86,8 @@
 
 
 .category-name input,
-.category-item input {
+.category-item input,
+.element-item input{
     font-size: 16px;
     font-weight: 500;
     color: #333;
@@ -104,7 +105,8 @@
 }
 
 .category-name input:focus,
-.category-item input:focus {
+.category-item input:focus,
+.element-item input:focus{
     background-color: #f4f4f4;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);

@@ -56,7 +56,7 @@ import {
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
     editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom,
-    selectedSortersAtom
+    selectedSortersAtom, elementsRefreshTriggerAtom
 } from '../atoms/atoms';
 
 
@@ -135,7 +135,7 @@ const SorterPage = () => {
     const [, addElementData] = useAtom(elementsDataAction);
     const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
     const [costError, setCostError] = useAtom(costErrorAtom);
-
+    const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
 
     const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
@@ -275,6 +275,7 @@ const SorterPage = () => {
     const handleDeleteSelectedElements = async () => {
         try {
             await handleBulkDeleteElements();
+            setElementsRefreshTrigger(prev => prev + 1); // 트
         } catch (error) {
             console.error("❌ 요소 삭제 실패:", error);
         }
