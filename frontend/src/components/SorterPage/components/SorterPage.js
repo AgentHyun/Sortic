@@ -84,6 +84,7 @@ import {
 
 import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction} from '../actions/sorterAction';
+import BillPage from "../../BillPage/components/BillPage";
 
 const { Title } = Typography;
 const SorterPage = () => {
@@ -867,7 +868,9 @@ const SorterPage = () => {
                     </Slider>
                 </div>
             </div>
-
+          <div>
+            <BillPage/>
+          </div>
 
         </div>
         </div>
