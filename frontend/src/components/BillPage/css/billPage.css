@@ -30,3 +30,16 @@
   margin-bottom: 10px;
   word-break: keep-all;
 }
+.bill-add {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+.add-bill-btn {
+  font-size: 18px;
+  padding: 12px 24px;
+  height: auto;
+  border-radius: 8px;
+}
