@@ -4,28 +4,30 @@ import {Button, Input, message, Modal} from 'antd';
 import axios from 'axios';
 import '../css/billPage.css';
 import { billsAtom } from "../atom/atoms";
-
+import {Trash,X} from 'lucide-react';
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
   const userId = 'user123';
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newBillName, setNewBillName] = useState('');
-  useEffect(() => {
+  const fetchBills = () => {
     axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
       .then(res => setBills(res.data))
-      .catch(err => {
-        console.error('Bill 불러오기 실패:', err);
-        message.error('계산서 목록을 불러오는 데 실패했습니다.');
-      });
+      .catch(err => message.error('Bill 불러오기 실패', err));
+  };
+
+  useEffect(() => {
+    fetchBills();
   }, [userId]);
+
   const handleAddBill = async () => {
     try {
       const res = await axios.post(`http://localhost:8080/api/bills/addBill`,{
         billName : newBillName,
         userId  : userId
       });
-
-      setBills([...bills,res.data]);
+      // 전체 Bill 다시 불러오기
+      fetchBills();
       setNewBillName('');
       setIsModalVisible(false);
       message.success("Bill이 추가되었습니다!");
@@ -35,6 +37,17 @@ const BillPage = () => {
     }
 
   }
+  const handleDeleteBill = async (billId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
+        params: { billId }
+      });
+      message.success("삭제 완료!");
+      fetchBills(); // 전체 새로고침
+    } catch (err) {
+      message.error("삭제 실패");
+    }
+  };
   return (
 
     <div className="bill-container">
@@ -46,11 +59,20 @@ const BillPage = () => {
       </div>
       {bills.map((bill) => (
         <div key={bill.billId} className="bill-box">
-          <div className="bill-title">{bill.billName}</div>
+          {/* X 아이콘은 위에 절대 위치로 */}
+          <X
+            className="delete-icon"
+            onClick={() => handleDeleteBill(bill.billId)}
+          />
+          {/* 제목은 가운데 정렬 */}
+          <div className="bill-title">
+            {bill.billName}
+          </div>
+
           <div>
             <h4>📦 항목</h4>
             <ul>
-              {bill.elements.map((el, idx) => (
+              {Array.isArray(bill.elements) && bill.elements.map((el, idx) => (
                 <li key={idx}>{el.elementsName} - {el.elementsPrice}원</li>
               ))}
             </ul>
@@ -59,7 +81,7 @@ const BillPage = () => {
           <div>
             <h4>🧾 수수료</h4>
             <ul>
-              {bill.commissions.map((c, idx) => (
+              {Array.isArray(bill.commissions) &&bill.commissions.map((c, idx) => (
                 <li key={idx}>{c.commissionName} - {c.commission}원</li>
               ))}
             </ul>

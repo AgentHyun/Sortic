@@ -10,6 +10,12 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
 
+    @Insert("insert into bill (user_id,bill_name) values (#{userId},#{billName})")
+    void insertBill(Bill bill);
+
+    @Delete("DELETE FROM bill WHERE bill_id = #{billId}")
+    void deleteBillById(int billId);
+
     @Select("Select * from Bill Where user_id = #{userId}")
     @Results(id = "BillMap", value = {
         @Result(property = "billId", column = "bill_id"),

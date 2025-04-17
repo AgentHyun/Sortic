@@ -15,7 +15,16 @@ import java.util.List;
 public class BillService {
     @Autowired
     private BillMapper billMapper;
+    // Bill 추가
+    public void addBill(Bill bill) {
+        billMapper.insertBill(bill);
+    }
+    //Bill 삭제
+    public void deleteBill(int billId) {
+        billMapper.deleteBillById(billId);
+    }
 
+    // Bill 전체 불러오기
     public List<BillGroupResponse> getBillDetails(String userId){
         // 1. 해당 유저의 Bill 목록 가져오기
         List<Bill> billList = billMapper.findBillsByUserId(userId);
@@ -27,7 +36,6 @@ public class BillService {
         for (Bill bill : billList) {
             int billId = bill.getBillId();
             String billName = bill.getBillName();
-            System.out.println(billId);
             // 3. Element 목록 가져오기
             List<BillElementDetail> elements = billMapper.findElementsByBillId(billId);
             // 4. Commission 목록 가져오기
@@ -59,16 +67,6 @@ public class BillService {
             // 9. 결과 리스트에 추가
             resultList.add(response);
         }
-
-
-
-
-
-
-
         return resultList;
-
-
-
     }
 }
