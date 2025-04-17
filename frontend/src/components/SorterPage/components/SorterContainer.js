@@ -155,7 +155,7 @@ const SorterContainer = ({
                                     className={`sorter-wrapper ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`}
                                 >
                                     <div
-                                        className="sorter-title-section"
+                                        className="sorter-title"
                                         onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
                                     >
                                         {editingSorterId === sorter.sorter_id ? (
@@ -208,7 +208,7 @@ const SorterContainer = ({
 
                     {selectedSorters.length > 0 && (
                         <button className="delete-selected-btn" onClick={multiDeleteSorters}>
-                            전체 삭제
+                           Delete
                         </button>
                     )}
                 </div>

@@ -11,7 +11,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: #4C585B;
+    background-color: 	 #1c283c;
     color: #fff;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
@@ -66,7 +66,7 @@
     font-size: 1.6rem;
     font-weight: bold;
     color: white;
-    background-color: #4C585B;
+    background-color:	 #1c283c;
     width: 30vw;
     height: 80px;
     min-width: 180px;
@@ -185,3 +185,98 @@
     100% { opacity: 1; transform: translateY(0); }
 }
 
+
+
+.left-arrow-box {
+    display: flex;
+    flex-direction: row; /* 🔁 세로 → 가로로 변경 */
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+}
+.number-section {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1F2933;
+
+}
+
+
+.left-arrow-box svg {
+    width: 40px;
+    height: 60px;
+    transform: scaleY(2) scaleX(1.5);
+    color: #1F2933;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.left-arrow-box svg.active {
+    color: #f5222d;
+}
+
+
+
+.arrow-right-btn {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    width: 3vw;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.arrow-left-btn {
+    border: 1px solid rgba(31, 41, 51, 0.2);
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3vw;
+    height: 3vw;
+    color: #1F2933;
+    font-size: 18px;
+    transition: all 0.25s ease;
+}
+
+
+.right-arrow-wrapper{
+    margin-top : 25px;
+    margin-left : 20px;
+    align-items: center;
+    justify-content: center;
+}
+.left-arrow-wrapper{
+    margin-top : 25px;
+    margin-right : 20px;
+    align-items: center;
+    justify-content: center;
+
+}
+.left-arrow-text{
+    margin-right : 10px;
+
+}
+.right-arrow-text{
+    margin-left : 10px;
+
+}
+
+.arrow-left-btn:hover,
+.arrow-right-btn:hover {
+    transform: scaleY(1.13);
+    background-color: #f1f0f0;
+    color : white;
+    cursor : pointer;
+}

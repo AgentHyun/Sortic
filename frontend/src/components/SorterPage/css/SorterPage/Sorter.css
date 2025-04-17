@@ -9,7 +9,7 @@
 
 /* 버튼 스타일 */
 .sorter-btn {
-    background-color: #4C585B;
+    background-color:   #1c283c !important;
     border: none;
     color: white;
     font-family: "Orbit", sans-serif;
@@ -26,7 +26,7 @@
 }
 
 .sorter-btn:hover {
-    background-color: #5e6d70 !important;
+    background-color: #bfbfbf !important;
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
     color: #f1f1f1;
@@ -44,7 +44,7 @@
     width : 23vw;
     height: 50vh;
     margin : 3vw;
-    background-color: #ffffff;
+    background-color: #1c283c;
     border-radius: 20px;
     box-shadow: 0 10px 18px 10px rgba(0, 0, 0, 0.08);
     align-items: center;
@@ -59,8 +59,8 @@
 .sorter-wrapper:hover {
     transform: translateY(-6px);
     cursor : pointer;
-    background-color: #bcbebf;
-    color : white;
+
+
 }
 
 /* Sorter 제목 */
@@ -68,7 +68,7 @@
     font-size: 22px;
     font-weight: 700;
     text-align: center;
-    color: #2c3e50;
+    color : white;
     margin-bottom: 16px;
     font-family: "Orbit", sans-serif;
 }
@@ -76,14 +76,14 @@
 .sorter-title:hover {
     cursor : pointer;
     background-color: transparent;
-    color: #000000;
+
     transform: scale(1.08);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Sorter 내용 박스 */
 .sorter-box {
-    background-color: #eef1f5;
+    background-color: white;
     flex-grow: 1;
     border-radius: 14px;
     position: relative;
@@ -163,18 +163,15 @@
 
 /* 선택된 Sorter */
 .selected-sorter {
-    border: 4px solid #edc540 !important;
+    border: 4px solid #EDC540 !important;
     box-shadow: 0 0 20px rgba(108, 142, 164, 0.5);
     transform: scale(1.05);
-    background-color: rgba(108, 142, 164, 0.1);
+
     transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* 빠른 전환 */
 }
 
 /* 삭제된 Sorter 선택 버튼 */
-.delete-selected-btn {
-    position: relative;
-    z-index: 10;
-}
+
 .delete-selected-btn {
     background-color: #f44336; /* 빨간색, 경고 느낌 */
     color: white;
@@ -192,9 +189,12 @@
     width: 10vw;
     min-width: 200px;
     height: 5vh;
-    margin-top: 20px;
+    margin-top: 60px;
+    margin-bottom: 60px;
     margin-left : auto;
     margin-right : auto;
+    position: relative;
+    z-index: 10;
 }
 
 /* 버튼 hover 효과 */

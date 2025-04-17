@@ -552,7 +552,7 @@ const SorterPage = () => {
                                     style={{
                                         width: '40px',
                                         height: '180px',
-                                        color: isLeftRed ? '#f5222d' : '#4C585B',
+                                        color: isLeftRed ? '#f5222d' : '#2E3A59 ',
                                         strokeWidth: 2,
                                         transition: 'all 0.3s ease',
                                         cursor: 'pointer',
@@ -563,7 +563,7 @@ const SorterPage = () => {
                                     style={{
                                         fontSize: '32px',
                                         fontWeight: 'bold',
-                                        color: isLeftRed ? '#f5222d' : '#4C585B',
+                                        color: isLeftRed ? '#f5222d' : '#2E3A59 ',
                                     }}
                                     className= 'left-arrow-text'
                                 >
@@ -748,7 +748,7 @@ const SorterPage = () => {
                                     style={{
                                         fontSize: '32px',
                                         fontWeight: 'bold',
-                                        color: isRightRed ? '#f5222d' : '#4C585B',
+                                        color: isRightRed ? '#f5222d' : '#2E3A59 ',
 
                                     }}
                                     className = 'right-arrow-text'
@@ -760,7 +760,7 @@ const SorterPage = () => {
                                     style={{
                                         width: '40px',
                                         height: '180px',
-                                        color: isRightRed ? '#f5222d' : '#4C585B',
+                                        color: isRightRed ? '#f5222d' : '#2E3A59 ',
                                         strokeWidth: 2,
                                         transition: 'all 0.3s ease',
                                         cursor: 'pointer',
