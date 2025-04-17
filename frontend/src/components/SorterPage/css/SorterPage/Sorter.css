@@ -29,7 +29,7 @@
     background-color: #bfbfbf !important;
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-    color: #f1f1f1;
+    color: black !important;
 }
 
 /* 슬라이드 영역 */
