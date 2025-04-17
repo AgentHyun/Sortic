@@ -25,6 +25,10 @@ public interface ElementMapper {
     })
     Element getElementById(int elements_name_id);
 
+
+
+
+
     // 카테고리별 상품 목록 조회
     @Select("SELECT * FROM Elements_name WHERE category_id = #{category_id}")
     @Results({
@@ -61,5 +65,6 @@ public interface ElementMapper {
     })
     void deleteElementsByIds(@Param("ids") List<Integer> ids);
 
-
+    @Select("SELECT elements_name FROM Elements_name WHERE elements_name_id = #{elementsId}")
+    String getElementNameById(int elementsId);
 }

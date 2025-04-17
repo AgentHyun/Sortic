@@ -29,9 +29,13 @@ const SorterDefaultPage = () => {
 
     const [newCategory, setNewCategory] = useAtom(newCategoryAtom);
     const navigate = useNavigate();
+    const [isSelected, setIsSelected] = useState(false);
 
-    const handleClick = () => {
+
+    const handleClick = (e) => {
+        e.preventDefault();
         setAddCategoryModalVisible(true); // 모달만 먼저 띄움
+        setIsSelected(true);
     };
 
     const handleAddCategory = async () => {
@@ -67,7 +71,7 @@ const SorterDefaultPage = () => {
     return (
         <>
             <div className="sorter-section-default" onClick={handleClick}>
-                <a href="#" data-text="Create-Category" className='create-category-title'>Create-Category</a>
+                <a href="#" data-text="Create-Category"   className={`create-category-title ${isSelected ? 'selected' : ''}`}>Create-Category</a>
             </div>
 
             <Modal

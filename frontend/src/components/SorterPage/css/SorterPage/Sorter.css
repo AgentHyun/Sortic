@@ -5,11 +5,11 @@
     align-items: center;
     margin-top: 40px;
     width: 100%;
-
-
 }
+
+/* 버튼 스타일 */
 .sorter-btn {
-    background-color: #4C585B;
+    background-color:   #1c283c !important;
     border: none;
     color: white;
     font-family: "Orbit", sans-serif;
@@ -17,28 +17,26 @@
     padding: 10px 20px;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     width : 10vw;
-    height : 5vh;
+    height : 45px;
+    margin-left : auto;
+    margin-right: auto;
+    min-width: 100px;
 }
 
 .sorter-btn:hover {
-    background-color: #5e6d70 !important; /* 살짝 밝은 톤의 그레이 */
+    background-color: #bfbfbf !important;
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-    color: #f1f1f1;
+    color: black !important;
 }
-
 
 /* 슬라이드 영역 */
 .sorter-scroll-wrapper {
-
     width: 99%;
     padding: 16px 0;
-
 }
-
-
 
 /* Sorter 카드 */
 .sorter-wrapper {
@@ -46,7 +44,7 @@
     width : 23vw;
     height: 50vh;
     margin : 3vw;
-    background-color: #ffffff;
+    background-color: #1c283c;
     border-radius: 20px;
     box-shadow: 0 10px 18px 10px rgba(0, 0, 0, 0.08);
     align-items: center;
@@ -54,15 +52,15 @@
     flex-shrink: 1;
     display: flex;
     flex-direction: column;
-
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* transition 속도 조정 */
     padding: 20px;
 }
 
 .sorter-wrapper:hover {
     transform: translateY(-6px);
     cursor : pointer;
-    background-color: #bcbebf;
-    color : white;
+
+
 }
 
 /* Sorter 제목 */
@@ -70,21 +68,22 @@
     font-size: 22px;
     font-weight: 700;
     text-align: center;
-    color: #2c3e50;
+    color : white;
     margin-bottom: 16px;
+    font-family: "Orbit", sans-serif;
 }
-.sorter-title:hover{
+
+.sorter-title:hover {
     cursor : pointer;
-    background-color: #e0e0e0;
-    color: #000000;
+    background-color: transparent;
+
     transform: scale(1.08);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
 }
 
 /* Sorter 내용 박스 */
 .sorter-box {
-    background-color: #eef1f5;
+    background-color: white;
     flex-grow: 1;
     border-radius: 14px;
     position: relative;
@@ -111,17 +110,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.3s ease, opacity 0.3s ease;
-
-    /* 처음에는 숨김 */
+    transition: all 0.2s ease, opacity 0.3s ease; /* 속도 빠르게 */
     opacity: 0;
     pointer-events: none;
-}
-
-/* 아이콘 컬러 */
-.delete-btn svg {
-    color: #333;
-    transition: color 0.3s ease;
 }
 
 /* hover 시 스타일 */
@@ -140,6 +131,7 @@
 .delete-btn:hover svg {
     color: #fff;
 }
+
 /* slick-slide 안의 div가 크기를 제한하지 않게 함 */
 .slick-slide > div {
     display: flex !important;
@@ -152,7 +144,7 @@
     align-items: stretch;
 }
 
-.sorter-name-input{
+.sorter-name-input {
     font-size: 16px;
     font-weight: 500;
     color: #333;
@@ -166,7 +158,110 @@
     text-align: center;
     outline: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; /* 빠른 전환 */
 }
 
+/* 선택된 Sorter */
+.selected-sorter {
+    border: 4px solid #EDC540 !important;
+    box-shadow: 0 0 20px rgba(108, 142, 164, 0.5);
+    transform: scale(1.05);
+
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* 빠른 전환 */
+}
+
+/* 삭제된 Sorter 선택 버튼 */
+
+.delete-selected-btn {
+    background-color: #f44336; /* 빨간색, 경고 느낌 */
+    color: white;
+    font-size: 18px;
+    font-family: "Orbit", sans-serif;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10vw;
+    min-width: 200px;
+    height: 5vh;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    margin-left : auto;
+    margin-right : auto;
+    position: relative;
+    z-index: 10;
+}
+
+/* 버튼 hover 효과 */
+.delete-selected-btn:hover {
+    background-color: #e53935; /* 더 진한 빨간색 */
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 버튼 active 상태 */
+.delete-selected-btn:active {
+    transform: scale(0.98);
+    background-color: #d32f2f; /* 클릭 시 어두운 빨간색 */
+}
+
+/* 버튼 disable 상태 */
+.delete-selected-btn:disabled {
+    background-color: #e0e0e0;
+    color: #bdbdbd;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* 버튼 내부 아이콘 및 텍스트 정렬 */
+.delete-selected-btn svg {
+    margin-right: 8px;
+    fill: #fff;
+    transition: fill 0.3s ease;
+}
+
+/* 버튼 내부 텍스트 */
+.delete-selected-btn span {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+
+/* Hover 시 아이콘 색상 변화 */
+.delete-selected-btn:hover svg {
+    fill: #fff;
+}
+
+.element-names {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: calc(33.33% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.element-names:hover {
+    background-color: #edc540;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}

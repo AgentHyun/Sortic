@@ -3,43 +3,21 @@ import { atom, useSetAtom, useAtomValue , useAtom} from 'jotai';
 import { message } from 'antd';
 
 import {
-    messageApiAtom,
-    contextHolderAtom,
-    addCategoryModalVisibleAtom,
     addElementModalVisibleAtom,
-    sorterModalVisibleAtom,
-    newCategoryAtom,
-    categoriesAtom,
     currentCategoryAtom,
-    currentCategoryNameAtom,
-    isEditingCategoryAtom,
-    newCategoryNameAtom,
     currentElementNameAtom,
     isEditingElementAtom,
     editingElementIndexAtom,
     newElementNameAtom,
-    elementsDataAtom,
     addElementNameAtom,
     addElementCostAtom,
-    addElementKeyAtom,
-    addElementValueAtom,
     cardsAtom,
-    updatedSortersAtom,
-    sorterNameAtom,
-    isEditingSorterAtom,
-    newSorterNameAtom,
-    sortersAtom,
-    editingSorterIndexAtom,
-    containerRefAtom,
-    isDraggingAtom,
-    startXAtom,
-    scrollLeftAtom,
     originalElementNameAtom,
     selectedElementIdAtom,
     messageAtom, attributeModalVisibleAtom,
     selectedElementIdsAtom, addedElementIdAtom,
     contextMenuAtom,
-    newElementPriceAtom
+    newElementPriceAtom, cardsByCategoryAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -53,6 +31,7 @@ export const fetchElementsByCategoryAction = atom(
 
             if (Array.isArray(response.data)) {
                 set(cardsAtom, response.data);
+
             } else {
                 console.error('잘못된 데이터 형식:', response.data);
                 set(messageAtom, { type: 'error', content: '카테고리 요소 조회에 실패했습니다.' });
@@ -63,6 +42,11 @@ export const fetchElementsByCategoryAction = atom(
         }
     }
 );
+
+
+
+
+
 export const setSelectedElementAction = atom(
     null,
     (get, set, elementId) => {
@@ -418,3 +402,4 @@ export const closeContextMenuAction = atom(
         });
     }
 );
+

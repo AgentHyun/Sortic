@@ -48,6 +48,35 @@ public class SorterController {
         Sorter updatedSorter = sorterService.updateSorterName(sorterId, sorterName);
         return ResponseEntity.ok(updatedSorter);
     }
+    @PostMapping("/delete/multiple")
+    public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
+        sorterService.deleteMultipleSorters(sorterIds);
+        return ResponseEntity.ok("다중 삭제 완료");
+    }
+
+    @PutMapping("/update-elements")
+    public ResponseEntity<Sorter> updateElementsId(@RequestBody Map<String, Integer> payload) {
+        int sorterId = payload.get("sorter_id");
+        int elementsId = payload.get("elements_id");
+
+        Sorter updatedSorter = sorterService.updateElementsId(sorterId, elementsId);
+        return ResponseEntity.ok(updatedSorter);
+    }
+    @GetMapping("/elements/{sorter_id}")
+    public ResponseEntity<Integer> getElementsIdBySorterId(@PathVariable int sorter_id) {
+        Integer elementsId = sorterService.getElementsIdBySorterId(sorter_id);
+        return ResponseEntity.ok(elementsId);
+    }
+    @GetMapping("/name/{sorter_id}")
+    public ResponseEntity<String> getSorterNameById(@PathVariable int sorter_id) {
+        String sorterName = sorterService.getSorterNameById(sorter_id);
+        return ResponseEntity.ok(sorterName);
+    }
+    @GetMapping("/element-id/{sorter_name}")
+    public ResponseEntity<List<Integer>> getElementsIdBySorterName(@PathVariable String sorter_name) {
+        List<Integer> elementsIds = sorterService.getElementsIdBySorterName(sorter_name);
+        return ResponseEntity.ok(elementsIds);
+    }
 
 
 
