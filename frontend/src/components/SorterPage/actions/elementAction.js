@@ -17,7 +17,8 @@ import {
     messageAtom, attributeModalVisibleAtom,
     selectedElementIdsAtom, addedElementIdAtom,
     contextMenuAtom,
-    newElementPriceAtom, cardsByCategoryAtom
+    newElementPriceAtom, cardsByCategoryAtom,
+    sorterCardsAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -198,7 +199,7 @@ export const handleElementDoubleClickAction = atom(
     (get, set, elementId) => {
         const cards = get(cardsAtom); // 현재 요소 리스트 가져오기
         const targetElement = cards.find((card) => card.elements_name_id === elementId); // ID로 요소 찾기
-
+        console.log("카드 " + JSON.stringify(cards));
         if (!targetElement) {
             console.error("해당 ID의 요소를 찾을 수 없습니다:", elementId);
             return;
@@ -215,6 +216,34 @@ export const handleElementDoubleClickAction = atom(
 
 
 
+export const handleElementDoubleClickAtSorterAction = atom(
+    null,
+    (get, set, elementId) => {
+        const cards = get(sorterCardsAtom); // 현재 요소 리스트 가져오기
+
+        // cards가 객체 형태임을 고려한 접근
+        const targetSorterId = Object.keys(cards).find(key => {
+            const card = cards[key];
+            return card.ids.includes(elementId); // elementId가 해당 sorter의 ids 배열에 포함되면 반환
+        });
+
+        if (!targetSorterId) {
+            console.error("해당 ID의 요소를 찾을 수 없습니다:", elementId);
+            return;
+        }
+
+        const targetElement = cards[targetSorterId]; // 해당 sorter의 정보 가져오기
+        const targetElementName = targetElement.names[targetElement.ids.indexOf(elementId)]; // elementId에 해당하는 name 찾기
+
+        // 요소 편집 상태 설정
+        set(originalElementNameAtom, targetElementName || '');
+        set(editingElementIndexAtom, elementId); // ID 저장
+        set(isEditingElementAtom, true); // 편집 모드 활성화
+        set(newElementNameAtom, targetElementName || ''); // 기존 이름 가져오기
+
+        set(currentElementNameAtom, targetElementName || ''); // 현재 이름 백업
+    }
+);
 
 
 // 상품 추가 성공 메시지
@@ -276,6 +305,7 @@ export const handleElementNameSaveAction = atom(
     null,
     async (get, set) => {
         const newElementName = get(newElementNameAtom);
+
         const editingElementIndex = get(editingElementIndexAtom);
         const cards = get(cardsAtom);
 
@@ -290,9 +320,11 @@ export const handleElementNameSaveAction = atom(
         }
 
         try {
+
             await axios.put('http://localhost:8080/api/elements/update_element', {
                 elements_name_id: editingElementIndex,
                 elements_name: newElementName  // ✅ 한글 그대로 전송
+
             }, {
                 headers: { 'Content-Type': 'application/json; charset=UTF-8' }  // ✅ UTF-8 명시
             });

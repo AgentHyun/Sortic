@@ -104,7 +104,7 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
     const response = await axios.get(`http://localhost:8080/api/sorter/user/user123`);
     const data = response.data;
 
-    console.log(data);
+
     set(sortersAtom, data);
 
   } catch (error) {
@@ -182,7 +182,7 @@ export const getElementNameByIdAction = atom(
         set(elementNameAtom, elementName);  // elementNameAtom에 설정
         return elementName;
       } catch (error) {
-        console.error('🚨 elements_name 조회 실패:', error);
+
         set(messageAtom, { type: 'error', content: 'elements_name 조회에 실패했습니다.' });
 
         return null;
