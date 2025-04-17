@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19e67cbd-072e-4de5-bd1a-b9a59a69d5ad" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage/Login.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LoginPage/Login.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,12 +24,7 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="Sortic-Project" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -74,8 +66,9 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
     "git-widget-placeholder": "feature/s/darkmode",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sdedu/Desktop/realcheck/frontend",
+    "last_opened_file_path": "C:/Users/sdedu/Desktop/merge/frontend",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -124,6 +117,7 @@
       <workItem from="1744765592146" duration="485000" />
       <workItem from="1744767057721" duration="13000" />
       <workItem from="1744767093074" duration="23519000" />
+      <workItem from="1744872512133" duration="572000" />
     </task>
     <servers />
   </component>
