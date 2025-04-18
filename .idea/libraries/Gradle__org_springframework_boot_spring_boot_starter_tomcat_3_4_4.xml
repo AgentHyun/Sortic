@@ -5,8 +5,6 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-tomcat/3.4.4/4b18ac49cf13ef2c9a98418ebd8fc212a5259da9/spring-boot-starter-tomcat-3.4.4.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-tomcat/3.4.4/2b2079be4fd8f44269b24ddd04f2972603c05b0d/spring-boot-starter-tomcat-3.4.4-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

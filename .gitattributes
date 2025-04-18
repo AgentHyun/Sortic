@@ -1,10 +1,12 @@
-/gradlew text eol=lf
-*.bat text eol=crlf
-*.jar binary
-# 텍스트 파일은 자동 줄바꿈 (OS 간 충돌 방지)
+# 텍스트 파일 자동 관리
 * text=auto
 
-# 이미지나 바이너리 파일은 diff/merge 제외
+# Gradle은 LF 고정
+/gradlew text eol=lf
+*.bat text eol=crlf
+
+# 바이너리 파일 무조건 제외
+*.jar binary
 *.png binary
 *.jpg binary
 *.jpeg binary

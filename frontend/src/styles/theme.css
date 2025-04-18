@@ -1,53 +1,129 @@
+/* 1. 기본 변수 (라이트) */
 :root {
-    /* ✅ 색상 (Color Palette) */
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --primary-color: #1890ff;
-    --secondary-color: #f0f2f5;
-    --link-color: #1890ff;
-    --hover-color: #40a9ff;
-    --error-color: #ff4d4f;
-    --success-color: #52c41a;
+  --bg-color: #ffffff;
+  --box-bg: #ffffff;
+  --header-bg: #ffffff;
+  --text-color: #1f1f1f;
 
-    /* ✅ 박스/섹션 배경 */
-    --box-bg: #ffffff;
-    --header-bg: #f5f5f5;
+  --primary-color: #1677ff;
+  --hover-color: #0958d9;
 
-    /* ✅ 그림자 */
-    --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --border-color: #dcdcdc;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
-    /* ✅ 폰트 (Typography) */
-    --font-family: 'Segoe UI', 'Pretendard', sans-serif;
-    --font-size-sm: 13px;
-    --font-size-md: 15px;
-    --font-size-lg: 18px;
-    --font-weight-regular: 400;
-    --font-weight-bold: 600;
-
-    /* ✅ 여백 (Spacing) */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-
-    /* ✅ 테두리 */
-    --border-radius-sm: 4px;
-    --border-radius-md: 8px;
-    --border-radius-lg: 12px;
+  --font-weight-bold: 600;
+  --border-radius-md: 8px;
 }
 
-[data-theme="dark"] {
-    --bg-color: #1f1f1f;
-    --text-color: #eaeaea;
-    --primary-color: #40a9ff;
-    --secondary-color: #2b2b2b;
-    --link-color: #40a9ff;
-    --hover-color: #69c0ff;
-    --error-color: #ff7875;
-    --success-color: #95de64;
+/* 2. 다크모드 변수 override (💥 핵심) */
+:root.dark {
+  --bg-color: #1f1f1f;
+  --box-bg: #2c2c2c;
+  --header-bg: #121212;
+  --text-color: #eaeaea;
 
-    --box-bg: #2c2c2c;
-    --header-bg: #121212;
-    --shadow: none;
+  --primary-color: #40a9ff;
+  --hover-color: #69c0ff;
+
+  --border-color: #444;
+  --shadow: none;
+}
+
+.page,
+.container,
+.card,
+.header-container {
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.title,
+.description,
+.menu-item,
+.username {
+  color: var(--text-color);
+}
+
+/* 버튼 */
+.button,
+.signup-button,
+.ant-btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+  font-weight: var(--font-weight-bold);
+  transition: all 0.3s ease;
+}
+
+.button:hover,
+.signup-button:hover,
+.ant-btn-primary:hover {
+  background-color: var(--hover-color);
+  border-color: var(--hover-color);
+  color: #fff;
+}
+
+/* 입력창 */
+.input,
+.select .ant-select-selector,
+.ant-input,
+.ant-input-password {
+  background-color: var(--box-bg);
+  border: 1px solid #d9d9d9;
+  color: var(--text-color);
+  border-radius: var(--border-radius-md);
+  transition: all 0.3s ease;
+}
+
+.input::placeholder,
+.select .ant-select-selection-placeholder,
+.ant-input::placeholder {
+  color: #aaa;
+}
+
+/* 다크모드에서 placeholder 색상 약간 흐리게 */
+.dark .input::placeholder,
+.dark .select .ant-select-selection-placeholder,
+.dark .ant-input::placeholder {
+  color: #888;
+}
+
+/* 선택 박스 */
+.select .ant-select-selector {
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+/* Carousel 대응 */
+.slick-dots li button {
+  background-color: var(--text-color) !important;
+  opacity: 0.3;
+}
+
+.slick-dots li.slick-active button {
+  opacity: 1;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+  .textWrapper {
+    text-align: center;
+  }
+  .buttons {
+    justify-content: center;
+  }
+}
+
+.input,
+.select .ant-select-selector,
+.ant-input,
+.ant-input-password {
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+.card {
+  box-shadow: var(--shadow);
 }

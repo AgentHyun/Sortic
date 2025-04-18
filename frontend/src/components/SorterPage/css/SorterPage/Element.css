@@ -1,16 +1,16 @@
 .element-btn {
     background-color: transparent; /* 기본 배경 색 */
-    color: #707070;
+    color: #1F2933 ;
     font-size: 30px;
     border-radius: 8px;
     cursor: pointer;
     width: 10vw;
-    height: 4.5vh;
-    border: 2px solid #707070;
+    height : 40px;
+    border: 2px solid #1F2933 ;
     align-items: center;
-
+    margin-left: 14.5vw;
     justify-content: center;
-    margin-right: auto;
+
     display: flex;
 
 
@@ -29,16 +29,16 @@
 
 .element-btn-delete {
     font-size: 18px;
-    color: #707070;
+    color: #1F2933 ;
     width: 10vw;
-    height: 4.5vh;
-    border: 2px solid #707070;
+    height : 40px;
+    border: 2px solid #1F2933 ;
     border-radius: 8px;
     cursor: pointer;
     align-items: center;
-
+    margin-right: 14.5vw;
     background-color: transparent;
-    margin-left: -10vh;
+
 }
 
 
@@ -55,29 +55,32 @@
 }
 .element-btn-section {
     display: flex;
-    justify-content: space-between;
-    margin-left: 14.7vw;
-    width: 70vw; /* 또는 적당한 너비 */
-    padding: 0 20px;
-    margin-top : -20vh;
+    flex-direction: row;
+    margin-top : 3vh;
+    margin-bottom : -6vh;
+
+    width: 100%; /* 또는 적당한 너비 */
+
+
+    /* margin-top: -20vh;를 제거 */
 
 
 }
 
 .category-item.selected {
-    border: 2px solid #4C585B; /* ✅ 모던한 테두리 */
+    color : #6e5047;
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
-    background: linear-gradient(135deg, #4C585B, #6E7B7E); /* ✅ 부드러운 컬러 그라데이션 */
+    background: #edc540; /* ✅ 부드러운 컬러 그라데이션 */
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
     transform: scale(1.02); /* ✅ 살짝 확대 효과 */
 
     /* ✅ 텍스트 스타일 */
-    color: white;
+
     font-weight: 600; /* ✅ 폰트 두께 조정 (더 선명하게) */
     font-family: "Poppins", sans-serif; /* ✅ 깔끔한 모던 폰트 */
     letter-spacing: 0.5px; /* ✅ 가독성을 높이는 자간 */
-    text-transform: uppercase; /* ✅ 대문자로 스타일링 */
+
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* ✅ 텍스트에 은은한 그림자 */
 }
 
@@ -160,3 +163,78 @@
     background: #f5f5f5;
 }
 
+/* 스크롤바 자체의 너비 설정 */
+.box-section::-webkit-scrollbar {
+    width: 13px; /* 스크롤바의 너비 */
+    height: 10px; /* 가로 스크롤바의 높이 */
+}
+
+/* 스크롤바의 배경 설정 (트랙) */
+.box-section::-webkit-scrollbar-track {
+    background-color: white; /* 트랙의 배경색을 #4C585B 계열로 */
+    border-radius: 12px; /* 트랙의 모서리 둥글게 처리 */
+    border : 2px solid #505050;
+}
+
+/* 스크롤바의 핸들 (thumb) */
+.box-section::-webkit-scrollbar-thumb {
+    background: #505050;
+
+    border-radius: 12px; /* 핸들의 모서리 둥글게 처리 */
+    border: 1px solid #3C465C; /* 트랙과 구분되도록 여백 추가 */
+}
+
+
+
+/* 스크롤바를 눌렀을 때 핸들 디자인 */
+.box-section::-webkit-scrollbar-thumb:active {
+    background-color: #3B4A4D; /* 눌렀을 때 색상 */
+}
+
+.category-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: calc(33.33% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.category-item:hover {
+    background-color: #edc540;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.box-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start; /* 여러 줄 정렬 시 상단 기준 */
+    gap: 10px;
+    /* 스크롤 처리 */
+    overflow-y: auto;  /* 세로 스크롤 필요 시 나타남 */
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+    padding-right: 20px;
+    padding-left :2.5px;
+
+    box-sizing: border-box;
+    width: 100%; /* 부모 요소의 너비에 맞게 채움 */
+    height: 100%; /* 부모 높이에 맞게 채움 */
+    max-height: 100%; /* 부모 요소의 최대 높이에 맞게 제한 */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform, opacity;
+}

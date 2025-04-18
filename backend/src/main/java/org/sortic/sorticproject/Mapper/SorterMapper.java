@@ -18,9 +18,41 @@ public interface SorterMapper {
     @Select("SELECT * FROM Sorter WHERE sorter_id = #{sorter_id}")
     Sorter getSorterById(int sorter_id);
 
-    // 사용자별 정렬자 목록 조회
-    @Select("SELECT * FROM Sorter WHERE user_id = #{user_id} ORDER BY sorter_number ASC")
+    @Select("""
+    -- 중복되지 않는 sorter_name을 가져옵니다.
+    SELECT sorter_id, sorter_name, user_id, sorter_number
+    FROM Sorter
+    WHERE user_id = #{user_id}
+    AND sorter_name NOT IN (
+        SELECT sorter_name
+        FROM Sorter
+        WHERE user_id = #{user_id}
+        GROUP BY sorter_name
+        HAVING COUNT(sorter_name) > 1
+    )
+    
+    UNION ALL
+    
+    -- 중복되는 sorter_name은 하나만 가져옵니다.
+    SELECT MIN(sorter_id) AS sorter_id, sorter_name, user_id, MIN(sorter_number) AS sorter_number
+    FROM Sorter
+    WHERE user_id = #{user_id}
+    AND sorter_name IN (
+        SELECT sorter_name
+        FROM Sorter
+        WHERE user_id = #{user_id}
+        GROUP BY sorter_name
+        HAVING COUNT(sorter_name) > 1
+    )
+    GROUP BY sorter_name, user_id
+    ORDER BY sorter_number ASC
+""")
     List<Sorter> getSortersByUserId(String user_id);
+
+
+
+
+
 
     // 정렬자 수정
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name}, elements_id = #{elements_id}, sorter_number = #{sorter_number} " +
@@ -40,5 +72,23 @@ public interface SorterMapper {
 
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
     void updateSorterName(@Param("sorter_id") int sorter_id, @Param("sorter_name") String sorter_name);
+    @Delete({
+            "<script>",
+            "DELETE FROM Sorter WHERE sorter_id IN",
+            "<foreach item='id' collection='sorterIds' open='(' separator=',' close=')'>",
+            "#{id}",
+            "</foreach>",
+            "</script>"
+    })
+    void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
 
+    @Update("UPDATE Sorter SET elements_id = #{elements_id} WHERE sorter_id = #{sorter_id}")
+    void updateElementsId(@Param("sorter_id") int sorter_id, @Param("elements_id") int elements_id);
+
+    @Select("SELECT sorter_name FROM Sorter WHERE sorter_id = #{sorter_id}")
+    String getSorterNameById(@Param("sorter_id") int sorter_id);
+
+
+    @Select("SELECT elements_id FROM Sorter WHERE sorter_name = #{sorter_name}")
+    List<Integer> getElementsIdBySorterName(@Param("sorter_name") String sorterName);
 }
