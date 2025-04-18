@@ -30,9 +30,9 @@ public interface SorterMapper {
         GROUP BY sorter_name
         HAVING COUNT(sorter_name) > 1
     )
-    
+
     UNION ALL
-    
+
     -- 중복되는 sorter_name은 하나만 가져옵니다.
     SELECT MIN(sorter_id) AS sorter_id, sorter_name, user_id, MIN(sorter_number) AS sorter_number
     FROM Sorter
@@ -91,4 +91,9 @@ public interface SorterMapper {
 
     @Select("SELECT elements_id FROM Sorter WHERE sorter_name = #{sorter_name}")
     List<Integer> getElementsIdBySorterName(@Param("sorter_name") String sorterName);
+
+
+    // 사용자별 최대 sorter_number 조회
+    @Select("SELECT MAX(sorter_number) FROM sorter WHERE user_id = #{user_id}")
+    int getMaxSorterNumberByUserId(String user_id);
 }

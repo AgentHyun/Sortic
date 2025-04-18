@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5510c6bc-c7fb-4ef1-8fa9-e9e3bda167f9" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Sortic-Project.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/SorterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/SorterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/SorterMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/SorterMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/SorterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/SorterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/ElementSortableContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/ElementSortableContainer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +64,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "l/backup",
+    "git-widget-placeholder": "sorterDetailNamePrice",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/sdedu/Desktop/so/frontend",
     "node.js.detected.package.eslint": "true",
@@ -101,7 +106,7 @@
       <updated>1744934967801</updated>
       <workItem from="1744934971802" duration="1764000" />
       <workItem from="1744936769143" duration="1098000" />
-      <workItem from="1744939683191" duration="16617000" />
+      <workItem from="1744939683191" duration="18060000" />
     </task>
     <servers />
   </component>

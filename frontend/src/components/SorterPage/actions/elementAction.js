@@ -465,3 +465,38 @@ export const fetchElementPriceByIdAction = atom(
     }
   }
 );
+
+export const addElementToSorterAction = atom(
+    null,
+    async (get, set, { sorterId, elementId }) => {
+        try {
+            // 서버에 요소 추가 요청
+            const response = await axios.post(`http://localhost:8080/api/sorter/${sorterId}/addElement`, {
+                element_id: elementId,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            // 성공적인 응답 처리
+            if (response.status === 200) {
+                console.log("✅ 요소가 정렬자에 추가되었습니다.", response.data);
+
+                // 추가된 요소를 상태에 반영
+                set(sorterCardsAtom, response.data); // 서버에서 받은 업데이트된 정렬자 정보로 상태 업데이트
+
+                // 사용자에게 성공 메시지 표시
+                set(messageAtom, { type: 'success', content: '요소가 정렬자에 추가되었습니다.' });
+            }
+        } catch (error) {
+            // 에러 발생 시 처리
+            console.error('🚨 요소 추가 실패:', error);
+            set(messageAtom, { type: 'error', content: '요소 추가에 실패했습니다.' });
+        }
+    }
+
+
+
+
+);

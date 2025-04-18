@@ -80,5 +80,25 @@ public class SorterController {
     }
 
 
+    @PostMapping("/{sorterId}/addElement")
+    public ResponseEntity<?> addElementToSorter(
+        @PathVariable int sorterId,
+        @RequestBody Map<String, Integer> requestBody) {
+        try {
+            Integer elementId = requestBody.get("element_id");
 
+            if (elementId == null) {
+                return ResponseEntity.badRequest().body("요소 ID가 제공되지 않았습니다.");
+            }
+
+            // 요소를 정렬자에 추가하는 서비스 호출
+            Sorter updatedSorter = sorterService.addElementToSorter(sorterId, elementId);
+
+            // 성공적으로 추가되었으면, 업데이트된 정렬자 정보 반환
+            return ResponseEntity.ok(updatedSorter);
+        } catch (Exception e) {
+            // 에러 처리
+            return ResponseEntity.status(500).body("요소 추가 실패: " + e.getMessage());
+        }
+    }
 }

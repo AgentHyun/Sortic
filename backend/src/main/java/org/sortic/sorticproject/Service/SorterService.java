@@ -104,5 +104,36 @@ public class SorterService {
         return sorterMapper.getElementsIdBySorterName(sorterName);
     }
 
+    @Transactional
+    public Sorter addElementToSorter(int sorterId, int elementId) {
+        // sorterId로 해당 Sorter 객체 조회
+        Sorter sorter = sorterMapper.getSorterById(sorterId);
+
+        // 만약 Sorter가 존재하지 않으면 예외 처리
+        if (sorter == null) {
+            throw new RuntimeException("해당 sorterId에 해당하는 정렬자가 존재하지 않습니다.");
+        }
+
+        // elementId로 해당 Element 객체 조회
+        Element element = elementMapper.getElementById(elementId);
+
+        // 만약 Element가 존재하지 않으면 예외 처리
+        if (element == null) {
+            throw new RuntimeException("해당 elementId에 해당하는 요소가 존재하지 않습니다.");
+        }
+
+        // 새로운 Sorter를 생성해서 기존 Sorter의 이름을 그대로 유지하면서 요소만 추가
+        Sorter newSorter = new Sorter();
+        newSorter.setUser_id(sorter.getUser_id()); // 기존의 user_id 유지
+        newSorter.setElements_id(elementId); // 새 요소의 ID 설정
+        newSorter.setSorter_name(sorter.getSorter_name()); // 기존의 sorter_name을 그대로 유지
+        newSorter.setSorter_number(sorterMapper.getMaxSorterNumberByUserId(sorter.getUser_id()) + 1); // 새로운 정렬자 번호 설정
+
+        // 새로운 Sorter 삽입
+        sorterMapper.insertSorter(newSorter);
+
+        // 삽입된 새로운 Sorter 반환
+        return newSorter;
+    }
 
 }
