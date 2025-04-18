@@ -435,3 +435,33 @@ export const closeContextMenuAction = atom(
     }
 );
 
+// 요소 아이디로 가격을 불러오는 액션 함수
+export const fetchElementPriceByIdAction = atom(
+  null,
+  async (get, set, elementId) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/elements/get_element_price', {
+        params: {elements_name_id: elementId}
+      });
+
+      if (typeof response.data === 'number') {
+
+        set(newElementPriceAtom, response.data);
+        return response.data;  // 가격을 반환
+      } else if (response.data && response.data.elements_price !== undefined) {
+        const elementPrice = response.data.elements_price;
+
+        set(newElementPriceAtom, elementPrice);
+        return elementPrice;  // 가격을 반환
+      } else {
+        console.error('잘못된 데이터 형식:', response.data);
+
+        return null;  // 가격 조회 실패 시 null 반환
+      }
+    } catch (error) {
+      console.error('가격 조회 실패', error);
+
+      return null;  // 가격 조회 실패 시 null 반환
+    }
+  }
+);

@@ -76,4 +76,16 @@ public class ElementController {
             return ResponseEntity.notFound().build();  // 요소가 없으면 404 반환
         }
     }
+    @GetMapping("/get_element_price")
+    public ResponseEntity<Integer> getElementPrice(@RequestParam int elements_name_id) {
+        Integer price = elementService.getElementPriceById(elements_name_id);
+        if (price != null) {
+            return ResponseEntity.ok(price);  // 요소가 존재하면 가격 반환
+        } else {
+            return ResponseEntity.notFound().build();  // 요소가 없으면 404 반환
+        }
+    }
+
+
+
 }

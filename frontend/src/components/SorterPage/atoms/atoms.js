@@ -96,5 +96,5 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
-// 
+//
 

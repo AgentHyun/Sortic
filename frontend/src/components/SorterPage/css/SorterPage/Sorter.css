@@ -27,10 +27,10 @@
 
 
 .sorter-btn:hover {
-    background-color: #bfbfbf !important;
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-    color: black !important;
+  background-color: #3a4e71!important;  /* 기존 색상보다 밝고 부드러운 색상으로 변경 */
+  color: #f0f0f0;  /* 텍스트 색상을 더 밝게 */
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 슬라이드 영역 */
@@ -104,7 +104,7 @@
 
 .delete-btn {
     position: absolute;
-    top: 12px;
+    top: 14px;
     right: 12px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(6px);
@@ -118,6 +118,8 @@
     transition: all 0.2s ease, opacity 0.3s ease; /* 속도 빠르게 */
     opacity: 0;
     pointer-events: none;
+  margin-right : 10.5px;
+  margin-bottom : -10px;
 
 
 }
@@ -170,10 +172,11 @@
 
 /* 선택된 Sorter */
 .selected-sorter {
-    border: 4px solid #EDC540 !important;
-    box-shadow: 0 0 20px rgba(108, 142, 164, 0.5);
+    border: 6px solid #EDC540 !important;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(237, 197, 64, 0.6);
     transform: scale(1.05);
-
     transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* 빠른 전환 */
 }
 
@@ -189,21 +192,25 @@
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 10vw;
     min-width: 200px;
     height: 5vh;
-    margin-top: 60px;
-    margin-bottom: 60px;
+
     margin-left : auto;
     margin-right : auto;
     position: relative;
     z-index: 10;
 }
-
+.delete-selected-btn.show-delete-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
 /* 버튼 hover 효과 */
 .delete-selected-btn:hover {
     background-color: #e53935; /* 더 진한 빨간색 */
@@ -289,7 +296,7 @@
     color: #6e5047;
     border-radius: 10px;
     background: #edc540;
-    box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3);
+    box-shadow: 0 4px 20px rgba(76, 88, 91, 0.3);
     transition: all 0.3s ease-in-out;
     transform: scale(1.02);
     font-weight: 600;
@@ -304,3 +311,22 @@
 }
 
 
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.fade-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 300ms ease, transform 300ms ease;
+}

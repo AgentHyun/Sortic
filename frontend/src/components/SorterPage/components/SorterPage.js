@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useAtom, useAtomValue, useSetAtom} from 'jotai';
 import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
@@ -20,11 +21,8 @@ import { Trash,X } from 'lucide-react';
 import SortableContainer from './ElementSortableContainer';
 import SorterContainer from './SorterContainer';
 import {
-    messageApiAtom,
-    contextHolderAtom,
     addCategoryModalVisibleAtom,
     addElementModalVisibleAtom,
-    sorterModalVisibleAtom,
     newCategoryAtom,
     categoriesAtom,
     currentCategoryAtom,
@@ -41,22 +39,15 @@ import {
     addElementKeyAtom,
     addElementValueAtom,
     cardsAtom,
-    updatedSortersAtom,
-    sorterNameAtom,
-    isEditingSorterAtom,
-    newSorterNameAtom,
     sortersAtom,
-    editingSorterIndexAtom,
-    containerRefAtom,
-    isDraggingAtom,
-    startXAtom,
     selectedElementIdAtom,
-    scrollLeftAtom, originalElementNameAtom, currentIndexAtom,
-    attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
+ originalElementNameAtom, currentIndexAtom,
+    attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom,
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom,
-    selectedSortersAtom, elementsRefreshTriggerAtom
+    editedSorterNameAtom,edtingSorterIdAtom,
+    selectedSortersAtom, elementsRefreshTriggerAtom,
+
 } from '../atoms/atoms';
 
 
@@ -74,11 +65,11 @@ import {
 import {
     fetchElementsByCategoryAction,
     addElementAction,
-    handleElementNameChangeAction,
+
     handleElementDoubleClickAction,
     handleElementOkAction,
     handleElementNameSaveAction,
-    setCurrentCategoryAction, setSelectedElementAction,
+ setSelectedElementAction,
     openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
 
 } from '../actions/elementAction';
@@ -156,6 +147,7 @@ const SorterPage = () => {
     const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
     const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
     const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
+
     const [, updateSorterName] = useAtom(updateSorterNameAction)
     const sorterRef = useRef(null);
     const [arrowHeight, setArrowHeight] = useState(0);
@@ -520,6 +512,8 @@ const SorterPage = () => {
             console.log(newSelected); // 상태 변경 후 상태 출력
             return newSelected;
         });
+
+
     };
 
     // dnd-kit
@@ -619,7 +613,7 @@ const SorterPage = () => {
                             </Popover>
 
                             {/* - 삭제 버튼 */}
-                            <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
+                            <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
                                 <button className="category-btn" onClick={handleDeleteCategory}>-</button>
                             </Tooltip>
 
@@ -783,21 +777,45 @@ const SorterPage = () => {
                 <div className = "element-btn-section">
                     <Tooltip title="카테고리 요소 추가"
                              overlayClassName="custom-tooltip"
-                             placement="bottom"
+                             placement="top"
                              arrow={true}>
                         <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
                     </Tooltip>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={addSorter}
-                        className="sorter-btn"
+                  <SwitchTransition mode="out-in">
+                    <CSSTransition
+                      key={selectedSorters.length > 0 ? "delete" : "add"}
+                      timeout={300}
+                      classNames="fade"
                     >
-                        Sorter
-                    </Button>
+                      {selectedSorters.length > 0 ? (
+                        <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
+                        <button
+                          className="delete-selected-btn show-delete-btn"
+                          onClick={multiDeleteSorters}
+                        >
+                          Delete
+                        </button>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Sorter 추가"
+                                 overlayClassName="custom-tooltip"
+                                 placement="top"
+                                 arrow={true}>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={addSorter}
+                          className="sorter-btn"
+                        >
+                          Sorter
+                        </Button>
+                        </Tooltip>
+                      )}
+                    </CSSTransition>
+                  </SwitchTransition>
                     <Tooltip title="카테고리 요소 삭제"
-                             overlayClassName="custom-tooltip"
-                             placement="bottom"
+                             overlayClassName="custom-tooltip-red"
+                             placement="top"
                              arrow={true}>
                         <button
                             type="text"
@@ -840,6 +858,11 @@ const SorterPage = () => {
 
 
             </div>
+
+
+            <BillPage/>
+
+
         </div>
     );
 };

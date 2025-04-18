@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
+import { useAtom, useSetAtom} from 'jotai';
+import { Tooltip} from 'antd';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { X } from 'lucide-react';
-import { edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom, newElementNameAtom, editingElementIdAtom, editingElementIndexAtom } from '../atoms/atoms';
-import { useAtom } from 'jotai';
-import { handleElementDoubleClickAtSorterAction, handleElementNameSaveAction, handleElement } from "../actions/elementAction";
+
+import { edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom, newElementNameAtom, editingElementIdAtom,
+  editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom, newElementPriceAtom , elementDetailDataAtom
+
+
+} from '../atoms/atoms';
+
+import { handleElementDoubleClickAtSorterAction, handleElementNameSaveAction, setSelectedElementAction, fetchElementPriceByIdAction } from "../actions/elementAction";
 import { getElementsIdBySorterNameAction, getElementNameByIdAction } from "../actions/sorterAction";
 
 const settings = {
@@ -46,25 +53,25 @@ const SorterContainer = ({
     const [, setGetElementsIdBySorterName] = useAtom(getElementsIdBySorterNameAction);
     const [, setGetElementNameById] = useAtom(getElementNameByIdAction);
     const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
-
+    const [, setFetchElementPriceById] = useAtom(fetchElementPriceByIdAction);
+  const [data, setData] = useAtom(elementDetailDataAtom);
+  const [contextMenuInfo, setContextMenuInfo] = useState(null);
     const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
+    const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
     const [clickTimeout, setClickTimeout] = useState(null); // 클릭 타이머 상태
     const [handleElementDoubleClick, setHandleElementDoubleClick] = useAtom(handleElementDoubleClickAtSorterAction);
     const [isEditingElement, setIsEditingElement] = useAtom(isEditingElementAtom);
     const [editingElementIndex, setEditingElementIndex] = useAtom(editingElementIndexAtom);
     const activeSorter = sorters.find(sorter => sorter.sorter_id === activeId);
     const inputRef = useRef(null); // input 요소를 위한 ref
-
+  const setContextMenu = useSetAtom(contextMenuAtom);
+const [,setSetSelectedElement] = useAtom(setSelectedElementAction);
+const [, setSelectedElementId] = useAtom(selectedElementIdAtom);
     const handleElementNameChange = (e) => {
         setNewElementName(e.target.value);
     };
 
-    useEffect(() => {
-        // 편집 모드일 때, input에 포커스를 설정
-        if (isEditingElement && inputRef.current) {
-            inputRef.current.focus();  // 수동으로 포커스를 설정
-        }
-    }, [isEditingElement]); // isEditingElement가 변경될 때마다 실행
+
 
     useEffect(() => {
         const fetchAllElementNames = async () => {
@@ -140,27 +147,7 @@ const SorterContainer = ({
         }
     };
 
-    const handleElementSaveName = async (elementId) => {
-        try {
-            await setHandleElementNameSave(elementId);
 
-            // 저장 후 로컬 상태도 직접 업데이트
-            setElementNamesBySorter((prev) => {
-                const updated = { ...prev };
-                for (const sorterId in updated) {
-                    const index = updated[sorterId].ids.indexOf(elementId);
-                    if (index !== -1) {
-                        updated[sorterId].names[index] = newElementName; // 입력된 이름으로 바로 반영
-                    }
-                }
-                return updated;
-            });
-
-            setIsEditingElement(false);
-        } catch (error) {
-            console.log("요소 수정 실패");
-        }
-    };
 
     const handleElementClick = (elementId, event) => {
         event.stopPropagation();
@@ -187,15 +174,44 @@ const SorterContainer = ({
         setEditingElementIndex(elementId);
     };
 
-    const handleBlur = () => {
-        if (newElementName !== '') {
-            handleElementSaveName(editingElementIndex); // 수정된 값을 저장
-        } else {
-            setIsEditingElement(false); // 값이 없으면 편집 모드 종료
-        }
-    };
 
-    return (
+  const handleContextMenu = async (event, elementId, name) => {
+    event.preventDefault();
+
+    // 새로운 이름을 상태로 설정
+    setNewElementName(name);
+
+    // 가격을 비동기적으로 가져옵니다.
+    const fetchedPrice = await setFetchElementPriceById(elementId);
+
+    // 이름과 가격 설정
+    console.log("새이름", name); // name은 바로 사용 가능
+    console.log("새가격", fetchedPrice); // 이제 fetchedPrice가 제대로 출력됩니다.
+
+    // 가격을 가져온 후에 setData와 setContextMenu를 호출하여 상태를 업데이트합니다.
+    setData({ elements_name: name, elements_price: fetchedPrice, elements_name_id: elementId });
+
+    // 기존 코드에서 `target`에 `price`를 추가
+    setContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      visible: true,
+      elementId,
+      target: { name, price: fetchedPrice },  // name과 price를 모두 포함
+    });
+
+
+    // 선택 상태 업데이트
+    setSelectedElementIds([elementId]);
+    setHandleElementDoubleClick(elementId);
+    setSelectedElementId(elementId);
+    setSetSelectedElement(elementId);
+  };
+
+
+
+
+  return (
         <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -233,6 +249,7 @@ const SorterContainer = ({
                                                 }}
                                             />
                                         ) : (
+
                                             sorter.sorter_name
                                         )}
                                     </div>
@@ -246,24 +263,34 @@ const SorterContainer = ({
                                         <div className="element-names">
                                             {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
                                                 const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
+
                                                 return name !== null && elementId != null ? (
-                                                    <div
-                                                        key={elementId}
-                                                        className={`element-item ${selectedElementIds?.includes(elementId) ? 'selected' : ''}`}
-                                                        onClick={(event) => handleElementClick(elementId, event)}
-                                                        onDoubleClick={() => handleElementsDoubleClick(elementId)}
-                                                    >
-                                                        {name}
-                                                    </div>
+                                                  <div
+                                                    key={elementId}
+                                                    className={`element-item ${selectedElementIds?.includes(elementId) ? 'selected' : ''}`}
+                                                    onClick={(event) => handleElementClick(elementId, event)}
+                                                    onDoubleClick={() => handleElementsDoubleClick(elementId)}
+                                                    onContextMenu={(e) => handleContextMenu(e, elementId, name)}
+                                                  >
+
+                                                    {name}
+
+                                                  </div>
 
                                                 ) : null;
                                             })}
                                         </div>
 
                                     </div> </div> </div> ))} </Slider>    {selectedSorters.length > 0 && (
+
+
                     <button className="delete-selected-btn" onClick={multiDeleteSorters}>
-                        Delete
+
+                      Delete
+
                     </button>
+
+
                 )}
                 </div>
             </SortableContext>

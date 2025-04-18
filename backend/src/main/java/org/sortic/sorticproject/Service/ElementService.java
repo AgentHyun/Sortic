@@ -50,5 +50,8 @@ public class ElementService {
         Element element = elementMapper.getElementById(elementsId);  // ElementMapper 사용하여 조회
         return element != null ? element.getElements_name() : null;  // 요소가 존재하면 이름 반환, 없으면 null 반환
     }
-
+    public Integer getElementPriceById(int elements_name_id) {
+        // 가격만 반환하도록 수정
+        return elementMapper.getElementPriceById(elements_name_id);
+    }
 }

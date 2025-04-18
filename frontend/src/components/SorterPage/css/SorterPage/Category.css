@@ -34,10 +34,10 @@
 
 .category-btn:hover,
 .category-btn-box:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    background-color: #e0e0e0;
-    color: black;
+  background-color: #3a4e71;  /* 기존 색상보다 밝고 부드러운 색상으로 변경 */
+  color: #f0f0f0;  /* 텍스트 색상을 더 밝게 */
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .category-btn i {
@@ -76,10 +76,10 @@
 }
 
 .category-name:hover {
-    background-color: #e0e0e0;
-    color: #000000;
-    transform: scale(1.08);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #3a4e71;  /* 기존 색상보다 밝고 부드러운 색상으로 변경 */
+  color: #f0f0f0;  /* 텍스트 색상을 더 밝게 */
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 

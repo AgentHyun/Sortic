@@ -67,4 +67,7 @@ public interface ElementMapper {
 
     @Select("SELECT elements_name FROM Elements_name WHERE elements_name_id = #{elementsId}")
     String getElementNameById(int elementsId);
+    // 요소 가격 조회
+    @Select("SELECT elements_price FROM Elements_name WHERE elements_name_id = #{elements_name_id}")
+    Integer getElementPriceById(int elements_name_id);
 }
