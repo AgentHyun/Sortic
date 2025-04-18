@@ -1,2 +1,2 @@
-rootProject.name = "Sortic-Project"
+rootProject.name = "merge"
 include("backend")

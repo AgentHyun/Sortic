@@ -10,10 +10,26 @@ function SignupPage() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    console.log('회원가입 정보:', values);
-    // TODO: 백엔드 연동
-    navigate('/login');
+  const onFinish = async (values) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        message.success('회원가입이 완료되었습니다.');
+        navigate('/login');
+      } else {
+        const error = await response.text();
+        message.error(error);
+      }
+    } catch (err) {
+      message.error('서버 오류가 발생했습니다.');
+    }
   };
 
   const handleCheckId = async (form) => {
@@ -21,9 +37,10 @@ function SignupPage() {
     if (!id) return;
 
     try {
-      // 실제 서버 요청으로 바꿔야 함
-      const isDuplicate = await fakeCheckIdAPI(id); // 임시 함수
-      if (isDuplicate) {
+      const response = await fetch(`http://localhost:8080/api/auth/check-username/${id}`);
+      const isAvailable = await response.json();
+      
+      if (!isAvailable) {
         message.error('이미 사용 중인 아이디입니다.');
       } else {
         message.success('사용 가능한 아이디입니다.');
@@ -31,13 +48,6 @@ function SignupPage() {
     } catch (err) {
       message.error('서버 오류가 발생했습니다.');
     }
-  };
-
-// 임시 mock API
-  const fakeCheckIdAPI = async (id) => {
-    const used = ['admin', 'test', 'user123'];
-    await new Promise((r) => setTimeout(r, 500));
-    return used.includes(id);
   };
 
   return (

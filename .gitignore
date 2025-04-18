@@ -76,3 +76,7 @@ reports/
 ########################
 
 yarn.lock                  # npm을 사용할 경우 추가
+
+# VSCode settings folder
+.vscode/		# VSCode 에디터 설정 폴더 (settings.json, launch.json 등)
+*.code-workspace	# VSCode가 만드는 워크스페이스 파일

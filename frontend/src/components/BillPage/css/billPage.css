@@ -45,7 +45,7 @@
   margin-bottom: 20px;
 }
 .add-bill-btn {
-  background-color: #4C585B;
+  background-color: #4C585B !important;
   border: none;
   color: white;
   font-family: "Orbit", sans-serif;
