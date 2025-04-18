@@ -22,6 +22,8 @@ public class ElementService {
         return elementMapper.getElementById(elements_name_id);
     }
 
+
+
     // 카테고리별 상품 목록 조회
     public List<Element> getElementsByCategoryId(int category_id) {
         return elementMapper.getElementsByCategoryId(category_id);
@@ -44,6 +46,9 @@ public class ElementService {
     public void deleteElementsByIds(List<Integer> ids) {
         elementMapper.deleteElementsByIds(ids);
     }
-
+    public String getElementNameById(int elementsId) {
+        Element element = elementMapper.getElementById(elementsId);  // ElementMapper 사용하여 조회
+        return element != null ? element.getElements_name() : null;  // 요소가 존재하면 이름 반환, 없으면 null 반환
+    }
 
 }

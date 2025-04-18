@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Slider from "react-slick";
 import { useAtom, useAtomValue, useSetAtom} from 'jotai';
-import { Input, Modal, message , Button, Popover, Tooltip, Typography } from 'antd';
-import {  DeleteOutlined, PlusOutlined,  LeftOutlined ,RightOutlined} from "@ant-design/icons";
-import { ArrowLeftLine, ArrowRightLine, Plus, Minus } from '@rsuite/icons';
+import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
+import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
+
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
 import { useNavigate } from 'react-router-dom';
@@ -17,8 +16,9 @@ import "../css/SorterPage/Category.css";
 import "../css/SorterPage/Element.css";
 import "../css/SorterPage/ContextMenu.css"
 import 'font-awesome/css/font-awesome.min.css';
-import { Trash,X ,SlidersHorizontal} from 'lucide-react';
-
+import { Trash,X } from 'lucide-react';
+import SortableContainer from './ElementSortableContainer';
+import SorterContainer from './SorterContainer';
 import {
     messageApiAtom,
     contextHolderAtom,
@@ -55,6 +55,8 @@ import {
     attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
+    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom,
+    selectedSortersAtom, elementsRefreshTriggerAtom
 } from '../atoms/atoms';
 
 
@@ -77,12 +79,12 @@ import {
     handleElementOkAction,
     handleElementNameSaveAction,
     setCurrentCategoryAction, setSelectedElementAction,
-    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction
+    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
 
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction} from '../actions/sorterAction';
+import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
 
 const { Title } = Typography;
 const SorterPage = () => {
@@ -133,7 +135,7 @@ const SorterPage = () => {
     const [, addElementData] = useAtom(elementsDataAction);
     const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
     const [costError, setCostError] = useAtom(costErrorAtom);
-
+    const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
 
     const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
@@ -148,11 +150,17 @@ const SorterPage = () => {
     const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
 
 
+    const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
+    const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
+    const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
+    const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
+    const [, updateSorterName] = useAtom(updateSorterNameAction)
     const sorterRef = useRef(null);
     const [arrowHeight, setArrowHeight] = useState(0);
-
+    const setUpdateSorterName = useSetAtom(updateSorterNameAction);
     const navigate = useNavigate();
     const { confirm } = Modal;
+
     const settings = {
         dots: true,
         infinite: true, // 무한 루프
@@ -267,6 +275,7 @@ const SorterPage = () => {
     const handleDeleteSelectedElements = async () => {
         try {
             await handleBulkDeleteElements();
+            setElementsRefreshTrigger(prev => prev + 1); // 트
         } catch (error) {
             console.error("❌ 요소 삭제 실패:", error);
         }
@@ -421,6 +430,11 @@ const SorterPage = () => {
     const isRightRed =
         nextCategoryIndex === firstCategoryIndex || nextCategoryIndex === lastCategoryIndex;
 
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
@@ -455,355 +469,374 @@ const SorterPage = () => {
 
 
 
-    const [sectionHeight, setSectionHeight] = useState(0);
+
     const sectionRef = useRef(null);
     const addSorter = () =>{
         setAddSorter();
     }
     const deleteSorter = (sorterId) =>{
-
         setDeleteSorter(sorterId);
     }
+    const multiDeleteSorters = () => {
+        if (selectedSorters.length === 0) {
+            message.warning("삭제할 정렬자를 선택해주세요.");
+            return;
+        }
+        console.log("선택자" + selectedSorters);
+        // 삭제 요청
+        setDeleteMultipleSorters(selectedSorters);
+        // 선택 초기화 (선택된 상태를 관리하는 useState가 있다고 가정)
+        setSelectedSorters([]);
+    };
+
+
+    const handleSorterNameDoubleClick = (id, name) => {
+
+        setEditingSorterId(id);  // 편집할 ID 설정
+        setInputValue(name);      // 입력 필드에 기존 이름 설정
+    };
+    const handleSaveSorterName = async (id) => {
+        const value = inputValue ?? '';
+        if (value.trim()) {
+            try {
+                await updateSorterName({ sorter_id: id, newName: value });
+                console.log('Sorter name updated successfully');
+            } catch (error) {
+                console.error('Error updating sorter name:', error);
+            }
+        }
+        setEditingSorterId(null);  // 편집 모드 종료
+    };
+
+    const handleSorterClick = (sorter_id) => {
+        setSelectedSorters((prevSelected) => {
+            const newSelected = prevSelected.includes(sorter_id)
+                ? prevSelected.filter((id) => id !== sorter_id) // 선택 해제
+                : [...prevSelected, sorter_id]; // 선택
+
+            console.log(newSelected); // 상태 변경 후 상태 출력
+            return newSelected;
+        });
+    };
+
+    // dnd-kit
+
 
 
 
     return (
         <div>
-        <div className="sorter-page-section">
+            <div className="sorter-page-section">
 
 
 
-            <div className={"sorter-header-section"}>
+                <div className={"sorter-header-section"}>
 
 
-                {categories.length > 1 && (
-                    <div className="left-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                        <div
-                            className="arrow-left-btn"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0px',
-                                padding: '8px',
-                                width: 'auto',
-                                height: `${arrowHeight}px`,
-                            }}
-                        >
-                            <ChevronLeft
-                                onClick={() => handleCategoryChange('prev')}
-                                style={{
-                                    width: '40px',
-                                    height: '180px',
-                                    color: isLeftRed ? '#f5222d' : '#4C585B',
-                                    strokeWidth: 2,
-                                    transition: 'all 0.3s ease',
-                                    cursor: 'pointer',
-                                    backgroundColor: 'transparent',
-                                }}
-                            />
+                    {categories.length > 1 && (
+                        <div className="left-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
                             <div
+                                className="arrow-left-btn"
                                 style={{
-                                    fontSize: '32px',
-                                    fontWeight: 'bold',
-                                    color: isLeftRed ? '#f5222d' : '#4C585B',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0px',
+                                    padding: '8px',
+                                    width: 'auto',
+                                    height: `${arrowHeight}px`,
                                 }}
-                                className= 'left-arrow-text'
                             >
-                                {prevCategoryIndex + 1}
+                                <ChevronLeft
+                                    onClick={() => handleCategoryChange('prev')}
+                                    style={{
+                                        width: '40px',
+                                        height: '180px',
+                                        color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                                        strokeWidth: 2,
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        backgroundColor: 'transparent',
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        fontSize: '32px',
+                                        fontWeight: 'bold',
+                                        color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                                    }}
+                                    className= 'left-arrow-text'
+                                >
+                                    {prevCategoryIndex + 1}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
 
 
 
-                <div className="sorter-section" ref={sectionRef}>
+                    <div className="sorter-section" ref={sectionRef}>
 
-                    <div className='sorter-header'>
+                        <div className='sorter-header'>
 
 
+                            {/* + 추가 버튼 */}
+                            <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
+                                <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
+                                    +
+                                </button>
+                            </Tooltip>
 
-                        {/* + 추가 버튼 */}
-                        <Tooltip title="카테고리를 추가" overlayClassName="custom-tooltip">
-                            <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
-                                +
-                            </button>
-                        </Tooltip>
-
-                        {/* 카테고리 제목 */}
-                        <Popover
-                            content={<span>카테고리 <b>#{currentCategoryIndex + 1}</b></span>}
-                            trigger="hover"
-                            open={popoverVisible}
-                            onOpenChange={(visible) => setPopoverVisible(visible)}
-                        >
-                            <div className={`category-header ${animationClass}`}>
-                                <div className="category-name" onDoubleClick={setHandleCategoryNameDoubleClick}>
-                                    {isEditingCategory ? (
-                                        <input
-                                            value={newCategoryName}
-                                            onChange={(e) => setNewCategoryName(e.target.value)}
-                                            onBlur={handleSaveCategoryName}
-                                            onKeyDown={(e) => e.key === "Enter" && handleSaveCategoryName()}
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        <span className={`category-name-title ${animationClass}`}>
+                            {/* 카테고리 제목 */}
+                            <Popover
+                                content={<span>카테고리 <b>#{currentCategoryIndex + 1}</b></span>}
+                                trigger="hover"
+                                open={popoverVisible}
+                                onOpenChange={(visible) => setPopoverVisible(visible)}
+                            >
+                                <div className={`category-header ${animationClass}`}>
+                                    <div className="category-name" onDoubleClick={setHandleCategoryNameDoubleClick}>
+                                        {isEditingCategory ? (
+                                            <input
+                                                value={newCategoryName}
+                                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                                onBlur={handleSaveCategoryName}
+                                                onKeyDown={(e) => e.key === "Enter" && handleSaveCategoryName()}
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <span className={`category-name-title ${animationClass}`}>
             {currentCategoryName || '로딩중..'}
           </span>
-                                    )}
-                                </div>
-                            </div>
-                        </Popover>
-
-                        {/* - 삭제 버튼 */}
-                        <Tooltip title="카테고리를 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
-                            <button className="category-btn" onClick={handleDeleteCategory}>-</button>
-                        </Tooltip>
-
-
-                    </div>
-
-
-                    <div className={`box-section-${fadeInOut}`}>
-
-                        <div className="box-section">
-                            {cards.map((card, index) => (
-                                <div
-                                    className={`category-item ${selectedElementIds.includes(card.elements_name_id) ? 'selected' : ''}`}
-
-                                    key={card.elements_name_id || `card-${index}`}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        openContextMenu({
-                                            x: e.clientX,
-                                            y: e.clientY,
-                                            target : card,
-                                            elementId: card.elements_name_id,
-                                        });
-                                        setNewElementName(card.elements_name);
-                                        setNewElementPrice(card.elements_price);
-
-                                        setSelectedElementId(card.elements_name_id);
-                                        setSetSelectedElementAction(card.elements_name_id);
-                                    }}
-                                    onDoubleClick={() => handleDoubleClickElementName(card.elements_name_id)}
-                                    onClick={() => setToggleSelectElementAction(card.elements_name_id)}
-
-                                >
-                                    {isEditingElement && editingElementIndex === card.elements_name_id ? (
-                                        <input
-                                            value={newElementName}
-                                            onChange={handleElementNameChange}
-
-                                            onBlur={() => handleElementSaveName(card.elements_name_id)}
-                                            onKeyDown={(e) => e.key === "Enter" && handleElementSaveName(card.elements_name_id)}
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        card.elements_name
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <ContextMenu />
-                    <div className = "element-btn-section">
-                        <Tooltip title="카테고리 요소 추가"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
-                        </Tooltip>
-
-                        <Tooltip title="카테고리 요소 삭제"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button
-                                type="text"
-                                className="element-btn-delete"
-                                onClick={handleDeleteSelectedElements}
-                            >
-                                <Trash className = "trash" size={20} />
-                            </button>
-                        </Tooltip>
-                    </div>
-
-                    <Modal
-                        title="카테고리 추가"
-                        open={addCategoryModalVisible}
-                        onOk={handleAddCategory}
-                        onCancel={() => setAddCategoryModalVisible(false)}
-                    >
-                        <Input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
-                    </Modal>
-
-                    <Modal
-                        title={<div className="element-modal-title">{currentCategoryName}</div>}
-                        open={addElementModalVisible}
-                        onOk={addElement}
-                        okText="Next"
-                        onCancel={() => setAddElementModalVisible(false)}
-                        okButtonProps={{
-                            style: {
-                                backgroundColor: '#3b4a4d', // 원하는 색상으로 변경
-
-                            }
-                        }}
-                    >
-                        <div className="element-name-section">
-                            <div className="element-name-title">상품 이름</div>
-                            <input
-                                className= "element-name-input"
-                                placeholder="상품명을 입력하세요"
-                                value={addElementName}
-                                onChange={(e) => setAddElementName(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                        <div className="element-name-section">
-                            <div className="element-name-title">상품 가격</div>
-                            <input
-                                className= "element-name-input"
-                                placeholder="가격을 입력하세요"
-                                value={addElementCost}
-                                onChange={handleCostChange}
-
-                            />
-                        </div>
-
-                    </Modal>
-
-                    <Modal
-                        title="속성 추가"
-                        open={attributeModalVisible}
-                        onCancel={() => setAttributeModalVisible(false)}
-                        onOk={() => handleRegister()}
-                        okText="확인"
-                        cancelText="취소"
-                    >
-                        {keyValuePairs.map((pair, index) => (
-                            <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
-                                <Input
-                                    placeholder="속성 입력"
-                                    value={pair.key}
-                                    onChange={(e) => handleInputChange(index, "key", e.target.value)}
-                                    style={{ width: 150, marginRight: 10 }}
-                                />
-                                <Input
-                                    placeholder="값 입력"
-                                    value={pair.value}
-                                    onChange={(e) => handleInputChange(index, "value", e.target.value)}
-                                    style={{ width: 150, marginRight: 10 }}
-                                />
-                                <Button
-                                    type="text"
-                                    icon={<DeleteOutlined />}
-                                    danger
-                                    onClick={() => removeKeyValuePair(index)}
-                                />
-                            </div>
-                        ))}
-                        <Button type="dashed" icon={<PlusOutlined />} onClick={addKeyValuePair} block>
-                            속성 추가
-                        </Button>
-                    </Modal>
-                    <ElementDetailModal/>
-
-
-
-                </div>
-
-
-
-                {categories.length > 1 && (
-                    <div className="right-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                        <div
-                            className="arrow-right-btn"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0px',
-                                padding: '8px',
-                                width: 'auto',
-                                height: `${arrowHeight}px`,
-                            }}
-                        >
-                            <div
-                                style={{
-                                    fontSize: '32px',
-                                    fontWeight: 'bold',
-                                    color: isRightRed ? '#f5222d' : '#4C585B',
-
-                                }}
-                                className = 'right-arrow-text'
-                            >
-                                {nextCategoryIndex + 1}
-                            </div>
-                            <ChevronRight
-                                onClick={() => handleCategoryChange('next')}
-                                style={{
-                                    width: '40px',
-                                    height: '180px',
-                                    color: isRightRed ? '#f5222d' : '#4C585B',
-                                    strokeWidth: 2,
-                                    transition: 'all 0.3s ease',
-                                    cursor: 'pointer',
-                                    backgroundColor: 'transparent',
-                                }}
-                            />
-                        </div>
-                    </div>
-                )}
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-            <div className="sorter-sort-section">
-
-
-                <button type="text" className="sorter-btn" onClick={addSorter}>
-                    + Sorter 추가
-                </button>
-
-                <div className="sorter-scroll-wrapper">
-                    <Slider {...settings}>
-                        {sorters.map((sorter, index) => (
-                            <div key={index}>
-                                <div className="sorter-wrapper">
-                                    <div className="sorter-title -section">{sorter.sorter_name}</div>
-                                    <div className="sorter-box">
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => deleteSorter(sorter.sorter_id)}
-                                        >
-                                            <X size={18} />
-                                        </button>
+                                        )}
                                     </div>
                                 </div>
+                            </Popover>
+
+                            {/* - 삭제 버튼 */}
+                            <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
+                                <button className="category-btn" onClick={handleDeleteCategory}>-</button>
+                            </Tooltip>
+
+
+                        </div>
+
+                        <SortableContainer
+                            cards={cards}
+                            setCards={setCards}
+                            selectedElementIds={selectedElementIds}
+                            isEditingElement={isEditingElement}
+                            editingElementIndex={editingElementIndex}
+                            newElementName={newElementName}
+                            handleElementNameChange={handleElementNameChange}
+                            handleElementSaveName={handleElementSaveName}
+                            handleDoubleClickElementName={handleDoubleClickElementName}
+                            openContextMenu={openContextMenu}
+                            setNewElementName={setNewElementName}
+                            setNewElementPrice={setNewElementPrice}
+                            setSelectedElementId={setSelectedElementId}
+                            setSetSelectedElementAction={setSetSelectedElementAction}
+                            setToggleSelectElementAction={setToggleSelectElementAction}
+                        />
+                        <ContextMenu />
+
+
+                        <Modal
+                            title="카테고리 추가"
+                            open={addCategoryModalVisible}
+                            onOk={handleAddCategory}
+                            onCancel={() => setAddCategoryModalVisible(false)}
+                        >
+                            <Input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+                        </Modal>
+
+                        <Modal
+                            title={<div className="element-modal-title">{currentCategoryName}</div>}
+                            open={addElementModalVisible}
+                            onOk={addElement}
+                            okText="Next"
+                            onCancel={() => setAddElementModalVisible(false)}
+                            okButtonProps={{
+                                style: {
+                                    backgroundColor: '#3b4a4d', // 원하는 색상으로 변경
+
+                                }
+                            }}
+                        >
+                            <div className="element-name-section">
+                                <div className="element-name-title">상품 이름</div>
+                                <input
+                                    className= "element-name-input"
+                                    placeholder="상품명을 입력하세요"
+                                    value={addElementName}
+                                    onChange={(e) => setAddElementName(e.target.value)}
+                                    autoFocus
+                                />
                             </div>
-                        ))}
-                    </Slider>
+                            <div className="element-name-section">
+                                <div className="element-name-title">상품 가격</div>
+                                <input
+                                    className= "element-name-input"
+                                    placeholder="가격을 입력하세요"
+                                    value={addElementCost}
+                                    onChange={handleCostChange}
+
+                                />
+                            </div>
+
+                        </Modal>
+
+                        <Modal
+                            title="속성 추가"
+                            open={attributeModalVisible}
+                            onCancel={() => setAttributeModalVisible(false)}
+                            onOk={() => handleRegister()}
+                            okText="확인"
+                            cancelText="취소"
+                        >
+                            {keyValuePairs.map((pair, index) => (
+                                <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
+                                    <Input
+                                        placeholder="속성 입력"
+                                        value={pair.key}
+                                        onChange={(e) => handleInputChange(index, "key", e.target.value)}
+                                        style={{ width: 150, marginRight: 10 }}
+                                    />
+                                    <Input
+                                        placeholder="값 입력"
+                                        value={pair.value}
+                                        onChange={(e) => handleInputChange(index, "value", e.target.value)}
+                                        style={{ width: 150, marginRight: 10 }}
+                                    />
+                                    <Button
+                                        type="text"
+                                        icon={<DeleteOutlined />}
+                                        danger
+                                        onClick={() => removeKeyValuePair(index)}
+                                    />
+                                </div>
+                            ))}
+                            <Button type="dashed" icon={<PlusOutlined />} onClick={addKeyValuePair} block>
+                                속성 추가
+                            </Button>
+                        </Modal>
+                        <ElementDetailModal/>
+
+
+
+                    </div>
+
+
+
+                    {categories.length > 1 && (
+                        <div className="right-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                            <div
+                                className="arrow-right-btn"
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0px',
+                                    padding: '8px',
+                                    width: 'auto',
+                                    height: `${arrowHeight}px`,
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        fontSize: '32px',
+                                        fontWeight: 'bold',
+                                        color: isRightRed ? '#f5222d' : '#2E3A59 ',
+
+                                    }}
+                                    className = 'right-arrow-text'
+                                >
+                                    {nextCategoryIndex + 1}
+                                </div>
+                                <ChevronRight
+                                    onClick={() => handleCategoryChange('next')}
+                                    style={{
+                                        width: '40px',
+                                        height: '180px',
+                                        color: isRightRed ? '#f5222d' : '#2E3A59 ',
+                                        strokeWidth: 2,
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        backgroundColor: 'transparent',
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+
                 </div>
+
+
+
+                <div className = "element-btn-section">
+                    <Tooltip title="카테고리 요소 추가"
+                             overlayClassName="custom-tooltip"
+                             placement="bottom"
+                             arrow={true}>
+                        <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
+                    </Tooltip>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={addSorter}
+                        className="sorter-btn"
+                    >
+                        Sorter
+                    </Button>
+                    <Tooltip title="카테고리 요소 삭제"
+                             overlayClassName="custom-tooltip"
+                             placement="bottom"
+                             arrow={true}>
+                        <button
+                            type="text"
+                            className="element-btn-delete"
+                            onClick={handleDeleteSelectedElements}
+                        >
+                            <Trash className = "trash" size={20} />
+                        </button>
+                    </Tooltip>
+                </div>
+
+
+
+
+
+
+                <div className="sorter-sort-section">
+
+
+
+
+
+                    <SorterContainer
+                        sorters={sorters}
+                        setSorters={setSorters}
+                        selectedSorters={selectedSorters}
+                        handleSorterClick={handleSorterClick}
+                        deleteSorter={deleteSorter}
+                        multiDeleteSorters={multiDeleteSorters}
+                        editingSorterId={editingSorterId}
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        handleSaveSorterName={handleSaveSorterName}
+                        handleSorterNameDoubleClick={handleSorterNameDoubleClick}
+                    />
+
+
+
+                </div>
+
+
             </div>
-
-
-        </div>
         </div>
     );
 };

@@ -46,16 +46,20 @@ export const contextMenuAtom = atom({
     targetId: null,
 });
 export const costErrorAtom = atom('');
-
+export const elementsIdListAtom = atom([]);
+export const elementsRefreshTriggerAtom = atom(0);
+// element name을 저장할 atom
+export const elementNameAtom = atom(null);
 export const elementDetailDataAtom = atom(null);
 export const isEditingAtom = atom(false);
 export const tempValueAtom = atom('');
 export const editingElementIdAtom = atom(null);
-
+export const elementsIdMapAtom = atom({});
 
 // 카드 관련 상태
 export const cardsAtom = atom([]);
-
+export const sorterCardsAtom = atom([]);
+export const cardsByCategoryAtom = atom({});
 // 정렬기 관련 상태
 export const updatedSortersAtom = atom({});
 export const sorterNameAtom = atom('');
@@ -74,8 +78,11 @@ export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
-
-
+export const isComittingSorterAtom = atom(false);
+export const edtingSorterIdAtom = atom(null);
+export const editedSorterNameAtom = atom("");
+export const sorterInputValueAtom = atom("");
+export const selectedSortersAtom = atom([]);
 
 
 

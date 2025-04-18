@@ -6,49 +6,47 @@
 }
 
 /* Category Buttons */
- .category-btn-box {
-    font-size: 18px;
-    color: #fff;
-    background-color: #4C585B;
+.category-btn-box,
+.category-btn {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    background-color: 	 #1c283c;
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-/* 카테고리 이름 이상하게 여백 들어가있음*/
-.category-name-title{
-    margin-top: -3px;
+
+.category-btn-box {
+    font-size: 18px;
+    padding: 8px 22px;
+    height: 130px;
 }
+
 .category-btn {
-
-    justify-content: center;
     display: flex;
+    justify-content: center;
     align-items: center;
-    width: 10vw;
-    height: 4.5vh;
-    background-color: #4C585B;
-    border: none;
-    border-radius: 8px;
-    color : #fff;
+    width: 8.5vw;
+    height : 40px;
     font-size: 30px;
+    min-width : 60px;
 }
 
-.category-btn:hover, .category-btn-box:hover {
-
-    transform: scale(1.05);
+.category-btn:hover,
+.category-btn-box:hover {
+    transform: scale(1.03);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
     background-color: #e0e0e0;
-    color : black;
-    cursor:pointer;
+    color: black;
 }
 
 .category-btn i {
     margin-right: 10px;
 }
 
-.category-btn-box {
-    padding: 12px 22px;
-    height: 130px;
+/* Fix for weird spacing */
+.category-name-title {
+    margin-top: -3px;
 }
 
 /* Category Title */
@@ -61,66 +59,59 @@
 /* Category Name */
 .category-name {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     font-family: "Orbit", sans-serif;
     font-size: 1.6rem;
     font-weight: bold;
     color: white;
-    background-color: #4C585B;
-    width : 30vw;
-    height : 10vh;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
+    background-color:	 #1c283c;
+    width: 30vw;
+    height: 80px;
+    min-width: 180px;
     border-radius: 10px;
-
     cursor: pointer;
-
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .category-name:hover {
     background-color: #e0e0e0;
-    color: #000;
+    color: #000000;
     transform: scale(1.08);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+
+
+
 .category-name input,
-.category-item input {
+.category-item input,
+.element-item input{
     font-size: 16px;
     font-weight: 500;
     color: #333;
     background-color: transparent;
     padding: 6px 12px;
-    border-radius: 8px;
     border: none;
+    border-radius: 8px;
     width: auto;
     min-width: 90px;
     max-width: 160px;
     text-align: center;
     outline: none;
-    transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .category-name input:focus,
-.category-item input:focus {
+.category-item input:focus,
+.element-item input:focus{
     background-color: #f4f4f4;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
 }
 
-/* Box Section */
-.box-section {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    margin-top: 20px;
-    gap: 10px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    will-change: transform, opacity;
-}
 
 
 
@@ -130,6 +121,7 @@
     animation: fadeInOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
 }
+
 
 .category-box {
     flex-grow: 1;
@@ -142,34 +134,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-}
-
-.category-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    color: #333;
-    padding: 12px 18px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    border: 1px solid #d0d0d0;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    min-width: 90px;
-    max-width: calc(33.33% - 20px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-grow: 1;
-}
-
-.category-item:hover {
-    background-color: #3b4a4d;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -221,4 +185,100 @@
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+
+
+
+.left-arrow-box {
+    display: flex;
+    flex-direction: row; /* 🔁 세로 → 가로로 변경 */
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+}
+.number-section {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1F2933;
+
+}
+
+
+.left-arrow-box svg {
+    width: 40px;
+    height: 60px;
+    transform: scaleY(2) scaleX(1.5);
+    color: #1F2933;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.left-arrow-box svg.active {
+    color: #f5222d;
+}
+
+
+
+.arrow-right-btn {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    width: 3vw;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.arrow-left-btn {
+    border: 1px solid rgba(31, 41, 51, 0.2);
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3vw;
+    height: 3vw;
+    color: #1F2933;
+    font-size: 18px;
+    transition: all 0.25s ease;
+}
+
+
+.right-arrow-wrapper{
+    margin-top : 25px;
+    margin-left : 20px;
+    align-items: center;
+    justify-content: center;
+}
+.left-arrow-wrapper{
+    margin-top : 25px;
+    margin-right : 20px;
+    align-items: center;
+    justify-content: center;
+
+}
+.left-arrow-text{
+    margin-right : 10px;
+
+}
+.right-arrow-text{
+    margin-left : 10px;
+
+}
+
+.arrow-left-btn:hover,
+.arrow-right-btn:hover {
+    transform: scaleY(1.13);
+    background-color: #f1f0f0;
+    color : white;
+    cursor : pointer;
 }
