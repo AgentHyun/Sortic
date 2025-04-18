@@ -87,6 +87,7 @@ import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
 import BillPage from "../../BillPage/components/BillPage";
 
+
 const { Title } = Typography;
 const SorterPage = () => {
     const [editingElementIndex, setEditingElementIndex] = useAtom(editingElementIndexAtom);
@@ -277,6 +278,7 @@ const SorterPage = () => {
         try {
             await handleBulkDeleteElements();
             setElementsRefreshTrigger(prev => prev + 1);
+
         } catch (error) {
             console.error("❌ 요소 삭제 실패:", error);
         }
