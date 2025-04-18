@@ -840,6 +840,7 @@ const SorterPage = () => {
 
 
             </div>
+          <BillPage/>
         </div>
     );
 };

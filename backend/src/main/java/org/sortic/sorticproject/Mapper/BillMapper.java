@@ -45,7 +45,9 @@ public interface BillMapper {
     """)
     List<BillCommissionDetail> findCommissionsByBillId(@Param("billId") int billId);
 
+    @Update("UPDATE Bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
+    void updateBillName(@Param("billId")int billId,@Param("billName") String billName);
 
-
-
+    @Insert("Insert into bill_commission (bill_id,commission_named,commission) values (#{billId},#{commissionName},#{commission})")
+    void insertCommission(@Param("billId") int billId,@Param("commissionName") String commissionName,@Param("commission") int commission);
 }
