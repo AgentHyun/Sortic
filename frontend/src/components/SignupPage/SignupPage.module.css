@@ -1,0 +1,171 @@
+/* ===== [1. 전체 페이지 레이아웃] ===== */
+.page {
+  display: flex; /* 자식 요소들을 수평으로 정렬할 Flex 컨테이너 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  min-height: 100vh; /* 화면 전체 높이 채움 */
+  padding: 60px 16px; /* 상하 여백 60px, 좌우 여백 16px */
+  background-color: var(--bg-color); /* 테마 변수 기반 배경색 */
+  transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 (다크모드 대응용) */
+}
+
+/* ===== [2. 카드/폼 박스 컨테이너] ===== */
+.card {
+  gap: 8px; /* 내부 요소 간 여백 */
+  align-items: flex-start; /* 내부 컨텐츠 위 기준 정렬 */
+  width: 100%; /* 부모 기준 전체 너비 */
+  max-width: 460px; /* 최대 너비 제한 */
+  background-color: var(--box-bg); /* 카드 배경색 (테마 연동) */
+  padding: 48px 36px; /* 카드 안쪽 여백 */
+  border-radius: var(--border-radius-md); /* 카드 모서리 둥글게 */
+  box-shadow: var(--shadow); /* 카드 그림자 효과 */
+  user-select: none; /* 텍스트 드래그 방지 (UX 강화) */
+  transition: background-color 0.3s ease; /* 다크모드 전환 시 부드럽게 */
+}
+
+/* ===== [3. 제목 영역] ===== */
+.title {
+  text-align: center; /* 가운데 정렬 */
+  font-size: 26px; /* 큰 제목 크기 */
+  font-weight: var(--font-weight-bold); /* 굵은 폰트 강조 */
+  margin-bottom: 32px; /* 제목 하단 여백 */
+  color: var(--text-color); /* 테마 기반 텍스트 색상 */
+}
+
+/* ===== [4. 폼 컨테이너] ===== */
+.form {
+  width: 100%; /* 폼 너비 전체 사용 */
+  display: flex; /* 세로 배치용 flex 컨테이너 */
+  flex-direction: column; /* 세로 정렬 */
+  gap: 5px; /* 각 입력 요소 간 여백 (적당히 좁은 편) */
+}
+
+/* ===== [5. 입력 필드] ===== */
+.input {
+  height: 40px; /* 인풋 고정 높이 */
+  font-size: 14px; /* 입력 텍스트 크기 */
+  border: 1px solid var(--border-color); /* 테마 테두리 색상 */
+  background-color: var(--box-bg); /* 인풋 배경 (라이트/다크 자동 반영) */
+  color: var(--text-color); /* 인풋 텍스트 색상 */
+  border-radius: var(--border-radius-md); /* 둥근 테두리 */
+  box-shadow: var(--shadow); /* 그림자 효과 */
+  transition: all 0.3s ease; /* hover/focus 효과 전환 */
+}
+
+/* ✅ 아이디 중복확인 영역용 inline 정렬 래퍼 */
+.inlineWrap {
+  display: flex; /* 가로 정렬 */
+  gap: 8px; /* 입력창과 버튼 사이 여백 */
+  align-items: flex-start; /* 라벨 기준으로 위 정렬 */
+}
+
+/* ✅ 아이디 인풋창 크기 줄이기 */
+.inputShort {
+  flex: 1; /* 나머지 공간을 채움 */
+  min-width: 180px; /* 너무 작아지지 않게 제한 */
+}
+
+/* 중복확인 버튼 스타일 */
+.checkButton {
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  height: 40px; /* 입력창과 높이 맞춤 */
+  font-size: 14px; /* 버튼 텍스트 크기 */
+  font-weight: 500; /* 강조 폰트 */
+  padding: 0 16px; /* 좌우 여백 */
+  border-radius: var(--border-radius-md); /* 둥근 테두리 */
+  white-space: nowrap; /* 중복 작성되어 있으나 유지 */
+  background-color: #fff;        /* 기본 라이트 배경 */
+  color: #000;                   /* 기본 검정 텍스트 */
+  border: 1px solid #d9d9d9;     /* 테두리 */
+}
+/* ✅ 다크모드일 때 버튼 스타일 */
+:global(.dark) .checkButton {
+  background-color: #2a2a2a;     /* 어두운 배경 */
+  color: #fff;                   /* 흰색 텍스트 */
+  border: 1px solid #444;        /* 테두리도 어둡게 */
+}
+
+.checkButton:hover {
+  background-color: var(--hover-color);
+  color: #fff;
+  border-color: var(--hover-color);
+}
+
+/* 인풋 focus 및 hover 효과 */
+.input:focus,
+.input:hover {
+  border-color: var(--primary-color); /* 테두리 강조 */
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2); /* 외곽선 강조 효과 */
+}
+
+/* ===== [6. 셀렉트 박스] ===== */
+.select :global(.ant-select-selector) {
+  height: 40px !important; /* 고정 높이 */
+  padding: 0 12px !important; /* 내부 여백 */
+  display: flex; /* 내부 정렬용 */
+  align-items: center; /* 세로 중앙 정렬 */
+  font-size: 14px; /* 선택 텍스트 크기 */
+  background-color: var(--box-bg) !important; /* 배경색 */
+  color: var(--text-color) !important; /* 텍스트 색상 */
+  border: 1px solid var(--border-color) !important; /* 테두리 */
+  border-radius: var(--border-radius-md) !important; /* 둥근 테두리 */
+  transition: all 0.3s ease; /* 효과 전환 */
+}
+
+.select :global(.ant-select-selector:hover),
+.select :global(.ant-select-selector:focus) {
+  border-color: var(--primary-color) !important; /* hover/focus 시 강조 색상 */
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important; /* 외곽 강조 */
+}
+
+/* ===== [7. 버튼 요소] ===== */
+.button {
+  height: 44px; /* 버튼 높이 */
+  background-color: var(--primary-color); /* 배경색 */
+  color: #fff; /* 글자색 */
+  font-size: 15px; /* 글자 크기 */
+  font-weight: var(--font-weight-bold); /* 강조된 폰트 */
+  border-radius: var(--border-radius-md); /* 둥근 테두리 */
+  border: none; /* 테두리 제거 */
+  transition: background 0.3s, transform 0.2s ease; /* 배경색 및 호버 효과 */
+}
+
+.button:hover {
+  background-color: var(--hover-color); /* hover 시 색상 변경 */
+  transform: translateY(-1px); /* 약간 위로 떠오르는 효과 */
+}
+
+/* ✅ Form.Item 라벨 대응 (아이디, 비밀번호, 등) */
+:global(.dark) :global(.ant-form-item-label > label) {
+  color: var(--text-color) !important; /* 다크모드일 때 텍스트 색상 변경 */
+}
+
+/* ✅ Typography.Title 대응 (회원가입 헤더 등) */
+:global(.dark) :global(.ant-typography) {
+  color: var(--text-color) !important; /* 제목도 테마 텍스트 색상 사용 */
+}
+
+/* ✅ 선택 요소도 혹시 몰라 추가 */
+:global(.dark) :global(.ant-select-selection-placeholder) {
+  color: #999 !important; /* 다크모드에서 placeholder가 너무 연할 경우 */
+}
+
+/* ===== [8. 반응형 대응] ===== */
+@media (max-width: 480px) {
+  .card {
+    padding: 32px 24px; /* 작은 화면에서 카드 패딩 줄이기 */
+  }
+
+  .title {
+    font-size: 22px; /* 제목 텍스트 크기 축소 */
+  }
+
+  .input,
+  .button {
+    height: 36px; /* 컴팩트한 높이 */
+    font-size: 14px; /* 글자 크기 축소 */
+  }
+}
+
+/* ===== [9. 다크모드 대응은 theme.css의 변수로 자동 적용됨] ===== */
+/* 별도 다크 클래스 없이 --bg-color, --text-color 값만 바꾸면 적용됨 */

@@ -1,16 +1,18 @@
 :root {
-    --header-bg: #ffffffcc;
-    --menu-color: #333;
-    --hover-color: #1890ff;
-    --text-color: #000;
+  --header-bg: #ffffffcc;
+  --menu-color: #333;
+  --hover-color: #1890ff;
+  --text-color: #000;
 }
 
-[data-theme='dark'] {
-    --header-bg: #1f1f1fcc;
-    --menu-color: #ddd;
-    --hover-color: #40a9ff;
-    --text-color: #fff;
+/* ✅ 반드시 전역 셀렉터로 지정 */
+:global(.dark) {
+  --header-bg: #1f1f1fcc;
+  --menu-color: #ddd;
+  --hover-color: #40a9ff;
+  --text-color: #fff;
 }
+
 
 .header-container {
     display: flex;
@@ -24,6 +26,7 @@
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(12px);
+    transition: background-color 0.3s ease; /* 다크모드 전환 시 부드럽게 */
 }
 
 .logo {

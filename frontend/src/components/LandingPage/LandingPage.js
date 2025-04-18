@@ -24,7 +24,7 @@ const LandingPage = () => {
                         </Text>
                         <div className={styles.buttons}>
                             <Button type="primary" onClick={() => navigate('/login')}>로그인</Button>
-                            <Button style={{ marginLeft: '1rem' }}>회원가입</Button>
+                          <Button style={{marginLeft: '1rem'}} onClick={() => navigate('/signup')}>회원가입</Button>
                         </div>
                     </div>
                 </Col>
