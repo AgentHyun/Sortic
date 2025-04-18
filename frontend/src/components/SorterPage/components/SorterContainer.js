@@ -18,7 +18,9 @@ const settings = {
     slidesToScroll: 1,
     swipeToSlide: true,
     centerMode: true,
-    centerPadding: '40px'
+    centerPadding: '40px',
+
+
 };
 
 const SorterContainer = ({
@@ -234,13 +236,13 @@ const SorterContainer = ({
                                             sorter.sorter_name
                                         )}
                                     </div>
-
+                                    <button className="delete-btn" onClick={() => deleteSorter(sorter.sorter_id)}>
+                                        <X size={18} />
+                                    </button>
                                     <div
                                         className="sorter-box"
                                     >
-                                        <button className="delete-btn" onClick={() => deleteSorter(sorter.sorter_id)}>
-                                            <X size={18} />
-                                        </button>
+
                                         <div className="element-names">
                                             {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
                                                 const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
@@ -251,22 +253,30 @@ const SorterContainer = ({
                                                         onClick={(event) => handleElementClick(elementId, event)}
                                                         onDoubleClick={() => handleElementsDoubleClick(elementId)}
                                                     >
-                                                        {editingElementIndex === elementId ? (
-                                                            <input
-                                                                ref={inputRef}
-                                                                value={newElementName}
-                                                                onChange={handleElementNameChange}
-                                                                onBlur={handleBlur} // blur 시 저장
-                                                                onKeyDown={(e) => e.key === "Enter" && handleElementSaveName(editingElementIndex)}
-
-                                                            />
-                                                        ) : (
-                                                            name
-                                                        )}
+                                                        {name}
                                                     </div>
+
                                                 ) : null;
                                             })}
                                         </div>
 
-                                    </div> </div> </div> ))} </Slider> </div> </SortableContext> </DndContext> ); };
+                                    </div> </div> </div> ))} </Slider>    {selectedSorters.length > 0 && (
+                    <button className="delete-selected-btn" onClick={multiDeleteSorters}>
+                        Delete
+                    </button>
+                )}
+                </div>
+            </SortableContext>
+
+            <DragOverlay>
+                {activeSorter ? (
+                    <div className="sorter-item dragging">
+                        {activeSorter.sorter_name}
+                    </div>
+                ) : null}
+            </DragOverlay>
+        </DndContext>
+    );
+};
+
 export default SorterContainer;

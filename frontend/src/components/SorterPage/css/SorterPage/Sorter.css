@@ -22,8 +22,9 @@
     height : 45px;
     margin-left : auto;
     margin-right: auto;
-    min-width: 100px;
+
 }
+
 
 .sorter-btn:hover {
     background-color: #bfbfbf !important;
@@ -36,6 +37,7 @@
 .sorter-scroll-wrapper {
     width: 99%;
     padding: 16px 0;
+    min-width : 1000px;
 }
 
 /* Sorter 카드 */
@@ -54,6 +56,8 @@
     flex-direction: column;
     transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* transition 속도 조정 */
     padding: 20px;
+
+
 }
 
 .sorter-wrapper:hover {
@@ -95,6 +99,7 @@
     font-size: 16px;
     color: #333;
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+
 }
 
 .delete-btn {
@@ -113,6 +118,8 @@
     transition: all 0.2s ease, opacity 0.3s ease; /* 속도 빠르게 */
     opacity: 0;
     pointer-events: none;
+
+
 }
 
 /* hover 시 스타일 */
@@ -295,4 +302,5 @@
     box-shadow: 0 6px 18px rgba(76, 88, 91, 0.4);
     transform: scale(1.05);
 }
+
 
