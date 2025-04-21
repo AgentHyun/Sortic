@@ -21,17 +21,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 인코더
 
     /**
-     * 생성자를 통한 의존성 주입
-     * @param userMapper 사용자 데이터 접근을 위한 매퍼
-     * @param passwordEncoder 비밀번호 암호화를 위한 인코더
-     */
-    @Autowired
-    public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    /**
      * 사용자 등록 로직 구현
      * 1. 아이디 중복 확인
      * 2. 비밀번호 암호화
@@ -47,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
         // 비밀번호 암호화
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         // 사용자 정보 저장
         userMapper.save(user);
         return user;
@@ -75,7 +64,6 @@ public class UserServiceImpl implements UserService {
      *    - 처리 결과를 UserService 인터페이스를 통해 Controller로 반환
      */
 
-    @Override
     public User findByUsername(String username) {
         return userMapper.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -85,4 +73,4 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         return userMapper.existsByUsername(username);
     }
-} 
+}

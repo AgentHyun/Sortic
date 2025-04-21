@@ -9,6 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
  * Spring Security 관련 설정을 담당하는 설정 클래스
@@ -29,6 +34,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     /**
      * Spring Security의 필터 체인을 구성하는 메서드
      * Lambda DSL을 사용한 최신 방식의 보안 설정
@@ -43,15 +61,13 @@ public class SecurityConfig {
             // CSRF 보호 비활성화 (REST API 서버이므로)
             .csrf(AbstractHttpConfigurer::disable)
             
-            // CORS 설정 활성화 (WebConfig의 설정 사용)
-            .cors(Customizer.withDefaults())
+            // CORS 설정 활성화
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
             // 요청에 대한 인증/인가 규칙 설정
             .authorizeHttpRequests(auth -> auth
-                // 인증 관련 API는 모두 허용
-                .requestMatchers("/api/auth/**").permitAll()
-                // 그 외 요청은 인증 필요
-                .anyRequest().authenticated()
+                // 모든 요청 허용
+                .anyRequest().permitAll()
             )
             
             // 폼 로그인 비활성화

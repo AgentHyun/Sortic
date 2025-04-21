@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * 인증 관련 요청을 처리하는 컨트롤러
  */
 @RestController
+@RequestMapping("/api/auth")
 public class AuthControllerImpl implements AuthController {
     private final UserService userService;
 
@@ -19,6 +20,7 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
+    @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
         try {
             User savedUser = userService.signup(user);
@@ -29,6 +31,7 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
+    @GetMapping("/check-username/{username}")
     public ResponseEntity<?> checkUsername(@PathVariable String username) {
         boolean isAvailable = userService.checkUsername(username);
         return ResponseEntity.ok().body(isAvailable);

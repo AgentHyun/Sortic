@@ -24,6 +24,6 @@ public interface AuthController {
      * @param username 확인할 사용자 이름
      * @return 이름 중복 여부를 나타내는 ResponseEntity 객체
      */
-    @GetMapping("/api/auth/check-username/{username}")
+    @GetMapping("/check-username/{username}")
     ResponseEntity<?> checkUsername(@PathVariable String username);
 }
