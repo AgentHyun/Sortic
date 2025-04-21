@@ -5,22 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5510c6bc-c7fb-4ef1-8fa9-e9e3bda167f9" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/ SimpleSortableContainer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/ElementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/ElementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/SorterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/SorterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Sorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Sorter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ElementMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ElementMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/SorterMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/SorterMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ElementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ElementService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/SorterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/SorterService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +33,11 @@
     </system>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="l/backup" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -70,7 +63,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "이사용",
+    "git-widget-placeholder": "0421",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/sdedu/Desktop/Sortic",
@@ -81,7 +74,7 @@
     "project.structure.last.edited": "모듈",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "C:\\Users\\sdedu\\AppData\\Local\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true",
     "애플리케이션.SorticProjectApplication.executor": "Run"
   }

@@ -217,7 +217,7 @@ export const getElementsIdBySorterNameAction = atom(
 );
 
 
-export const moveElementToSorter = atom(null, async (get, set, { elementsNameId, sorterName }) => {
+export const moveElementToSorterAction = atom(null, async (get, set, { elementsNameId, sorterName }) => {
   const currentSorters = get(sortersAtom);
 
   try {

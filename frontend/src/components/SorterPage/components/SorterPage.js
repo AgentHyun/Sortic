@@ -6,6 +6,10 @@ import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'ant
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
+import { DndContext,  PointerSensor} from '@dnd-kit/core';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
+import { useSensors, useSensor, MouseSensor, TouchSensor } from '@dnd-kit/core';
+
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
 import { useNavigate } from 'react-router-dom';
@@ -77,6 +81,9 @@ import {
 import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
 import BillPage from "../../BillPage/components/BillPage";
+import SimpleSortableContainer from "../components/ SimpleSortableContainer";
+import {closestCenter} from "@dnd-kit/core";
+import {rectSortingStrategy} from "@dnd-kit/sortable";
 
 
 const { Title } = Typography;
@@ -154,7 +161,8 @@ const SorterPage = () => {
     const setUpdateSorterName = useSetAtom(updateSorterNameAction);
     const navigate = useNavigate();
     const { confirm } = Modal;
-
+  const [activeId, setActiveId] = useState(null);
+  const activeCard = cards.find(card => card.elements_name_id === activeId);
     const settings = {
         dots: true,
         infinite: true, // 무한 루프
@@ -517,12 +525,38 @@ const SorterPage = () => {
     };
 
     // dnd-kit
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    })
+  );
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over || active.id === over.id) return;
+
+    // 아이템을 이동시킬 때 기존 위치와 새 위치의 인덱스를 구하여 상태 업데이트
+    const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
+    const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
+    setCards(arrayMove(cards, oldIndex, newIndex));
+  };
 
 
     return (
         <div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
             <div className="sorter-page-section">
 
 
@@ -620,24 +654,32 @@ const SorterPage = () => {
 
                         </div>
 
-                        <SortableContainer
-                            cards={cards}
-                            setCards={setCards}
-                            selectedElementIds={selectedElementIds}
-                            isEditingElement={isEditingElement}
-                            editingElementIndex={editingElementIndex}
-                            newElementName={newElementName}
-                            handleElementNameChange={handleElementNameChange}
-                            handleElementSaveName={handleElementSaveName}
-                            handleDoubleClickElementName={handleDoubleClickElementName}
-                            openContextMenu={openContextMenu}
-                            setNewElementName={setNewElementName}
-                            setNewElementPrice={setNewElementPrice}
-                            setSelectedElementId={setSelectedElementId}
-                            setSetSelectedElementAction={setSetSelectedElementAction}
-                            setToggleSelectElementAction={setToggleSelectElementAction}
-                        />
-                        <ContextMenu />
+                      <SortableContext
+                        items={cards.map((c) => c.elements_name_id)}
+                        strategy={rectSortingStrategy}
+                      >
+
+
+                      <SortableContainer
+                        cards={cards}
+                        setCards={setCards}
+                        selectedElementIds={selectedElementIds}
+                        isEditingElement={isEditingElement}
+                        editingElementIndex={editingElementIndex}
+                        newElementName={newElementName}
+                        handleElementNameChange={handleElementNameChange}
+                        handleElementSaveName={handleElementSaveName}
+                        handleDoubleClickElementName={handleDoubleClickElementName}
+                        openContextMenu={openContextMenu}
+                        setNewElementName={setNewElementName}
+                        setNewElementPrice={setNewElementPrice}
+                        setSelectedElementId={setSelectedElementId}
+                        setSetSelectedElementAction={setSetSelectedElementAction}
+                        setToggleSelectElementAction={setToggleSelectElementAction}
+                      />
+                      </SortableContext>
+
+                      <ContextMenu />
 
 
                         <Modal
@@ -837,6 +879,10 @@ const SorterPage = () => {
 
 
 
+                  <SortableContext
+                    items={cards.map((c) => c.elements_name_id)}
+                    strategy={rectSortingStrategy}
+                  >
 
                     <SorterContainer
                         sorters={sorters}
@@ -852,7 +898,7 @@ const SorterPage = () => {
                         handleSorterNameDoubleClick={handleSorterNameDoubleClick}
                     />
 
-
+                  </SortableContext>
 
                 </div>
 
@@ -862,7 +908,7 @@ const SorterPage = () => {
 
             <BillPage/>
 
-
+          </DndContext>
         </div>
     );
 };
