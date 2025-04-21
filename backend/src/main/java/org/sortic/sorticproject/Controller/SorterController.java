@@ -1,8 +1,10 @@
 package org.sortic.sorticproject.Controller;
 
+import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Entity.Sorter;
 import org.sortic.sorticproject.Service.SorterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,25 +82,28 @@ public class SorterController {
     }
 
 
-    @PostMapping("/{sorterId}/addElement")
-    public ResponseEntity<?> addElementToSorter(
-        @PathVariable int sorterId,
-        @RequestBody Map<String, Integer> requestBody) {
-        try {
-            Integer elementId = requestBody.get("element_id");
 
-            if (elementId == null) {
-                return ResponseEntity.badRequest().body("요소 ID가 제공되지 않았습니다.");
-            }
 
-            // 요소를 정렬자에 추가하는 서비스 호출
-            Sorter updatedSorter = sorterService.addElementToSorter(sorterId, elementId);
+    // 특정 정렬자에 요소 추가
+    @PostMapping("/name/{sorterName}/addElement")
+    public ResponseEntity<Sorter> addElementToSorter(@PathVariable String sorterName,
+                                                     @RequestBody Sorter newSorter) {
+        // sorter_name을 newSorter에 설정
+        newSorter.setSorter_name(sorterName);
 
-            // 성공적으로 추가되었으면, 업데이트된 정렬자 정보 반환
-            return ResponseEntity.ok(updatedSorter);
-        } catch (Exception e) {
-            // 에러 처리
-            return ResponseEntity.status(500).body("요소 추가 실패: " + e.getMessage());
-        }
+        // 서비스 메서드 호출
+        Sorter addedSorter = sorterService.addElementToSorter(newSorter);
+
+        // 새로 추가된 정렬자 반환
+        return ResponseEntity.ok(addedSorter);
     }
+
+    @GetMapping("/{sorterId}/elements/{elementsId}")
+    public ResponseEntity<Map<String, Boolean>> checkElementExistsInSorter(
+        @PathVariable int sorterId,
+        @PathVariable int elementsId) {
+        boolean exists = sorterService.doesElementExistInSorter(sorterId, elementsId);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
 }

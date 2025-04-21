@@ -70,4 +70,27 @@ public interface ElementMapper {
     // 요소 가격 조회
     @Select("SELECT elements_price FROM Elements_name WHERE elements_name_id = #{elements_name_id}")
     Integer getElementPriceById(int elements_name_id);
+    // 요소를 sorter에 추가하는 쿼리
+
+
+    // 요소를 sorter에 추가하는 쿼리
+    @Insert("INSERT INTO sorter_elements (sorter_id, element_id, element_name) " +
+        "VALUES (#{sorterId}, #{elementId}, #{elementName})")
+    int addElementToSorter(@Param("sorterId") int sorterId,
+                           @Param("elementId") int elementId,
+                           @Param("elementName") String elementName);
+
+    // 요소를 sorter에서 제거하는 쿼리
+    @Delete("DELETE FROM sorter_elements WHERE sorter_id = #{sorterId} AND element_id = #{elementId}")
+    int removeElementFromSorter(@Param("sorterId") int sorterId,
+                                @Param("elementId") int elementId);
+
+    @Update("UPDATE Elements_name SET category_id = NULL WHERE elements_name_id = #{elementsNameId}")
+    void updateElementCategoryIdToNull(int elementsNameId);
+
+
+
+
+
+
 }

@@ -54,4 +54,11 @@ public class ElementService {
         // 가격만 반환하도록 수정
         return elementMapper.getElementPriceById(elements_name_id);
     }
+    public void updateElementCategoryIdToNull(int elementsNameId) {
+        elementMapper.updateElementCategoryIdToNull(elementsNameId);
+    }
+
+
+
+
 }

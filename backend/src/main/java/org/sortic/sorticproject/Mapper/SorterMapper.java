@@ -96,4 +96,20 @@ public interface SorterMapper {
     // 사용자별 최대 sorter_number 조회
     @Select("SELECT MAX(sorter_number) FROM sorter WHERE user_id = #{user_id}")
     int getMaxSorterNumberByUserId(String user_id);
+    // 요소를 sorter에 추가하는 쿼리
+    // sorter_name으로 정렬자 찾기
+    @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorterName}")
+    Sorter findSorterByName(@Param("sorterName") String sorterName);
+
+
+    @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
+        "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")
+    void addElementToSorter(Sorter newSorter);
+
+    @Select("SELECT COUNT(*) FROM sorter WHERE sorter_id = #{sorterId} AND elements_id = #{elementsId}")
+    int countElementInSorter(@Param("sorterId") int sorterId, @Param("elementsId") int elementsId);
+
 }
+
+
+

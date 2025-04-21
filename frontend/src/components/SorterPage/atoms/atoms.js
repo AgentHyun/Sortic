@@ -66,6 +66,7 @@ export const sorterNameAtom = atom('');
 export const isEditingSorterAtom = atom(false);
 export const newSorterNameAtom = atom('');
 export const sortersAtom = atom([]);
+
 export const editingSorterIndexAtom = atom(null);
 
 // 드래그 관련 상태

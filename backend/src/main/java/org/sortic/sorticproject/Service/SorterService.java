@@ -67,6 +67,7 @@ public class SorterService {
     public void deleteMultipleSorters(List<Integer> sorterIds) {
         sorterMapper.deleteMultipleSorters(sorterIds);
     }
+
     @Transactional
     public Sorter updateElementsId(int sorterId, int elementsId) {
         // sorterId로 해당 Sorter 객체 조회
@@ -91,9 +92,11 @@ public class SorterService {
         Sorter sorter = sorterMapper.getSorterById(sorterId);
         return sorter != null ? sorter.getElements_id() : null;
     }
+
     public String getSorterNameById(int sorterId) {
         return sorterMapper.getSorterNameById(sorterId);
     }
+
     public List<Sorter> getUniqueSortersByUserId(String userId) {
         return sorterMapper.getSortersByUserId(userId);
     }
@@ -134,6 +137,25 @@ public class SorterService {
 
         // 삽입된 새로운 Sorter 반환
         return newSorter;
+    }
+
+    // sorter_name으로 정렬자 찾기
+    public Sorter findSorterByName(String sorterName) {
+        return sorterMapper.findSorterByName(sorterName);
+    }
+
+
+    @Transactional
+    public Sorter addElementToSorter(Sorter newSorter) {
+        // sorter_name을 기준으로 정렬자 찾기
+        int maxSorterNumber = sorterMapper.getMaxSorterNumberByUserId(newSorter.getUser_id());
+        newSorter.setSorter_number(maxSorterNumber + 1);  // 새로 추가된 정렬자 번호
+
+        sorterMapper.addElementToSorter(newSorter);  // 정렬자에 요소 추가
+        return newSorter;  // 새로 추가된 정렬자 반환
+    }
+    public boolean doesElementExistInSorter(int sorterId, int elementsId) {
+        return sorterMapper.countElementInSorter(sorterId, elementsId) > 0;
     }
 
 }
