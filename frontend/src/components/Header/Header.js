@@ -3,13 +3,15 @@ import { Layout, Menu, Badge, Avatar, Switch } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { userAtom } from '../SorterPage/atoms/atoms';
+import { userAtom, isLoggedInAtom } from '../SorterPage/atoms/atoms';
 import styles from './Header.module.css';
+import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 
 const { Header } = Layout;
 
 const SorticHeader = () => {
   const [user] = useAtom(userAtom);
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
 
   // 🌙 다크모드 토글
   const toggleTheme = (checked) => {
@@ -45,18 +47,21 @@ const SorticHeader = () => {
         <div className={styles['menu-item']}>Community</div>
       </div>
       <div className={styles['right-section']}>
-        <Badge dot>
-          <BellOutlined className={styles['notification-icon']} />
-        </Badge>
-        <Avatar icon={<UserOutlined />} className={styles.avatar} />
-        <span className={styles.username}>{user.nickname || 'Guest'}</span>
-        <Switch
-          onChange={toggleTheme}
-          defaultChecked={localStorage.getItem('theme') === 'dark'}
-          checkedChildren="🌙"
-          unCheckedChildren="☀️"
-          className={styles.themeSwitch}
-        />
+        {isLoggedIn ? (
+          <>
+            <Badge dot>
+              <BellOutlined className={styles['notification-icon']} />
+            </Badge>
+            <Avatar icon={<UserOutlined />} className={styles.avatar} />
+            <span className={styles.username}>{user.nickname || 'Guest'}</span>
+          </>
+        ) : (
+          <div className={styles['auth-buttons']}>
+            <Link to="/login" className={styles['auth-link']}>로그인</Link>
+            <Link to="/signup" className={styles['auth-link']}>회원가입</Link>
+          </div>
+        )}
+        <ThemeSwitch className={styles.themeSwitch} />
       </div>
     </Header>
   );

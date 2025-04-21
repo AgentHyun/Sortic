@@ -31,25 +31,35 @@ public interface UserService {
     /**
      * 사용자가 입력한 아이디의 중복 여부를 확인
      * 
-     * @param username 확인할 아이디
+     * @param userId 확인할 아이디
      * @return boolean 사용 가능한 아이디인 경우 true, 이미 존재하는 경우 false
      */
-    boolean checkUsername(String username);
+    boolean checkUserId(String userId);
 
     /**
      * 사용자 아이디로 사용자 정보를 조회
      * 
-     * @param username 조회할 사용자 아이디
+     * @param userId 조회할 사용자 아이디
      * @return User 조회된 사용자 정보
      * @throws IllegalArgumentException 존재하지 않는 사용자인 경우
      */
-    User findByUsername(String username);
+    User findByUserId(String userId);
 
     /**
      * 사용자 아이디의 존재 여부를 확인
      * 
-     * @param username 확인할 사용자 아이디
+     * @param userId 확인할 사용자 아이디
      * @return boolean 아이디가 존재하면 true, 없으면 false
      */
-    boolean existsByUsername(String username);
+    boolean existsByUserId(String userId);
+
+    /**
+     * 사용자가 입력한 아이디와 비밀번호로 로그인
+     * 
+     * @param userId 로그인할 사용자 아이디
+     * @param password 로그인할 사용자의 비밀번호
+     * @return User 로그인된 사용자 정보
+     * @throws IllegalArgumentException 존재하지 않는 사용자인 경우
+     */
+    User login(String userId, String password);
 } 

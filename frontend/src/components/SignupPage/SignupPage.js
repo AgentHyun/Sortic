@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
@@ -9,8 +9,10 @@ const { Option } = Select;
 function SignupPage() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onFinish = async (values) => {
+    setIsSubmitting(true);
     try {
       const response = await fetch('http://localhost:8080/api/auth/signup', {
         method: 'POST',
@@ -29,15 +31,17 @@ function SignupPage() {
       }
     } catch (err) {
       message.error('서버 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleCheckId = async (form) => {
-    const id = form.getFieldValue('username');
+    const id = form.getFieldValue('userId');
     if (!id) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/auth/check-username/${id}`);
+      const response = await fetch(`http://localhost:8080/api/auth/check-userid/${id}`);
       const isAvailable = await response.json();
       
       if (!isAvailable) {
@@ -62,11 +66,10 @@ function SignupPage() {
           className={styles.form}
         >
           <Form.Item label="아이디" required>
-            {/* ✅ inline 정렬용 wrapper */}
             <div className={styles.inlineWrap}>
               <Form.Item
-                name="username"
-                noStyle /* ✅ 레이아웃 겹침 방지 */
+                name="userId"
+                noStyle
                 rules={[{
                   required: true,
                   validator: (_, value) => {
@@ -86,7 +89,7 @@ function SignupPage() {
           </Form.Item>
 
           <Form.Item label="비밀번호" name="password" rules={[{ required: true, validator: (_, value) => {
-              const id = form.getFieldValue('username');
+              const id = form.getFieldValue('userId');
               if (!value || value.length < 6) return Promise.reject("비밀번호는 최소 6자 이상입니다.");
               if (value === id) return Promise.reject("아이디와 동일한 비밀번호는 사용할 수 없습니다.");
               for (let i = 0; i <= id.length - 3; i++) {
@@ -98,31 +101,36 @@ function SignupPage() {
           </Form.Item>
 
           <Form.Item label="비밀번호 확인" name="confirm" dependencies={['password']} rules={[
-            { required: true, message: '비밀번호 확인을 입력하세요.' },
+            { required: true, message: '비밀번호를 다시 입력해주세요.' },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (!value || getFieldValue('password') === value) return Promise.resolve();
-                return Promise.reject(new Error('비밀번호가 일치 하지 않습니다.'));
-              }
-            })
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject('비밀번호가 일치하지 않습니다.');
+              },
+            }),
           ]}>
             <Input.Password className={styles.input} allowClear placeholder="비밀번호 확인" />
           </Form.Item>
 
-          <Form.Item label="닉네임" name="nickname" rules={[{ required: true, message: '닉네임을 입력하세요.' }]}>
+          <Form.Item label="닉네임" name="username" rules={[{ required: true, message: '닉네임을 입력해주세요.' }]}>
             <Input className={styles.input} allowClear placeholder="닉네임" />
           </Form.Item>
 
-          <Form.Item label="휴대폰 번호" name="phone" rules={[{ required: true, message: '휴대폰 번호를 입력하세요.' }]}>
-            <Input className={styles.input} allowClear maxLength={11} placeholder="01022224444" />
+          <Form.Item label="전화번호" name="phone" rules={[{ required: true, message: '전화번호를 입력해주세요.' }]}>
+            <Input className={styles.input} allowClear placeholder="전화번호" />
           </Form.Item>
 
-          <Form.Item label="이메일" name="email" rules={[{ required: true, type: 'email', message: '이메일을 입력하세요.' }]}>
-            <Input className={styles.input} allowClear placeholder="example@example.com" />
+          <Form.Item label="이메일" name="email" rules={[
+            { required: true, message: '이메일을 입력해주세요.' },
+            { type: 'email', message: '올바른 이메일 형식이 아닙니다.' }
+          ]}>
+            <Input className={styles.input} allowClear placeholder="이메일" />
           </Form.Item>
 
-          <Form.Item label="거주지역" name="region" rules={[{ required: true, message: '거주지역을 선택하세요.' }]}>
-            <Select className={styles.select} placeholder="거주지역 선택">
+          <Form.Item label="거주지역" name="region" rules={[{ required: true, message: '거주지역을 선택해주세요.' }]}>
+            <Select className={styles.input} placeholder="거주지역 선택">
               <Option value="서울">서울</Option>
               <Option value="경기">경기</Option>
               <Option value="부산">부산</Option>
@@ -132,11 +140,15 @@ function SignupPage() {
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button className={styles.button} type="primary" htmlType="submit" block>
-              회원가입
-            </Button>
-          </Form.Item>
+          <div className={styles.buttonContainer}>
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? '처리 중...' : '회원가입'}
+            </button>
+          </div>
         </Form>
       </div>
     </div>

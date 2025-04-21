@@ -19,11 +19,20 @@ public interface AuthController {
     ResponseEntity<?> signup(@RequestBody User user);
 
     /**
-     * 사용자 이름 중복 여부를 확인하는 메서드
+     * 사용자 아이디 중복 여부를 확인하는 메서드
      *
-     * @param username 확인할 사용자 이름
-     * @return 이름 중복 여부를 나타내는 ResponseEntity 객체
+     * @param userId 확인할 사용자 아이디
+     * @return 아이디 중복 여부를 나타내는 ResponseEntity 객체
      */
-    @GetMapping("/check-username/{username}")
-    ResponseEntity<?> checkUsername(@PathVariable String username);
+    @GetMapping("/check-userid/{userId}")
+    ResponseEntity<?> checkUserId(@PathVariable String userId);
+
+    /**
+     * 로그인 요청을 처리하는 메서드
+     *
+     * @param user 로그인 정보를 포함한 User 객체
+     * @return 로그인 결과를 나타내는 ResponseEntity 객체
+     */
+    @PostMapping("/login")
+    ResponseEntity<?> login(@RequestBody User user);
 }

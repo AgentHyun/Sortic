@@ -2,7 +2,6 @@ package org.sortic.sorticproject.Mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.sortic.sorticproject.Entity.User;
-import java.util.Optional;
 
 /**
  * [데이터 흐름 요약]
@@ -12,7 +11,6 @@ import java.util.Optional;
  *    - UserMapper.xml에 정의된 SQL문과 매핑
  * 3. 데이터 전달:
  *    - UserService로 데이터 전달
- *    - Optional을 사용하여 null-safe한 데이터 전달 보장
  */
 @Mapper
 public interface UserMapper {
@@ -24,15 +22,22 @@ public interface UserMapper {
 
     /**
      * 사용자 아이디로 사용자 정보를 조회
-     * @param username 조회할 사용자 아이디
-     * @return Optional<User> 사용자 정보가 없을 수 있으므로 Optional로 감싸서 반환
+     * @param userId 조회할 사용자 아이디
+     * @return User 사용자 정보
      */
-    Optional<User> findByUsername(String username);
+    User findByUserId(String userId);
 
     /**
      * 사용자 아이디의 존재 여부를 확인
-     * @param username 확인할 사용자 아이디
+     * @param userId 확인할 사용자 아이디
      * @return boolean 아이디가 존재하면 true, 없으면 false
      */
-    boolean existsByUsername(String username);
+    boolean existsByUserId(String userId);
+
+    /**
+     * 이메일의 존재 여부를 확인
+     * @param email 확인할 이메일
+     * @return boolean 이메일이 존재하면 true, 없으면 false
+     */
+    boolean existsByEmail(String email);
 } 

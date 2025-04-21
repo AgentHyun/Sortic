@@ -31,9 +31,45 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
-    @GetMapping("/check-username/{username}")
-    public ResponseEntity<?> checkUsername(@PathVariable String username) {
-        boolean isAvailable = userService.checkUsername(username);
+    @GetMapping("/check-userid/{userId}")
+    public ResponseEntity<?> checkUserId(@PathVariable String userId) {
+        boolean isAvailable = userService.checkUserId(userId);
         return ResponseEntity.ok().body(isAvailable);
+    }
+
+    @Override
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        try {
+            User authenticatedUser = userService.login(user.getUserId(), user.getPassword());
+            if (authenticatedUser != null) {
+                // 실제 프로덕션에서는 JWT 토큰을 생성하여 반환해야 합니다
+                return ResponseEntity.ok().body(
+                    new LoginResponse(authenticatedUser.getUserId(), "dummy-token-for-now")
+                );
+            } else {
+                return ResponseEntity.status(401).body("아이디 또는 비밀번호가 잘못되었습니다.");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    private static class LoginResponse {
+        private String userId;
+        private String token;
+
+        public LoginResponse(String userId, String token) {
+            this.userId = userId;
+            this.token = token;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getToken() {
+            return token;
+        }
     }
 } 

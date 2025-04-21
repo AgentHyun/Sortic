@@ -1,14 +1,4 @@
 ########################
-# ✅ Node.js / React
-########################
-
-node_modules/              # npm/yarn으로 설치되는 패키지들 (절대 Git에 올리지 말 것)
-dist/                      # 빌드 결과물
-build/                     # create-react-app 빌드 결과물
-.npm/                      # npm 캐시 디렉토리
-coverage/                  # 테스트 커버리지 결과
-
-########################
 # ✅ 환경변수
 ########################
 
@@ -38,6 +28,7 @@ pnpm-debug.log*        # pnpm 에러 로그
 
 .idea/                     # IntelliJ 프로젝트 설정
 frontend/.idea/
+backend/.idea/
 *.iml                      # IntelliJ 모듈 설정
 .vscode/                   # VSCode 워크스페이스 설정
 
@@ -51,16 +42,19 @@ build/                 # React 등 빌드 결과물
 frontend/build/        # React 등 빌드 결과물
 .cache/                # 캐시 폴더 (vite, next 등)
 coverage/              # 테스트 커버리지 결과
+.npm/                      # npm 캐시 디렉토리
 
 ########################
 # ✅ 백엔드 관련
 ########################
 
 .gradle/                   # Gradle 빌드 캐시
-build/                     # Java 빌드 결과물
 backend/build/             # Java 빌드 결과물
 out/                       # Java 클래스 빌드 폴더
 *.class                    # 컴파일된 바이트코드
+*.jar
+*.war
+*.ear
 target/                    # Maven 등에서 사용되는 빌드 폴더
 
 ########################
@@ -80,3 +74,4 @@ yarn.lock                  # npm을 사용할 경우 추가
 # VSCode settings folder
 .vscode/		# VSCode 에디터 설정 폴더 (settings.json, launch.json 등)
 *.code-workspace	# VSCode가 만드는 워크스페이스 파일
+.cursor/

@@ -30,12 +30,13 @@ public class UserServiceImpl implements UserService {
     @Transactional // 트랜잭션 관리 (데이터 일관성 보장)
     public User signup(User user) {
         // 아이디 중복 확인
-        if (userMapper.existsByUsername(user.getUsername())) {
+        if (userMapper.existsByUserId(user.getUserId())) {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
         }
 
         // 비밀번호 암호화
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setGrade(0);  // 명시적으로 grade를 0으로 설정
 
         // 사용자 정보 저장
         userMapper.save(user);
@@ -46,8 +47,8 @@ public class UserServiceImpl implements UserService {
      * 아이디 중복 확인 로직 구현
      */
     @Override
-    public boolean checkUsername(String username) {
-        return !userMapper.existsByUsername(username);
+    public boolean checkUserId(String userId) {
+        return !userMapper.existsByUserId(userId);
     }
 
     /**
@@ -64,13 +65,24 @@ public class UserServiceImpl implements UserService {
      *    - 처리 결과를 UserService 인터페이스를 통해 Controller로 반환
      */
 
-    public User findByUsername(String username) {
-        return userMapper.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public User findByUserId(String userId) {
+        return userMapper.findByUserId(userId);
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return userMapper.existsByUsername(username);
+    public boolean existsByUserId(String userId) {
+        return userMapper.existsByUserId(userId);
+    }
+
+    @Override
+    public User login(String userId, String password) {
+        User user = userMapper.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("존재하지 않는 아이디입니다.");
+        }
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        return user;
     }
 }

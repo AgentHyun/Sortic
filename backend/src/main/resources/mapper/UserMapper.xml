@@ -4,21 +4,22 @@
     
     <!-- 사용자 정보 저장 -->
     <insert id="save" parameterType="org.sortic.sorticproject.Entity.User">
-        INSERT INTO users (username, password, email, created_at)
-        VALUES (#{username}, #{password}, #{email}, #{createdAt})
+        INSERT INTO Users (user_id, password, username, phone, email, region, grade)
+        VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
     </insert>
 
-    <!-- 사용자명으로 사용자 정보 조회 -->
-    <select id="findByUsername" parameterType="String" resultType="org.sortic.sorticproject.Entity.User">
-        SELECT id, username, password, email, created_at as createdAt
-        FROM users
-        WHERE username = #{username}
+    <!-- 사용자 ID로 사용자 정보 조회 -->
+    <select id="findByUserId" parameterType="string" resultType="org.sortic.sorticproject.Entity.User">
+        SELECT * FROM Users WHERE user_id = #{userId}
     </select>
 
-    <!-- 사용자명 존재 여부 확인 -->
-    <select id="existsByUsername" parameterType="String" resultType="boolean">
-        SELECT EXISTS(
-            SELECT 1 FROM users WHERE username = #{username}
-        )
+    <!-- 사용자 ID 존재 여부 확인 -->
+    <select id="existsByUserId" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{userId}
+    </select>
+
+    <!-- 이메일 존재 여부 확인 -->
+    <select id="existsByEmail" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM Users WHERE email = #{email}
     </select>
 </mapper> 

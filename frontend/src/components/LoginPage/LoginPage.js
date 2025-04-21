@@ -2,31 +2,36 @@
 import React, { useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { isLoggedInAtom } from '../SorterPage/atoms/atoms';
 import styles from './Login.module.css';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [, setIsLoggedIn] = useAtom(isLoggedInAtom);
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/api/login', {
-                username,
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                userId,
                 password,
             });
 
-            if (response.data.success) {
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
                 setIsLoggedIn(true);
                 message.success('로그인 성공!');
-            } else {
-                message.error('로그인 실패. 아이디 또는 비밀번호를 확인하세요.');
+                navigate('/sorter');
             }
         } catch (error) {
-            message.error('서버 오류가 발생했습니다.');
+            if (error.response && error.response.status === 401) {
+                message.error(error.response.data);
+            } else {
+                message.error('서버 오류가 발생했습니다.');
+            }
         }
     };
 
@@ -36,8 +41,8 @@ const Login = () => {
                 <h1 className={styles.title}>Sortic 로그인</h1>
                 <Input
                     placeholder="아이디"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
                     className={styles.input}
                 />
                 <Input.Password
