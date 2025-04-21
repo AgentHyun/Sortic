@@ -36,12 +36,5 @@ public class BillController {
         billService.updateBillName(bill.getBillId(),bill.getBillName());
     }
 
-    @PostMapping("/addBillCommission")
-    public void addBillCommission(@RequestBody Map<String,Object>data) {
-        int billId = (int) data.get("billId");
-        String commissionName = (String) data.get("commissionName");
-        int commission = (int) data.get("commission");
-        billService.addCommission(billId,commissionName,commission);
-    }
 
 }

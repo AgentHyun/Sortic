@@ -12,10 +12,7 @@ const BillPage = () => {
   const [newBillName, setNewBillName] = useState('');
   const [editingBillId, setEditingBillId] = useState(false);
   const [editedBillName,setEditedBillName] = useState('');
-  const [isCommissionModalVisible,setIsCommissionModalVisible] = useState(false);
-  const [commissionTargetBillId,setCommissionTargetBillId] = useState(null);
-  const [newCommissionName,setNewCommissionName] = useState('');
-  const [newCommissionPrice,setNewCommissionPrice] = useState('');
+
 
 
 
@@ -28,7 +25,6 @@ const BillPage = () => {
       .then(res => setBills(res.data))
       .catch(err => message.error('Bill 불러오기 실패', err));
   };
-
 
   useEffect(() => {
     fetchBills();
@@ -50,7 +46,7 @@ const BillPage = () => {
       message.error("Bill 추가 실패")
     }
 
-  }
+  };
   const handleDeleteBill = async (billId) => {
     try {
       await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
@@ -76,7 +72,7 @@ const BillPage = () => {
     catch (err){
       message.error("Bill 이름 수정 실패")
     }
-  }
+  };
 
   return (
 
@@ -127,13 +123,7 @@ const BillPage = () => {
             <p><strong>총 요소 금액:</strong> {bill.totalElementPrice}원</p>
           </div>
           <div>
-            <div>🧾 수수료<span
-              className="commission-add-btn"
-              onClick={()=>{
-                setCommissionTargetBillId(bill.billId);
-                setIsCommissionModalVisible(true);
-              }}
-            ><Plus className="plus-icon"/></span></div>
+            <div>🧾 수수료</div>
             <ul>
               {Array.isArray(bill.commissions) &&bill.commissions.map((c, idx) => (
                 <li key={idx}>{c.commissionName} - {c.commission}원</li>
@@ -161,42 +151,7 @@ const BillPage = () => {
           onChange={(e) => setNewBillName(e.target.value)}
         />
       </Modal>
-      <Modal
-        title="수수료 추가"
-        open={isCommissionModalVisible}
-        onOk={async () => {
-          try {
-            await axios.post('http://localhost:8080/api/bills/addBillCommission', {
-              billId: commissionTargetBillId,
-              commission: parseInt(newCommissionPrice),
-              commissionName: newCommissionName
-            });
-            message.success("수수료 추가 완료!");
-            setIsCommissionModalVisible(false);
-            setNewCommissionPrice('');
-            setNewCommissionName('');
-            fetchBills();
-          } catch (err) {
-            message.error("수수료 추가 실패");
-          }
-        }}
-        onCancel={() => setIsCommissionModalVisible(false)}
-        okText="추가"
-        cancelText="취소"
-      >
-        <Input
-          placeholder="수수료 이름"
-          value={newCommissionName}
-          onChange={(e) => setNewCommissionName(e.target.value)}
-          style={{ marginBottom: 10 }}
-        />
-        <Input
-          type="number"
-          placeholder="수수료 금액"
-          value={newCommissionPrice}
-          onChange={(e) => setNewCommissionPrice(e.target.value)}
-        />
-      </Modal>
+
     </div>
   );
 };

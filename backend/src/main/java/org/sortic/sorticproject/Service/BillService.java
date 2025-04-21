@@ -27,10 +27,6 @@ public class BillService {
     public void updateBillName(int billId, String billName){
         billMapper.updateBillName(billId,billName);
     }
-    // billCommission 추가
-    public void addCommission(int billId, String commissionName, int commission){
-        billMapper.insertCommission(billId,commissionName,commission);
-    }
     // Bill 전체 불러오기
     public List<BillGroupResponse> getBillDetails(String userId){
         // 1. 해당 유저의 Bill 목록 가져오기

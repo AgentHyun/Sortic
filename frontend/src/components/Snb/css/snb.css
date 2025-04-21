@@ -1,0 +1,107 @@
+.snb-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.snb-buttons-wrapper {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s ease, opacity 0.25s ease;
+}
+
+.snb-buttons-wrapper.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.snb-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: flex-end;
+}
+
+.snb-btn {
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  background:  #2d3748;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+
+}
+
+.snb-btn:hover {
+  background: slategray;
+}
+
+.snb-toggle {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.snb-toggle:hover {
+  transform: scale(1.05);
+}
+/* 계산기 바들 */
+.snb-calc-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #2d3748;
+  border-radius: 12px;
+
+}
+
+.calc-bar {
+  display: flex;
+  border-radius: 8px;
+  gap: 8px;
+  margin-right: 20px;
+  animation: slideIn 0.3s ease;
+}
+
+.calc-item {
+  color : white;
+  padding: 6px 10px;
+  background : gray;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-size: 14px;
+  white-space: nowrap;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* 애니메이션 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
