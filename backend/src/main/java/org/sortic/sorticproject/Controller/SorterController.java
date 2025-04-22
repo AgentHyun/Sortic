@@ -43,14 +43,17 @@ public class SorterController {
         List<Sorter> uniqueSorters = sorterService.getUniqueSortersByUserId(userId);
         return ResponseEntity.ok(uniqueSorters);
     }
-    @PutMapping("/update-name")
-    public ResponseEntity<Sorter> updateSorterName(@RequestBody Map<String, Object> payload) {
-        int sorterId = (int) payload.get("sorter_id");
-        String sorterName = (String) payload.get("sorter_name");
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateSorterName(@RequestBody Map<String, String> payload) {
+        String oldSorterName = payload.get("oldSorterName");
+        String sorterName = payload.get("sorterName");
 
-        Sorter updatedSorter = sorterService.updateSorterName(sorterId, sorterName);
-        return ResponseEntity.ok(updatedSorter);
+        // sorter_name을 업데이트
+        sorterService.updateSorterName(oldSorterName, sorterName);
+        return ResponseEntity.noContent().build();  // No Content 상태로 반환
     }
+
+
     @PostMapping("/delete/multiple")
     public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
         sorterService.deleteMultipleSorters(sorterIds);

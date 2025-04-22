@@ -51,6 +51,7 @@ import {
   fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
   editedSorterNameAtom,edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
+  oldSorterNameAtom,
 
 } from '../atoms/atoms';
 
@@ -79,7 +80,9 @@ import {
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
+import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
+  ,moveElementToSorterAction
+} from '../actions/sorterAction';
 import BillPage from "../../BillPage/components/BillPage";
 import SimpleSortableContainer from "../components/ SimpleSortableContainer";
 import {closestCenter} from "@dnd-kit/core";
@@ -149,13 +152,13 @@ const SorterPage = () => {
 
   const [, setDeleteSorter] = useAtom(deleteSorterAction);
   const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
-
+  const[ oldSorterName, setOldSorterName] = useAtom(oldSorterNameAtom);
 
   const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
   const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
   const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
   const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
-
+  const [moveElementToSorter, setMoveElementToSorter] = useAtom(moveElementToSorterAction);
   const [, updateSorterName] = useAtom(updateSorterNameAction)
   const sorterRef = useRef(null);
   const [arrowHeight, setArrowHeight] = useState(0);
@@ -495,15 +498,24 @@ const SorterPage = () => {
 
 
   const handleSorterNameDoubleClick = (id, name) => {
-
-    setEditingSorterId(id);  // 편집할 ID 설정
-    setInputValue(name);      // 입력 필드에 기존 이름 설정
+    console.log('더블클릭됨:', name); // 👈 로그로 확인
+    console.log('더블클릭됨:', id);
+    setEditingSorterId(id);
+    setInputValue(name);
+    setOldSorterName(name);
   };
+
   const handleSaveSorterName = async (id) => {
     const value = inputValue ?? '';
     if (value.trim()) {
       try {
-        await updateSorterName({ sorter_id: id, newName: value });
+        // 'updateSorterName' 액션을 호출하고, 성공적인 응답 처리
+        await setUpdateSorterName({
+          oldSorterName: oldSorterName,  // 기존 이름
+          newName: value,             // 새 이름
+        });
+        console.log("기존이름" + oldSorterName);
+        console.log("새이름" + value);
         console.log('Sorter name updated successfully');
       } catch (error) {
         console.error('Error updating sorter name:', error);
@@ -550,6 +562,7 @@ const SorterPage = () => {
 
     const overId = String(over.id);  // 타입 안정성 확보
     console.log("over.id:", overId);  // 최종 드롭된 위치 출력
+    console.log("드롭중인 요소 : ", active.id);
 
     if (overId.startsWith("sorter-")) {
       const sorterId = overId.replace("sorter-", "");
@@ -558,13 +571,41 @@ const SorterPage = () => {
       if (sorter) {
         console.log("✅ 드롭된 정렬자 ID:", sorterId);
         console.log("📌 드롭된 정렬자 이름:", sorter.sorter_name);
+
+        // 요소 이동 호출
+        setMoveElementToSorter({
+          elementsId: active.id,
+          sorterId: Number(sorterId),
+          sorterName: sorter.sorter_name,
+        });
       } else {
-        console.log("⚠️ 정렬자 찾을 수 없음");
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
       }
+
+    } else if (Number(overId)) {
+      const sorterId = overId;
+      const sorter = sorters.find(s => String(s.sorter_id) === sorterId);
+
+      if (sorter) {
+        console.log("✅ 드롭된 정렬자 ID:", sorterId);
+        console.log("📌 드롭된 정렬자 이름:", sorter.sorter_name);
+
+        // 요소 이동 호출
+        setMoveElementToSorter({
+          elementsId: active.id,
+          sorterId: Number(sorterId),
+          sorterName: sorter.sorter_name,
+        });
+      } else {
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+      }
+
     } else {
       console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
     }
   };
+
+
 
 
 

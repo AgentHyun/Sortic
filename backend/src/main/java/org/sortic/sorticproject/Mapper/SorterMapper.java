@@ -70,8 +70,12 @@ public interface SorterMapper {
     @Delete("DELETE FROM Sorter WHERE user_id = #{user_id}")
     void deleteAllSortersForUser(String user_id);
 
-    @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
-    void updateSorterName(@Param("sorter_id") int sorter_id, @Param("sorter_name") String sorter_name);
+    @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_name = #{old_sorter_name}")
+    int updateSorterName(@Param("old_sorter_name") String old_sorter_name, @Param("sorter_name") String sorter_name);
+
+    @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorter_name}")
+    Sorter findByName(@Param("sorter_name") String sorter_name);
+
     @Delete({
             "<script>",
             "DELETE FROM Sorter WHERE sorter_id IN",
@@ -102,6 +106,10 @@ public interface SorterMapper {
     Sorter findSorterByName(@Param("sorterName") String sorterName);
 
 
+    @Select("SELECT COUNT(*) > 0 FROM Sorter WHERE sorter_name = #{sorterId} AND elements_id = #{elementsId}")
+    boolean existsElementInSorter(int sorterId, int elementsId);
+
+    // addElementToSorter 메서드에서 중복을 처리
     @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
         "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")
     void addElementToSorter(Sorter newSorter);

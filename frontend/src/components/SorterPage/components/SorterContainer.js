@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import { Tooltip } from 'antd';
 import { useDroppable } from '@dnd-kit/core';
@@ -7,7 +7,7 @@ import { X } from 'lucide-react';
 import {
   edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom,
   newElementNameAtom, editingElementIdAtom, editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
-  newElementPriceAtom, elementDetailDataAtom
+  newElementPriceAtom, elementDetailDataAtom,
 } from '../atoms/atoms';
 
 import {
@@ -15,8 +15,8 @@ import {
   fetchElementPriceByIdAction
 } from "../actions/elementAction";
 import {
-  getElementsIdBySorterNameAction, getElementNameByIdAction
-} from "../actions/sorterAction";
+  getElementsIdBySorterNameAction, getElementNameByIdAction, updateSorterNameAction
+} from "../actions/sorterAction";  // updateSorterNameAction 추가
 import SorterBox from "./SorterBox";
 
 const SorterContainer = ({
@@ -50,7 +50,7 @@ const SorterContainer = ({
   const [, setSorterCards] = useAtom(sorterCardsAtom);
   const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
   const [, setSetSelectedElementId] = useAtom(setSelectedElementAction);
-
+ const [, setUpdateSorterNameAction] = useAtom(updateSorterNameAction);
   useEffect(() => {
     const fetchAllElementNames = async () => {
       const result = {};
@@ -66,7 +66,6 @@ const SorterContainer = ({
           );
           result[sorter.sorter_id] = { ids: idList, names };
         } catch (err) {
-          console.error(`❌ sorter ${sorter.sorter_id} 에러:`, err);
           result[sorter.sorter_id] = { ids: [], names: [] };
         }
       }
@@ -77,17 +76,30 @@ const SorterContainer = ({
     fetchAllElementNames();
   }, [sorters, elementsRefreshTrigger]);
 
-  const handleElementClick = (elementId, event) => {
-    event.stopPropagation();
-    if (clickTimeout) clearTimeout(clickTimeout);
-    setClickTimeout(setTimeout(() => {
-      setSelectedElementIds((prev) =>
-        prev.includes(elementId) ? prev.filter((id) => id !== elementId) : [...prev, elementId]
-      );
-    }, 200));
+  const clickTimeoutRef = useRef(null);
+
+  const handleElementClick = (elementId, sorterId, event) => {
+    if (event?.stopPropagation) event.stopPropagation();
+
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+
+    clickTimeoutRef.current = setTimeout(() => {
+      setSelectedElementIds((prev) => {
+        if (prev.includes(elementId)) {
+          return prev.filter((id) => id !== elementId);
+        } else {
+          // 중복 확인 후 추가
+          return prev.includes(elementId) ? prev : [...prev, elementId];
+        }
+      });
+
+    }, 200);
   };
 
-  const handleElementsDoubleClick = (elementId) => {
+
+  const handleElementsDoubleClick = (elementId, sorterName) => {
     setHandleElementDoubleClick(elementId);
     setEditingElementIndex(elementId);
   };
@@ -109,6 +121,8 @@ const SorterContainer = ({
     setSetSelectedElement(elementId);
   };
 
+
+
   const { setNodeRef } = useDroppable({
     id: 'sorters-container',
   });
@@ -124,15 +138,15 @@ const SorterContainer = ({
             >
               <div
                 className="sorter-title"
-                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
+                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id,sorter.sorter_name)} // 더블 클릭 시 이름 수정
               >
                 {editingSorterId === sorter.sorter_id ? (
                   <input
                     value={inputValue ?? ''}
                     onChange={(e) => setInputValue(e.target.value)}
-                    onBlur={() => handleSaveSorterName(sorter.sorter_id)}
+                    onBlur={() => handleSaveSorterName(sorter.sorter_name)} // 수정 후 blur 시 저장
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleSaveSorterName(sorter.sorter_id);
+                      if (e.key === 'Enter') handleSaveSorterName(sorter.sorter_name);
                       else if (e.key === 'Escape') setEditingSorterId(null);
                     }}
                   />
@@ -152,7 +166,7 @@ const SorterContainer = ({
                         key={elementId}
                         id={`element-${elementId}`}
                         className={`element-item ${selectedElementIds?.includes(elementId) ? 'selected' : ''}`}
-                        onClick={(event) => handleElementClick(elementId, event)}
+                        onClick={(event) => handleElementClick(elementId, sorter.sorter_id, event)}
                         onDoubleClick={() => handleElementsDoubleClick(elementId)}
                         onContextMenu={(e) => handleContextMenu(e, elementId, name)}
                       >

@@ -113,16 +113,21 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
   }
 });
 
-export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, newName }) => {
+export const updateSorterNameAction = atom(null, async (get, set, { oldSorterName, newName }) => {
   try {
-    await axios.put('http://localhost:8080/api/sorter/update-name', {
-      sorter_id,
-      sorter_name: newName,
+    // sorter_name을 oldSorterName에서 newName으로 업데이트
+    await axios.put('http://localhost:8080/api/sorter/update', {
+      oldSorterName,
+      sorterName: newName,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',  // JSON 형식으로 설정
+      }
     });
 
     const current = get(sortersAtom);
     const updated = current.map(s =>
-        s.sorter_id === sorter_id ? { ...s, sorter_name: newName } : s
+      s.sorter_name === oldSorterName ? { ...s, sorter_name: newName } : s
     );
 
     set(sortersAtom, updated);
@@ -134,6 +139,8 @@ export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, n
     set(messageAtom, { type: 'error', content: '정렬자 이름 수정 실패' });
   }
 });
+
+
 
 export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIdsToDelete) => {
   const currentSorters = get(sortersAtom);
@@ -217,59 +224,50 @@ export const getElementsIdBySorterNameAction = atom(
 );
 
 
-export const moveElementToSorterAction = atom(null, async (get, set, { elementsNameId, sorterName }) => {
-  const currentSorters = get(sortersAtom);
+export const moveElementToSorterAction = atom(
+  null,
+  async (get, set, { elementsId, sorterId, sorterName }) => {
+    const currentSorters = get(sortersAtom);
 
-  try {
-    // 1단계: 요소의 정보를 가져와서 elements_id를 얻음
-    const response = await axios.get(`http://localhost:8080/api/elements/${elementsNameId}`);
-    const element = response.data;
+    try {
+      // 1단계: 이미 요소가 해당 정렬자에 추가되어 있는지 확인
+      const { data: existingData } = await axios.get(
+        `http://localhost:8080/api/sorter/${sorterId}/elements/${elementsId}`
+      );
 
-    if (!element) {
-      set(messageAtom, { type: 'error', content: '요소를 찾을 수 없습니다.' });
-      return;
+      // 2단계: 요소가 이미 정렬자에 존재하는 경우 처리
+      if (existingData.exists) {
+        set(messageAtom, { type: 'error', content: '이미 해당 요소가 정렬자에 추가되어 있습니다.' });
+        message.error("이미 해당 요소가 정렬자에 추가되어 있습니다.");
+        return; // 요소가 이미 존재하면 더 이상 진행하지 않음
+      }
+
+      // 3단계: 정렬자에 요소를 추가할 요청 본문 구성
+      const newSorter = {
+        user_id: 'user123',
+        elements_id: elementsId,
+        sorter_number: null, // 고정값 null
+        sorter_name: sorterName,
+      };
+
+      // 4단계: 정렬자에 요소 추가 요청
+      const { data: addedSorter } = await axios.post(
+        `http://localhost:8080/api/sorter/name/${sorterName}/addElement`,
+        newSorter
+      );
+
+      // 5단계: 정렬자 리스트 갱신
+      set(sortersAtom, [...currentSorters, addedSorter]);
+
+      // 6단계: 성공 메시지
+      set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
+      message.success(`요소가 ${sorterName}에 추가되었습니다!`);
+
+    } catch (error) {
+      console.error('🚨 정렬자 추가 실패:', error);
+      set(messageAtom, { type: 'error', content: '정렬자 추가 실패' });
+      message.error("정렬자 추가에 실패했습니다.");
     }
-
-    const elementsId = element.elements_name_id; // 해당 요소의 elements_id
-
-    // 2단계: sorter_name에 해당하는 sorterId를 찾기
-    const selectedSorter = currentSorters.find(sorter => sorter.sorter_name === sorterName);
-
-    if (!selectedSorter) {
-      set(messageAtom, { type: 'error', content: '해당하는 정렬자를 찾을 수 없습니다.' });
-      return;
-    }
-
-    const sorterId = selectedSorter.sorter_id;  // 선택된 정렬자의 ID
-
-    // 3단계: 이미 요소가 해당 정렬자에 추가되어 있는지 확인
-    const existingElementInSorter = await axios.get(`http://localhost:8080/api/sorter/${sorterId}/elements/${elementsId}`);
-
-    if (existingElementInSorter.data.exists) {
-      set(messageAtom, { type: 'error', content: '이미 해당 요소가 정렬자에 추가되어 있습니다.' });
-      return;
-    }
-
-    const newSorter = {
-      user_id: 'user123', // 로그인한 사용자 ID로 수정해야 함
-      elements_id: elementsId, // 선택된 elements_id
-      sorter_number: selectedSorter.sorter_number,  // 정렬자 번호는 선택된 정렬자의 번호
-      sorter_name: selectedSorter.sorter_name, // 선택된 정렬자의 이름
-    };
-
-    // 4단계: 정렬자에 요소를 추가하는 요청
-    const sorterResponse = await axios.post(`http://localhost:8080/api/sorter/name/${sorterName}/addElement`, newSorter);
-
-    // 5단계: 새로운 정렬자 리스트 갱신
-    set(sortersAtom, [...currentSorters, sorterResponse.data]);
-
-    // 6단계: 사용자에게 성공 메시지 표시
-    set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
-    message.success(`정렬자 ${newSorter.sorter_name}(이)가 추가되었습니다!`);
-
-  } catch (error) {
-    console.error('🚨 정렬자 추가 실패:', error);
-    set(messageAtom, { type: 'error', content: '정렬자 추가 실패' });
-    message.error("정렬자 추가에 실패했습니다.");
   }
-});
+);
+
