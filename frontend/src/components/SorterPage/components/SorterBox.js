@@ -1,5 +1,5 @@
 // src/components/SorterPage/components/SorterBox.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useDroppable } from '@dnd-kit/core';
 
 const SorterBox = ({ sorterId, children }) => {

@@ -549,7 +549,7 @@ const SorterPage = () => {
     setCards(arrayMove(cards, oldIndex, newIndex));
 
     const overId = String(over.id);  // 타입 안정성 확보
-    console.log("over.id:", overId);  // over.id 확인
+    console.log("over.id:", overId);  // 최종 드롭된 위치 출력
 
     if (overId.startsWith("sorter-")) {
       const sorterId = overId.replace("sorter-", "");

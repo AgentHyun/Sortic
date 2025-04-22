@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import { Tooltip } from 'antd';
-import Slider from 'react-slick';
 import { useDroppable } from '@dnd-kit/core';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { X } from 'lucide-react';
 
 import {
@@ -21,17 +18,6 @@ import {
   getElementsIdBySorterNameAction, getElementNameByIdAction
 } from "../actions/sorterAction";
 import SorterBox from "./SorterBox";
-
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  swipeToSlide: true,
-  centerMode: true,
-  centerPadding: '40px',
-};
 
 const SorterContainer = ({
                            sorters,
@@ -124,17 +110,17 @@ const SorterContainer = ({
   };
 
   const { setNodeRef } = useDroppable({
-    id: 'sortable-containerzz', // 드롭 가능한 영역의 id
+    id: 'sorters-container',
   });
 
   return (
     <div ref={setNodeRef} className="sorter-scroll-wrapper">
-      <Slider {...settings}>
+      <div className="sorter-list">
         {sorters.map((sorter) => (
-          <div key={sorter.sorter_id}>
+          <div key={sorter.sorter_id} className="sorter-wrapper">
             <div
               onClick={() => handleSorterClick(sorter.sorter_id)}
-              className={`sorter-wrapper ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`}
+              className={`sorter-card ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`}
             >
               <div
                 className="sorter-title"
@@ -179,7 +165,7 @@ const SorterContainer = ({
             </div>
           </div>
         ))}
-      </Slider>
+      </div>
       {selectedSorters.length > 0 && (
         <button className="delete-selected-btn" onClick={multiDeleteSorters}>
           Delete
