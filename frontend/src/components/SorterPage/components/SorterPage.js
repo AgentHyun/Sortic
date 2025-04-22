@@ -6,7 +6,7 @@ import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'ant
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
-import { DndContext,  PointerSensor} from '@dnd-kit/core';
+import {DndContext, DragOverlay, PointerSensor, useDroppable} from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { useSensors, useSensor, MouseSensor, TouchSensor } from '@dnd-kit/core';
 
@@ -84,6 +84,7 @@ import BillPage from "../../BillPage/components/BillPage";
 import SimpleSortableContainer from "../components/ SimpleSortableContainer";
 import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
+import SortableItem from "./SortableItem";
 
 
 const { Title } = Typography;
@@ -162,6 +163,7 @@ const SorterPage = () => {
     const navigate = useNavigate();
     const { confirm } = Modal;
   const [activeId, setActiveId] = useState(null);
+  const sorterContainerRef = useRef(null);
   const activeCard = cards.find(card => card.elements_name_id === activeId);
     const settings = {
         dots: true,
@@ -472,7 +474,9 @@ const SorterPage = () => {
 
 
 
-
+  const { setNodeRef } = useDroppable({
+    id: 'sortable-container',
+  });
     const sectionRef = useRef(null);
     const addSorter = () =>{
         setAddSorter();
@@ -540,23 +544,56 @@ const SorterPage = () => {
   const handleDragEnd = (event) => {
     const { active, over } = event;
     setActiveId(null);
+
     if (!over || active.id === over.id) return;
 
-    // 아이템을 이동시킬 때 기존 위치와 새 위치의 인덱스를 구하여 상태 업데이트
     const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
     const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
     setCards(arrayMove(cards, oldIndex, newIndex));
+
+    const overId = String(over.id);  // 타입 안정성 확보
+    console.log("over.id:", overId);  // over.id 확인
+
+    if (overId.startsWith("sorter-")) {
+      const sorterId = overId.replace("sorter-", "");
+      const sorter = sorters.find(s => String(s.sorter_id) === sorterId);
+
+      if (sorter) {
+        console.log("✅ 드롭된 정렬자 ID:", sorterId);
+        console.log("📌 드롭된 정렬자 이름:", sorter.sorter_name);
+      } else {
+        console.log("⚠️ 정렬자 찾을 수 없음");
+      }
+    } else {
+      console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
+    }
   };
 
 
-    return (
+
+
+
+
+
+
+
+
+
+  return (
         <div>
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+
           >
+
+
+            <SortableContext
+              items={cards.map((c) => c.elements_name_id)}
+              strategy={rectSortingStrategy}
+            >
             <div className="sorter-page-section">
 
 
@@ -654,30 +691,52 @@ const SorterPage = () => {
 
                         </div>
 
-                      <SortableContext
-                        items={cards.map((c) => c.elements_name_id)}
-                        strategy={rectSortingStrategy}
-                      >
+
+                        <div
+                          className="box-section-wrapper"
+                          style={{
+                            maxHeight: "calc(28vh - 80px)",
+                            overflowY: "auto",
+                            flexGrow: 1,
+                            marginLeft: "1vw",
+                          }}
+                        >
+                          <div className="box-section">
+                            {cards.map((card) => (
+                              <SortableItem
+                                key={card.elements_name_id}
+                                card={card}
+                                isSelected={selectedElementIds.includes(card.elements_name_id)}
+                                isEditing={
+                                  isEditingElement &&
+                                  editingElementIndex === card.elements_name_id
+                                }
+                                newElementName={newElementName}
+                                handleElementNameChange={handleElementNameChange}
+                                handleElementSaveName={handleElementSaveName}
+                                handleDoubleClickElementName={handleDoubleClickElementName}
+                                openContextMenu={openContextMenu}
+                                setNewElementName={setNewElementName}
+                                setNewElementPrice={setNewElementPrice}
+                                setSelectedElementId={setSelectedElementId}
+                                setSetSelectedElementAction={setSetSelectedElementAction}
+                                setToggleSelectElementAction={setToggleSelectElementAction}
+                              />
+
+                            ))}
 
 
-                      <SortableContainer
-                        cards={cards}
-                        setCards={setCards}
-                        selectedElementIds={selectedElementIds}
-                        isEditingElement={isEditingElement}
-                        editingElementIndex={editingElementIndex}
-                        newElementName={newElementName}
-                        handleElementNameChange={handleElementNameChange}
-                        handleElementSaveName={handleElementSaveName}
-                        handleDoubleClickElementName={handleDoubleClickElementName}
-                        openContextMenu={openContextMenu}
-                        setNewElementName={setNewElementName}
-                        setNewElementPrice={setNewElementPrice}
-                        setSelectedElementId={setSelectedElementId}
-                        setSetSelectedElementAction={setSetSelectedElementAction}
-                        setToggleSelectElementAction={setToggleSelectElementAction}
-                      />
-                      </SortableContext>
+                          </div>
+                        </div>
+
+                      <DragOverlay>
+                        {activeCard ? (
+                          <div className="category-item dragging">
+                            {activeCard.elements_name}
+                          </div>
+                        ) : null}
+                      </DragOverlay>
+
 
                       <ContextMenu />
 
@@ -874,42 +933,32 @@ const SorterPage = () => {
 
 
 
-                <div className="sorter-sort-section">
+              <div className="sorter-sort-section" id="sorter-sort-section"   ref={setNodeRef}>
+                <SorterContainer
+                  sorters={sorters}
+                  setSorters={setSorters}
+                  selectedSorters={selectedSorters}
+                  handleSorterClick={() => {}}
+                  deleteSorter={() => {}}
+                  multiDeleteSorters={() => {}}
+                  editingSorterId={null}
+                  inputValue={""}
+                  setInputValue={() => {}}
+                  handleSaveSorterName={() => {}}
+                  handleSorterNameDoubleClick={() => {}}
+                />
+              </div>
 
-
-
-
-                  <SortableContext
-                    items={cards.map((c) => c.elements_name_id)}
-                    strategy={rectSortingStrategy}
-                  >
-
-                    <SorterContainer
-                        sorters={sorters}
-                        setSorters={setSorters}
-                        selectedSorters={selectedSorters}
-                        handleSorterClick={handleSorterClick}
-                        deleteSorter={deleteSorter}
-                        multiDeleteSorters={multiDeleteSorters}
-                        editingSorterId={editingSorterId}
-                        inputValue={inputValue}
-                        setInputValue={setInputValue}
-                        handleSaveSorterName={handleSaveSorterName}
-                        handleSorterNameDoubleClick={handleSorterNameDoubleClick}
-                    />
-
-                  </SortableContext>
-
-                </div>
 
 
             </div>
 
 
             <BillPage/>
-
+            </SortableContext>
           </DndContext>
         </div>
+
     );
 };
 
