@@ -71,9 +71,11 @@ public class SorterService {
 
 
 
-    public void deleteMultipleSorters(List<Integer> sorterIds) {
-        sorterMapper.deleteMultipleSorters(sorterIds);
+    public void deleteElementsBySorterNameAndIds(String sorterName, List<Integer> elementIds) {
+        sorterMapper.deleteElementsBySorterNameAndIds(sorterName, elementIds);
     }
+
+
 
 
     @Transactional

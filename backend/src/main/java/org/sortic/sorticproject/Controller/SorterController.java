@@ -1,5 +1,6 @@
 package org.sortic.sorticproject.Controller;
 
+import org.sortic.sorticproject.Entity.DeleteElementsRequest;
 import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Entity.Sorter;
 import org.sortic.sorticproject.Service.SorterService;
@@ -58,11 +59,13 @@ public class SorterController {
 
 
 
-    @PostMapping("/delete/multiple")
-    public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
-        sorterService.deleteMultipleSorters(sorterIds);
-        return ResponseEntity.ok("다중 삭제 완료");
+    @PostMapping("/delete/element_by_sorter_name")
+    public ResponseEntity<String> deleteElementsBySorterName(@RequestBody DeleteElementsRequest request) {
+        sorterService.deleteElementsBySorterNameAndIds(request.getSorterName(), request.getElementIds());
+        return ResponseEntity.ok("정렬자별 요소 삭제 완료");
     }
+
+
 
 
 

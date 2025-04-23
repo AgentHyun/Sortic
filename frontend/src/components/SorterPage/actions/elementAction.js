@@ -117,22 +117,29 @@ export const handleBulkDeleteElementsAction = atom(
 
       // 정렬자별 요소 삭제 요청
       if (hasGroupedSelection) {
-        const sorterIds = Object.entries(selectedIdsBySorter)
-          .filter(([_, ids]) => ids.length > 0)
-          .map(([sorterId]) => parseInt(sorterId, 10));
+        // 선택된 sorter 이름과 element_id들을 찾아서 삭제 요청 보냄
+        for (const [sorterName, elementIds] of Object.entries(selectedIdsBySorter)) {
+          if (elementIds.length > 0) {
+            console.log(`🧩 [${sorterName}]에 해당하는 요소 삭제 요청 보냄:`, elementIds);
 
-        console.log("🧩 정렬자 삭제 요청 보냄:", sorterIds);
+            // 서버로 전송할 데이터 형식: { sorter_name: 'sorter1', element_ids: [elementId1, elementId2, ...] }
+            const sorterDeleteResponse = await axios.post(
+              `http://localhost:8080/api/sorter/delete/element_by_sorter_name`,
+              { sorter_name: sorterName, element_ids: elementIds },
+              {
+                headers: { 'Content-Type': 'application/json' }
+              }
+            );
 
-        const sorterDeleteResponse = await axios.post(`http://localhost:8080/api/sorter/delete/multiple`, sorterIds, {
-          headers: { 'Content-Type': 'application/json' }
-        });
+            console.log("✅ [정렬자별 삭제 응답]:", sorterDeleteResponse);
 
-        console.log("✅ 정렬자 삭제 응답:", sorterDeleteResponse);
+            // 상태 초기화
+            set(selectedElementIdsBySorterAtom, {}); // 정렬자별 선택된 요소 초기화
 
-        // 상태 초기화
-        set(selectedElementIdsBySorterAtom, {}); // 정렬자별 선택된 요소 초기화
-
-        message.success("정렬자가 삭제되었습니다!");
+            // 메시지 출력
+            message.success(`[${sorterName}] 정렬자에서 요소들이 삭제되었습니다!`);
+          }
+        }
       }
 
     } catch (error) {

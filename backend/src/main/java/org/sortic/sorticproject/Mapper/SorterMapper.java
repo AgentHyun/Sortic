@@ -79,14 +79,16 @@ public interface SorterMapper {
 
     @Delete({
         "<script>",
-        "DELETE FROM Sorter WHERE sorter_id IN",
-        "<foreach item='id' collection='sorterIds' open='(' separator=',' close=')'>",
-        "#{id}",
+        "DELETE FROM Element",
+        "WHERE elements_name_id IN",  // elements_name_id로 삭제하려는 경우 변경
+        "(SELECT elements_id FROM Sorter WHERE sorter_name = #{sorterName})",
+        "AND elements_name_id IN",   // 요소 ID로 필터링
+        "<foreach item='id' collection='elementIds' open='(' separator=',' close=')'>",
+        "#{id}",                     // elementIds로 넘어온 ID
         "</foreach>",
         "</script>"
     })
-    void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
-
+    void deleteElementsBySorterNameAndIds(@Param("sorterName") String sorterName, @Param("elementIds") List<Integer> elementIds);
 
     @Update("UPDATE Sorter SET elements_id = #{elements_id} WHERE sorter_id = #{sorter_id}")
     void updateElementsId(@Param("sorter_id") int sorter_id, @Param("elements_id") int elements_id);
