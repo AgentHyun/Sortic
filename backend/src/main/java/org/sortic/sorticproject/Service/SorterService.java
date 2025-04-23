@@ -58,16 +58,16 @@ public class SorterService {
         return inserted;
     }
 
-    public Sorter updateSorterName(String oldSorterName, String sorterName) {
-        // Sorter 업데이트 수행
+    public List<Sorter> updateSorterName(String oldSorterName, String sorterName) {
         int result = sorterMapper.updateSorterName(oldSorterName, sorterName);
 
         if (result > 0) {
-            // 업데이트된 Sorter 정보를 반환 (예: 이름 변경된 Sorter)
-            return sorterMapper.findByName(sorterName); // 업데이트된 정보를 반환
+            // 변경된 이름으로 된 모든 Sorter 반환
+            return sorterMapper.findAllByName(sorterName);
         }
-        return null; // 업데이트 실패시 null 반환
+        return Collections.emptyList();
     }
+
 
 
 
@@ -161,9 +161,9 @@ public class SorterService {
         sorterMapper.addElementToSorter(newSorter);  // 정렬자에 요소 추가
         return newSorter;  // 새로 추가된 정렬자 반환
     }
-    // Service
-    public boolean doesElementExistInSorter(int sorterId, int elementsId) {
-        // DB에서 해당 요소가 이미 정렬자에 포함되어 있는지 확인
-        return sorterMapper.existsElementInSorter(sorterId, elementsId);
+    public boolean doesElementExistInSorterByName(String sorterName, int elementsId) {
+        // DB에서 해당 요소가 지정된 정렬자 이름에 포함되어 있는지 확인
+        return sorterMapper.existsElementInSorterByName(sorterName, elementsId);
     }
+
 }

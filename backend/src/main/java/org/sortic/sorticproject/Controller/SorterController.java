@@ -44,14 +44,18 @@ public class SorterController {
         return ResponseEntity.ok(uniqueSorters);
     }
     @PutMapping("/update")
-    public ResponseEntity<Void> updateSorterName(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<List<Sorter>> updateSorterName(@RequestBody Map<String, String> payload) {
         String oldSorterName = payload.get("oldSorterName");
         String sorterName = payload.get("sorterName");
 
-        // sorter_name을 업데이트
-        sorterService.updateSorterName(oldSorterName, sorterName);
-        return ResponseEntity.noContent().build();  // No Content 상태로 반환
+        List<Sorter> updatedSorters = sorterService.updateSorterName(oldSorterName, sorterName);
+
+        if (updatedSorters.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedSorters);
     }
+
 
 
     @PostMapping("/delete/multiple")
@@ -101,12 +105,13 @@ public class SorterController {
         return ResponseEntity.ok(addedSorter);
     }
 
-    @GetMapping("/{sorterId}/elements/{elementsId}")
-    public ResponseEntity<Map<String, Boolean>> checkElementExistsInSorter(
-        @PathVariable int sorterId,
+    @GetMapping("/{sorterName}/elements/{elementsId}")
+    public ResponseEntity<Map<String, Boolean>> checkElementExistsInSorterByName(
+        @PathVariable String sorterName,
         @PathVariable int elementsId) {
-        boolean exists = sorterService.doesElementExistInSorter(sorterId, elementsId);
+        boolean exists = sorterService.doesElementExistInSorterByName(sorterName, elementsId);
         return ResponseEntity.ok(Map.of("exists", exists));
     }
+
 
 }

@@ -72,9 +72,10 @@ public interface SorterMapper {
 
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_name = #{old_sorter_name}")
     int updateSorterName(@Param("old_sorter_name") String old_sorter_name, @Param("sorter_name") String sorter_name);
-
     @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorter_name}")
-    Sorter findByName(@Param("sorter_name") String sorter_name);
+    List<Sorter> findAllByName(@Param("sorter_name") String sorterName);
+
+
 
     @Delete({
             "<script>",
@@ -106,8 +107,9 @@ public interface SorterMapper {
     Sorter findSorterByName(@Param("sorterName") String sorterName);
 
 
-    @Select("SELECT COUNT(*) > 0 FROM Sorter WHERE sorter_name = #{sorterId} AND elements_id = #{elementsId}")
-    boolean existsElementInSorter(int sorterId, int elementsId);
+    @Select("SELECT COUNT(*) > 0 FROM Sorter WHERE sorter_name = #{sorterName} AND elements_id = #{elementsId}")
+    boolean existsElementInSorterByName(String sorterName, int elementsId);
+
 
     // addElementToSorter 메서드에서 중복을 처리
     @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +

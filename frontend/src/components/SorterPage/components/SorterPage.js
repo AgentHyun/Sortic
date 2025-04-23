@@ -505,24 +505,44 @@ const SorterPage = () => {
     setOldSorterName(name);
   };
 
-  const handleSaveSorterName = async (id) => {
-    const value = inputValue ?? '';
-    if (value.trim()) {
-      try {
-        // 'updateSorterName' 액션을 호출하고, 성공적인 응답 처리
-        await setUpdateSorterName({
-          oldSorterName: oldSorterName,  // 기존 이름
-          newName: value,             // 새 이름
-        });
-        console.log("기존이름" + oldSorterName);
-        console.log("새이름" + value);
-        console.log('Sorter name updated successfully');
-      } catch (error) {
-        console.error('Error updating sorter name:', error);
-      }
+  const handleSaveSorterName = async () => {
+    const value = inputValue?.trim();
+    if (!value || !editingSorterId) return;
+
+    const sorterToUpdate = sorters.find(s => s.sorter_id === editingSorterId);
+    if (!sorterToUpdate) return;
+
+    const oldName = sorterToUpdate.sorter_name;
+
+    try {
+      // 이름 업데이트 요청
+      await setUpdateSorterName({
+        oldSorterName: oldName,
+        newName: value,
+      });
+
+      // 상태에서 해당 Sorter만 이름 수정
+      const updatedSorters = sorters.map(sorter =>
+        sorter.sorter_id === editingSorterId
+          ? { ...sorter, sorter_name: value }
+          : sorter
+      );
+
+      // 중복된 sorter_name 제거 (ID가 다르더라도 이름이 같은 경우는 유지하지 않음)
+      const uniqueSorters = updatedSorters.filter(
+        (sorter, index, self) =>
+          index === self.findIndex(s => s.sorter_name === sorter.sorter_name)
+      );
+
+      setSorters(uniqueSorters);
+      console.log("기존 이름:", oldName, " → 새 이름:", value);
+    } catch (error) {
+      console.error('Error updating sorter name:', error);
     }
-    setEditingSorterId(null);  // 편집 모드 종료
+
+    setEditingSorterId(null);  // 편집 종료
   };
+
 
   const handleSorterClick = (sorter_id) => {
     setSelectedSorters((prevSelected) => {
@@ -787,9 +807,10 @@ const SorterPage = () => {
                 okText="Next"
                 onCancel={() => setAddElementModalVisible(false)}
                 okButtonProps={{
+                  className: 'custom-ok-button',
                   style: {
                     backgroundColor: '#3b4a4d', // 원하는 색상으로 변경
-
+                    border : 'none',
                   }
                 }}
               >

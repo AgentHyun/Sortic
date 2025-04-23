@@ -68,9 +68,9 @@
 }
 
 .category-item.selected {
-    color : #6e5047;
+    color : #956d62;
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
-    background: #edc540; /* ✅ 부드러운 컬러 그라데이션 */
+    background: #f9e050; /* ✅ 부드러운 컬러 그라데이션 */
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
     transform: scale(1.02); /* ✅ 살짝 확대 효과 */
@@ -213,7 +213,7 @@
 }
 
 .category-item:hover {
-    background-color: #edc540;
+    background-color: #f4c03a;
     color: white;
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
@@ -237,4 +237,8 @@
     max-height: 100%; /* 부모 요소의 최대 높이에 맞게 제한 */
     transition: transform 0.3s ease, opacity 0.3s ease;
     will-change: transform, opacity;
+}
+.custom-ok-button:hover {
+  background-color: #5a6c6f!important; /* hover 시 다른 색으로 변경 */
+  cursor: pointer; /* 마우스 커서 모양을 pointer로 변경 */
 }
