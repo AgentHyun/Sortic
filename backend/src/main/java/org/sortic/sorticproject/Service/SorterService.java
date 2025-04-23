@@ -116,7 +116,9 @@ public class SorterService {
         // sorterMapper에서 여러 개의 elements_id를 가져오는 메소드 호출
         return sorterMapper.getElementsIdBySorterName(sorterName);
     }
-
+    public Integer getSorterIdByNameAndElementId(String sorterName, int elementsId) {
+        return sorterMapper.findSorterIdByNameAndElementId(sorterName, elementsId);
+    }
     @Transactional
     public Sorter addElementToSorter(int sorterId, int elementId) {
         // sorterId로 해당 Sorter 객체 조회

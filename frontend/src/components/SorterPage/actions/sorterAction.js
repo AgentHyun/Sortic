@@ -186,6 +186,35 @@ export const getElementNameByIdAction = atom(
     }
 );
 
+export const getSorterIdByNameAndElementIdAction = atom(
+  null,
+  async (get, set, { sorterName, elementsId }) => {
+    try {
+      // sorter_name과 elements_id에 해당하는 sorter_id를 가져오는 API 호출
+      const response = await axios.get(`http://localhost:8080/api/sorter/get-sorter-id`, {
+        params: {
+          sorterName,
+          elementsId
+        }
+      });
+
+      const sorterId = response.data;  // 반환된 sorter_id
+
+      // sorter_id를 atom에 설정
+      set(sorterCardsAtom, sorterId);  // 필요시 적절한 atom을 설정
+
+      message.success(`sorter_id 조회 성공: ${sorterId} 조회됨.`);
+      return sorterId;
+
+    } catch (error) {
+      console.error('🚨 sorter_id 조회 실패:', error);
+
+      set(messageAtom, { type: 'error', content: 'sorter_id 조회 실패' });
+      message.error("sorter_id 조회에 실패했습니다.");
+      return null;
+    }
+  }
+);
 
 
 

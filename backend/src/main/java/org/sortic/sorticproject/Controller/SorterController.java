@@ -118,5 +118,18 @@ public class SorterController {
         return ResponseEntity.ok(Map.of("exists", exists));
     }
 
+    // sorter_name과 elements_id에 해당하는 sorter_id를 반환하는 API
+    @GetMapping("/get-sorter-id")
+    public ResponseEntity<Integer> getSorterIdByNameAndElementId(
+        @RequestParam String sorterName,
+        @RequestParam int elementsId) {
 
+        Integer sorterId = sorterService.getSorterIdByNameAndElementId(sorterName, elementsId);
+
+        if (sorterId != null) {
+            return ResponseEntity.ok(sorterId);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

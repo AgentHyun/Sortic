@@ -113,7 +113,8 @@ public interface SorterMapper {
     @Select("SELECT COUNT(*) > 0 FROM Sorter WHERE sorter_name = #{sorterName} AND elements_id = #{elementsId}")
     boolean existsElementInSorterByName(String sorterName, int elementsId);
 
-
+    @Select("SELECT sorter_id FROM Sorter WHERE sorter_name = #{sorterName} AND elements_id = #{elementsId}")
+    Integer findSorterIdByNameAndElementId(String sorterName, int elementsId);
     // addElementToSorter 메서드에서 중복을 처리
     @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
         "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")

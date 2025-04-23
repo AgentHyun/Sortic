@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import {message, Tooltip} from 'antd';
+import { message, Tooltip } from 'antd';
 import { useDroppable } from '@dnd-kit/core';
 import { X } from 'lucide-react';
 
 import {
   edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom,
-  newElementNameAtom,  editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
-  newElementPriceAtom, selectedElementIdsBySorterAtom, selectedElementNamesBySorterAtom
+  newElementNameAtom, editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
+  newElementPriceAtom, selectedElementIdsBySorterAtom, selectedElementNamesBySorterAtom, selectedSorterIdsAtom
 } from '../atoms/atoms';
 
 import {
@@ -15,8 +15,8 @@ import {
   fetchElementPriceByIdAction
 } from "../actions/elementAction";
 import {
-  getElementsIdBySorterNameAction, getElementNameByIdAction, updateSorterNameAction
-} from "../actions/sorterAction";  // updateSorterNameAction 추가
+  getElementsIdBySorterNameAction, getElementNameByIdAction, updateSorterNameAction, getSorterIdByNameAndElementIdAction
+} from "../actions/sorterAction"; // updateSorterNameAction 추가
 import SorterBox from "./SorterBox";
 import axios from "axios";
 
@@ -51,12 +51,22 @@ const SorterContainer = ({
   const [, setSorterCards] = useAtom(sorterCardsAtom);
   const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
   const [, setSetSelectedElementId] = useAtom(setSelectedElementAction);
- const [, setUpdateSorterNameAction] = useAtom(updateSorterNameAction);
- const [selectedElementNamesBySorter,   setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
+  const [, setUpdateSorterNameAction] = useAtom(updateSorterNameAction);
+  const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
   const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
+  const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
+  const [getSorterIdByNameAndElementId, setGetSorterIdByNameAndElementId] = useAtom(getSorterIdByNameAndElementIdAction);
+
   useEffect(() => {
-    console.log("최종 선택된 요소 상태: ", selectedElementIdsBySorter);
+    const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
+      (key) => selectedElementIdsBySorter[key].length > 0
+    );
+
+    // Atom 업데이트
+    setSelectedSorterIds(selectedSorterIds);
+    console.log("소올터", selectedSorterIds);
   }, [selectedElementIdsBySorter]);
+
   useEffect(() => {
     const fetchAllElementNames = async () => {
       const result = {};
@@ -84,76 +94,66 @@ const SorterContainer = ({
 
   const clickTimeoutRef = useRef(null);
 
-  const handleElementClick = (elementId, sorterName, event) => {
+  const handleElementClick = async (elementId, sorterName, event) => {
     if (event?.stopPropagation) event.stopPropagation();
 
-    if (clickTimeoutRef.current) {
-      clearTimeout(clickTimeoutRef.current);
+    try {
+      const sorterId = await setGetSorterIdByNameAndElementId({
+        sorterName,
+        elementsId: elementId,
+      });
+
+      if (!sorterId) {
+        console.warn('⚠️ sorter_id를 찾지 못했습니다.');
+        return;
+      }
+
+      // 선택 ID 토글
+      const updatedIdsBySorter = { ...selectedElementIdsBySorter };
+      const prevSelected = updatedIdsBySorter[sorterId] || [];
+
+      const newSelected = prevSelected.includes(elementId)
+        ? prevSelected.filter((id) => id !== elementId)
+        : [...prevSelected, elementId];
+
+      updatedIdsBySorter[sorterId] = newSelected;
+      setSelectedElementIdsBySorter(updatedIdsBySorter);
+
+      // 이름 토글
+      const updatedNamesBySorter = { ...selectedElementNamesBySorter };
+      const index = elementNamesBySorter[sorterId]?.ids?.indexOf(elementId);
+      const elementName = elementNamesBySorter[sorterId]?.names?.[index];
+      const prevNames = updatedNamesBySorter[sorterId] || [];
+
+      const newNames = prevNames.includes(elementName)
+        ? prevNames.filter((name) => name !== elementName)
+        : [...prevNames, elementName];
+
+      updatedNamesBySorter[sorterId] = newNames;
+      setSelectedElementNamesBySorter(updatedNamesBySorter);
+
+      // 선택된 sorter ID 업데이트
+      const allSelectedIds = Object.values(updatedIdsBySorter).flat();
+      const collectedSorterIds = [];
+
+      allSelectedIds.forEach((id) => {
+        sorters.forEach((sorter) => {
+          const sid = String(sorter.sorter_id);
+          if (
+            elementNamesBySorter[sid]?.ids?.includes(id) &&
+            !collectedSorterIds.includes(sid)
+          ) {
+            collectedSorterIds.push(sid);
+          }
+        });
+      });
+
+      setSelectedSorterIds(collectedSorterIds);
+    } catch (error) {
+      console.error('🚨 sorter_id 조회 실패:', error);
+      message.error("sorter_id 조회에 실패했습니다.");
     }
-
-    clickTimeoutRef.current = setTimeout(() => {
-      // 1️⃣ sorterName에 해당하는 모든 sorter_id 수집
-      const matchingSorterIds = Object.keys(elementNamesBySorter).filter(
-        sid => sorters.find(s => String(s.sorter_id) === sid)?.sorter_name === sorterName
-      );
-
-      // 2️⃣ 해당 sorter_id들에 해당하는 모든 요소 ID 및 이름 수집
-      const allElementIds = matchingSorterIds.flatMap(
-        sid => elementNamesBySorter[sid]?.ids || []
-      );
-      const allElementNames = matchingSorterIds.flatMap(
-        sid => elementNamesBySorter[sid]?.names || []  // names 구조가 있어야 함
-      );
-
-      console.log(`🔎 [${sorterName}]와 관련된 sorter_id들:`, matchingSorterIds);
-      console.log(`✅ 포함된 요소 ID들:`, allElementIds);
-      console.log(`✅ 포함된 요소 이름들:`, allElementNames);
-
-      // 3️⃣ ID 선택 상태 업데이트
-      setSelectedElementIdsBySorter((prev) => {
-        const prevSelected = prev[sorterName] || [];
-        const filtered = prevSelected.filter((id) => allElementIds.includes(id));
-
-        let newSelected;
-        if (filtered.includes(elementId)) {
-          newSelected = filtered.filter((id) => id !== elementId);
-        } else {
-          newSelected = [...filtered, elementId];
-        }
-
-        console.log(`🟢 선택된 ID들 [${sorterName}]:`, newSelected);
-
-        return {
-          ...prev,
-          [sorterName]: newSelected,
-        };
-      });
-
-      // 4️⃣ 이름 선택 상태 업데이트
-      setSelectedElementNamesBySorter((prev) => {
-        const index = allElementIds.indexOf(elementId);
-        const elementName = allElementNames[index];
-        const prevNames = prev[sorterName] || [];
-
-        let newNames;
-        if (prevNames.includes(elementName)) {
-          newNames = prevNames.filter(name => name !== elementName);
-        } else {
-          newNames = [...prevNames, elementName];
-        }
-
-        console.log(`🟣 선택된 이름들 [${sorterName}]:`, newNames);
-
-        return {
-          ...prev,
-          [sorterName]: newNames,
-        };
-      });
-    }, 200);
   };
-
-
-
 
   const handleElementsDoubleClick = (elementId, sorterName) => {
     setHandleElementDoubleClick(elementId);
@@ -177,8 +177,6 @@ const SorterContainer = ({
     setSetSelectedElement(elementId);
   };
 
-
-
   const { setNodeRef } = useDroppable({
     id: 'sorters-container',
   });
@@ -194,7 +192,7 @@ const SorterContainer = ({
             >
               <div
                 className="sorter-title"
-                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id,sorter.sorter_name)} // 더블 클릭 시 이름 수정
+                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)} // 더블 클릭 시 이름 수정
               >
                 {editingSorterId === sorter.sorter_id ? (
                   <input
@@ -217,18 +215,20 @@ const SorterContainer = ({
                 <div className="element-names">
                   {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
                     const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
+
+                    // 여기서 isSelected를 선언
+                    const isSelected = selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId);
+
                     return name && elementId != null ? (
                       <div
                         key={elementId}
                         id={`element-${elementId}`}
                         className={`element-item ${
-                          selectedElementIdsBySorter[sorter.sorter_name]?.includes(elementId)
+                          selectedSorterIds.includes(String(sorter.sorter_id)) && isSelected
                             ? 'selected-sorter-item'
                             : ''
                         }`}
-
                         onClick={(event) => handleElementClick(elementId, sorter.sorter_name, event)}
-
                         onDoubleClick={() => handleElementsDoubleClick(elementId)}
                         onContextMenu={(e) => handleContextMenu(e, elementId, name)}
                       >
@@ -238,7 +238,6 @@ const SorterContainer = ({
                   })}
                 </div>
               </SorterBox>
-
             </div>
           </div>
         ))}
