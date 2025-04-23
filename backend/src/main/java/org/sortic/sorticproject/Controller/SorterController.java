@@ -64,6 +64,8 @@ public class SorterController {
         return ResponseEntity.ok("다중 삭제 완료");
     }
 
+
+
     @PutMapping("/update-elements")
     public ResponseEntity<Sorter> updateElementsId(@RequestBody Map<String, Integer> payload) {
         int sorterId = payload.get("sorter_id");

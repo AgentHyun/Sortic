@@ -25,39 +25,25 @@ export const addSorterAction = atom(null, async (get, set) => {
   };
 
   try {
+    // 정렬자 추가 요청
     const response = await axios.post('http://localhost:8080/api/sorter/add', newSorter); // ✅ 경로 수정
-    set(sortersAtom, [...currentSorters, response.data]);
-    set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
-    console.log(get(sortersAtom));
-    message.success( `sorter${currentSorters.length + 1}`+ "(이)가 추가되었습니다!");
 
+    // 서버에서 최신 정렬자 목록을 가져와서 상태 업데이트
+    const updatedSortersResponse = await axios.get('http://localhost:8080/api/sorter/user/user123'); // 최신 정렬자 리스트 조회
+    const updatedSorters = updatedSortersResponse.data;
 
-  } catch (error) {
-    console.error('🚨 정렬자 추가 실패:', error);
-    set(messageAtom, { type: 'error', content: '정렬자 추가에 실패했습니다.' });
-  }
-});
-
-export const addSorterWithElementIdAction = atom(null, async (get, set, elementsId) => {
-  const currentSorters = get(sortersAtom);
-  const newSorter = {
-    user_id: 'user123', // 실제 로그인한 유저 ID로 바꿔야 함
-    elements_id: elementsId,
-    sorter_number: currentSorters.length + 1,
-    sorter_name: `sorter${currentSorters.length + 1}`,
-  };
-
-  try {
-    const response = await axios.post('http://localhost:8080/api/sorter/add', newSorter);
-    set(sortersAtom, [...currentSorters, response.data]);
+    set(sortersAtom, updatedSorters); // 상태 업데이트
     set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
     message.success(`${newSorter.sorter_name}(이)가 추가되었습니다!`);
+
   } catch (error) {
     console.error('🚨 정렬자 추가 실패:', error);
     set(messageAtom, { type: 'error', content: '정렬자 추가에 실패했습니다.' });
-    message.error("정렬자 추가 실패");
   }
 });
+
+
+
 
 
 

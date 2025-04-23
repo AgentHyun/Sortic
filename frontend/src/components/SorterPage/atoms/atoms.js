@@ -86,6 +86,7 @@ export const sorterInputValueAtom = atom("");
 export const selectedSortersAtom = atom([]);
 export const oldSorterNameAtom = atom("");
 export const selectedElementIdsBySorterAtom = atom({});
+export const selectedElementNamesBySorterAtom = atom({});
 
 
 

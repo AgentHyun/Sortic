@@ -75,6 +75,7 @@ public class SorterService {
         sorterMapper.deleteMultipleSorters(sorterIds);
     }
 
+
     @Transactional
     public Sorter updateElementsId(int sorterId, int elementsId) {
         // sorterId로 해당 Sorter 객체 조회

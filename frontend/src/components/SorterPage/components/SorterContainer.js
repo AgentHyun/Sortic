@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { Tooltip } from 'antd';
+import {message, Tooltip} from 'antd';
 import { useDroppable } from '@dnd-kit/core';
 import { X } from 'lucide-react';
 
 import {
   edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom,
   newElementNameAtom,  editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
-  newElementPriceAtom, selectedElementIdsBySorterAtom
+  newElementPriceAtom, selectedElementIdsBySorterAtom, selectedElementNamesBySorterAtom
 } from '../atoms/atoms';
 
 import {
@@ -18,6 +18,7 @@ import {
   getElementsIdBySorterNameAction, getElementNameByIdAction, updateSorterNameAction
 } from "../actions/sorterAction";  // updateSorterNameAction 추가
 import SorterBox from "./SorterBox";
+import axios from "axios";
 
 const SorterContainer = ({
                            sorters,
@@ -51,7 +52,11 @@ const SorterContainer = ({
   const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
   const [, setSetSelectedElementId] = useAtom(setSelectedElementAction);
  const [, setUpdateSorterNameAction] = useAtom(updateSorterNameAction);
+ const [selectedElementNamesBySorter,   setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
   const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
+  useEffect(() => {
+    console.log("최종 선택된 요소 상태: ", selectedElementIdsBySorter);
+  }, [selectedElementIdsBySorter]);
   useEffect(() => {
     const fetchAllElementNames = async () => {
       const result = {};
@@ -87,35 +92,65 @@ const SorterContainer = ({
     }
 
     clickTimeoutRef.current = setTimeout(() => {
-      const targetSorter = sorters.find(s => s.sorter_name === sorterName);
-      console.log("타겟: ", targetSorter);
+      // 1️⃣ sorterName에 해당하는 모든 sorter_id 수집
+      const matchingSorterIds = Object.keys(elementNamesBySorter).filter(
+        sid => sorters.find(s => String(s.sorter_id) === sid)?.sorter_name === sorterName
+      );
 
-      if (!targetSorter) return;
+      // 2️⃣ 해당 sorter_id들에 해당하는 모든 요소 ID 및 이름 수집
+      const allElementIds = matchingSorterIds.flatMap(
+        sid => elementNamesBySorter[sid]?.ids || []
+      );
+      const allElementNames = matchingSorterIds.flatMap(
+        sid => elementNamesBySorter[sid]?.names || []  // names 구조가 있어야 함
+      );
 
-      const currentSorterElementIds = elementNamesBySorter[targetSorter.sorter_id]?.ids || [];
+      console.log(`🔎 [${sorterName}]와 관련된 sorter_id들:`, matchingSorterIds);
+      console.log(`✅ 포함된 요소 ID들:`, allElementIds);
+      console.log(`✅ 포함된 요소 이름들:`, allElementNames);
 
+      // 3️⃣ ID 선택 상태 업데이트
       setSelectedElementIdsBySorter((prev) => {
-        const prevSelected = prev[targetSorter.sorter_id] || [];
-
-        const filtered = prevSelected.filter((id) => currentSorterElementIds.includes(id));
+        const prevSelected = prev[sorterName] || [];
+        const filtered = prevSelected.filter((id) => allElementIds.includes(id));
 
         let newSelected;
         if (filtered.includes(elementId)) {
-          newSelected = filtered.filter((id) => id !== elementId); // 해제
+          newSelected = filtered.filter((id) => id !== elementId);
         } else {
-          newSelected = [...filtered, elementId]; // 선택
+          newSelected = [...filtered, elementId];
         }
 
-        console.log("선택된 요소 아이디:", newSelected); // 여기에 출력!
+        console.log(`🟢 선택된 ID들 [${sorterName}]:`, newSelected);
 
         return {
           ...prev,
-          [targetSorter.sorter_id]: newSelected,
+          [sorterName]: newSelected,
+        };
+      });
+
+      // 4️⃣ 이름 선택 상태 업데이트
+      setSelectedElementNamesBySorter((prev) => {
+        const index = allElementIds.indexOf(elementId);
+        const elementName = allElementNames[index];
+        const prevNames = prev[sorterName] || [];
+
+        let newNames;
+        if (prevNames.includes(elementName)) {
+          newNames = prevNames.filter(name => name !== elementName);
+        } else {
+          newNames = [...prevNames, elementName];
+        }
+
+        console.log(`🟣 선택된 이름들 [${sorterName}]:`, newNames);
+
+        return {
+          ...prev,
+          [sorterName]: newNames,
         };
       });
     }, 200);
   };
-
 
 
 
@@ -187,10 +222,11 @@ const SorterContainer = ({
                         key={elementId}
                         id={`element-${elementId}`}
                         className={`element-item ${
-                          selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId)
+                          selectedElementIdsBySorter[sorter.sorter_name]?.includes(elementId)
                             ? 'selected-sorter-item'
                             : ''
                         }`}
+
                         onClick={(event) => handleElementClick(elementId, sorter.sorter_name, event)}
 
                         onDoubleClick={() => handleElementsDoubleClick(elementId)}

@@ -84,7 +84,7 @@ import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSor
   ,moveElementToSorterAction
 } from '../actions/sorterAction';
 import BillPage from "../../BillPage/components/BillPage";
-import SimpleSortableContainer from "../components/ SimpleSortableContainer";
+
 import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
@@ -565,7 +565,7 @@ const SorterPage = () => {
     setActiveId(event.active.id);
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveId(null);
 
@@ -575,50 +575,50 @@ const SorterPage = () => {
     const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
     setCards(arrayMove(cards, oldIndex, newIndex));
 
-    const overId = String(over.id);  // 타입 안정성 확보
-    console.log("over.id:", overId);  // 최종 드롭된 위치 출력
+    const overId = String(over.id);
+    console.log("over.id:", overId);
     console.log("드롭중인 요소 : ", active.id);
 
-    if (overId.startsWith("sorter-")) {
+    if (overId.startsWith("sorter-") || Number(overId)) {
       const sorterId = overId.replace("sorter-", "");
-      const sorter = sorters.find(s => String(s.sorter_id) === sorterId);
+      const targetSorter = sorters.find(s => String(s.sorter_id) === sorterId);
 
-      if (sorter) {
-        console.log("✅ 드롭된 정렬자 ID:", sorterId);
-        console.log("📌 드롭된 정렬자 이름:", sorter.sorter_name);
-
-        // 요소 이동 호출
-        setMoveElementToSorter({
-          elementsId: active.id,
-          sorterId: Number(sorterId),
-          sorterName: sorter.sorter_name,
-        });
-      } else {
+      if (!targetSorter) {
         console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+        return;
       }
 
-    } else if (Number(overId)) {
-      const sorterId = overId;
-      const sorter = sorters.find(s => String(s.sorter_id) === sorterId);
+      console.log("✅ 드롭된 정렬자 ID:", sorterId);
+      console.log("📌 드롭된 정렬자 이름:", targetSorter.sorter_name);
 
-      if (sorter) {
-        console.log("✅ 드롭된 정렬자 ID:", sorterId);
-        console.log("📌 드롭된 정렬자 이름:", sorter.sorter_name);
-
-        // 요소 이동 호출
-        setMoveElementToSorter({
+      try {
+        // 요소 이동 API 호출 (비동기)
+        await setMoveElementToSorter({
           elementsId: active.id,
-          sorterId: Number(sorterId),
-          sorterName: sorter.sorter_name,
+          sorterName: targetSorter.sorter_name,
         });
-      } else {
-        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+
+        // 👉 상태 동기화: 로컬 상태를 즉시 반영 (elements_id가 배열이라고 가정)
+        setSorters((prev) =>
+          prev.map((s) =>
+            s.sorter_name === targetSorter.sorter_name
+              ? {
+                ...s,
+                elements_id: [...(s.elements_id || []), active.id],
+              }
+              : s
+          )
+        );
+
+      } catch (error) {
+        console.error("🔥 요소 이동 실패", error);
       }
 
     } else {
       console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
     }
   };
+
 
 
 
