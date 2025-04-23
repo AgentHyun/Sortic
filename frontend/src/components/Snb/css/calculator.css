@@ -3,12 +3,13 @@
   position: fixed;
   width: 260px;
   background-color: #ffffff;
-  border: 1px solid #ddd;
+  border: 1px solid black;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   z-index: 9999;
   user-select: none;
   transition: box-shadow 0.2s ease-in-out;
+
 }
 
 .calculator-container:hover {
@@ -42,11 +43,88 @@
 }
 
 .calculator-display {
-  width: 100%;
+  width: 90%;
   height: 38px;
   font-size: 16px;
   text-align: right;
   padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  outline: none;
+}
+/* 버튼 영역 */
+.calculator-buttons {
+  margin-top:10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 */
+  gap: 8px;
+
+}
+
+.calculator-button {
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #f0f0f0;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.calculator-button:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.03);
+}
+.calculator-button.operator {
+  background-color: #ffeedc;
+  color: #d17b00;
+}
+.calculator-button.equal {
+  background-color: #4caf50;
+  color: white;
+  grid-column: span 2;
+}
+.calculator-button.clear {
+  background-color: #f8d7da;
+  color: #a94442;
+}
+
+.calculator-button.del {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.input-display-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.operator-hint {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #888;
+  pointer-events: none;
+}
+
+.history-wrapper {
+  max-height: 120px;             /* 세로 최대 높이 제한 */
+  max-width: 100%;               /* 가로 제한 (필요시 조절) */
+  overflow-y: auto;              /* 세로 스크롤 */
+  overflow-x: auto;              /* 가로 스크롤 */
+  border: 1px solid #eee;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  white-space: nowrap;           /* 줄바꿈 안되게 */
+  scroll-behavior: smooth;
+
+}
+
+.history-entry {
+  margin-bottom: 4px;
+
 }

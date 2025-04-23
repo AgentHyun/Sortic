@@ -5,23 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5510c6bc-c7fb-4ef1-8fa9-e9e3bda167f9" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Sortic.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Snb/Atom/atoms.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/NomalCalculator.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/Snb.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/calculator.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/snb.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/BillController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/BillController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/BillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/BillMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/BillService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/BillService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/NomalCalculator.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/NormalCalculator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/Snb.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/Snb.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/css/calculator.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/calculator.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +68,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feature/k/billPage",
+    "git-widget-placeholder": "feature/k/snb",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/sdedu/Desktop/Sortic-real/frontend",
     "node.js.detected.package.eslint": "true",
@@ -140,6 +128,7 @@
       <workItem from="1744956676267" duration="546000" />
       <workItem from="1744957233628" duration="7410000" />
       <workItem from="1745198754723" duration="21849000" />
+      <workItem from="1745373596333" duration="19246000" />
     </task>
     <servers />
   </component>

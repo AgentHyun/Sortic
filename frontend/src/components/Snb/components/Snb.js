@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { PanelRightOpen, PanelRightClose } from 'lucide-react';
 import '../css/snb.css';
 import {Calculator} from 'lucide-react';
-import NormalCalculator from './NomalCalculator.js';
+import NormalCalculator from './NormalCalculator.js';
 const Snb = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
-  const [isNomalCalculatorVisible, setIsNomalCalculatorVisible] = useState(false);
+  const [isNormalCalculatorVisible, setIsNormalCalculatorVisible] = useState(false);
   return (
     <div className="snb-container">
       <div className={`snb-buttons-wrapper ${isOpen ? 'open' : ''}`}>
@@ -15,11 +15,11 @@ const Snb = () => {
           <div className="snb-calc-wrapper">
             {isCalcOpen && (
               <div className="calc-bar">
-                <div className="calc-item" onClick={()=>setIsNomalCalculatorVisible(true)}>
+                <div className="calc-item" onClick={()=>setIsNormalCalculatorVisible(true)}>
                   일반
                 </div>
-                <div className="calc-item">퍼센트</div>
-                <div className="calc-item">단위</div>
+                <div className="calc-item">2</div>
+                <div className="calc-item"></div>
               </div>
             )}
             <button className="snb-btn" onClick={() => setIsCalcOpen(!isCalcOpen)}>
@@ -35,8 +35,8 @@ const Snb = () => {
         {isOpen ? <PanelRightClose /> : <PanelRightOpen />}
       </div>
 
-      {isNomalCalculatorVisible && (
-        <NormalCalculator onClose ={() => setIsNomalCalculatorVisible(false)} />
+      {isNormalCalculatorVisible && (
+        <NormalCalculator onClose ={() => setIsNormalCalculatorVisible(false)} />
       )}
     </div>
   );
