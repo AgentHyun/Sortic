@@ -7,7 +7,7 @@ import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 import {DndContext, DragOverlay, PointerSensor} from '@dnd-kit/core';
-import { SortableContext, arrayMove } from '@dnd-kit/sortable';
+import {SortableContext, arrayMove, horizontalListSortingStrategy} from '@dnd-kit/sortable';
 import { useSensors, useSensor, MouseSensor, TouchSensor } from '@dnd-kit/core';
 
 import ContextMenu from "./contextMenu"
@@ -337,12 +337,7 @@ const SorterPage = () => {
   const handleElementNameChange = (e) => {
     setNewElementName(e.target.value);
   };
-  const selectedElement = (elementId) => {
-    console.log("🔍 선택된 요소 ID!:", elementId); // 선택된 ID 확인
-    setSelectedElementId(elementId);
-    setAddedElementId(elementId);
-    setSetSelectedElementAction(elementId);
-  };
+
 
 
 
@@ -1005,6 +1000,7 @@ const SorterPage = () => {
                 handleSaveSorterName={handleSaveSorterName}
                 handleSorterNameDoubleClick={handleSorterNameDoubleClick}
               />
+
 
 
 

@@ -6,8 +6,8 @@ import { X } from 'lucide-react';
 
 import {
   edtingSorterIdAtom, selectedElementIdsAtom, elementsRefreshTriggerAtom, isEditingElementAtom, sorterCardsAtom,
-  newElementNameAtom, editingElementIdAtom, editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
-  newElementPriceAtom, elementDetailDataAtom,
+  newElementNameAtom,  editingElementIndexAtom, contextMenuAtom, selectedElementIdAtom,
+  newElementPriceAtom, selectedElementIdsBySorterAtom
 } from '../atoms/atoms';
 
 import {
@@ -51,6 +51,7 @@ const SorterContainer = ({
   const [, setHandleElementNameSave] = useAtom(handleElementNameSaveAction);
   const [, setSetSelectedElementId] = useAtom(setSelectedElementAction);
  const [, setUpdateSorterNameAction] = useAtom(updateSorterNameAction);
+  const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
   useEffect(() => {
     const fetchAllElementNames = async () => {
       const result = {};
@@ -78,7 +79,7 @@ const SorterContainer = ({
 
   const clickTimeoutRef = useRef(null);
 
-  const handleElementClick = (elementId, sorterId, event) => {
+  const handleElementClick = (elementId, sorterName, event) => {
     if (event?.stopPropagation) event.stopPropagation();
 
     if (clickTimeoutRef.current) {
@@ -86,17 +87,37 @@ const SorterContainer = ({
     }
 
     clickTimeoutRef.current = setTimeout(() => {
-      setSelectedElementIds((prev) => {
-        if (prev.includes(elementId)) {
-          return prev.filter((id) => id !== elementId);
-        } else {
-          // 중복 확인 후 추가
-          return prev.includes(elementId) ? prev : [...prev, elementId];
-        }
-      });
+      const targetSorter = sorters.find(s => s.sorter_name === sorterName);
+      console.log("타겟: ", targetSorter);
 
+      if (!targetSorter) return;
+
+      const currentSorterElementIds = elementNamesBySorter[targetSorter.sorter_id]?.ids || [];
+
+      setSelectedElementIdsBySorter((prev) => {
+        const prevSelected = prev[targetSorter.sorter_id] || [];
+
+        const filtered = prevSelected.filter((id) => currentSorterElementIds.includes(id));
+
+        let newSelected;
+        if (filtered.includes(elementId)) {
+          newSelected = filtered.filter((id) => id !== elementId); // 해제
+        } else {
+          newSelected = [...filtered, elementId]; // 선택
+        }
+
+        console.log("선택된 요소 아이디:", newSelected); // 여기에 출력!
+
+        return {
+          ...prev,
+          [targetSorter.sorter_id]: newSelected,
+        };
+      });
     }, 200);
   };
+
+
+
 
 
   const handleElementsDoubleClick = (elementId, sorterName) => {
@@ -165,8 +186,13 @@ const SorterContainer = ({
                       <div
                         key={elementId}
                         id={`element-${elementId}`}
-                        className={`element-item ${selectedElementIds?.includes(elementId) ? 'selected' : ''}`}
-                        onClick={(event) => handleElementClick(elementId, sorter.sorter_id, event)}
+                        className={`element-item ${
+                          selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId)
+                            ? 'selected-sorter-item'
+                            : ''
+                        }`}
+                        onClick={(event) => handleElementClick(elementId, sorter.sorter_name, event)}
+
                         onDoubleClick={() => handleElementsDoubleClick(elementId)}
                         onContextMenu={(e) => handleContextMenu(e, elementId, name)}
                       >
@@ -176,6 +202,7 @@ const SorterContainer = ({
                   })}
                 </div>
               </SorterBox>
+
             </div>
           </div>
         ))}

@@ -18,7 +18,7 @@ import {
     selectedElementIdsAtom, addedElementIdAtom,
     contextMenuAtom,
     newElementPriceAtom, cardsByCategoryAtom,
-    sorterCardsAtom,
+    sorterCardsAtom, selectedElementIdsBySorterAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -72,47 +72,71 @@ export const toggleSelectElementAction = atom(
 );
 
 export const handleBulkDeleteElementsAction = atom(
-    null,
-    async (get, set) => {
-        const selectedIds = get(selectedElementIdsAtom);
-        const cards = get(cardsAtom);
+  null,
+  async (get, set) => {
+    const selectedIds = get(selectedElementIdsAtom);
+    const selectedIdsBySorter = get(selectedElementIdsBySorterAtom); // atom에서 가져오기
+    const cards = get(cardsAtom);
 
-        if (selectedIds.length === 0) {
-            message.warning("삭제할 요소가 선택되지 않았습니다!");
-            return;
-        }
+    const hasGlobalSelection = selectedIds.length > 0;
+    const hasGroupedSelection = Object.values(selectedIdsBySorter).some(list => list.length > 0);
 
-        console.log("🚀 삭제 요청 보냄:", selectedIds);
-
-        try {
-            const response = await axios.delete(`http://localhost:8080/api/elements/delete_multiple_elements`, {
-                data: { elements_name_ids: selectedIds },
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            console.log("✅ 삭제 응답:", response);
-
-            // 삭제된 요소 이름들 찾기
-            const deletedNames = cards
-                .filter(card => selectedIds.includes(card.elements_name_id))
-                .map(card => card.elements_name);
-
-            // 상태 업데이트
-            const updatedCards = cards.filter(card => !selectedIds.includes(card.elements_name_id));
-            set(cardsAtom, updatedCards);
-            set(selectedElementIdsAtom, []);
-
-            // 메시지 출력
-            if (deletedNames.length === 1) {
-                message.success(`"${deletedNames[0]}"(이)가 삭제되었습니다!`);
-            } else {
-                message.success("요소들이 삭제되었습니다!");
-            }
-        } catch (error) {
-            console.error("🚨 일괄 삭제 실패:", error.response?.data || error.message);
-            message.error("요소 삭제에 실패했습니다.");
-        }
+    if (!hasGlobalSelection && !hasGroupedSelection) {
+      message.warning("삭제할 요소가 선택되지 않았습니다!");
+      return;
     }
+
+    try {
+      // 전역 선택된 요소 삭제 요청
+      if (hasGlobalSelection) {
+        console.log("🚀 전역 삭제 요청 보냄:", selectedIds);
+        const response = await axios.delete(`http://localhost:8080/api/elements/delete_multiple_elements`, {
+          data: { elements_name_ids: selectedIds },
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        console.log("✅ 전역 삭제 응답:", response);
+
+        // 삭제된 요소 이름들 추출
+        const deletedNames = cards
+          .filter(card => selectedIds.includes(card.elements_name_id))
+          .map(card => card.elements_name);
+
+        // 상태 업데이트
+        const updatedCards = cards.filter(card => !selectedIds.includes(card.elements_name_id));
+        set(cardsAtom, updatedCards);
+        set(selectedElementIdsAtom, []);
+
+        // 메시지 출력
+        if (deletedNames.length === 1) {
+          message.success(`"${deletedNames[0]}"(이)가 삭제되었습니다!`);
+        } else {
+          message.success("요소들이 삭제되었습니다!");
+        }
+      }
+
+      // 정렬자별 요소 삭제 요청
+      if (hasGroupedSelection) {
+        const sorterIds = Object.entries(selectedIdsBySorter)
+          .filter(([_, ids]) => ids.length > 0)
+          .map(([sorterId]) => parseInt(sorterId, 10));
+
+        console.log("🧩 정렬자 삭제 요청 보냄:", sorterIds);
+
+        const sorterDeleteResponse = await axios.post(`http://localhost:8080/api/sorter/delete/multiple`, sorterIds, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        console.log("✅ 정렬자 삭제 응답:", sorterDeleteResponse);
+        set(selectedElementIdsBySorterAtom, {}); // 초기화
+        message.success("정렬자가 삭제되었습니다!");
+      }
+
+    } catch (error) {
+      console.error("🚨 삭제 실패:", error.response?.data || error.message);
+      message.error("삭제에 실패했습니다.");
+    }
+  }
 );
 
 
