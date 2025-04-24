@@ -13,6 +13,8 @@ public interface SorterMapper {
         "VALUES (#{user_id},  #{sorter_number}, #{sorter_name})")
     @Options(useGeneratedKeys = true, keyProperty = "sorter_id")
     void insertSorter(Sorter sorter);
+    @Update("UPDATE Sorter SET sorter_number = #{sorter_number}, sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
+    void updateSorterNumberAndName(Sorter sorter);
 
     // 정렬자 조회
     @Select("SELECT * FROM Sorter WHERE sorter_id = #{sorter_id}")
@@ -60,16 +62,19 @@ public interface SorterMapper {
     // 정렬자 삭제
     @Delete("DELETE FROM Sorter WHERE sorter_id = #{sorter_id}")
     void deleteSorter(int sorter_id);
+
+
     @Delete({
         "<script>",
-        "DELETE FROM Sorter_Element",
+        "DELETE FROM Sorter",
         "WHERE sorter_id IN",
-        "<foreach item='id' collection='sorterIds' open='(' separator=',' close=')'>",
-        "#{id}",
+        "<foreach collection='sorterIds' item='sorterId' open='(' separator=',' close=')'>",
+        "#{sorterId}",
         "</foreach>",
         "</script>"
     })
     void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
+
 
     // 사용자별 정렬자 전체 삭제
     @Delete("DELETE FROM Sorter WHERE user_id = #{user_id}")

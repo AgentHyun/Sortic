@@ -133,7 +133,7 @@ export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIds
   try {
     // 삭제 요청
     await axios.post('http://localhost:8080/api/sorter/delete/multiple', sorterIdsToDelete);
-
+    console.log("삭제할 솔터" + sorterIdsToDelete);
     // 삭제된 정렬자 이름 리스트
     const deletedNames = currentSorters
       .filter(s => sorterIdsToDelete.includes(s.sorter_id))
@@ -214,7 +214,7 @@ export const moveElementToSorterAction = atom(
   async (get, set, { elementsId, sorterId }) => {
     let prevent = false;
 
-    // 동기적으로 먼저 추가 (추가 중인 요소로 인식하게 함)
+    // 동기적으로 바로 업데이트
     set(addingElementIdsBySorterAtom, (prev) => {
       const already = prev[sorterId]?.includes(elementsId);
       if (already) {
@@ -233,25 +233,16 @@ export const moveElementToSorterAction = atom(
       return;
     }
 
-    // 여기서 checking 로직 수정됨!!
-    const currentSorters = get(sortersAtom);
-    const targetSorter = currentSorters.find(sorter => sorter.sorter_id === sorterId);
-    const elementIdsInSorter = [
-      ...(targetSorter?.elements_id || []),
-      ...(get(addingElementIdsBySorterAtom)[sorterId] || [])
-    ];
-    const alreadyExists = elementIdsInSorter.includes(elementsId);
-
-    if (alreadyExists) {
-      message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
-      set(addingElementIdsBySorterAtom, (prev) => ({
-        ...prev,
-        [sorterId]: (prev[sorterId] || []).filter(id => id !== elementsId),
-      }));
-      return;
-    }
-
     try {
+      const currentSorters = get(sortersAtom);
+      const targetSorter = currentSorters.find(sorter => sorter.sorter_id === sorterId);
+      const alreadyExists = targetSorter?.elements_id?.includes(elementsId);
+
+      if (alreadyExists) {
+        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+        return;
+      }
+
       await axios.post(
         `http://localhost:8080/api/sorter-element/add?sorterId=${sorterId}&elementId=${elementsId}`
       );
@@ -266,10 +257,14 @@ export const moveElementToSorterAction = atom(
       );
 
       set(sortersAtom, updatedSorters);
-      message.success("요소가 정렬자에 추가되었습니다!");
+      message.success(`요소가 정렬자에 추가되었습니다!`);
     } catch (error) {
-      console.error("🚨 요소 추가 실패:", error);
-      message.error("요소 추가에 실패했습니다.");
+      if (error.response?.status === 409) {
+        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+      } else {
+        console.error('🚨 요소 추가 실패:', error);
+        message.error("요소 추가에 실패했습니다.");
+      }
     } finally {
       set(addingElementIdsBySorterAtom, (prev) => ({
         ...prev,
@@ -278,6 +273,7 @@ export const moveElementToSorterAction = atom(
     }
   }
 );
+
 
 
 

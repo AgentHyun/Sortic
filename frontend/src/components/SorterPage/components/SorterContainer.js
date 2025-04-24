@@ -57,6 +57,7 @@ const SorterContainer = ({
   const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
   const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
 
+
   useEffect(() => {
     const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
       (key) => selectedElementIdsBySorter[key].length > 0

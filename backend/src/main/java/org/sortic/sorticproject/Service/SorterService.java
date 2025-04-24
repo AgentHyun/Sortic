@@ -35,28 +35,23 @@ public class SorterService {
         sorterMapper.deleteSorter(sorterId);
     }
     public void deleteMultipleSorters(List<Integer> sorterIds) {
-        // 하나의 요청에서 여러 sorterId를 한 번에 삭제하는 방식으로 수정
-        sorterMapper.deleteMultipleSorters(sorterIds);
+
+
+        sorterMapper.deleteMultipleSorters(sorterIds);  // 하나의 쿼리로 여러 sorter_id를 삭제
     }
+
 
     @Transactional
     public List<Sorter> reorderSorterNumbers(List<Sorter> sorters) {
-        if (sorters == null || sorters.isEmpty()) return Collections.emptyList();
-
-        String userId = sorters.get(0).getUser_id();
-        sorterMapper.deleteAllSortersForUser(userId);
-
-        List<Sorter> inserted = new ArrayList<>();
         for (int i = 0; i < sorters.size(); i++) {
-            Sorter sorter = sorters.get(i);
-            sorter.setSorter_number(i + 1);
-            sorter.setSorter_name("sorter" + (i + 1));  // 이름을 순서대로 변경
-            sorterMapper.insertSorter(sorter);
-            inserted.add(sorter);
+            Sorter s = sorters.get(i);
+            s.setSorter_number(i + 1);
+            s.setSorter_name("sorter" + (i + 1));
+            sorterMapper.updateSorterNumberAndName(s);
         }
-
-        return inserted;
+        return sorters;
     }
+
 
     public List<Sorter> updateSorterName(String oldSorterName, String sorterName) {
         int result = sorterMapper.updateSorterName(oldSorterName, sorterName);

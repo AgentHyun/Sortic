@@ -69,6 +69,7 @@ public class SorterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제 실패");
         }
     }
+
     @GetMapping("/name/{sorter_id}")
     public ResponseEntity<String> getSorterNameById(@PathVariable int sorter_id) {
         String sorterName = sorterService.getSorterNameById(sorter_id);
