@@ -135,7 +135,7 @@ export const handleBulkDeleteElementsAction = atom(
                 console.log("✅ [정렬자별 삭제 응답]:", sorterDeleteResponse);
 
                 // 메시지 출력
-                message.success(`[${sorterName}] 정렬자에서 요소 ${elementId}가 삭제되었습니다!`);
+                message.success(`요소가 삭제되었습니다!`);
               } catch (error) {
                 console.error(`❌ [삭제 실패] [${sorterName}] 정렬자에서 요소 ${elementId} 삭제 실패:`, error);
               }

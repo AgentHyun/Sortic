@@ -1,6 +1,13 @@
 import { atom } from 'jotai';
 import axios from 'axios';
-import { sortersAtom, messageAtom, elementNameAtom, elementsIdListAtom, sorterCardsAtom } from '../atoms/atoms';
+import {
+  sortersAtom,
+  messageAtom,
+  elementNameAtom,
+  elementsIdListAtom,
+  sorterCardsAtom,
+  selectedSortersAtom
+} from '../atoms/atoms';
 import { message } from 'antd';
 export const addingElementIdsBySorterAtom = atom({});
 // 정렬자 번호 재정렬 함수
@@ -155,7 +162,7 @@ export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIds
     set(sortersAtom, reordered.data);
     message.success(`${deletedNames}(이)가 삭제되었습니다.`);
     set(messageAtom, { type: 'success', content: '정렬자가 삭제되었습니다.' });
-
+    set(selectedSortersAtom, []);
   } catch (error) {
     console.error('🚨 다중 삭제 또는 재정렬 실패:', error);
     message.error("정렬자 다중 삭제에 실패했습니다.");
