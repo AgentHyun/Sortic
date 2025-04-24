@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X,ScrollText } from 'lucide-react';
 import { message } from 'antd';
 import '../css/calculator.css';
+import {useAtom} from "jotai";
+import {historyAtom} from "../Atom/atoms";
 
 const NormalCalculator = ({ onClose }) => {
   const calculatorRef = useRef(); // ✅ 계산기 컨테이너 ref
@@ -14,7 +16,7 @@ const NormalCalculator = ({ onClose }) => {
   const [previousValue, setPreviousValue] = useState('');
   const [operator, setOperator] = useState('');
   //기록 관련 상태
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useAtom(historyAtom);
   const historyRef = useRef(null);
   //숫자 앞에 불필요한 0 제거
     const sanitizeExpression = (expr) => {

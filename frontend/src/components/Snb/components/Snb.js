@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { PanelRightOpen, PanelRightClose } from 'lucide-react';
 import '../css/snb.css';
-import {Calculator} from 'lucide-react';
+import {Calculator,NotebookPen} from 'lucide-react';
 import NormalCalculator from './NormalCalculator.js';
+import NoteCalculator from "./NoteCalculator";
 const Snb = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [isNormalCalculatorVisible, setIsNormalCalculatorVisible] = useState(false);
+  const [isNoteCalculatorVisible,setIsNoteCalculatorVisible] = useState(false);
   return (
     <div className="snb-container">
       <div className={`snb-buttons-wrapper ${isOpen ? 'open' : ''}`}>
@@ -26,7 +28,7 @@ const Snb = () => {
               <Calculator />
             </button>
           </div>
-          <button className="snb-btn">2</button>
+          <button className="snb-btn" onClick={()=>setIsNoteCalculatorVisible(true)}><NotebookPen/></button>
           <button className="snb-btn">3</button>
           <button className="snb-btn">4</button>
         </div>
@@ -34,12 +36,39 @@ const Snb = () => {
       <div className="snb-toggle" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <PanelRightClose /> : <PanelRightOpen />}
       </div>
-
-      {isNormalCalculatorVisible && (
-        <NormalCalculator onClose ={() => setIsNormalCalculatorVisible(false)} />
-      )}
+      <div className="Normal-calc-container">
+       {isNormalCalculatorVisible && (
+          <NormalCalculator onClose ={() => setIsNormalCalculatorVisible(false)} />
+       )}
+      </div>
+      <div className="note-calc-container">
+        {isNoteCalculatorVisible&&(
+          <NoteCalculator onClose={()=>setIsNoteCalculatorVisible(false)}/>
+        )}
+      </div>
     </div>
   );
 };
 
 export default Snb;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

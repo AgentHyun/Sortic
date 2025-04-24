@@ -105,3 +105,9 @@
     transform: translateX(0);
   }
 }
+.Normal-calc-container{
+  position: fixed;
+}
+.note-calc-container{
+  position: fixed;
+}
