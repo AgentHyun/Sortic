@@ -4,8 +4,10 @@ import org.sortic.sorticproject.Entity.SorterElement;
 import org.sortic.sorticproject.Mapper.ElementMapper;
 import org.sortic.sorticproject.Mapper.SorterElementMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -50,7 +52,8 @@ public class SorterElementService {
             sorterElement.setElements_id(elementId);
             sorterElementMapper.insertSorterElement(sorterElement);
         } else {
-            throw new IllegalStateException("이미 이 요소는 해당 정렬자에 존재합니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 이 요소는 해당 정렬자에 존재합니다.");
+
         }
     }
 

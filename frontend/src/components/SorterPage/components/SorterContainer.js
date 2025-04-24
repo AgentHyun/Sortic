@@ -41,11 +41,11 @@ const SorterContainer = ({
   const [, setGetElementNameById] = useAtom(getElementNameByIdAction);
   const [, setFetchElementPriceById] = useAtom(fetchElementPriceByIdAction);
   const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
-  const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
-  const [clickTimeout, setClickTimeout] = useState(null);
+
+
   const [handleElementDoubleClick, setHandleElementDoubleClick] = useAtom(handleElementDoubleClickAtSorterAction);
-  const [isEditingElement, setIsEditingElement] = useAtom(isEditingElementAtom);
-  const [editingElementIndex, setEditingElementIndex] = useAtom(editingElementIndexAtom);
+
+
   const setContextMenu = useSetAtom(contextMenuAtom);
   const [, setSetSelectedElement] = useAtom(setSelectedElementAction);
   const [, setSelectedElementId] = useAtom(selectedElementIdAtom);
@@ -56,7 +56,6 @@ const SorterContainer = ({
   const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
   const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
   const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
-  const [getSorterIdByNameAndElementId, setGetSorterIdByNameAndElementId] = useAtom(getSorterIdByNameAndElementIdAction);
 
   useEffect(() => {
     const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
@@ -193,6 +192,7 @@ const SorterContainer = ({
               <button className="delete-btn" onClick={() => deleteSorter(sorter.sorter_id)}>
                 <X size={18} />
               </button>
+
               <SorterBox sorterId={sorter.sorter_id}>
                 <div className="element-names">
                   {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {

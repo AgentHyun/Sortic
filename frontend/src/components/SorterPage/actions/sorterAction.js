@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import axios from 'axios';
 import { sortersAtom, messageAtom, elementNameAtom, elementsIdListAtom, sorterCardsAtom } from '../atoms/atoms';
 import { message } from 'antd';
-
+export const addingElementIdsBySorterAtom = atom({});
 // 정렬자 번호 재정렬 함수
 const renumberSorters = (list) => {
   return list.map((sorter, idx) => ({
@@ -212,19 +212,46 @@ export const getSorterIdByNameAndElementIdAction = atom(
 export const moveElementToSorterAction = atom(
   null,
   async (get, set, { elementsId, sorterId }) => {
-    const currentSorters = get(sortersAtom);
+    let prevent = false;
 
-    // 이미 해당 요소가 정렬자에 포함되어 있는지 확인
+    // 동기적으로 먼저 추가 (추가 중인 요소로 인식하게 함)
+    set(addingElementIdsBySorterAtom, (prev) => {
+      const already = prev[sorterId]?.includes(elementsId);
+      if (already) {
+        prevent = true;
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [sorterId]: [...(prev[sorterId] || []), elementsId],
+      };
+    });
+
+    if (prevent) {
+      message.warning("이미 추가 중인 요소입니다.");
+      return;
+    }
+
+    // 여기서 checking 로직 수정됨!!
+    const currentSorters = get(sortersAtom);
     const targetSorter = currentSorters.find(sorter => sorter.sorter_id === sorterId);
-    const alreadyExists = targetSorter?.elements_id?.includes(elementsId);
+    const elementIdsInSorter = [
+      ...(targetSorter?.elements_id || []),
+      ...(get(addingElementIdsBySorterAtom)[sorterId] || [])
+    ];
+    const alreadyExists = elementIdsInSorter.includes(elementsId);
 
     if (alreadyExists) {
       message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+      set(addingElementIdsBySorterAtom, (prev) => ({
+        ...prev,
+        [sorterId]: (prev[sorterId] || []).filter(id => id !== elementsId),
+      }));
       return;
     }
 
     try {
-      // 쿼리 매개변수로 요청
       await axios.post(
         `http://localhost:8080/api/sorter-element/add?sorterId=${sorterId}&elementId=${elementsId}`
       );
@@ -233,17 +260,21 @@ export const moveElementToSorterAction = atom(
         sorter.sorter_id === sorterId
           ? {
             ...sorter,
-            elements_id: [...(sorter.elements_id || []), elementsId] // null/undefined 대비
+            elements_id: [...(sorter.elements_id || []), elementsId],
           }
           : sorter
       );
 
       set(sortersAtom, updatedSorters);
-      message.success(`요소가 정렬자에 추가되었습니다!`);
+      message.success("요소가 정렬자에 추가되었습니다!");
     } catch (error) {
-      console.error('🚨 정렬자-요소 관계 추가 실패:', error);
-      set(messageAtom, { type: 'error', content: '정렬자-요소 관계 추가 실패' });
-      message.error("정렬자-요소 관계 추가에 실패했습니다.");
+      console.error("🚨 요소 추가 실패:", error);
+      message.error("요소 추가에 실패했습니다.");
+    } finally {
+      set(addingElementIdsBySorterAtom, (prev) => ({
+        ...prev,
+        [sorterId]: (prev[sorterId] || []).filter(id => id !== elementsId),
+      }));
     }
   }
 );
