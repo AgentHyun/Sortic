@@ -3,23 +3,90 @@
 <mapper namespace="org.sortic.sorticproject.Mapper.UserMapper">
     
     <!-- 사용자 정보 저장 -->
-    <insert id="save" parameterType="org.sortic.sorticproject.Entity.User">
+    <insert id="save" parameterType="Users">
         INSERT INTO Users (user_id, password, username, phone, email, region, grade)
-        VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
+        VALUES (#{user_id}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
     </insert>
 
-    <!-- 사용자 ID로 사용자 정보 조회 -->
-    <select id="findByUserId" parameterType="string" resultType="org.sortic.sorticproject.Entity.User">
-        SELECT * FROM Users WHERE user_id = #{userId}
+    <!-- 사용자 정보 조회 -->
+    <select id="findByUserId" resultType="Users">
+        SELECT 
+            user_id,
+            password,
+            username,
+            phone,
+            email,
+            region,
+            profile_image,
+            grade,
+            created_signup_time
+        FROM Users
+        WHERE user_id = #{user_id}
     </select>
 
     <!-- 사용자 ID 존재 여부 확인 -->
     <select id="existsByUserId" parameterType="string" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{userId}
+        SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{user_id}
     </select>
 
     <!-- 이메일 존재 여부 확인 -->
     <select id="existsByEmail" parameterType="string" resultType="boolean">
         SELECT COUNT(*) > 0 FROM Users WHERE email = #{email}
+    </select>
+
+    <!-- 프로필 이미지 업데이트 -->
+    <update id="updateProfileImage">
+        UPDATE Users
+        SET profile_image = #{profileImage}
+        WHERE user_id = #{user_id}
+    </update>
+    
+    <!-- 비밀번호 업데이트 -->
+    <update id="updatePassword">
+        UPDATE Users
+        SET password = #{password}
+        WHERE user_id = #{user_id}
+    </update>
+    
+    <!-- 사용자 프로필 업데이트 -->
+    <update id="updateUserProfile" parameterType="Users">
+        UPDATE Users
+        SET 
+            phone = #{phone},
+            email = #{email},
+            region = #{region}
+        WHERE user_id = #{user_id}
+    </update>
+
+    <!-- 이메일로 사용자 조회 -->
+    <select id="findByEmail" resultType="Users">
+        SELECT 
+            user_id,
+            password,
+            username,
+            phone,
+            email,
+            region,
+            profile_image,
+            grade,
+            created_signup_time
+        FROM Users
+        WHERE email = #{email}
+    </select>
+
+    <!-- 이메일과 사용자 이름으로 사용자 조회 -->
+    <select id="findByEmailAndUsername" resultType="Users">
+        SELECT 
+            user_id,
+            password,
+            username,
+            phone,
+            email,
+            region,
+            profile_image,
+            grade,
+            created_signup_time
+        FROM Users
+        WHERE email = #{email} AND username = #{username}
     </select>
 </mapper> 

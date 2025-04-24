@@ -7,24 +7,24 @@ import { billsAtom } from "../atom/atoms";
 import {Trash,X} from 'lucide-react';
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
-  const userId = 'user123';
+  const user_id = 'user123';
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newBillName, setNewBillName] = useState('');
   const fetchBills = () => {
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
+    axios.get(`http://localhost:8080/api/bills/getAllBills?user_id=${user_id}`)
       .then(res => setBills(res.data))
       .catch(err => message.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
     fetchBills();
-  }, [userId]);
+  }, [user_id]);
 
   const handleAddBill = async () => {
     try {
       const res = await axios.post(`http://localhost:8080/api/bills/addBill`,{
         billName : newBillName,
-        userId  : userId
+        user_id  : user_id
       });
       // 전체 Bill 다시 불러오기
       fetchBills();

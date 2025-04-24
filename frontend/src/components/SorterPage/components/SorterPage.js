@@ -307,8 +307,8 @@ const SorterPage = () => {
             onOk: async () => {
                 try {
                     await setDeleteCategory();
-                    const userId = 'user123';
-                    const count = await fetchCategoryCount(userId);
+                    const user_id = 'user123';
+                    const count = await fetchCategoryCount(user_id);
                     console.log("카테고리 개수 : " + count);
                     if (count === 0) {
                         navigate('/sorterDefaultPage');
@@ -442,8 +442,8 @@ const SorterPage = () => {
 
     useEffect(() => {
         const checkCategoryCount = async () => {
-            const userId = 'user123'; // 실제 사용자 ID로 대체
-            const count = await fetchCategoryCount(userId);
+            const user_id = 'user123';
+            const count = await fetchCategoryCount(user_id);
             console.log("카테고리 개수 : " + count);
             if (count === 0) {
                 navigate('/sorterDefaultPage');

@@ -1,16 +1,22 @@
 :root {
-  --header-bg: #ffffffcc;
-  --menu-color: #333;
-  --hover-color: #1890ff;
-  --text-color: #000;
+  --header-bg: #ffffff;
+  --bg-color: #ffffff;
+  --border-color: #e8e8e8;
+  --menu-color: #333333;
+  --text-color: #000000;
+  --primary-color: #1890ff;
+  --hover-color: rgba(24, 144, 255, 0.1);
 }
 
 /* ✅ 반드시 전역 셀렉터로 지정 */
 :global(.dark) {
-  --header-bg: #1f1f1fcc;
-  --menu-color: #ddd;
-  --hover-color: #40a9ff;
-  --text-color: #fff;
+  --header-bg: #1f1f1f;
+  --bg-color: #141414;
+  --border-color: #303030;
+  --menu-color: #ffffff;
+  --text-color: #ffffff;
+  --primary-color: #1890ff;
+  --hover-color: rgba(64, 169, 255, 0.1);
 }
 
 
@@ -19,39 +25,42 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    height: 64px;
     background-color: var(--header-bg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid var(--border-color);
+    height: 64px;
     position: sticky;
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(12px);
-    transition: background-color 0.3s ease; /* 다크모드 전환 시 부드럽게 */
+    transition: all 0.3s ease;
 }
 
 .logo {
+    color: var(--primary-color);
     font-size: 24px;
     font-weight: bold;
-    color: var(--text-color);
-    cursor: pointer;
 }
 
 .menu-container {
-    flex: 1;
     display: flex;
-    justify-content: center;
-    gap: 40px;
+    gap: 24px;
 }
 
 .menu-item {
     color: var(--menu-color);
-    font-size: 16px;
     cursor: pointer;
     transition: color 0.3s;
 }
 
-.menu-item:hover {
-    color: var(--hover-color);
+.menu-item a {
+    color: var(--menu-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.menu-item:hover,
+.menu-item a:hover {
+    color: var(--primary-color);
 }
 
 .right-section {
@@ -68,11 +77,25 @@
 }
 
 .notification-icon:hover {
-    color: var(--hover-color);
+    color: var(--primary-color);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.user-info:hover {
+    background-color: var(--hover-color);
 }
 
 .avatar {
-    cursor: pointer;
+    background-color: var(--primary-color);
 }
 
 .username {
@@ -80,25 +103,53 @@
     font-size: 14px;
 }
 
-.themeSwitch {
-    transform: scale(0.85);
-}
-
 .auth-buttons {
     display: flex;
     gap: 16px;
-    align-items: center;
 }
 
 .auth-link {
-    color: var(--text-color);
+    color: var(--menu-color);
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .auth-link:hover {
-    background-color: var(--primary-color);
-    color: white;
+    color: var(--primary-color);
+}
+
+.themeSwitch {
+    margin-left: 16px;
+}
+
+/* 드롭다운 메뉴 스타일 */
+:global(.ant-dropdown-menu) {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+:global(.ant-dropdown-menu-item) {
+    color: var(--menu-color);
+    transition: all 0.3s;
+}
+
+:global(.ant-dropdown-menu-item:hover) {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+}
+
+/* Ant Design 다크 테마 오버라이드 */
+:global(.dark) .ant-dropdown-menu {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+}
+
+:global(.dark) .ant-dropdown-menu-item {
+    color: var(--menu-color);
+}
+
+:global(.dark) .ant-dropdown-menu-item:hover {
+    background-color: var(--hover-color);
 }

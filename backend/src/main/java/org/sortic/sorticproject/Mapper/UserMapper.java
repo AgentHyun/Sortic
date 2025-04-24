@@ -1,11 +1,12 @@
 package org.sortic.sorticproject.Mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.sortic.sorticproject.Entity.User;
+import org.sortic.sorticproject.Entity.Users;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * [데이터 흐름 요약]
- * 1. 데이터 소스: User 엔티티와 매핑된 데이터베이스 테이블
+ * 1. 데이터 소스: Users 엔티티와 매핑된 데이터베이스 테이블
  * 2. 데이터 처리:
  *    - MyBatis XML 매핑을 통한 SQL 쿼리 실행
  *    - UserMapper.xml에 정의된 SQL문과 매핑
@@ -18,14 +19,14 @@ public interface UserMapper {
      * 사용자 정보를 데이터베이스에 저장
      * @param user 저장할 사용자 정보
      */
-    void save(User user);
+    void save(Users user);
 
     /**
      * 사용자 아이디로 사용자 정보를 조회
      * @param userId 조회할 사용자 아이디
-     * @return User 사용자 정보
+     * @return Users 사용자 정보
      */
-    User findByUserId(String userId);
+    Users findByUserId(String userId);
 
     /**
      * 사용자 아이디의 존재 여부를 확인
@@ -40,4 +41,39 @@ public interface UserMapper {
      * @return boolean 이메일이 존재하면 true, 없으면 false
      */
     boolean existsByEmail(String email);
-} 
+
+    /**
+     * 프로필 이미지 업데이트
+     * @param userId 사용자 아이디
+     * @param profileImage 프로필 이미지 URL
+     */
+    void updateProfileImage(@Param("user_id") String userId, @Param("profileImage") String profileImage);
+    
+    /**
+     * 사용자 정보 업데이트 (프로필 이미지 포함)
+     * @param user 업데이트할 사용자 정보
+     */
+    void updateUserProfile(Users user);
+
+    /**
+     * 비밀번호 업데이트
+     * @param userId 사용자 아이디
+     * @param password 새 비밀번호
+     */
+    void updatePassword(@Param("user_id") String userId, @Param("password") String password);
+
+    /**
+     * 이메일로 사용자 조회
+     * @param email 사용자 이메일
+     * @return Users 사용자 정보
+     */
+    Users findByEmail(String email);
+
+    /**
+     * 이메일과 사용자 이름으로 사용자 조회
+     * @param email 사용자 이메일
+     * @param username 사용자 이름
+     * @return Users 사용자 정보
+     */
+    Users findByEmailAndUsername(@Param("email") String email, @Param("username") String username);
+}

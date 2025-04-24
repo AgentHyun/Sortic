@@ -2,6 +2,7 @@ package org.sortic.sorticproject;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -25,5 +26,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 모든 헤더 허용
                 .allowCredentials(true) // 인증 정보(쿠키 등) 허용
                 .maxAge(3600); // CORS preflight 요청 결과를 캐시하는 시간 (초)
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 프로필 이미지 서빙 설정
+        registry.addResourceHandler("/profile-images/**")
+                .addResourceLocations("file:uploads/profile-images/");
+        
+        // 기본 프로필 이미지 서빙 설정
+        registry.addResourceHandler("/public/**")
+                .addResourceLocations("classpath:/public/");
     }
 }
