@@ -1,6 +1,5 @@
 package org.sortic.sorticproject.Controller;
 
-import org.sortic.sorticproject.Entity.DeleteElementsRequest;
 import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Entity.Sorter;
 import org.sortic.sorticproject.Service.SorterService;
@@ -27,10 +26,15 @@ public class SorterController {
 
     @PostMapping("/delete")
     public ResponseEntity<String> deleteSorter(@RequestBody Map<String, Integer> payload) {
+        // 요청 받은 payload 로그
+        System.out.println("서버에서 받은 payload: " + payload);
+
         int sorterId = payload.get("sorter_id");
+
         sorterService.deleteSorter(sorterId);
         return ResponseEntity.ok("삭제 완료");
     }
+
 
     @PostMapping("/reorder")
     public ResponseEntity<List<Sorter>> reorderSorters(@RequestBody List<Sorter> sorters) {
@@ -40,10 +44,10 @@ public class SorterController {
 
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<Sorter>> getUserSorters(@PathVariable("user_id") String userId) {
-        // 중복된 sorter_name만 하나씩 반환하는 서비스 호출
         List<Sorter> uniqueSorters = sorterService.getUniqueSortersByUserId(userId);
         return ResponseEntity.ok(uniqueSorters);
     }
+
     @PutMapping("/update")
     public ResponseEntity<List<Sorter>> updateSorterName(@RequestBody Map<String, String> payload) {
         String oldSorterName = payload.get("oldSorterName");
@@ -56,57 +60,31 @@ public class SorterController {
         }
         return ResponseEntity.ok(updatedSorters);
     }
-
-
-
-    @PostMapping("/delete/element_by_sorter_name")
-    public ResponseEntity<String> deleteElementsBySorterName(@RequestBody DeleteElementsRequest request) {
-        sorterService.deleteElementsBySorterNameAndIds(request.getSorterName(), request.getElementIds());
-        return ResponseEntity.ok("정렬자별 요소 삭제 완료");
-    }
-
-
-
-
-
-    @PutMapping("/update-elements")
-    public ResponseEntity<Sorter> updateElementsId(@RequestBody Map<String, Integer> payload) {
-        int sorterId = payload.get("sorter_id");
-        int elementsId = payload.get("elements_id");
-
-        Sorter updatedSorter = sorterService.updateElementsId(sorterId, elementsId);
-        return ResponseEntity.ok(updatedSorter);
-    }
-    @GetMapping("/elements/{sorter_id}")
-    public ResponseEntity<Integer> getElementsIdBySorterId(@PathVariable int sorter_id) {
-        Integer elementsId = sorterService.getElementsIdBySorterId(sorter_id);
-        return ResponseEntity.ok(elementsId);
+    @PostMapping("/delete/multiple")
+    public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
+        try {
+            sorterService.deleteMultipleSorters(sorterIds);
+            return ResponseEntity.ok("정렬자들이 삭제되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제 실패");
+        }
     }
     @GetMapping("/name/{sorter_id}")
     public ResponseEntity<String> getSorterNameById(@PathVariable int sorter_id) {
         String sorterName = sorterService.getSorterNameById(sorter_id);
         return ResponseEntity.ok(sorterName);
     }
+
     @GetMapping("/element-id/{sorter_name}")
     public ResponseEntity<List<Integer>> getElementsIdBySorterName(@PathVariable String sorter_name) {
         List<Integer> elementsIds = sorterService.getElementsIdBySorterName(sorter_name);
         return ResponseEntity.ok(elementsIds);
     }
 
-
-
-
-    // 특정 정렬자에 요소 추가
     @PostMapping("/name/{sorterName}/addElement")
     public ResponseEntity<Sorter> addElementToSorter(@PathVariable String sorterName,
-                                                     @RequestBody Sorter newSorter) {
-        // sorter_name을 newSorter에 설정
-        newSorter.setSorter_name(sorterName);
-
-        // 서비스 메서드 호출
-        Sorter addedSorter = sorterService.addElementToSorter(newSorter);
-
-        // 새로 추가된 정렬자 반환
+                                                     @RequestBody Element element) {
+        Sorter addedSorter = sorterService.addElementToSorter(sorterName, element);
         return ResponseEntity.ok(addedSorter);
     }
 
@@ -118,7 +96,6 @@ public class SorterController {
         return ResponseEntity.ok(Map.of("exists", exists));
     }
 
-    // sorter_name과 elements_id에 해당하는 sorter_id를 반환하는 API
     @GetMapping("/get-sorter-id")
     public ResponseEntity<Integer> getSorterIdByNameAndElementId(
         @RequestParam String sorterName,

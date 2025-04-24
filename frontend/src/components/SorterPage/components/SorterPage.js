@@ -592,16 +592,16 @@ const SorterPage = () => {
       console.log("📌 드롭된 정렬자 이름:", targetSorter.sorter_name);
 
       try {
-        // 요소 이동 API 호출 (비동기)
+        // 요소 이동 API 호출 (비동기) - sorterId를 파라미터로 전달
         await setMoveElementToSorter({
           elementsId: active.id,
-          sorterName: targetSorter.sorter_name,
+          sorterId: targetSorter.sorter_id, // sorterName 대신 sorterId를 전달
         });
 
         // 👉 상태 동기화: 로컬 상태를 즉시 반영 (elements_id가 배열이라고 가정)
         setSorters((prev) =>
           prev.map((s) =>
-            s.sorter_name === targetSorter.sorter_name
+            s.sorter_id === targetSorter.sorter_id // sorter_id로 비교
               ? {
                 ...s,
                 elements_id: [...(s.elements_id || []), active.id],
@@ -618,8 +618,6 @@ const SorterPage = () => {
       console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
     }
   };
-
-
 
 
 

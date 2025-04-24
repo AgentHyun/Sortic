@@ -15,11 +15,12 @@ import {
   fetchElementPriceByIdAction
 } from "../actions/elementAction";
 import {
-  getElementsIdBySorterNameAction, getElementNameByIdAction, updateSorterNameAction, getSorterIdByNameAndElementIdAction
-} from "../actions/sorterAction"; // updateSorterNameAction 추가
+  getElementsIdBySorterIdAction, getElementNameByIdAction, updateSorterNameAction, getSorterIdByNameAndElementIdAction
+} from "../actions/sorterAction"; // API 액션 수정
 import SorterBox from "./SorterBox";
 import axios from "axios";
 
+// SorterContainer 수정
 const SorterContainer = ({
                            sorters,
                            setSorters,
@@ -36,7 +37,7 @@ const SorterContainer = ({
   const [elementNamesBySorter, setElementNamesBySorter] = useState({});
   const [selectedElementIds, setSelectedElementIds] = useAtom(selectedElementIdsAtom);
   const [elementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
-  const [, setGetElementsIdBySorterName] = useAtom(getElementsIdBySorterNameAction);
+  const [, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
   const [, setGetElementNameById] = useAtom(getElementNameByIdAction);
   const [, setFetchElementPriceById] = useAtom(fetchElementPriceByIdAction);
   const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
@@ -62,9 +63,8 @@ const SorterContainer = ({
       (key) => selectedElementIdsBySorter[key].length > 0
     );
 
-    // Atom 업데이트
     setSelectedSorterIds(selectedSorterIds);
-    console.log("소올터", selectedSorterIds);
+
   }, [selectedElementIdsBySorter]);
 
   useEffect(() => {
@@ -72,46 +72,36 @@ const SorterContainer = ({
       const result = {};
       for (const sorter of sorters) {
         try {
-          const ids = await setGetElementsIdBySorterName(sorter.sorter_name);
+          // 수정된 부분: getElementsIdBySorterIdAction을 비동기 호출
+          const ids = await setGetElementsIdBySorterId(sorter.sorter_id);
           const idList = Array.isArray(ids) ? ids : [];
+
+          // getElementNameByIdAction을 사용하여 요소 이름을 비동기적으로 가져옴
           const names = await Promise.all(
             idList.map(async (id) => {
               const name = await setGetElementNameById(id);
               return name;
             })
           );
+
           result[sorter.sorter_id] = { ids: idList, names };
         } catch (err) {
           result[sorter.sorter_id] = { ids: [], names: [] };
         }
       }
       setElementNamesBySorter(result);
-      setSorterCards(result);
+      setSorterCards(result); // 상태 업데이트
     };
 
     fetchAllElementNames();
-  }, [sorters, elementsRefreshTrigger]);
+  }, [sorters, elementsRefreshTrigger, setGetElementsIdBySorterId, setGetElementNameById, setSorterCards]);
 
-  const clickTimeoutRef = useRef(null);
-
-  const handleElementClick = async (elementId, sorterName, event) => {
+  const handleElementClick = async (elementId, sorterId, event) => {
     if (event?.stopPropagation) event.stopPropagation();
 
     try {
-      const sorterId = await setGetSorterIdByNameAndElementId({
-        sorterName,
-        elementsId: elementId,
-      });
-
-      if (!sorterId) {
-        console.warn('⚠️ sorter_id를 찾지 못했습니다.');
-        return;
-      }
-
-      // 선택 ID 토글
       const updatedIdsBySorter = { ...selectedElementIdsBySorter };
       const prevSelected = updatedIdsBySorter[sorterId] || [];
-
       const newSelected = prevSelected.includes(elementId)
         ? prevSelected.filter((id) => id !== elementId)
         : [...prevSelected, elementId];
@@ -119,7 +109,6 @@ const SorterContainer = ({
       updatedIdsBySorter[sorterId] = newSelected;
       setSelectedElementIdsBySorter(updatedIdsBySorter);
 
-      // 이름 토글
       const updatedNamesBySorter = { ...selectedElementNamesBySorter };
       const index = elementNamesBySorter[sorterId]?.ids?.indexOf(elementId);
       const elementName = elementNamesBySorter[sorterId]?.names?.[index];
@@ -132,10 +121,8 @@ const SorterContainer = ({
       updatedNamesBySorter[sorterId] = newNames;
       setSelectedElementNamesBySorter(updatedNamesBySorter);
 
-      // 선택된 sorter ID 업데이트
       const allSelectedIds = Object.values(updatedIdsBySorter).flat();
       const collectedSorterIds = [];
-
       allSelectedIds.forEach((id) => {
         sorters.forEach((sorter) => {
           const sid = String(sorter.sorter_id);
@@ -153,11 +140,6 @@ const SorterContainer = ({
       console.error('🚨 sorter_id 조회 실패:', error);
       message.error("sorter_id 조회에 실패했습니다.");
     }
-  };
-
-  const handleElementsDoubleClick = (elementId, sorterName) => {
-    setHandleElementDoubleClick(elementId);
-    setEditingElementIndex(elementId);
   };
 
   const handleContextMenu = async (event, elementId, name) => {
@@ -216,20 +198,14 @@ const SorterContainer = ({
                   {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
                     const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
 
-                    // 여기서 isSelected를 선언
                     const isSelected = selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId);
 
                     return name && elementId != null ? (
                       <div
                         key={elementId}
                         id={`element-${elementId}`}
-                        className={`element-item ${
-                          selectedSorterIds.includes(String(sorter.sorter_id)) && isSelected
-                            ? 'selected-sorter-item'
-                            : ''
-                        }`}
-                        onClick={(event) => handleElementClick(elementId, sorter.sorter_name, event)}
-                        onDoubleClick={() => handleElementsDoubleClick(elementId)}
+                        className={`element-item ${isSelected ? 'selected-sorter-item' : ''}`}
+                        onClick={(event) => handleElementClick(elementId, sorter.sorter_id, event)}
                         onContextMenu={(e) => handleContextMenu(e, elementId, name)}
                       >
                         {name}

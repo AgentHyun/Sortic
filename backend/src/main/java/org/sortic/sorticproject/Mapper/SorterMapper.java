@@ -9,8 +9,8 @@ import java.util.List;
 public interface SorterMapper {
 
     // 정렬자 추가
-    @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
-            "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")
+    @Insert("INSERT INTO Sorter (user_id, sorter_number, sorter_name) " +
+        "VALUES (#{user_id},  #{sorter_number}, #{sorter_name})")
     @Options(useGeneratedKeys = true, keyProperty = "sorter_id")
     void insertSorter(Sorter sorter);
 
@@ -46,17 +46,12 @@ public interface SorterMapper {
     )
     GROUP BY sorter_name, user_id
     ORDER BY sorter_number ASC
-""")
+    """)
     List<Sorter> getSortersByUserId(String user_id);
-
-
-
-
-
 
     // 정렬자 수정
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name}, elements_id = #{elements_id}, sorter_number = #{sorter_number} " +
-            "WHERE sorter_id = #{sorter_id}")
+        "WHERE sorter_id = #{sorter_id}")
     void updateSorter(@Param("sorter_id") int sorter_id,
                       @Param("sorter_name") String sorter_name,
                       @Param("elements_id") int elements_id,
@@ -65,6 +60,16 @@ public interface SorterMapper {
     // 정렬자 삭제
     @Delete("DELETE FROM Sorter WHERE sorter_id = #{sorter_id}")
     void deleteSorter(int sorter_id);
+    @Delete({
+        "<script>",
+        "DELETE FROM Sorter_Element",
+        "WHERE sorter_id IN",
+        "<foreach item='id' collection='sorterIds' open='(' separator=',' close=')'>",
+        "#{id}",
+        "</foreach>",
+        "</script>"
+    })
+    void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
 
     // 사용자별 정렬자 전체 삭제
     @Delete("DELETE FROM Sorter WHERE user_id = #{user_id}")
@@ -72,11 +77,11 @@ public interface SorterMapper {
 
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_name = #{old_sorter_name}")
     int updateSorterName(@Param("old_sorter_name") String old_sorter_name, @Param("sorter_name") String sorter_name);
+
     @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorter_name}")
     List<Sorter> findAllByName(@Param("sorter_name") String sorterName);
 
-
-
+    // 요소 삭제 쿼리 수정
     @Delete({
         "<script>",
         "DELETE FROM Element",
@@ -96,25 +101,23 @@ public interface SorterMapper {
     @Select("SELECT sorter_name FROM Sorter WHERE sorter_id = #{sorter_id}")
     String getSorterNameById(@Param("sorter_id") int sorter_id);
 
-
     @Select("SELECT elements_id FROM Sorter WHERE sorter_name = #{sorter_name}")
     List<Integer> getElementsIdBySorterName(@Param("sorter_name") String sorterName);
-
 
     // 사용자별 최대 sorter_number 조회
     @Select("SELECT MAX(sorter_number) FROM sorter WHERE user_id = #{user_id}")
     int getMaxSorterNumberByUserId(String user_id);
+
     // 요소를 sorter에 추가하는 쿼리
-    // sorter_name으로 정렬자 찾기
     @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorterName}")
     Sorter findSorterByName(@Param("sorterName") String sorterName);
-
 
     @Select("SELECT COUNT(*) > 0 FROM Sorter WHERE sorter_name = #{sorterName} AND elements_id = #{elementsId}")
     boolean existsElementInSorterByName(String sorterName, int elementsId);
 
     @Select("SELECT sorter_id FROM Sorter WHERE sorter_name = #{sorterName} AND elements_id = #{elementsId}")
     Integer findSorterIdByNameAndElementId(String sorterName, int elementsId);
+
     // addElementToSorter 메서드에서 중복을 처리
     @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
         "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")
@@ -123,7 +126,6 @@ public interface SorterMapper {
     @Select("SELECT COUNT(*) FROM sorter WHERE sorter_id = #{sorterId} AND elements_id = #{elementsId}")
     int countElementInSorter(@Param("sorterId") int sorterId, @Param("elementsId") int elementsId);
 
+    @Select("SELECT DISTINCT sorter_id, sorter_name FROM Sorter WHERE user_id = #{userId}")
+    List<Sorter> selectUniqueSortersByUserId(String userId);
 }
-
-
-
