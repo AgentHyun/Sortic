@@ -28,17 +28,17 @@ public interface UserService {
      * 사용자 아이디의 존재 여부를 확인
      */
     boolean existsByUserId(String user_id);
-    
+
     /**
      * 프로필 이미지 업로드
      */
     String uploadProfileImage(String user_id, MultipartFile file) throws IOException;
-    
+
     /**
      * 기본 프로필 이미지 설정
      */
     void setDefaultProfileImage(String user_id);
-    
+
     /**
      * 사용자 프로필 업데이트
      */
@@ -58,4 +58,4 @@ public interface UserService {
      * 비밀번호 변경
      */
     void changePassword(String user_id, String currentPassword, String newPassword);
-} 
+}

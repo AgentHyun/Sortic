@@ -76,4 +76,11 @@ public interface UserMapper {
      * @return Users 사용자 정보
      */
     Users findByEmailAndUsername(@Param("email") String email, @Param("username") String username);
+
+    /**
+     * 새로운 사용자 등록
+     * @param user 등록할 사용자 정보
+     * @return 등록된 행의 수
+     */
+    int insertUser(Users user);
 }

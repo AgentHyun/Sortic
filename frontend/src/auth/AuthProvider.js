@@ -34,10 +34,13 @@ const AuthProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.error('Auth initialization error:', error);
+                // 로그인 페이지에서는 에러 메시지 표시하지 않음
+                if (!window.location.pathname.includes('/login')) {
+                    message.error('로그인이 필요합니다.');
+                }
                 localStorage.clear();
                 setIsAuthenticated(false);
                 setAuthUser(null);
-                message.error('로그인이 필요합니다.');
                 navigate('/login');
             } finally {
                 setAuthLoading(false);

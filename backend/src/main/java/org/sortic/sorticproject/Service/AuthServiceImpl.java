@@ -3,16 +3,20 @@ package org.sortic.sorticproject.Service;
 import org.sortic.sorticproject.Entity.Users;
 import org.sortic.sorticproject.Mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import java.util.Date;
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Base64;
 
 @Service
@@ -22,62 +26,66 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String jwtSecret;
 
     @Value("${jwt.expiration}")
-    private Long expirationTime;
+    private long jwtExpiration;
 
-    private Key getSigningKey() {
-        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private SecretKey getSigningKey() {
+        // Base64로 인코딩된 키를 디코딩
+        byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
+        return Keys.hmacShaKeyFor(decodedKey);
     }
 
     @Override
-    public Users login(String user_id, String password) {
-        Users user = userMapper.findByUserId(user_id);
-        System.out.println("🔥 로그인 시도된 ID: " + user_id);
-        System.out.println("🔥 DB에서 조회된 사용자: " + user);
-        if (user == null) {
-            throw new RuntimeException("존재하지 않는 아이디입니다.");
+    public ResponseEntity<?> login(Users user) {
+        try {
+            Users foundUser = userMapper.findByUserId(user.getUser_id());
+            if (foundUser == null) {
+                return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
+            }
+            if (!passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
+                return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+            }
+            
+            String token = generateJwtToken(foundUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", foundUser);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-        }
-        return user;
     }
 
     @Override
     public String generateJwtToken(Users user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationTime);
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
                 .setSubject(user.getUser_id())
-                .claim("username", user.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     @Override
-    public boolean validateToken(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            return false;
+    public ResponseEntity<?> validateToken(String token) {
+        if (token != null && token.startsWith("Bearer")) {
+            token = token.substring(7);
         }
-
+        
         try {
-            String jwt = token.substring(7);
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody();
-
-            // 토큰 만료 확인
-            return !claims.getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+            return ResponseEntity.ok().body(true);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Invalid token: " + e.getMessage());
         }
     }
 
@@ -89,15 +97,46 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getUserIdFromToken(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+        if (token != null && token.startsWith("Bearer")) {
+            token = token.substring(7);
+        }
+        
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody();
-            return claims.getSubject();
+                .getBody()
+                .getSubject();
+    }
+
+    @Override
+    public ResponseEntity<?> signup(Users user) {
+        try {
+            // 아이디 중복 확인
+            if (userMapper.findByUserId(user.getUser_id()) != null) {
+                return ResponseEntity.badRequest().body("이미 존재하는 아이디입니다.");
+            }
+            
+            // 비밀번호 암호화
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            
+            // 사용자 저장
+            userMapper.insertUser(user);
+            
+            return ResponseEntity.ok().body("회원가입이 완료되었습니다.");
         } catch (Exception e) {
-            return null;
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-} 
+
+    @Override
+    public ResponseEntity<?> checkUserId(String user_id) {
+        try {
+            boolean exists = userMapper.findByUserId(user_id) != null;
+            return ResponseEntity.ok().body(!exists);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+}
+ 

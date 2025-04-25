@@ -125,7 +125,7 @@ function SignupPage() {
                 validator(_, value) {
                   if (!value || value.length < 8) {
                     return Promise.resolve();
-                  }
+                }
 
                   // 아이디 포함 여부 검사
                   const userId = getFieldValue('user_id');
@@ -134,27 +134,27 @@ function SignupPage() {
                       const chunk = userId.substring(i, i + 3);
                       if (value.includes(chunk)) {
                         return Promise.reject(new Error('비밀번호에 아이디의 연속된 3자 이상의 문자열을 포함할 수 없습니다.'));
-                      }
                     }
                   }
+                }
                   
                   return Promise.resolve();
                 },
               }),
             ]}
           >
-            <Input.Password
-              className={styles.input}
-              allowClear
+            <Input.Password 
+              className={styles.input} 
+              allowClear 
               placeholder="비밀번호 (8자 이상)"
             />
           </Form.Item>
 
           {/* 비밀번호 확인 필드 */}
-          <Form.Item
-            label="비밀번호 확인"
-            name="confirm"
-            dependencies={['password']}
+          <Form.Item 
+            label="비밀번호 확인" 
+            name="confirm" 
+            dependencies={['password']} 
             rules={[
               { required: true, message: '비밀번호 확인을 입력해주세요.' },
               ({ getFieldValue }) => ({
@@ -167,10 +167,10 @@ function SignupPage() {
               }),
             ]}
           >
-            <Input.Password
-              className={styles.input}
-              allowClear
-              placeholder="비밀번호 확인"
+            <Input.Password 
+              className={styles.input} 
+              allowClear 
+              placeholder="비밀번호 확인" 
             />
           </Form.Item>
 
@@ -206,8 +206,8 @@ function SignupPage() {
             label="이메일"
             name="email"
             rules={[
-              { required: true, message: '이메일을 입력해주세요.' },
-              { type: 'email', message: '올바른 이메일 형식이 아닙니다.' }
+            { required: true, message: '이메일을 입력해주세요.' },
+            { type: 'email', message: '올바른 이메일 형식이 아닙니다.' }
             ]}
           >
             <Input

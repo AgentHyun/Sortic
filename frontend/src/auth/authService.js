@@ -14,12 +14,25 @@ export const authApi = axios.create({
 authApi.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
+        console.log('Interceptor - Token from localStorage:', token); // 인터셉터에서의 토큰 확인
+        
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
+            console.log('Interceptor - Added Authorization header:', config.headers.Authorization); // 설정된 헤더 확인
+        } else {
+            console.log('Interceptor - No token found, skipping Authorization header');
         }
+        
+        console.log('Interceptor - Final request config:', {
+            url: config.url,
+            method: config.method,
+            headers: config.headers
+        }); // 최종 요청 설정 확인
+        
         return config;
     },
     (error) => {
+        console.error('Interceptor - Request error:', error);
         return Promise.reject(error);
     }
 );
@@ -40,50 +53,60 @@ authApi.interceptors.response.use(
     }
 );
 
-export const login = async (userId, password) => {
+export const login = async (inputUserId, password) => {
   try {
-    if (!userId || !password) {
+    if (!inputUserId || !password) {
       throw new Error('아이디와 비밀번호를 모두 입력해주세요.');
     }
 
-    // 🔧 수정 1: 'username' 제거 → 서버는 user_id, password만 받도록 설계됨
     const response = await authApi.post('/login', {
-      user_id: userId,
+      user_id: inputUserId,
       password: password
     });
+
+    console.log('Login response:', response.data);
 
     if (!response.data) {
       throw new Error('서버로부터 응답을 받지 못했습니다.');
     }
 
-    // 🔧 수정 2: username 응답에서 받아옴 (닉네임 표시용)
-    const { token, user_id, username } = response.data;
+    const { token, user } = response.data;
+    console.log('Received token:', token);
+    console.log('Received user:', user);
 
-    if (!token || !user_id) {
+    if (!token || !user) {
       throw new Error('로그인 응답 데이터가 올바르지 않습니다.');
     }
 
-    // 🔧 수정 3: userData에 username 저장 → 헤더에서 닉네임 표시용
+    // 토큰에서 공백 제거 후 저장
+    const cleanToken = token.trim();
+    localStorage.setItem('token', cleanToken);
+    console.log('Token saved to localStorage:', localStorage.getItem('token'));
+
+    // user_id가 없는 경우 username을 user_id로 사용
+    const user_id = user.user_id || user.username;
+    
+    // 사용자 데이터 구조화 (토큰은 제외)
     const userData = {
       user_id: user_id,
-      username: username || user_id,  // 닉네임 없으면 user_id로 대체
-      token: token
+      username: user.username || user_id,
+      email: user.email,
+      grade: user.grade
     };
 
-    // 🔧 수정 4: username 포함된 user 객체 통째로 localStorage에 저장
-    localStorage.setItem('token', token);
+    // 사용자 정보 저장
     localStorage.setItem('user_id', user_id);
     localStorage.setItem('user', JSON.stringify(userData));
 
     return {
       user: userData,
-      token: token
+      token: cleanToken
     };
   } catch (error) {
     console.error('Login error:', error);
 
     if (error.response) {
-      const errorMessage = error.response.data || '서버 오류가 발생했습니다.';
+      const errorMessage = error.response.data?.message || error.response.data || '서버 오류가 발생했습니다.';
       if (error.response.status === 401) {
         throw new Error(typeof errorMessage === 'string' ? errorMessage : '아이디 또는 비밀번호가 올바르지 않습니다.');
       } else {
@@ -124,22 +147,43 @@ export const getCurrentUser = () => {
 // 토큰 유효성 검사
 export const validateToken = async () => {
     const token = localStorage.getItem('token');
+    console.log('Validating token from localStorage:', token); // 저장된 토큰 확인
+
     if (!token) {
+        console.log('No token found in localStorage');
         return false;
     }
 
     try {
-        const response = await authApi.post('/validate-token', null, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.isValid;
+        // 요청 전 헤더 확인
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+        console.log('Request headers:', headers); // 요청 헤더 확인
+
+        // 인터셉터에서 이미 Authorization 헤더를 추가하므로, 여기서는 추가하지 않음
+        const response = await authApi.post('/validate-token');
+        console.log('Token validation response:', response.data); // 검증 응답 확인
+        
+        // 응답이 없거나 유효하지 않은 경우
+        if (!response.data || response.data.error) {
+            console.error('Invalid token response:', response.data);
+            return false;
+        }
+        
+        return true;
     } catch (error) {
         console.error('Token validation error:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user_id');
-        localStorage.removeItem('user');
+        console.error('Error response:', error.response?.data); // 에러 응답 상세 확인
+        
+        // 토큰이 유효하지 않은 경우에만 로컬 스토리지 클리어
+        if (error.response?.status === 400 || error.response?.status === 401) {
+            console.log('Clearing localStorage due to invalid token');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user');
+        }
         return false;
     }
 };

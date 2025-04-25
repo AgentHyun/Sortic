@@ -74,7 +74,7 @@ public class UserController {
     // 토큰에서 사용자 ID 추출 (임시 구현)
     private String extractUserIdFromToken(String token) {
         // 실제 구현에서는 JWT 토큰 파싱 필요
-        return token.replace("Bearer ", "");
+        return token.replace("Bearer", "");
     }
 
     @PostMapping("/find-id")
