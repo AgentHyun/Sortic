@@ -1,0 +1,129 @@
+.calculator-container {
+  position: fixed;
+  width: 260px;
+  background-color: #ffffff;
+  border: 1px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 9999;
+  user-select: none;
+  transition: box-shadow 0.2s ease-in-out;
+
+}
+
+.calculator-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.calculator-header {
+  background-color: #f5f5f5;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: grab;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.close-btn {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.calculator-body {
+  padding: 16px;
+}
+
+.calculator-display {
+  width: 90%;
+  height: 38px;
+  font-size: 16px;
+  text-align: right;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.calculator-buttons {
+  margin-top:10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+
+}
+
+.calculator-button {
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #f0f0f0;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.calculator-button:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.03);
+}
+.calculator-button.operator {
+  background-color: #ffeedc;
+  color: #d17b00;
+}
+.calculator-button.equal {
+  background-color: #4caf50;
+  color: white;
+  grid-column: span 2;
+}
+.calculator-button.clear {
+  background-color: #f8d7da;
+  color: #a94442;
+}
+
+.calculator-button.del {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.input-display-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.operator-hint {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #888;
+  pointer-events: none;
+}
+
+.history-wrapper {
+  max-height: 120px;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #eee;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+
+}
+
+.history-entry {
+  margin-bottom: 4px;
+
+}

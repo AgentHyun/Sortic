@@ -4,16 +4,26 @@ import {Button, Input, message, Modal} from 'antd';
 import axios from 'axios';
 import '../css/billPage.css';
 import { billsAtom } from "../atom/atoms";
-import {Trash,X} from 'lucide-react';
+import {Trash,X,Plus} from 'lucide-react';
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
   const userId = 'user123';
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newBillName, setNewBillName] = useState('');
+  const [editingBillId, setEditingBillId] = useState(false);
+  const [editedBillName,setEditedBillName] = useState('');
+
+
+
+
+
+
+
+
   const fetchBills = () => {
     axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
       .then(res => setBills(res.data))
-      .catch(err => message.error('Bill 불러오기 실패', err));
+      .catch(err => console.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
@@ -33,10 +43,10 @@ const BillPage = () => {
       message.success("Bill이 추가되었습니다!");
 
     } catch (error){
-      message.error("Bill 추가 실패")
+      console.error("Bill 추가 실패")
     }
 
-  }
+  };
   const handleDeleteBill = async (billId) => {
     try {
       await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
@@ -48,29 +58,60 @@ const BillPage = () => {
       message.error("삭제 실패");
     }
   };
+  const handleUpdateBillName = async (billId) => {
+    try {
+      await axios.put(`http://localhost:8080/api/bills/updateBillName`,{
+        billId : billId,
+        billName : editedBillName,
+      });
+      message.success("Bill 이름 수정 성공")
+      setEditingBillId(null);
+      fetchBills();
+
+    }
+    catch (err){
+      message.error("Bill 이름 수정 실패")
+    }
+  };
+
   return (
 
     <div className="bill-container">
-      {/* 👉 상단 버튼 */}
       <div className="bill-add">
         <Button type="primary" className="add-bill-btn" onClick={() => setIsModalVisible(true)}>
-          + Bill 추가하기
+          + Bill
         </Button>
       </div>
       {bills.map((bill) => (
         <div key={bill.billId} className="bill-box">
-          {/* X 아이콘은 위에 절대 위치로 */}
           <X
             className="delete-icon"
-            onClick={() => handleDeleteBill(bill.billId)}
+            onDoubleClick={() => handleDeleteBill(bill.billId)}
           />
-          {/* 제목은 가운데 정렬 */}
           <div className="bill-title">
-            {bill.billName}
+            {editingBillId === bill.billId ? (
+              <Input
+                value={editedBillName}
+                onChange={(e) => setEditedBillName(e.target.value)}
+                onBlur={() => handleUpdateBillName(bill.billId)}
+                onPressEnter={() => handleUpdateBillName(bill.billId)}
+                autoFocus
+              />
+            ) : (
+              <div
+                onDoubleClick={() => {
+                  setEditingBillId(bill.billId);
+                  setEditedBillName(bill.billName);
+                }}
+              >
+                {bill.billName}
+              </div>
+            )}
           </div>
 
+
           <div>
-            <h4>📦 항목</h4>
+            <h4>📦 항목 </h4>
             <ul>
               {Array.isArray(bill.elements) && bill.elements.map((el, idx) => (
                 <li key={idx}>{el.elementsName} - {el.elementsPrice}원</li>
@@ -79,7 +120,7 @@ const BillPage = () => {
             <p><strong>총 요소 금액:</strong> {bill.totalElementPrice}원</p>
           </div>
           <div>
-            <h4>🧾 수수료</h4>
+            <div>🧾 수수료</div>
             <ul>
               {Array.isArray(bill.commissions) &&bill.commissions.map((c, idx) => (
                 <li key={idx}>{c.commissionName} - {c.commission}원</li>
@@ -92,7 +133,6 @@ const BillPage = () => {
           </div>
         </div>
       ))}
-      {/* 👉 모달 */}
       <Modal
         title="새로운 Bill 추가"
         open={isModalVisible}
@@ -107,6 +147,7 @@ const BillPage = () => {
           onChange={(e) => setNewBillName(e.target.value)}
         />
       </Modal>
+
     </div>
   );
 };
