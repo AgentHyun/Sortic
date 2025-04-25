@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import { message, Tooltip } from 'antd';
-import { useDroppable } from '@dnd-kit/core';
+import {DragOverlay, useDroppable} from '@dnd-kit/core';
 import { X } from 'lucide-react';
 
 import {
@@ -19,6 +19,8 @@ import {
 } from "../actions/sorterAction"; // API 액션 수정
 import SorterBox from "./SorterBox";
 import axios from "axios";
+import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
+import SortableElement from "./SortableElement";
 
 // SorterContainer 수정
 const SorterContainer = ({
@@ -42,9 +44,7 @@ const SorterContainer = ({
   const [, setFetchElementPriceById] = useAtom(fetchElementPriceByIdAction);
   const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
 
-
   const [handleElementDoubleClick, setHandleElementDoubleClick] = useAtom(handleElementDoubleClickAtSorterAction);
-
 
   const setContextMenu = useSetAtom(contextMenuAtom);
   const [, setSetSelectedElement] = useAtom(setSelectedElementAction);
@@ -56,15 +56,13 @@ const SorterContainer = ({
   const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
   const [selectedElementIdsBySorter, setSelectedElementIdsBySorter] = useAtom(selectedElementIdsBySorterAtom);
   const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
-
-
+  const [activeElement, setActiveElement] = useState(null);
   useEffect(() => {
     const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
       (key) => selectedElementIdsBySorter[key].length > 0
     );
 
     setSelectedSorterIds(selectedSorterIds);
-
   }, [selectedElementIdsBySorter]);
 
   useEffect(() => {
@@ -163,6 +161,44 @@ const SorterContainer = ({
     id: 'sorters-container',
   });
 
+  const handleDragStart = (event) => {
+    const { active } = event;
+    setActiveElement(active.id);
+  };
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const sourceSorterId = active.id.split('-')[0];
+    const destinationSorterId = over.id.split('-')[0];
+    const elementId = active.id.split('-')[1];
+
+    if (sourceSorterId !== destinationSorterId) {
+      const updatedIdsBySorter = { ...selectedElementIdsBySorter };
+      const sourceIds = updatedIdsBySorter[sourceSorterId] || [];
+      const destinationIds = updatedIdsBySorter[destinationSorterId] || [];
+
+      // 요소를 소스에서 제거하고, 대상에 추가
+      updatedIdsBySorter[sourceSorterId] = sourceIds.filter((id) => id !== elementId);
+      updatedIdsBySorter[destinationSorterId] = [...destinationIds, elementId];
+
+      // 상태 업데이트
+      setSelectedElementIdsBySorter(updatedIdsBySorter);
+
+      // 선택된 요소 이름도 업데이트
+      const updatedNamesBySorter = { ...selectedElementNamesBySorter };
+      const elementName = elementNamesBySorter[sourceSorterId]?.names?.find((name) => name === elementId);
+      if (elementName) {
+        updatedNamesBySorter[sourceSorterId] = updatedNamesBySorter[sourceSorterId]?.filter((name) => name !== elementName);
+        updatedNamesBySorter[destinationSorterId] = [...updatedNamesBySorter[destinationSorterId], elementName];
+      }
+      setSelectedElementNamesBySorter(updatedNamesBySorter);
+    }
+
+    setActiveElement(null); // 드래그 종료 후 상태 초기화
+  };
+
+
   return (
     <div ref={setNodeRef} className="sorter-scroll-wrapper">
       <div className="sorter-list">
@@ -172,15 +208,16 @@ const SorterContainer = ({
               onClick={() => handleSorterClick(sorter.sorter_id)}
               className={`sorter-card ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`}
             >
+              {/* 정렬자 이름 인풋 */}
               <div
                 className="sorter-title"
-                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)} // 더블 클릭 시 이름 수정
+                onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
               >
                 {editingSorterId === sorter.sorter_id ? (
                   <input
                     value={inputValue ?? ''}
                     onChange={(e) => setInputValue(e.target.value)}
-                    onBlur={() => handleSaveSorterName(sorter.sorter_name)} // 수정 후 blur 시 저장
+                    onBlur={() => handleSaveSorterName(sorter.sorter_name)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleSaveSorterName(sorter.sorter_name);
                       else if (e.key === 'Escape') setEditingSorterId(null);
@@ -190,40 +227,58 @@ const SorterContainer = ({
                   sorter.sorter_name
                 )}
               </div>
+
               <button className="delete-btn" onClick={() => deleteSorter(sorter.sorter_id)}>
                 <X size={18} />
               </button>
 
               <SorterBox sorterId={sorter.sorter_id}>
                 <div className="element-names">
-                  {elementNamesBySorter[sorter.sorter_id]?.names?.map((name, idx) => {
-                    const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
+                  {elementNamesBySorter[sorter.sorter_id]?.names?.length > 0 ? (
+                    <SortableContext
+                      items={elementNamesBySorter[sorter.sorter_id]?.ids.map(
+                        (elementId) => `${sorter.sorter_id}-${elementId}`
+                      )}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {elementNamesBySorter[sorter.sorter_id]?.names.map((name, idx) => {
+                        const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];
+                        const isSelected = selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId);
 
-                    const isSelected = selectedElementIdsBySorter[sorter.sorter_id]?.includes(elementId);
-
-                    return name && elementId != null ? (
-                      <div
-                        key={elementId}
-                        id={`element-${elementId}`}
-                        className={`element-item ${isSelected ? 'selected-sorter-item' : ''}`}
-                        onClick={(event) => handleElementClick(elementId, sorter.sorter_id, event)}
-                        onContextMenu={(e) => handleContextMenu(e, elementId, name)}
-                      >
-                        {name}
-                      </div>
-                    ) : null;
-                  })}
+                        return name && elementId != null ? (
+                          <SortableElement
+                            key={`${sorter.sorter_id}-${elementId}`}
+                            sorterId={sorter.sorter_id}
+                            id={elementId}
+                            name={name}
+                            isSelected={isSelected}
+                            onClick={(event) => handleElementClick(elementId, sorter.sorter_id, event)}
+                            onContextMenu={(e) => handleContextMenu(e, elementId, name)}
+                          />
+                        ) : null;
+                      })}
+                      {/* DragOverlay 추가 */}
+                      {activeElement && (
+                        <DragOverlay>
+                          {activeElement && <div>Active: {activeElement}</div>}
+                        </DragOverlay>
+                      )}
+                    </SortableContext>
+                  ) : (
+                    <div>No Items</div>
+                  )}
                 </div>
               </SorterBox>
             </div>
           </div>
         ))}
+
+        {selectedSorters.length > 0 && (
+          <button className="delete-selected-btn" onClick={multiDeleteSorters}>
+            Delete
+          </button>
+        )}
       </div>
-      {selectedSorters.length > 0 && (
-        <button className="delete-selected-btn" onClick={multiDeleteSorters}>
-          Delete
-        </button>
-      )}
     </div>
   );
 };

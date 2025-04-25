@@ -1,9 +1,8 @@
-// components/SortableElement.js
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const SortableElement = ({ id, name, isSelected, onClick, onContextMenu }) => {
+const SortableElement = ({ sorterId, id, name, isSelected, onClick, onContextMenu }) => {
   const {
     attributes,
     listeners,
@@ -11,7 +10,7 @@ const SortableElement = ({ id, name, isSelected, onClick, onContextMenu }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id: `${sorterId}-${id}` }); // sorter_id와 element_id를 합쳐 고유한 id 부여
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -26,7 +25,7 @@ const SortableElement = ({ id, name, isSelected, onClick, onContextMenu }) => {
       {...attributes}
       {...listeners}
       style={style}
-      id={`element-${id}`}
+      id={`element-${sorterId}-${id}`} // sorter_id와 element_id를 합쳐 고유한 id 부여
       className={`element-item ${isSelected ? 'selected-sorter-item' : ''}`}
       onClick={onClick}
       onContextMenu={onContextMenu}

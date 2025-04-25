@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useAtom, useAtomValue, useSetAtom} from 'jotai';
+import { useAtom, useSetAtom} from 'jotai';
 import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 import {DndContext, DragOverlay, PointerSensor} from '@dnd-kit/core';
-import {SortableContext, arrayMove, horizontalListSortingStrategy} from '@dnd-kit/sortable';
-import { useSensors, useSensor, MouseSensor, TouchSensor } from '@dnd-kit/core';
+import {SortableContext, arrayMove, } from '@dnd-kit/sortable';
+import { useSensors, useSensor,} from '@dnd-kit/core';
 
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
@@ -22,7 +22,7 @@ import "../css/SorterPage/Element.css";
 import "../css/SorterPage/ContextMenu.css"
 import 'font-awesome/css/font-awesome.min.css';
 import { Trash,X } from 'lucide-react';
-import SortableContainer from './ElementSortableContainer';
+
 import SorterContainer from './SorterContainer';
 import {
   addCategoryModalVisibleAtom,
@@ -72,7 +72,7 @@ import {
   addElementAction,
 
   handleElementDoubleClickAction,
-  handleElementOkAction,
+
   handleElementNameSaveAction,
   setSelectedElementAction,
   openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
@@ -353,10 +353,19 @@ const SorterPage = () => {
   };
 
   const handleCostChange = (e) => {
-    const value = e.target.value;
-    setAddElementCost(value);
+    let value = e.target.value;
 
-    if (value === '' || /^\d+$/.test(value)) {
+    // 숫자와 쉼표만 허용 (숫자 외의 문자 제거)
+    const cleanedValue = value.replace(/[^0-9]/g, '');  // 숫자만 남김
+    const formattedValue = cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');  // 3자리마다 쉼표 추가
+
+    // 화면에 표시할 값은 쉼표가 포함된 값으로 설정
+    setAddElementCost(formattedValue);
+
+
+
+    // 숫자만 입력되도록 체크
+    if (value === '' || /^\d+$/.test(cleanedValue)) {
       setCostError('');
     } else {
       if (!costError) {
@@ -364,6 +373,8 @@ const SorterPage = () => {
         setCostError('숫자만 입력 가능합니다.');
       }
     }
+
+
   };
 
 
@@ -417,9 +428,7 @@ const SorterPage = () => {
       setAttributeModalVisible(false);
     }
   };
-  const isPrevRed = currentCategoryIndex === 0;
-  const isNextRed = currentCategoryIndex === categories.length - 1;
-  const categoryCount = categories.length; // 전체 카테고리 수
+
   const [popoverVisible, setPopoverVisible] = useAtom(popoverVisibleAtom);
   const firstCategoryIndex = 0;
   const lastCategoryIndex = categories.length - 1;
@@ -438,6 +447,29 @@ const SorterPage = () => {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        if (addElementModalVisible) {
+          e.preventDefault(); // 기본 동작 방지
+          addElement();
+        } else if (attributeModalVisible) {
+          e.preventDefault(); // 기본 제출 방지
+          handleRegister();
+        } else {
+          handleAddCategory(); // 엔터 키를 눌렀을 때 카테고리 추가
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [addElementModalVisible, addElementName, addElementCost, attributeModalVisible, keyValuePairs]);
+
 
   useEffect(() => {
     const checkCategoryCount = async () => {
@@ -620,8 +652,6 @@ const SorterPage = () => {
   };
 
 
-
-
   return (
     <div>
       <DndContext
@@ -635,7 +665,6 @@ const SorterPage = () => {
           strategy={rectSortingStrategy}
         >
         <div className="sorter-page-section">
-
 
 
           <div className={"sorter-header-section"}>
@@ -683,8 +712,6 @@ const SorterPage = () => {
             )}
 
 
-
-
             <div className="sorter-section" ref={sectionRef}>
 
               <div className='sorter-header'>
@@ -730,9 +757,6 @@ const SorterPage = () => {
 
 
               </div>
-
-
-
 
 
               <div
@@ -837,6 +861,9 @@ const SorterPage = () => {
                 onOk={() => handleRegister()}
                 okText="확인"
                 cancelText="취소"
+                okButtonProps={{
+                  className: "attribute-ok-button"
+                }}
               >
                 {keyValuePairs.map((pair, index) => (
                   <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
@@ -865,8 +892,6 @@ const SorterPage = () => {
                 </Button>
               </Modal>
               <ElementDetailModal/>
-
-
 
             </div>
 
@@ -914,10 +939,7 @@ const SorterPage = () => {
               </div>
             )}
 
-
           </div>
-
-
 
           <div className = "element-btn-section">
             <Tooltip title="카테고리 요소 추가"
@@ -973,17 +995,7 @@ const SorterPage = () => {
           </div>
 
 
-
-
-
-
-
           <div className="sorter-sort-section" id="sorter-sort-section" >
-
-
-
-
-
 
               <SorterContainer
                 sorters={sorters}
@@ -998,12 +1010,7 @@ const SorterPage = () => {
                 handleSaveSorterName={handleSaveSorterName}
                 handleSorterNameDoubleClick={handleSorterNameDoubleClick}
               />
-
-
-
-
           </div>
-
 
         </div>
 

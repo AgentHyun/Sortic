@@ -78,20 +78,18 @@ body {
     color: #B7B7B7; /* 파란색 변경 */
 }
 
-/* Custom Tooltip Design */
 .custom-tooltip .ant-tooltip-inner {
-  background-color: #e0f7fa;
-
-  /* 화이트 배경으로 밝고 깨끗한 느낌 */
-  color:  black; /* 텍스트 색상은 어두운 회색 */
+  background-color: #ffffff; /* 깨끗한 화이트 배경 */
+  color: #333333; /* 어두운 회색 텍스트로 읽기 편하게 */
   font-size: 14px;
-  padding: 12px 16px;
-  border-radius: 10px; /* 둥근 모서리 */
-  font-weight: 500;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px); /* 유리 느낌 추가 */
+  padding: 10px 14px; /* 패딩은 조금 더 아담하게 */
+  border-radius: 8px; /* 부드러운 둥근 모서리 */
+  font-weight: 600; /* 폰트 굵기를 더 두껍게 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 섬세한 그림자 */
+  transition: all 0.2s ease;
 }
+
+
 
 .custom-tooltip .ant-tooltip-arrow::before {
   background-color: #ffffff; /* 툴팁 화살표 배경색을 화이트로 맞춤 */
@@ -101,18 +99,18 @@ body {
   background-color: #f9f9f9; /* 툴팁이 hover 될 때 부드러운 배경색 변화 */
   color: #2c2c2c;
 }
-
 .custom-tooltip-red .ant-tooltip-inner {
-  background-color: #fae0e0; /* 붉은 색 계열 배경 */
-  color: black; /* 텍스트 색상 */
+  background-color: #ffebee; /* 연한 붉은색 배경 */
+  color: #c62828; /* 경고 강조를 위한 짙은 빨간색 텍스트 */
   font-size: 14px;
-  padding: 12px 16px;
-  border-radius: 10px; /* 둥근 모서리 */
-  font-weight: 500;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px); /* 유리 느낌 */
+  padding: 10px 14px; /* 패딩은 비슷하게 유지 */
+  border-radius: 8px; /* 부드러운 둥근 모서리 */
+  font-weight: 600; /* 폰트 굵기를 더 두껍게 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 섬세한 그림자 */
+  transition: all 0.2s ease;
 }
+
+
 
 .custom-tooltip-red .ant-tooltip-arrow::before {
   background-color: #ffffff; /* 화살표 색상 */

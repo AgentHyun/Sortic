@@ -88,7 +88,7 @@ export const oldSorterNameAtom = atom("");
 export const selectedElementIdsBySorterAtom = atom({});
 export const selectedElementNamesBySorterAtom = atom({});
 export const selectedSorterIdsAtom = atom([]);
-
+export const selectedElementIdSorterAtom = atom(0);
 
 // 성민
 export const userAtom = atom({

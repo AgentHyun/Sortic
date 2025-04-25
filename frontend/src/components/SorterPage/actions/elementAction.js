@@ -135,12 +135,12 @@ export const handleBulkDeleteElementsAction = atom(
                 console.log("✅ [정렬자별 삭제 응답]:", sorterDeleteResponse);
 
                 // 메시지 출력
-                message.success(`요소가 삭제되었습니다!`);
+
               } catch (error) {
                 console.error(`❌ [삭제 실패] [${sorterName}] 정렬자에서 요소 ${elementId} 삭제 실패:`, error);
               }
             }
-
+            message.success(`요소가 삭제되었습니다!`);
             // 상태 초기화
             set(selectedElementIdsBySorterAtom, {}); // 정렬자별 선택된 요소 초기화
           }
@@ -168,11 +168,14 @@ export const addElementAction = atom(
       return;
     }
 
+    // ✅ addElementCostAtom에서 쉼표를 제거한 값 가져오기
+    const rawCost = get(addElementCostAtom).replace(/,/g, '');  // 쉼표 제거
+
     // ✅ 추가할 요소의 기본 정보 설정
     const newElement = {
       category_id: currentCategory,
       elements_name: get(addElementNameAtom),
-      elements_price: get(addElementCostAtom),
+      elements_price: rawCost,  // 쉼표 제거한 값 사용
       elements_image: "default_image_url"
     };
 

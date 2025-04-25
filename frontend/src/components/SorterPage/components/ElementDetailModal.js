@@ -188,7 +188,8 @@ const ElementDetailModal = () => {
                                         }
                                     }}
                                 >
-                                    {newElementPrice}원
+                                  <span>{newElementPrice.toLocaleString()}원</span>
+
                                 </div>
                             )}
                         </div>

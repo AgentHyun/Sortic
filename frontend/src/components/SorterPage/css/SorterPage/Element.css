@@ -23,8 +23,8 @@
     background-color: #BEDBBB;
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    border: 2px solid black;
-    color: black;
+    border: 2px solid transparent;
+    color: white;
 }
 
 .element-btn-delete {
@@ -44,15 +44,15 @@
 
 
 .element-btn-delete:hover {
-    background-color: #FA7070;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    border: 2px solid black;
-    color : black;
+  background-color: #da4f59; /* 좀 더 진한 레드로 주목성 향상 */
+  transform: scale(1.07); /* 살짝 더 확대 */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); /* 그림자 더 강조 */
+  border: 2px solid #e63946; /* 경계 더 명확하게 */
+  color: #ffffff !important; /* 텍스트는 확실하게 하얀색 */
+  transition: all 0.2s ease-in-out;
 }
-.trash:hover{
-    color : black;
-}
+
+
 .element-btn-section {
     display: flex;
     flex-direction: row;
