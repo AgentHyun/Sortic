@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class Sorter {
+
     private int sorter_id;
     private String user_id;
-    private Integer elements_id;
     private int sorter_number;
     private String sorter_name;
 }

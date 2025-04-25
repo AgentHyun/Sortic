@@ -82,11 +82,17 @@ const SorterDefaultPage = () => {
                     setAddCategoryModalVisible(false);
                     setNewCategory('');
                 }}
+
+
+
+
+
             >
                 <Input
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder="카테고리 이름을 입력하세요"
+                    onPressEnter={handleAddCategory}
                 />
             </Modal>
             <div className="sorter-guide-section">

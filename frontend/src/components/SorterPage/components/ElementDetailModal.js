@@ -85,12 +85,16 @@ const ElementDetailModal = () => {
     };
 
 
-    useEffect(() => {
-        if (data) {
-            setNewElementName(data.elements_name);
-            setNewElementPrice(data.elements_price);
-        }
-    }, [data]);
+  useEffect(() => {
+
+    if (data && data.elements_name && data.elements_price !== undefined) {
+      setNewElementName(data.elements_name);
+      setNewElementPrice(data.elements_price);
+
+    }
+  }, [data]);
+
+
     return (
         <Modal
             title={null}
@@ -184,7 +188,8 @@ const ElementDetailModal = () => {
                                         }
                                     }}
                                 >
-                                    {newElementPrice}원
+                                  <span>{newElementPrice.toLocaleString()}원</span>
+
                                 </div>
                             )}
                         </div>
