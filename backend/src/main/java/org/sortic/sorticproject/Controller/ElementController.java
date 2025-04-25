@@ -76,4 +76,27 @@ public class ElementController {
             return ResponseEntity.notFound().build();  // 요소가 없으면 404 반환
         }
     }
+    @GetMapping("/get_element_price")
+    public ResponseEntity<Integer> getElementPrice(@RequestParam int elements_name_id) {
+        Integer price = elementService.getElementPriceById(elements_name_id);
+        if (price != null) {
+            return ResponseEntity.ok(price);  // 요소가 존재하면 가격 반환
+        } else {
+            return ResponseEntity.notFound().build();  // 요소가 없으면 404 반환
+        }
+    }
+    @PutMapping("/updateCategoryId")
+    public ResponseEntity<String> updateCategoryId(@RequestParam int elementsNameId) {
+        try {
+            // category_id를 null로 업데이트
+            elementService.updateElementCategoryIdToNull(elementsNameId);
+            return ResponseEntity.ok("요소의 카테고리 번호가 성공적으로 업데이트되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();  // 에러 로그 출력
+            return ResponseEntity.status(500).body("카테고리 번호 업데이트에 실패했습니다. 에러: " + e.getMessage());
+        }
+    }
+
+
+
 }

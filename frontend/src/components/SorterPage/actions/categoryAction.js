@@ -22,14 +22,13 @@ export const fetchAndNumberCategoriesAction = atom(
     null,
     async (get, set) => {
         try {
-            const userId = 'user123'; // 실제 사용자 ID로 변경 필요
+            const user_id = 'user123';
             const response = await axios.get('http://localhost:8080/api/categories/get_category', {
-                params: { user_id: userId }
+                params: { user_id: user_id }
             });
 
             const categories = response.data;
-            console.log("반응", categories);
-
+            
             // 각 카테고리에 번호 부여
             const numberedCategories = categories.map((category, index) => ({
                 ...category,
@@ -38,28 +37,40 @@ export const fetchAndNumberCategoriesAction = atom(
 
             set(categoriesAtom, numberedCategories);
 
-            // 첫 번째 카테고리를 자동 선택 (이미 선택된 게 없을 때만)
-            const current = get(currentCategoryAtom);
-            if (!current && numberedCategories.length > 0) {
+            // 현재 선택된 카테고리 ID 가져오기
+            const currentCategoryId = get(currentCategoryAtom);
+            
+            // 현재 카테고리가 없고 카테고리 목록이 있는 경우
+            if (!currentCategoryId && numberedCategories.length > 0) {
                 const firstCategory = numberedCategories[0];
                 set(currentCategoryAtom, firstCategory.category_id);
                 set(currentCategoryNameAtom, firstCategory.category_name);
+                set(currentIndexAtom, 0);
                 await set(fetchElementsByCategoryAction, firstCategory.category_id);
+            } 
+            // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
+            else if (currentCategoryId) {
+                const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
+                if (currentIndex !== -1) {
+                    set(currentIndexAtom, currentIndex);
+                    set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
+                }
             }
 
-
+            return numberedCategories;
         } catch (error) {
             console.error('카테고리 조회 실패:', error);
-            set(messageAtom, { type: 'warning', content: '카테고리 조회 실패' });
+            message.error('카테고리 조회에 실패했습니다.');
+            return [];
         }
     }
 );
 export const fetchCategoriesAction = atom(
     null,
-    async (get, set, userId) => {
+    async (get, set, user_id) => {
         try {
             const response = await axios.get('http://localhost:8080/api/categories/get_category', {
-                params: { user_id: userId }
+                params: { user_id: user_id }
             });
             set(categoriesAtom, response.data);
             return response.data; // ✅ 최신 카테고리 목록 반환 추가
@@ -75,13 +86,13 @@ export const fetchCategoriesAction = atom(
 export const fetchCategoryByIdAction = atom(
     null,
     async (get, set, categoryId) => {
-        const userId = 'user123';  // 예시로 'user123'을 사용했지만, 실제 값은 get() 등을 통해 가져올 수 있습니다.
+        const user_id = 'user123';  // 예시로 'user123'을 사용했지만, 실제 값은 get() 등을 통해 가져올 수 있습니다.
 
         try {
             // API 호출 (user_id와 category_id를 params로 전달)
             const response = await axios.get('http://localhost:8080/api/categories/get_category_by_id', {
                 params: {
-                    user_id: userId,
+                    user_id: user_id,
                     category_id: categoryId,
                 },
             });
@@ -119,10 +130,10 @@ export const fetchCategoryByIdAction = atom(
 
 export const fetchFirstCategoryAction = atom(
     null,
-    async (get, set, userId) => {
+    async (get, set, user_id) => {
         try {
             const response = await axios.get('http://localhost:8080/api/categories/get_first_category', {
-                params: { user_id: userId }
+                params: { user_id: user_id }
             });
 
             if (response.data) {
@@ -164,38 +175,40 @@ export const handleCategoryOkAction = atom(
         const newCategory = get(newCategoryAtom);
 
         if (!newCategory) {
-            set(messageAtom, { type: 'warning', content: '카테고리 이름을 입력하세요.' });
+            message.warning('카테고리 이름을 입력하세요.');
             return;
         }
 
         try {
-            const response = await axios.post(`http://localhost:8080/api/categories/add_category`, {
+            const response = await axios.post('http://localhost:8080/api/categories/add_category', {
                 user_id: 'user123',
                 category_name: newCategory,
             });
 
-            const addedCategory = response.data; // 추가된 카테고리 정보
-            console.log("📌 추가된 카테고리:", addedCategory);
-            // 현재 카테고리를 새로 추가된 카테고리로 변경
+            if (!response.data) {
+                throw new Error('서버에서 응답을 받지 못했습니다.');
+            }
+
+            const addedCategory = response.data;
+            
+            // 현재 카테고리 목록 가져오기
+            const currentCategories = get(categoriesAtom);
+            
+            // 새 카테고리를 목록에 추가
+            const updatedCategories = [...currentCategories, addedCategory];
+            
+            // 상태 업데이트
+            set(categoriesAtom, updatedCategories);
             set(currentCategoryAtom, addedCategory.category_id);
             set(currentCategoryNameAtom, addedCategory.category_name);
-
-            // 기존 카테고리 목록에 추가된 카테고리 추가
-            set(categoriesAtom, (prevCategories) => [...prevCategories, addedCategory]);
-
-            set(messageAtom, { type: 'success', content: '카테고리가 추가되었습니다!' });
-            message.success("카테고리 추가 성공!");
-
-            // 모달 닫기 및 입력 필드 초기화
-            set(addCategoryModalVisibleAtom, false);
-            set(newCategoryAtom, '');
-
-            // 새 카테고리에 해당하는 요소 불러오기
-            set(fetchElementsByCategoryAction, addedCategory.category_id);
-
+            
+            message.success('카테고리가 추가되었습니다!');
+            
+            return addedCategory;
         } catch (error) {
-            console.error('카테고리 추가 실패', error);
-            set(messageAtom, { type: 'warning', content: '카테고리 추가 실패!' });
+            console.error('카테고리 추가 실패:', error);
+            message.error('카테고리 추가에 실패했습니다.');
+            throw error;
         }
     }
 );
@@ -351,15 +364,15 @@ export const changeCategoryAction = atom(
 
 export const fetchCategoryCountAction = atom(
     null,
-    async (get, set, userId: string) => {
+    async (get, set, userId) => {
         try {
             const response = await axios.get('http://localhost:8080/api/categories/count_categories', {
-                params: { user_id: userId }
+                params: { user_id: user_id }
             });
 
             const count = response.data;
 
-            console.log(`📊 ${userId}의 카테고리 개수:`, count);
+            console.log(`📊 ${user_id}의 카테고리 개수:`, count);
 
             return count;
         } catch (error) {
