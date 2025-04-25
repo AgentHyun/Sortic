@@ -1,12 +1,37 @@
 /* frontend/src/index.css */
 @import './styles/theme.css';
+
+/* 기본 스타일 리셋 및 전역 스타일 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;  /* 전체 텍스트 선택 방지 */
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: default;  /* 기본 커서 스타일 */
+}
+
+/* 입력 요소(input, textarea)는 선택 가능하도록 예외 처리 */
+input, 
+textarea, 
+[contenteditable="true"] {
+  user-select: text;
+  cursor: text;
+}
+
+/* 버튼은 포인터 커서 유지 */
+button,
+[role="button"],
+a {
+  cursor: pointer;
 }
 
 code {
