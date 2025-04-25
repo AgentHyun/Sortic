@@ -63,7 +63,7 @@ public class UserController {
             @RequestParam("userId") String userId,
             @RequestBody Users user) {
         try {
-            user.setUser_id(userId);
+            user.setUserId(userId);
             userService.updateUserProfile(user);
             return ResponseEntity.ok().build();
         } catch (Exception e) {

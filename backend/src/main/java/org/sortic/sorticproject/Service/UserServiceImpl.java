@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Users signup(Users user) {
-        if (userMapper.existsByUserId(user.getUser_id())) {
+        if (userMapper.existsByUserId(user.getUserId())) {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
         }
 
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserProfile(Users user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
-            userMapper.updatePassword(user.getUser_id(), encodedPassword);
+            userMapper.updatePassword(user.getUserId(), encodedPassword);
         }
         
         userMapper.updateUserProfile(user);
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(temporaryPassword);
         user.setPassword(encodedPassword);
         
-        userMapper.updatePassword(user.getUser_id(), encodedPassword);
+        userMapper.updatePassword(user.getUserId(), encodedPassword);
         
         // TODO: 이메일 발송 로직 구현
         // emailService.sendTemporaryPassword(email, temporaryPassword);
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new RuntimeException("일치하는 사용자 정보가 없습니다.");
         }
-        return user.getUser_id();
+        return user.getUserId();
     }
 
     @Override

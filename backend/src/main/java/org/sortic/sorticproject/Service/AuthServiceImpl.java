@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> login(Users user) {
         try {
-            Users foundUser = userMapper.findByUserId(user.getUser_id());
+            Users foundUser = userMapper.findByUserId(user.getUserId());
             if (foundUser == null) {
                 return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
             }
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .setSubject(user.getUser_id())
+                .setSubject(user.getUserId())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -113,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<?> signup(Users user) {
         try {
             // 아이디 중복 확인
-            if (userMapper.findByUserId(user.getUser_id()) != null) {
+            if (userMapper.findByUserId(user.getUserId()) != null) {
                 return ResponseEntity.badRequest().body("이미 존재하는 아이디입니다.");
             }
             

@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 public class Users {
-    private String user_id;           // 아이디(기본키)
+    private String userId;           // 아이디(기본키)
     private String password;          // 비밀번호
     private String username;          // 닉네임
     private String phone;             // 전화번호
@@ -38,7 +38,7 @@ public class Users {
 
     @Builder
     public Users(String user_id, String password, String username, String phone, String email, String region) {
-        this.user_id = user_id;
+        this.userId = user_id;
         this.password = password;
         this.username = username;
         this.phone = phone;
