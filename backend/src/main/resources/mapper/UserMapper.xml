@@ -5,13 +5,13 @@
     <!-- 사용자 정보 저장 -->
     <insert id="save" parameterType="Users">
         INSERT INTO Users (user_id, password, username, phone, email, region, grade)
-        VALUES (#{user_id}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
+        VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
     </insert>
 
     <!-- 사용자 정보 조회 -->
     <select id="findByUserId" resultType="Users">
         SELECT 
-            user_id,
+            user_id AS userId,
             password,
             username,
             phone,
@@ -21,13 +21,14 @@
             grade,
             created_signup_time
         FROM Users
-        WHERE user_id = #{user_id}
+        WHERE user_id = #{userId}
     </select>
 
     <!-- 사용자 ID 존재 여부 확인 -->
     <select id="existsByUserId" parameterType="string" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{user_id}
+        SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{userId}
     </select>
+
 
     <!-- 이메일 존재 여부 확인 -->
     <select id="existsByEmail" parameterType="string" resultType="boolean">
@@ -36,26 +37,21 @@
 
     <!-- 프로필 이미지 업데이트 -->
     <update id="updateProfileImage">
-        UPDATE Users
-        SET profile_image = #{profileImage}
-        WHERE user_id = #{user_id}
+        UPDATE Users SET profile_image = #{profileImage} WHERE user_id = #{userId}
     </update>
     
     <!-- 비밀번호 업데이트 -->
     <update id="updatePassword">
-        UPDATE Users
-        SET password = #{password}
-        WHERE user_id = #{user_id}
+        UPDATE Users SET password = #{password} WHERE user_id = #{userId}
     </update>
     
     <!-- 사용자 프로필 업데이트 -->
     <update id="updateUserProfile" parameterType="Users">
-        UPDATE Users
-        SET 
+        UPDATE Users SET 
             phone = #{phone},
             email = #{email},
             region = #{region}
-        WHERE user_id = #{user_id}
+        WHERE user_id = #{userId}
     </update>
 
     <!-- 이메일로 사용자 조회 -->

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f2d25d8-7f6b-42a6-82b8-a0f2e4e4dc4a" name="변경" comment="" />
+    <list default="true" id="3f2d25d8-7f6b-42a6-82b8-a0f2e4e4dc4a" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/mapper/UserMapper.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,7 +111,7 @@
       <workItem from="1745489656232" duration="591000" />
       <workItem from="1745490469597" duration="2896000" />
       <workItem from="1745494398058" duration="343000" />
-      <workItem from="1745495294330" duration="6353000" />
+      <workItem from="1745495294330" duration="6379000" />
     </task>
     <servers />
   </component>
