@@ -93,6 +93,9 @@
   margin-left: 10px;
   cursor: pointer;
 }
+.calc-item:hover{
+  background: slategray;
+}
 
 /* 애니메이션 */
 @keyframes slideIn {
@@ -109,5 +112,8 @@
   position: fixed;
 }
 .note-calc-container{
+  position: fixed;
+}
+.percent-calc-container{
   position: fixed;
 }
