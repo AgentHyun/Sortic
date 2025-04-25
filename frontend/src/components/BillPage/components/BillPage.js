@@ -23,7 +23,7 @@ const BillPage = () => {
   const fetchBills = () => {
     axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
       .then(res => setBills(res.data))
-      .catch(err => message.error('Bill 불러오기 실패', err));
+      .catch(err => console.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const BillPage = () => {
       message.success("Bill이 추가되었습니다!");
 
     } catch (error){
-      message.error("Bill 추가 실패")
+      console.error("Bill 추가 실패")
     }
 
   };
@@ -77,7 +77,6 @@ const BillPage = () => {
   return (
 
     <div className="bill-container">
-      {/* 👉 상단 버튼 */}
       <div className="bill-add">
         <Button type="primary" className="add-bill-btn" onClick={() => setIsModalVisible(true)}>
           + Bill
@@ -85,12 +84,10 @@ const BillPage = () => {
       </div>
       {bills.map((bill) => (
         <div key={bill.billId} className="bill-box">
-          {/* X 아이콘은 위에 절대 위치로 */}
           <X
             className="delete-icon"
             onDoubleClick={() => handleDeleteBill(bill.billId)}
           />
-          {/* 제목은 가운데 정렬 */}
           <div className="bill-title">
             {editingBillId === bill.billId ? (
               <Input
@@ -136,7 +133,6 @@ const BillPage = () => {
           </div>
         </div>
       ))}
-      {/* 👉 모달 */}
       <Modal
         title="새로운 Bill 추가"
         open={isModalVisible}

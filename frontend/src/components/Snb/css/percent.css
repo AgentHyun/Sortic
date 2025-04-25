@@ -38,13 +38,11 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  /* 👇 스크롤 추가를 위한 고정 높이 */
   max-height: 230px;
   overflow-y: auto;
 }
 
-/* 선택사항: 스크롤바 꾸미기 (Chrome 기반) */
+
 .percent-calculator-body::-webkit-scrollbar {
   width: 6px;
 }

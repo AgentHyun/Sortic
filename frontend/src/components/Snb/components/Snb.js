@@ -1,4 +1,3 @@
-// Snb.js
 import React, { useState } from 'react';
 import { PanelRightOpen, PanelRightClose } from 'lucide-react';
 import '../css/snb.css';

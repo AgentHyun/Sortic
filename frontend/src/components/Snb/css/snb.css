@@ -65,7 +65,7 @@
 .snb-toggle:hover {
   transform: scale(1.05);
 }
-/* 계산기 바들 */
+
 .snb-calc-wrapper {
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@
   background: slategray;
 }
 
-/* 애니메이션 */
+
 @keyframes slideIn {
   from {
     opacity: 0;
