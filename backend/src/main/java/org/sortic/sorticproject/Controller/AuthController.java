@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
  * 인증 관련 요청을 처리하는 컨트롤러 인터페이스
  * 회원 가입, 로그인, 토큰 검증 등의 인증 관련 기능을 정의
  */
-@RequestMapping("/api/auth")
+
 public interface AuthController {
     /**
      * 회원가입 요청을 처리

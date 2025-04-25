@@ -74,11 +74,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> validateToken(String token) {
-        if (token != null && token.startsWith("Bearer")) {
-            token = token.substring(7);
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body("Invalid token format");
         }
         
         try {
+            token = token.substring(7);
+            
             Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -97,9 +99,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getUserIdFromToken(String token) {
-        if (token != null && token.startsWith("Bearer")) {
-            token = token.substring(7);
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid token format");
         }
+        
+        token = token.substring(7);
         
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
