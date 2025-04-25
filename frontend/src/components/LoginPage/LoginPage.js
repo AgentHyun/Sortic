@@ -16,7 +16,6 @@ const Login = () => { // Login 컴포넌트의 함수형 컴포넌트 정의를 
 
   const onFinish = async (values) => { // 폼이 성공적으로 제출되었을 때 실행되는 onFinish 함수 정의, 비동기 처리를 위해 async로 선언합니다.
     if (loading) return; // 이미 로딩 중이면 추가 요청을 방지하기 위해 함수를 종료합니다.
-
     setLoading(true); // API 호출을 시작하기 전에 loading 상태를 true로 변경하여 로딩 중임을 표시합니다.
     try { // 로그인 API 호출을 시도하며 예외 처리를 위해 try-catch 블록을 사용합니다.
       const data = await login(values.user_id, values.password); // 입력된 아이디와 비밀번호를 login 함수에 전달하여 API 호출을 하고, 결과를 data 변수에 저장합니다.
