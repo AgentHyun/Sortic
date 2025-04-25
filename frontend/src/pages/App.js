@@ -12,6 +12,7 @@ import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AuthProvider from '../auth/AuthProvider';
 import { authLoadingAtom } from '../auth/authAtoms';
+import Snb from "../components/Snb/components/Snb";
 
 const App = () => {
   const [authLoading] = useAtom(authLoadingAtom);
@@ -62,7 +63,12 @@ const App = () => {
           }
         />
       </Routes>
+==<<<<<<< feature/s/slbackup
     </AuthProvider>
+=======
+      <Snb/>
+    </>
+==>>>>>>> develop
   );
 };
 

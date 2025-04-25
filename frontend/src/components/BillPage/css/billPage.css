@@ -45,7 +45,7 @@
   margin-bottom: 20px;
 }
 .add-bill-btn {
-  background-color: #4C585B !important;
+  background-color:  #1c283c !important;
   border: none;
   color: white;
   font-family: "Orbit", sans-serif;
@@ -58,7 +58,7 @@
   height : 5vh;
 }
 .add-bill-btn:hover{
-  background-color: #5e6d70 !important; /* 살짝 밝은 톤의 그레이 */
+  background-color:  #bfbfbf !important; /* 살짝 밝은 톤의 그레이 */
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
   color: #f1f1f1;
@@ -80,3 +80,19 @@
   color: red;
   transform: scale(1.2);
 }
+.Commission-Plus{
+  font-size: 10pt;
+}
+.plus-icon{
+  margin-left:10px;
+  color: black;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+.plus-icon:hover{
+  border-radius:20px;
+  color: darkcyan;
+  transition: all 0.2s ease;
+  background-color: #aaaaaa;
+  }

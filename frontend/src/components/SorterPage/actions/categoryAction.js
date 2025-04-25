@@ -364,7 +364,7 @@ export const changeCategoryAction = atom(
 
 export const fetchCategoryCountAction = atom(
     null,
-    async (get, set, user_id: string) => {
+    async (get, set, userId) => {
         try {
             const response = await axios.get('http://localhost:8080/api/categories/count_categories', {
                 params: { user_id: user_id }

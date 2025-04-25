@@ -30,6 +30,11 @@ const SorticHeader = () => {
     // 홈페이지로 이동
     navigate('/');
   };
+  const navigate = useNavigate();  // useNavigate 훅 호출
+
+  const navigateLandingPage = () => {
+    navigate('/');  // 클릭 시 이동할 경로로 설정
+  };
 
   const userMenuItems = [
     {
@@ -59,7 +64,7 @@ const SorticHeader = () => {
 
   return (
     <Header className={styles['header-container']}>
-      <div className={styles.logo}>Sortic</div>
+      <div className={styles.logo} onClick = {navigateLandingPage}>Sortic</div>
       <div className={styles['menu-container']}>
         <div className={styles['menu-item']}><Link to="/">Home</Link></div>
         <div className={styles['menu-item']}><Link to="/sorter">Sorter</Link></div>
