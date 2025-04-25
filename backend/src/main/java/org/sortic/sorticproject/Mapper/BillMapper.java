@@ -45,7 +45,8 @@ public interface BillMapper {
     """)
     List<BillCommissionDetail> findCommissionsByBillId(@Param("billId") int billId);
 
-
+    @Update("UPDATE Bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
+    void updateBillName(@Param("billId")int billId,@Param("billName") String billName);
 
 
 }

@@ -30,34 +30,34 @@ public class ElementsDataController {
     }
 
 
-    // ✅ 요소 데이터 조회
+
     @GetMapping("/get_elements_data")
     public List<Map<String, Object>> getElementsData(@RequestParam int elements_name_id) {
         return elementsDataService.getElementsDataByElementNameId(elements_name_id);
     }
 
-    // ✅ 요소 데이터 삭제
+
     @DeleteMapping("/delete_elements_data")
     public String deleteElementsData(@RequestParam int elements_id) {
         elementsDataService.deleteElementsData(elements_id);
         return "요소 데이터가 성공적으로 삭제되었습니다!";
     }
 
-    // ✅ 요소 데이터 전체 삭제
+
     @DeleteMapping("/delete_all_elements_data")
     public String deleteAllElementsData(@RequestParam int elements_name_id) {
         elementsDataService.deleteAllElementsData(elements_name_id);
         return "해당 요소의 모든 데이터가 삭제되었습니다!";
     }
 
-    // Key 이름 수정
+
     @PutMapping("/update_key_name")
     public String updateKeyName(@RequestParam int elements_id, @RequestParam String key_name) {
         elementsDataService.updateKeyName(elements_id, key_name);
         return "Key 이름이 성공적으로 수정되었습니다!";
     }
 
-    // Value 이름 수정
+
     @PutMapping("/update_value_name")
     public String updateValueName(@RequestParam int elements_id, @RequestParam String value_name) {
         elementsDataService.updateValueName(elements_id, value_name);

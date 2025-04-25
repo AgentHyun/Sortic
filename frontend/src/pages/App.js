@@ -7,6 +7,7 @@ import SorterPage from '../components/SorterPage/components/SorterPage';
 import LoginPage from '../components/LoginPage/LoginPage';
 import SignupPage from '../components/SignupPage/SignupPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
+import Snb from "../components/Snb/components/Snb";
 
 const App = () => {
   useEffect(() => {
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/sorter" element={<SorterPage />} />
         <Route path="/sorterDefaultPage" element={<SorterDefaultPage />} />
       </Routes>
+      <Snb/>
     </>
   );
 };
