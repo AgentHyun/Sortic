@@ -41,7 +41,7 @@ public class AuthControllerImpl implements AuthController { // AuthController �
      */
     @Override
     @GetMapping("/check-userid/{user_id}") // HTTP GET 요청 중 "/api/auth/check-userid/{user_id}" 형태의 요청을 처리
-    public ResponseEntity<?> checkUserId(@PathVariable String userId) { // PathVariable을 통해 URL 경로에서 user_id 값을 추출
+    public ResponseEntity<?> checkUserId(@PathVariable("user_id") String userId) { // PathVariable을 통해 URL 경로에서 user_id 값을 추출
         return authService.checkUserId(userId);
     }
 
