@@ -19,7 +19,7 @@ import {
 } from "../actions/sorterAction"; // API 액션 수정
 import SorterBox from "./SorterBox";
 import axios from "axios";
-import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
+import {rectSortingStrategy, SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import SortableElement from "./SortableElement";
 
 // SorterContainer 수정
@@ -239,7 +239,7 @@ const SorterContainer = ({
                       items={elementNamesBySorter[sorter.sorter_id]?.ids.map(
                         (elementId) => `${sorter.sorter_id}-${elementId}`
                       )}
-                      strategy={verticalListSortingStrategy}
+                      strategy={rectSortingStrategy}
                     >
                       {elementNamesBySorter[sorter.sorter_id]?.names.map((name, idx) => {
                         const elementId = elementNamesBySorter[sorter.sorter_id]?.ids?.[idx];

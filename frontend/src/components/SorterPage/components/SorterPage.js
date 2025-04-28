@@ -51,7 +51,7 @@ import {
   fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
   editedSorterNameAtom,edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
-  oldSorterNameAtom,
+  oldSorterNameAtom, activeCardAtom
 
 } from '../atoms/atoms';
 
@@ -76,6 +76,7 @@ import {
   handleElementNameSaveAction,
   setSelectedElementAction,
   openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
+  fetchElementNameByIdAction
 
 } from '../actions/elementAction';
 
@@ -140,7 +141,8 @@ const SorterPage = () => {
   const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
   const [costError, setCostError] = useAtom(costErrorAtom);
   const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
-
+  const [fetchElementNamById, setFetchElementNamById] = useAtom(fetchElementNameByIdAction);
+  const [activeCard, setActiveCard] = useAtom(activeCardAtom);
   const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
   const [, setToggleSelectElementAction] = useAtom(toggleSelectElementAction);
@@ -166,7 +168,7 @@ const SorterPage = () => {
   const navigate = useNavigate();
   const { confirm } = Modal;
   const [activeId, setActiveId] = useState(null);
-  const activeCard = cards.find(card => card.elements_name_id === activeId);
+
   const settings = {
     dots: true,
     infinite: true, // 무한 루프
@@ -199,7 +201,20 @@ const SorterPage = () => {
 
 
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (activeId) {
+        try {
+          // DB에서 activeId에 해당하는 카드 이름을 조회하는 함수
+          const response = await setFetchElementNamById(activeId);
+        } catch (error) {
+          console.error('Error fetching active card:', error);
+        }
+      }
+    };
 
+    fetchData();
+  }, [activeId, fetchElementNamById]);// activeId가 변경될 때마다 호출
 
   const fetchElementsByCategory = async() => {
 
@@ -611,6 +626,19 @@ const SorterPage = () => {
     console.log("over.id:", overId);
     console.log("드롭중인 요소 : ", active.id);
 
+    let elementId;
+
+    // active.id를 문자열로 변환 후 처리
+    const activeIdStr = String(active.id);
+
+    if (activeIdStr.includes("-")) {
+      // 'sorter-2-3' 형식일 경우: split해서 elementId만 추출
+      elementId = activeIdStr.split("-").pop();
+    } else {
+      // 단일 번호일 경우: 기존처럼 active.id 그대로 사용
+      elementId = activeIdStr;
+    }
+
     if (overId.startsWith("sorter-") || Number(overId)) {
       const sorterId = overId.replace("sorter-", "");
       const targetSorter = sorters.find(s => String(s.sorter_id) === sorterId);
@@ -622,12 +650,13 @@ const SorterPage = () => {
 
       console.log("✅ 드롭된 정렬자 ID:", sorterId);
       console.log("📌 드롭된 정렬자 이름:", targetSorter.sorter_name);
+      console.log("📦 드롭된 요소 ID:", elementId); // elementId 출력
 
       try {
-        // 요소 이동 API 호출 (비동기) - sorterId를 파라미터로 전달
+        // 요소 이동 API 호출 (비동기) - elementId만 전달
         await setMoveElementToSorter({
-          elementsId: active.id,
-          sorterId: targetSorter.sorter_id, // sorterName 대신 sorterId를 전달
+          elementsId: elementId, // elementId만 전달
+          sorterId: targetSorter.sorter_id, // sorterId 전달
         });
 
         // 👉 상태 동기화: 로컬 상태를 즉시 반영 (elements_id가 배열이라고 가정)
@@ -636,7 +665,7 @@ const SorterPage = () => {
             s.sorter_id === targetSorter.sorter_id // sorter_id로 비교
               ? {
                 ...s,
-                elements_id: [...(s.elements_id || []), active.id],
+                elements_id: [...(s.elements_id || []), elementId], // elementId로 업데이트
               }
               : s
           )
@@ -652,6 +681,7 @@ const SorterPage = () => {
   };
 
 
+
   return (
     <div>
       <DndContext
@@ -661,7 +691,7 @@ const SorterPage = () => {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={cards.map((c) => c.elements_name_id)}
+          items={activeId ? [activeId] : []}
           strategy={rectSortingStrategy}
         >
         <div className="sorter-page-section">
@@ -799,7 +829,7 @@ const SorterPage = () => {
               <DragOverlay>
                 {activeCard ? (
                   <div className="category-item dragging">
-                    {activeCard.elements_name}
+                    {activeCard}
                   </div>
                 ) : null}
               </DragOverlay>
