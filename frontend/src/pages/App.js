@@ -10,8 +10,8 @@ import SignupPage from '../components/SignupPage/SignupPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
-import AuthProvider from '../auth/AuthProvider';
-import { authLoadingAtom } from '../auth/authAtoms';
+import AuthProvider from '../Auth/AuthProvider';
+import { authLoadingAtom } from '../Auth/AuthAtoms';
 
 const App = () => {
   const [authLoading] = useAtom(authLoadingAtom);

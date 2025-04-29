@@ -54,7 +54,7 @@
 :global(.ant-input-affix-wrapper:hover),
 :global(.ant-input-affix-wrapper-focused) {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important;
 }
 
 /* [4-2] placeholder 스타일 */
@@ -111,7 +111,7 @@
 :global(.ant-input-password input:hover),
 :global(.ant-input-password input:focus) {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important;
 }
 
 /* ==================== [5. 버튼 요소 영역] ==================== */
@@ -196,7 +196,7 @@
 :global(.dark) .input:hover,
 :global(.dark) .ant-input-affix-wrapper:hover {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important;
 }
 
 /* [8-1-A] ⬅️★ 새로 추가  ─ 다크모드 입력 필드 focus(클릭 유지) */
@@ -205,7 +205,7 @@
 :global(.dark) .ant-input-affix-wrapper-focused,
 :global(.dark) .ant-input-password-focused {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2) !important;
 }
 
 /* [8-2] 다크모드 Autofill 대응 */
