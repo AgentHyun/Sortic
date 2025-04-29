@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*; // REST API를 만들기 위�
 public class AuthControllerImpl implements AuthController { // AuthController 인터페이스를 구현하여 인증 기능을 정의한 구현 클래스
 
     private final AuthService authService; // 로그인 및 JWT 발급/검증 로직을 수행하는 인증 서비스 객체
+    
 
     @Autowired // 생성자 기반 의존성 주입을 수행함. 스프링이 자동으로 필요한 객체를 주입함
     public AuthControllerImpl(AuthService authService) {
@@ -40,8 +41,8 @@ public class AuthControllerImpl implements AuthController { // AuthController �
      * @return 중복 여부(Boolean)를 ResponseEntity에 담아 반환
      */
     @Override
-    @GetMapping("/check-userid/{user_id}") // HTTP GET 요청 중 "/api/auth/check-userid/{user_id}" 형태의 요청을 처리
-    public ResponseEntity<?> checkUserId(@PathVariable("user_id") String userId) { // PathVariable을 통해 URL 경로에서 user_id 값을 추출
+    @GetMapping("/check-userid") // HTTP GET 요청 중 "/api/auth/check-userid/{user_id}" 형태의 요청을 처리
+    public ResponseEntity<?> checkUserId(@RequestParam("user_id") String userId) { // PathVariable을 통해 URL 경로에서 user_id 값을 추출
         return authService.checkUserId(userId);
     }
 

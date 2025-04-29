@@ -54,12 +54,14 @@ const Login = () => { // Login 컴포넌트의 함수형 컴포넌트 정의를 
             name="user_id" // 이 Form.Item은 사용자의 아이디를 입력 받으며, 폼 데이터의 키는 "user_id" 입니다.
             rules={[{ required: true, message: '아이디를 입력해주세요.' }]} // 필수 입력 항목임을 명시하고, 미입력 시 나타날 오류 메시지를 설정합니다.
           >
+            <div className={styles.inputWrap}>
             <Input
               placeholder="아이디" // 사용자에게 입력 필드의 용도를 알려주기 위해 플레이스홀더를 "아이디"로 지정합니다.
               className={styles.input} // CSS 모듈의 input 클래스를 적용하여 입력창의 스타일을 정의합니다.
               disabled={loading} // 로딩 상태일 경우 입력 필드 비활성화하여 중복 입력을 방지합니다.
               autoComplete="username" // 브라우저 자동완성 기능을 위해 autoComplete 속성을 "username"으로 설정합니다.
             />
+            </div>
           </Form.Item>
           <Form.Item
             name="password" // 이 Form.Item은 사용자의 비밀번호를 입력 받으며, 폼 데이터의 키는 "password" 입니다.

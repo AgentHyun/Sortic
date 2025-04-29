@@ -15,14 +15,14 @@ authApi.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         console.log('Interceptor - Token from localStorage:', token);
-        
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
             console.log('Interceptor - Added Authorization header');
         } else {
             console.log('Interceptor - No token found, skipping Authorization header');
         }
-        
+
         console.log('Interceptor - Final request config:', config);
         return config;
     },
@@ -153,18 +153,18 @@ export const validateToken = async () => {
         // 인터셉터에서 이미 Authorization 헤더를 추가하므로, 여기서는 추가하지 않음
         const response = await authApi.post('/validate-token');
         console.log('Token validation response:', response.data); // 검증 응답 확인
-        
+
         // 응답이 없거나 유효하지 않은 경우
         if (!response.data || response.data.error) {
             console.error('Invalid token response:', response.data);
             return false;
         }
-        
+
         return true;
     } catch (error) {
         console.error('Token validation error:', error);
         console.error('Error response:', error.response?.data); // 에러 응답 상세 확인
-        
+
         // 토큰이 유효하지 않은 경우에만 로컬 스토리지 클리어
         if (error.response?.status === 400 || error.response?.status === 401) {
             console.log('Clearing localStorage due to invalid token');

@@ -28,7 +28,7 @@ export const fetchAndNumberCategoriesAction = atom(
             });
 
             const categories = response.data;
-            
+
             // 각 카테고리에 번호 부여
             const numberedCategories = categories.map((category, index) => ({
                 ...category,
@@ -39,7 +39,7 @@ export const fetchAndNumberCategoriesAction = atom(
 
             // 현재 선택된 카테고리 ID 가져오기
             const currentCategoryId = get(currentCategoryAtom);
-            
+
             // 현재 카테고리가 없고 카테고리 목록이 있는 경우
             if (!currentCategoryId && numberedCategories.length > 0) {
                 const firstCategory = numberedCategories[0];
@@ -47,7 +47,7 @@ export const fetchAndNumberCategoriesAction = atom(
                 set(currentCategoryNameAtom, firstCategory.category_name);
                 set(currentIndexAtom, 0);
                 await set(fetchElementsByCategoryAction, firstCategory.category_id);
-            } 
+            }
             // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
             else if (currentCategoryId) {
                 const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
@@ -190,20 +190,20 @@ export const handleCategoryOkAction = atom(
             }
 
             const addedCategory = response.data;
-            
+
             // 현재 카테고리 목록 가져오기
             const currentCategories = get(categoriesAtom);
-            
+
             // 새 카테고리를 목록에 추가
             const updatedCategories = [...currentCategories, addedCategory];
-            
+
             // 상태 업데이트
             set(categoriesAtom, updatedCategories);
             set(currentCategoryAtom, addedCategory.category_id);
             set(currentCategoryNameAtom, addedCategory.category_name);
-            
+
             message.success('카테고리가 추가되었습니다!');
-            
+
             return addedCategory;
         } catch (error) {
             console.error('카테고리 추가 실패:', error);
@@ -364,7 +364,7 @@ export const changeCategoryAction = atom(
 
 export const fetchCategoryCountAction = atom(
     null,
-    async (get, set, user_id: string) => {
+    async (get, set, user_id) => {
         try {
             const response = await axios.get('http://localhost:8080/api/categories/count_categories', {
                 params: { user_id: user_id }

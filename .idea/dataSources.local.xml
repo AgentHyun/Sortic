@@ -6,5 +6,17 @@
       <user-name>root</user-name>
       <schema-mapping />
     </data-source>
+    <data-source name="sortic@localhost" uuid="86e7456a-4e80-4027-b605-41161ae346f3">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-mapping />
+      <load-sources>user_and_system_sources</load-sources>
+    </data-source>
+    <data-source name="sortic@localhost" uuid="c627bd47-8fb4-4956-8851-c628ad2a8200">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <user-name>root</user-name>
+      <schema-mapping />
+    </data-source>
   </component>
 </project>

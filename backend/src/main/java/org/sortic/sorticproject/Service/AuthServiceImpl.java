@@ -22,6 +22,7 @@ import java.util.Base64;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+    
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -115,6 +116,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> signup(Users user) {
+        
         try {
             // 아이디 중복 확인
             if (userMapper.findByUserId(user.getUserId()) != null) {

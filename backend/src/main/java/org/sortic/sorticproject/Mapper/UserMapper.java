@@ -19,7 +19,7 @@ public interface UserMapper {
      * 사용자 정보를 데이터베이스에 저장
      * @param user 저장할 사용자 정보
      */
-    void save(Users user);
+    int insertUser(Users user);
 
     /**
      * 사용자 아이디로 사용자 정보를 조회
@@ -47,8 +47,8 @@ public interface UserMapper {
      * @param userId 사용자 아이디
      * @param profileImage 프로필 이미지 URL
      */
-    void updateProfileImage(@Param("user_id") String userId, @Param("profileImage") String profileImage);
-    
+    void updateProfileImage(@Param("userId") String userId, @Param("profileImage") String profileImage);
+
     /**
      * 사용자 정보 업데이트 (프로필 이미지 포함)
      * @param user 업데이트할 사용자 정보
@@ -60,7 +60,7 @@ public interface UserMapper {
      * @param userId 사용자 아이디
      * @param password 새 비밀번호
      */
-    void updatePassword(@Param("user_id") String userId, @Param("password") String password);
+    void updatePassword(@Param("userId") String userId, @Param("password") String password);
 
     /**
      * 이메일로 사용자 조회
@@ -77,10 +77,4 @@ public interface UserMapper {
      */
     Users findByEmailAndUsername(@Param("email") String email, @Param("username") String username);
 
-    /**
-     * 새로운 사용자 등록
-     * @param user 등록할 사용자 정보
-     * @return 등록된 행의 수
-     */
-    int insertUser(Users user);
 }

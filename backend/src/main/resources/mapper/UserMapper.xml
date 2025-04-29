@@ -4,8 +4,8 @@
 
     <!-- 사용자 정보 저장 -->
   <insert id="insertUser" parameterType="org.sortic.sorticproject.Entity.Users">
-    INSERT INTO Users (userId, password, username, phone, email, region, grade)
-      VALUES (#{user_id}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
+    INSERT INTO Users (user_id, password, username, phone, email, region, grade)
+      VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
     </insert>
 
     <!-- 사용자 정보 조회 -->
