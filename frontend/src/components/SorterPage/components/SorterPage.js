@@ -49,9 +49,10 @@ import {
   attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom,
   selectedElementIdsAtom, animationClassAtom,
   fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-  editedSorterNameAtom,edtingSorterIdAtom,
+  editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
-  oldSorterNameAtom, activeCardAtom
+  oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
+  isDraggingElementsAtom
 
 } from '../atoms/atoms';
 
@@ -123,6 +124,8 @@ const SorterPage = () => {
   const [selectedElementId, setSelectedElementId] = useAtom(selectedElementIdAtom);
   const [, openContextMenu] = useAtom(openContextMenuAction);
   const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
+  const [, setIsDraggingElements] = useAtom(isDraggingElementsAtom);
+
 
   const[, setAddElement] = useAtom(addElementAction);
   const [addElementName, setAddElementName] = useAtom(addElementNameAtom);
@@ -155,6 +158,9 @@ const SorterPage = () => {
   const [, setDeleteSorter] = useAtom(deleteSorterAction);
   const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
   const[ oldSorterName, setOldSorterName] = useAtom(oldSorterNameAtom);
+  const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
+  const [elementNamesBySorter, setElementNamesBySorter] = useAtom(elementNamesBySorterAtom);
+
 
   const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
   const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
@@ -498,6 +504,10 @@ const SorterPage = () => {
 
     checkCategoryCount();
   }, []);
+// 상태 변경 후 콘솔 출력
+  useEffect(() => {
+    console.log("📤 상태 변경 후 updated[sorterId]:", elementNamesBySorter);
+  }, [elementNamesBySorter]); // elementNamesBySorter가 변경될 때마다 실행
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -517,7 +527,11 @@ const SorterPage = () => {
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
 
 
-
+  useEffect(() => {
+    if (activeId) {
+      console.log("액티브", activeId);  // 상태가 업데이트된 후에 실행
+    }
+  }, [activeId]);
 
   const sectionRef = useRef(null);
   const addSorter = () =>{
@@ -609,7 +623,22 @@ const SorterPage = () => {
   );
 
   const handleDragStart = (event) => {
-    setActiveId(event.active.id);
+    const { active } = event;
+
+    // active.id를 문자열로 강제 변환
+    const activeIdStr = String(active.id);
+
+    let extractedId = activeIdStr;
+
+    // 문자열에 '-'가 포함된 경우 split하여 두 번째 값만 추출
+    if (activeIdStr.includes('-')) {
+      extractedId = activeIdStr.split('-')[1];
+    }
+
+    // 추출된 ID를 activeId로 설정
+    setActiveId(extractedId);
+
+    console.log("액티브", extractedId);  // 단일 숫자일 경우 그대로, '2-3'일 경우 '3'
   };
 
   const handleDragEnd = async (event) => {
@@ -618,65 +647,124 @@ const SorterPage = () => {
 
     if (!over || active.id === over.id) return;
 
-    const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
-    const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
-    setCards(arrayMove(cards, oldIndex, newIndex));
+    if (
+      !(typeof active.id === "string" &&
+        typeof over.id === "string" &&
+        active.id.includes("-") &&
+        over.id.includes("-"))
+    ) {
+      const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
+      const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
+
+      setCards(arrayMove(cards, oldIndex, newIndex));
+    }
 
     const overId = String(over.id);
-    console.log("over.id:", overId);
-    console.log("드롭중인 요소 : ", active.id);
-
     let elementId;
 
     // active.id를 문자열로 변환 후 처리
     const activeIdStr = String(active.id);
-
     if (activeIdStr.includes("-")) {
-      // 'sorter-2-3' 형식일 경우: split해서 elementId만 추출
       elementId = activeIdStr.split("-").pop();
     } else {
-      // 단일 번호일 경우: 기존처럼 active.id 그대로 사용
       elementId = activeIdStr;
     }
 
     if (overId.startsWith("sorter-") || Number(overId)) {
       const sorterId = overId.replace("sorter-", "");
-      const targetSorter = sorters.find(s => String(s.sorter_id) === sorterId);
+      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
 
       if (!targetSorter) {
         console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
         return;
       }
 
-      console.log("✅ 드롭된 정렬자 ID:", sorterId);
-      console.log("📌 드롭된 정렬자 이름:", targetSorter.sorter_name);
-      console.log("📦 드롭된 요소 ID:", elementId); // elementId 출력
-
       try {
-        // 요소 이동 API 호출 (비동기) - elementId만 전달
         await setMoveElementToSorter({
-          elementsId: elementId, // elementId만 전달
-          sorterId: targetSorter.sorter_id, // sorterId 전달
+          elementsId: elementId,
+          sorterId: targetSorter.sorter_id,
         });
 
-        // 👉 상태 동기화: 로컬 상태를 즉시 반영 (elements_id가 배열이라고 가정)
         setSorters((prev) =>
           prev.map((s) =>
-            s.sorter_id === targetSorter.sorter_id // sorter_id로 비교
+            s.sorter_id === targetSorter.sorter_id
               ? {
                 ...s,
-                elements_id: [...(s.elements_id || []), elementId], // elementId로 업데이트
+                elements_id: [...(s.elements_id || []), elementId],
               }
               : s
           )
         );
-
       } catch (error) {
         console.error("🔥 요소 이동 실패", error);
       }
+    }
 
-    } else {
-      console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
+    // 'sorter-2-3' 형식의 ID 처리 (active.id와 over.id가 이런 형식일 경우)
+    if (
+      typeof active.id === "string" &&
+      typeof over.id === "string" &&
+      active.id.includes("-") &&
+      over.id.includes("-")
+    ) {
+      const [activeSorterId, activeElementId] = active.id.split("-");
+      const [overSorterId, overElementId] = over.id.split("-");
+
+      setIsDraggingElements(true);
+
+      if (overSorterId && overElementId) {
+        const sorterId = overSorterId;
+        const elementId = overElementId;
+
+        const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+        if (!targetSorter) {
+          console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+          return;
+        }
+
+        try {
+          await setMoveElementToSorter({
+            elementsId: elementId,
+            sorterId: targetSorter.sorter_id,
+          });
+
+          // 순서 업데이트
+          setElementNamesBySorter((prev) => {
+            const updated = { ...prev };
+
+            if (updated[sorterId]) {
+              const elementIds = [...(updated[sorterId].ids || [])];
+              const elementNames = [...(updated[sorterId].names || [])];
+
+              const oldIndex = elementIds.indexOf(Number(activeElementId));
+              const newIndex = elementIds.indexOf(Number(overElementId));
+
+              if (oldIndex !== -1 && newIndex !== -1) {
+                const movedId = elementIds[oldIndex];
+                const movedName = elementNames[oldIndex];
+
+                elementIds[oldIndex] = elementIds[newIndex];
+                elementNames[oldIndex] = elementNames[newIndex];
+                elementIds[newIndex] = movedId;
+                elementNames[newIndex] = movedName;
+
+                updated[sorterId] = {
+                  ids: elementIds,
+                  names: elementNames,
+                };
+              } else {
+                console.log("🚨 잘못된 인덱스 - 순서 변경 안됨");
+              }
+            }
+
+            return updated;
+          });
+        } catch (error) {
+          console.error("🔥 요소 이동 실패", error);
+        } finally {
+          setIsDraggingElements(false);
+        }
+      }
     }
   };
 
@@ -799,28 +887,29 @@ const SorterPage = () => {
                 }}
               >
                 <div className="box-section">
-                  {cards.map((card) => (
-                    <SortableItem
-                      key={card.elements_name_id}
-                      card={card}
-                      isSelected={selectedElementIds.includes(card.elements_name_id)}
-                      isEditing={
-                        isEditingElement &&
-                        editingElementIndex === card.elements_name_id
-                      }
-                      newElementName={newElementName}
-                      handleElementNameChange={handleElementNameChange}
-                      handleElementSaveName={handleElementSaveName}
-                      handleDoubleClickElementName={handleDoubleClickElementName}
-                      openContextMenu={openContextMenu}
-                      setNewElementName={setNewElementName}
-                      setNewElementPrice={setNewElementPrice}
-                      setSelectedElementId={setSelectedElementId}
-                      setSetSelectedElementAction={setSetSelectedElementAction}
-                      setToggleSelectElementAction={setToggleSelectElementAction}
-                    />
+                  {cards.map((card) =>
+                    card && card.elements_name_id ? (
+                      <SortableItem
+                        key={card.elements_name_id}
+                        card={card}
+                        isSelected={selectedElementIds.includes(activeId)}
+                        isEditing={
+                          isEditingElement && editingElementIndex === card.elements_name_id
+                        }
+                        newElementName={newElementName}
+                        handleElementNameChange={handleElementNameChange}
+                        handleElementSaveName={handleElementSaveName}
+                        handleDoubleClickElementName={handleDoubleClickElementName}
+                        openContextMenu={openContextMenu}
+                        setNewElementName={setNewElementName}
+                        setNewElementPrice={setNewElementPrice}
+                        setSelectedElementId={setSelectedElementId}
+                        setSetSelectedElementAction={setSetSelectedElementAction}
+                        setToggleSelectElementAction={setToggleSelectElementAction}
+                      />
+                    ) : null
+                  )}
 
-                  ))}
 
 
                 </div>

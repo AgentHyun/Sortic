@@ -67,6 +67,7 @@ export const sorterNameAtom = atom('');
 export const isEditingSorterAtom = atom(false);
 export const newSorterNameAtom = atom('');
 export const sortersAtom = atom([]);
+export const elementNamesBySorterAtom = atom({});
 
 export const editingSorterIndexAtom = atom(null);
 
@@ -90,7 +91,7 @@ export const selectedElementIdsBySorterAtom = atom({});
 export const selectedElementNamesBySorterAtom = atom({});
 export const selectedSorterIdsAtom = atom([]);
 export const selectedElementIdSorterAtom = atom(0);
-
+export const isDraggingElementsAtom = atom(false);
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

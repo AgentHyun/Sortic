@@ -246,7 +246,7 @@ export const moveElementToSorterAction = atom(
       const alreadyExists = targetSorter?.elements_id?.includes(elementsId);
 
       if (alreadyExists) {
-        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+
         return;
       }
 
@@ -267,7 +267,7 @@ export const moveElementToSorterAction = atom(
       message.success(`요소가 정렬자에 추가되었습니다!`);
     } catch (error) {
       if (error.response?.status === 409) {
-        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+
       } else {
         console.error('🚨 요소 추가 실패:', error);
         message.error("요소 추가에 실패했습니다.");
