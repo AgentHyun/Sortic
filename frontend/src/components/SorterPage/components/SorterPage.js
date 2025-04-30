@@ -85,6 +85,8 @@ import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
   ,moveElementToSorterAction
 } from '../actions/sorterAction';
+
+import{addBillElementAction} from "../../BillPage/actions/billElementAction";
 import BillPage from "../../BillPage/components/BillPage";
 
 import {closestCenter} from "@dnd-kit/core";
@@ -641,28 +643,55 @@ const SorterPage = () => {
     console.log("액티브", extractedId);  // 단일 숫자일 경우 그대로, '2-3'일 경우 '3'
   };
 
+
+
+  const [,setAddBillElement] = useAtom(addBillElementAction);
+
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveId(null);
 
+    console.log("액티브 id " + active.id);
+    console.log("오버 id " + (over?.id || "null"));
+
     if (!over || active.id === over.id) return;
 
+    // ✅ Bill에 드롭된 경우
+    if (typeof over.id === 'string' && over.id.startsWith('bill-')) {
+      const billId = over.id.replace('bill-', '');
+      const elementId = String(active.id).includes("-")
+        ? String(active.id).split("-").pop()
+        : String(active.id);
+
+      console.log(`📦 Bill(${billId})에 요소(${elementId}) 추가 시도`);
+
+      try {
+        await setAddBillElement({
+          billId: Number(billId),
+          elementsNameId: Number(elementId),
+        });
+      } catch (error) {
+        console.error("🔥 BillElement 추가 실패", error);
+      }
+      return; // 다른 로직 중복 방지
+    }
+
+    // ✅ 카드 간 재정렬
     if (
       !(typeof active.id === "string" &&
         typeof over.id === "string" &&
         active.id.includes("-") &&
-        over.id.includes("-"))
+        over.id.includes("-") &&
+        cards.some((c) => c && c.elements_name_id != null))
     ) {
-      const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
-      const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
-
+      const oldIndex = cards.findIndex((c) => c && c.elements_name_id === active.id);
+      const newIndex = cards.findIndex((c) => c && c.elements_name_id === over.id);
       setCards(arrayMove(cards, oldIndex, newIndex));
     }
 
     const overId = String(over.id);
     let elementId;
 
-    // active.id를 문자열로 변환 후 처리
     const activeIdStr = String(active.id);
     if (activeIdStr.includes("-")) {
       elementId = activeIdStr.split("-").pop();
@@ -670,6 +699,7 @@ const SorterPage = () => {
       elementId = activeIdStr;
     }
 
+    // ✅ sorter에 드롭된 경우
     if (overId.startsWith("sorter-") || Number(overId)) {
       const sorterId = overId.replace("sorter-", "");
       const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
@@ -700,7 +730,7 @@ const SorterPage = () => {
       }
     }
 
-    // 'sorter-2-3' 형식의 ID 처리 (active.id와 over.id가 이런 형식일 경우)
+    // ✅ sorter 내에서 순서 변경
     if (
       typeof active.id === "string" &&
       typeof over.id === "string" &&
@@ -728,7 +758,6 @@ const SorterPage = () => {
             sorterId: targetSorter.sorter_id,
           });
 
-          // 순서 업데이트
           setElementNamesBySorter((prev) => {
             const updated = { ...prev };
 
@@ -767,7 +796,6 @@ const SorterPage = () => {
       }
     }
   };
-
 
 
   return (
@@ -892,7 +920,8 @@ const SorterPage = () => {
                       <SortableItem
                         key={card.elements_name_id}
                         card={card}
-                        isSelected={selectedElementIds.includes(activeId)}
+                        isSelected={selectedElementIds.includes(card.elements_name_id)}
+
                         isEditing={
                           isEditingElement && editingElementIndex === card.elements_name_id
                         }
@@ -1013,9 +1042,8 @@ const SorterPage = () => {
               <ElementDetailModal/>
 
             </div>
-<<<<<<< HEAD
-          <BillPage/>
-=======
+
+
 
 
 
@@ -1134,7 +1162,7 @@ const SorterPage = () => {
               />
           </div>
 
->>>>>>> l/merge
+
         </div>
 
 
