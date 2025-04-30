@@ -25,6 +25,7 @@ class AuthService {
 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         return {
           success: true,
           user: response.data.user

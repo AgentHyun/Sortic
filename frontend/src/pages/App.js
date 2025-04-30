@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useAtom } from 'jotai';
+
 import SorticHeader from '../components/Header/Header';
 import LandingPage from '../components/LandingPage/LandingPage';
 import SorterPage from '../components/SorterPage/components/SorterPage';
@@ -11,12 +12,13 @@ import SorterDefaultPage from '../components/SorterPage/components/SorterDefault
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AuthProvider from '../Auth/AuthProvider';
+
 import { authLoadingAtom } from '../Auth/AuthAtoms';
 
 const App = () => {
-  const [authLoading] = useAtom(authLoadingAtom);
+  const [authLoading] = useAtom(authLoadingAtom); // ✅ 상태만 구독, 인증 확인은 하지 않음
 
-  // 테마 설정
+  // [1] 다크 모드 초기화
   useEffect(() => {
     const saved = localStorage.getItem('theme');
     if (saved === 'dark') {
@@ -26,10 +28,12 @@ const App = () => {
     }
   }, []);
 
+  // [2] 인증 확인 중이면 로딩 출력
   if (authLoading) {
-    return <div>Loading...</div>; // 또는 로딩 스피너 컴포넌트
+    return <div>Loading...</div>;
   }
 
+  // [3] 인증 확인 이후 라우트 렌더링
   return (
     <AuthProvider>
       <SorticHeader />

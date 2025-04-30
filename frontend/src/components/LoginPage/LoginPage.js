@@ -33,8 +33,9 @@ const Login = () => {
       }
 
       const loginData = {
-        user_id: userId,
-        password: password
+        userId,
+        password,
+        username: userId
       };
       console.log('로그인 요청 데이터:', loginData);
 
@@ -98,7 +99,6 @@ const Login = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className={styles.button}
               block
             >
               로그인

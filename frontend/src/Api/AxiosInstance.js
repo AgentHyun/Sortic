@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: '/api/auth',  // API 기본 경로
+  baseURL: 'http://localhost:8080/api/auth',  // 백엔드 서버 주소로 수정
   timeout: 5000,         // 요청 타임아웃 5초
   headers: {
     'Content-Type': 'application/json'
