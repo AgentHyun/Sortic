@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="31a7d084-2d7f-43b6-96df-c9670fd4dffa" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/css/5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/css/billPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/css/billPage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/NormalCalculator.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/NormalCalculator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/PercentCalculator.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/PercentCalculator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/Snb.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/Snb.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/css/percent.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/percent.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/css/snb.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/snb.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/components/DeliveryTracking.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/components/DeliveryTracking.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Snb/css/delivery.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Snb/css/delivery.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +59,8 @@
   &quot;keyToString&quot;: {
     &quot;Gradle.backend 빌드.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;데이터베이스 연결 매개변수가 발견됨&quot;,
+    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -71,7 +68,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.SorticProjectApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;k/0428&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/k/deliveryapi&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -117,7 +114,8 @@
       <updated>1745808032142</updated>
       <workItem from="1745808034798" duration="10388000" />
       <workItem from="1745886657788" duration="21897000" />
-      <workItem from="1745972370769" duration="9209000" />
+      <workItem from="1745972370769" duration="25405000" />
+      <workItem from="1746002382939" duration="126000" />
     </task>
     <servers />
   </component>
