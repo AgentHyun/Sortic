@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Layout, Menu, Badge, Avatar, Switch } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { userAtom } from '../SorterPage/atoms/atoms';
 import styles from './Header.module.css';
@@ -22,6 +22,11 @@ const SorticHeader = () => {
       localStorage.setItem('theme', 'light');
     }
   };
+  const navigate = useNavigate();  // useNavigate 훅 호출
+
+  const navigateLandingPage = () => {
+    navigate('/');  // 클릭 시 이동할 경로로 설정
+  };
 
   // 🚀 페이지 진입 시 이전 설정 적용
   useEffect(() => {
@@ -36,7 +41,7 @@ const SorticHeader = () => {
 
   return (
     <Header className={styles['header-container']}>
-      <div className={styles.logo}>Sortic</div>
+      <div className={styles.logo} onClick = {navigateLandingPage}>Sortic</div>
       <div className={styles['menu-container']}>
         <div className={styles['menu-item']}><Link to="/">Home</Link></div>
         <div className={styles['menu-item']}><Link to="/sorter">Sorter</Link></div>

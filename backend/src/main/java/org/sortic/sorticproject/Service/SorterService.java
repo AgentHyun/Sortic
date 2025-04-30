@@ -15,94 +15,95 @@ public class SorterService {
 
     @Autowired
     private SorterMapper sorterMapper;
+
     @Autowired
-    private ElementMapper elementMapper;
+    private ElementMapper elementMapper;  // Assuming you have an ElementMapper for database access
 
     public void addSorter(Sorter sorter) {
         sorterMapper.insertSorter(sorter);
     }
 
-    public Sorter getSorterById(int sorter_id) {
-        return sorterMapper.getSorterById(sorter_id);
+    public Sorter getSorterById(int sorterId) {
+        return sorterMapper.getSorterById(sorterId);
     }
 
-    public List<Sorter> getSortersByUserId(String user_id) {
-        return sorterMapper.getSortersByUserId(user_id);
+    public List<Sorter> getSortersByUserId(String userId) {
+        return sorterMapper.getSortersByUserId(userId);
     }
 
-    public void updateSorter(int sorter_id, String sorter_name, int elements_id, int sorter_number) {
-        sorterMapper.updateSorter(sorter_id, sorter_name, elements_id, sorter_number);
+    public void deleteSorter(int sorterId) {
+        sorterMapper.deleteSorter(sorterId);
+    }
+    public void deleteMultipleSorters(List<Integer> sorterIds) {
+
+
+        sorterMapper.deleteMultipleSorters(sorterIds);  // 하나의 쿼리로 여러 sorter_id를 삭제
     }
 
-    public void deleteSorter(int sorter_id) {
-        sorterMapper.deleteSorter(sorter_id);
-    }
 
     @Transactional
     public List<Sorter> reorderSorterNumbers(List<Sorter> sorters) {
-        if (sorters == null || sorters.isEmpty()) return Collections.emptyList();
-
-        String userId = sorters.get(0).getUser_id();
-        sorterMapper.deleteAllSortersForUser(userId);
-
-        List<Sorter> inserted = new ArrayList<>();
-
         for (int i = 0; i < sorters.size(); i++) {
             Sorter s = sorters.get(i);
             s.setSorter_number(i + 1);
             s.setSorter_name("sorter" + (i + 1));
-            sorterMapper.insertSorter(s);
-            inserted.add(s);
+            sorterMapper.updateSorterNumberAndName(s);
         }
-
-        return inserted;
-    }
-
-    public Sorter updateSorterName(int sorterId, String sorterName) {
-        sorterMapper.updateSorterName(sorterId, sorterName);
-        return sorterMapper.getSorterById(sorterId);
+        return sorters;
     }
 
 
-    public void deleteMultipleSorters(List<Integer> sorterIds) {
-        sorterMapper.deleteMultipleSorters(sorterIds);
-    }
-    @Transactional
-    public Sorter updateElementsId(int sorterId, int elementsId) {
-        // sorterId로 해당 Sorter 객체 조회
-        Sorter sorter = sorterMapper.getSorterById(sorterId);
-
-        // 만약 Sorter가 존재하지 않으면 예외 처리
-        if (sorter == null) {
-            throw new RuntimeException("해당 sorterId에 해당하는 정렬자가 존재하지 않습니다.");
+    public List<Sorter> updateSorterName(String oldSorterName, String sorterName) {
+        int result = sorterMapper.updateSorterName(oldSorterName, sorterName);
+        if (result > 0) {
+            return sorterMapper.findAllByName(sorterName);
         }
-
-        // elements_id 업데이트
-        sorter.setElements_id(elementsId);
-
-        // 데이터베이스에 elements_id 업데이트
-        sorterMapper.updateElementsId(sorterId, elementsId);
-
-        // 업데이트된 Sorter 객체 반환
-        return sorterMapper.getSorterById(sorterId);
+        return Collections.emptyList();
     }
 
-    public Integer getElementsIdBySorterId(int sorterId) {
-        Sorter sorter = sorterMapper.getSorterById(sorterId);
-        return sorter != null ? sorter.getElements_id() : null;
-    }
     public String getSorterNameById(int sorterId) {
         return sorterMapper.getSorterNameById(sorterId);
     }
-    public List<Sorter> getUniqueSortersByUserId(String userId) {
-        return sorterMapper.getSortersByUserId(userId);
-    }
-
 
     public List<Integer> getElementsIdBySorterName(String sorterName) {
-        // sorterMapper에서 여러 개의 elements_id를 가져오는 메소드 호출
         return sorterMapper.getElementsIdBySorterName(sorterName);
     }
 
+    public Integer getSorterIdByNameAndElementId(String sorterName, int elementsId) {
+        return sorterMapper.findSorterIdByNameAndElementId(sorterName, elementsId);
+    }
 
+    // Add element to sorter by sorter name
+    @Transactional
+    public Sorter addElementToSorter(String sorterName, Element element) {
+        // Check if the sorter exists
+        Sorter sorter = sorterMapper.findSorterByName(sorterName);
+        if (sorter == null) {
+            throw new RuntimeException("해당 sorterName에 해당하는 정렬자가 존재하지 않습니다.");
+        }
+
+        // Set the new element id to the sorter
+        int elementId = element.getElements_name_id();
+        if (elementMapper.getElementById(elementId) == null) {
+            throw new RuntimeException("해당 elementId에 해당하는 요소가 존재하지 않습니다.");
+        }
+
+        Sorter newSorter = new Sorter();
+        newSorter.setUser_id(sorter.getUser_id());
+        newSorter.setSorter_name(sorter.getSorter_name());
+        newSorter.setSorter_number(sorterMapper.getMaxSorterNumberByUserId(sorter.getUser_id()) + 1);
+
+        sorterMapper.insertSorter(newSorter);
+        return newSorter;
+    }
+
+    // Check if element exists in sorter by name
+    public boolean doesElementExistInSorterByName(String sorterName, int elementsId) {
+        return sorterMapper.existsElementInSorterByName(sorterName, elementsId);
+    }
+
+    public List<Sorter> getUniqueSortersByUserId(String userId) {
+        // Mapper 메서드를 호출하여 사용자 ID에 해당하는 고유한 정렬자 목록을 가져옵니다.
+        return sorterMapper.selectUniqueSortersByUserId(userId);
+    }
 }

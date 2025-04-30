@@ -50,7 +50,6 @@ const ContextMenu = () => {
             <div
                 onClick={() => {
                     openModal(contextMenu.target);
-
                     closeContextMenu();
                 }}
                 className = "detail-section"
