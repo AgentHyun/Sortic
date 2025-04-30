@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import {atom, useAtom} from 'jotai';
 import axios from 'axios';
 import { message } from 'antd';
 import {
@@ -10,6 +10,7 @@ import {
     elementDetailDataAtom, elementAttributesAtom,selectedElementIdAtom,
     tempValueAtom,  elementsDataAtom, editingElementIndexAtom, editingElementIdAtom
 } from '../atoms/atoms';
+
 
 export const elementsDataAction = atom(
     null,
@@ -78,10 +79,10 @@ export const elementsDataAction = atom(
 export const openElementDetailAction = atom(null, async (get, set, data) => {
     set(elementDetailDataAtom, data);
     set(elementDetailModalAtom, true);
-
+    const elementId = get(selectedElementIdAtom);
     try {
         const response = await axios.get(`http://localhost:8080/api/elements_data/get_elements_data`, {
-            params: { elements_name_id: data.elements_name_id }
+            params: { elements_name_id: elementId }
         });
         set(elementAttributesAtom, response.data);
         console.log("키벨류" + elementAttributesAtom, response.data);

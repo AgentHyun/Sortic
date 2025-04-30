@@ -60,12 +60,15 @@ export const elementsIdMapAtom = atom({});
 export const cardsAtom = atom([]);
 export const sorterCardsAtom = atom([]);
 export const cardsByCategoryAtom = atom({});
+export const activeCardAtom = atom(null);
 // 정렬기 관련 상태
 export const updatedSortersAtom = atom({});
 export const sorterNameAtom = atom('');
 export const isEditingSorterAtom = atom(false);
 export const newSorterNameAtom = atom('');
 export const sortersAtom = atom([]);
+export const elementNamesBySorterAtom = atom({});
+
 export const editingSorterIndexAtom = atom(null);
 
 // 드래그 관련 상태
@@ -83,11 +86,12 @@ export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");
 export const selectedSortersAtom = atom([]);
-
-
-
-
-
+export const oldSorterNameAtom = atom("");
+export const selectedElementIdsBySorterAtom = atom({});
+export const selectedElementNamesBySorterAtom = atom({});
+export const selectedSorterIdsAtom = atom([]);
+export const selectedElementIdSorterAtom = atom(0);
+export const isDraggingElementsAtom = atom(false);
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -96,5 +100,5 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
-// 
+//
 
