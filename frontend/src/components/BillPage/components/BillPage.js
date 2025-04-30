@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../css/billPage.css';
 import { billsAtom } from "../atom/atoms";
 import {Trash,X,Plus} from 'lucide-react';
+
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
   const userId = 'user123';

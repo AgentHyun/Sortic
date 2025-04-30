@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { PanelRightOpen, PanelRightClose } from 'lucide-react';
 import '../css/snb.css';
-import {Calculator,NotebookPen,Percent} from 'lucide-react';
+import {Calculator,NotebookPen,Percent,Truck} from 'lucide-react';
 import NormalCalculator from './NormalCalculator.js';
 import NoteCalculator from "./NoteCalculator";
 import PercentCalculator from "./PercentCalculator";
+import DeliveryTracking from "./DeliveryTracking";
 const Snb = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [isNormalCalculatorVisible, setIsNormalCalculatorVisible] = useState(false);
   const [isNoteCalculatorVisible,setIsNoteCalculatorVisible] = useState(false);
   const [isPercentCalculatorVisible,setIsPercentCalculatorVisible] = useState(false);
+  const [isDeliveryTrackingVisible,setIsDeliveryTrackingVisible] = useState(false);
   return (
     <div className="snb-container">
       <div className={`snb-buttons-wrapper ${isOpen ? 'open' : ''}`}>
@@ -30,7 +32,7 @@ const Snb = () => {
             </button>
           </div>
           <button className="snb-btn" onClick={()=>setIsNoteCalculatorVisible(true)}><NotebookPen/></button>
-          <button className="snb-btn">3</button>
+          <button className="snb-btn" onClick={()=>setIsDeliveryTrackingVisible(true)}><Truck/></button>
           <button className="snb-btn">4</button>
         </div>
       </div>
@@ -49,6 +51,11 @@ const Snb = () => {
       <div className="note-calc-container">
         {isNoteCalculatorVisible&&(
           <NoteCalculator onClose={()=>setIsNoteCalculatorVisible(false)}/>
+        )}
+      </div>
+      <div className="delivery-tracking-container">
+        {isDeliveryTrackingVisible&&(
+          <DeliveryTracking onClose={()=>setIsDeliveryTrackingVisible(false)}/>
         )}
       </div>
 

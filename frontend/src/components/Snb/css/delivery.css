@@ -1,0 +1,129 @@
+.tracking-container {
+  position: fixed;
+  width: 700px;
+  background-color: #ffffff;
+  border: 1px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 9999;
+  user-select: none;
+  transition: box-shadow 0.2s ease-in-out;
+
+}
+
+.tracking-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+.tracking-header {
+  background-color: #f5f5f5;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: grab;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.close-btn {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+.button-group {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.tracking-body {
+  padding: 16px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.ant-select-selection-placeholder {
+  color: #000000 !important; /* 검정색으로 변경 */
+  opacity: 1 !important;
+}
+
+.button-group {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.search-btn {
+  /* 기본 버튼 스타일 */
+  display: block;           /* 너비 100%일 때 확실히 채우도록 */
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 5px solid transparent;  /* 투명한 border를 미리 만들어두고 */
+
+  /* 다중 배경 정의 */
+  background-image:
+    /* 1️⃣ 안쪽(컨텐츠) 배경 */
+    linear-gradient(#001A25, #001A25),
+      /* 2️⃣ 테두리용 그라데이션 */
+    linear-gradient(45deg, #0BF8FD,#FC8812);
+
+  /* 배경의 클립 영역 지정 (순서대로) */
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+}
+.delivery-timeline{
+  width:100%;
+  max-height: 600px;
+
+  overflow: auto;
+}
+.delivery-progress-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin: 20px 0;
+  gap: 16px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px; /* 또는 너가 원하는 정렬폭 */
+  text-align: center;
+}
+
+.progress-step img {
+  width: 40px;
+  height: 40px;
+  opacity: 0.4;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.progress-step img.active {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.step-label {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
