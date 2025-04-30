@@ -1,62 +1,128 @@
 package org.sortic.sorticproject.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.Base64;
+import java.util.Date;
 
+/**
+ * JWT 토큰 생성 및 검증을 담당하는 컴포넌트
+ */
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")       // application.yml - jwt.secret: "32byteRandom문자열"
-    private String secret;
+    /**
+     * Base64로 인코딩된 비밀 키
+     */
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-    @Value("${jwt.expiration}")   // jwt.expiration: 86400000  (1day, ms)
-    private long validityInMs;
+    /**
+     * 기본 토큰 만료시간 (밀리초 단위)
+     */
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
 
-    private SecretKey key;
+    /**
+     * Jwt 서명 키
+     */
+    private SecretKey signingKey;
 
+    /**
+     * Bean 생성 후 SecretKey 초기화
+     */
     @PostConstruct
-    private void init() {
-        /* ⚠️ Boot 3.x 부터는 jakarta.* 패키지 사용 */
-        byte[] decoded = Base64.getDecoder().decode(secret);
-        key = Keys.hmacShaKeyFor(decoded);
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
+        signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /** 토큰 발급 */
+    /**
+     * 기본 만료시간(jwtExpiration) 기반 토큰 생성
+     *
+     * @param userId 사용자 식별자
+     * @return 생성된 JWT
+     */
     public String createToken(String userId) {
         Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+
         return Jwts.builder()
             .setSubject(userId)
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + validityInMs))
-            .signWith(key, SignatureAlgorithm.HS256)
+            .setExpiration(expiryDate)
+            .signWith(signingKey, SignatureAlgorithm.HS256)
             .compact();
     }
 
-    /** Authorization 헤더의 Bearer 토큰 → 사용자 ID 추출 */
+    /**
+     * 분 단위 만료시간 기반 토큰 생성
+     *
+     * @param userId  사용자 식별자
+     * @param minutes 만료까지 남은 분
+     * @return 생성된 JWT
+     */
+    public String createToken(String userId, long minutes) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + minutes * 60 * 1000);
+
+        return Jwts.builder()
+            .setSubject(userId)
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .signWith(signingKey, SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    /**
+     * Authorization 헤더의 Bearer 토큰에서 사용자 ID 추출
+     *
+     * @param bearerToken "Bearer <token>"
+     * @return 토큰에 담긴 사용자 ID
+     */
     public String getUserId(String bearerToken) {
-        String token = bearerToken.replaceFirst("^Bearer\\s+", "");
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
-            .parseClaimsJws(token).getBody();
+        String token = removeBearerPrefix(bearerToken);
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(signingKey)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
         return claims.getSubject();
     }
 
-    /** 토큰 유효성 검사 (만료·서명 확인) */
+    /**
+     * JWT 토큰 유효성 검사
+     *
+     * @param bearerToken "Bearer <token>"
+     * @throws InvalidJwtException 유효하지 않거나 만료된 토큰
+     */
     public void validate(String bearerToken) {
         try {
-            String token = bearerToken.replaceFirst("^Bearer\\s+", "");
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            String token = removeBearerPrefix(bearerToken);
+            Jwts.parserBuilder()
+                .setSigningKey(signingKey)
+                .build()
+                .parseClaimsJws(token);
         } catch (JwtException | IllegalArgumentException e) {
-            /* 필터에서 바로 AuthenticationException 으로 감싸 throw */
             throw new InvalidJwtException("Invalid JWT token", e);
         }
+    }
+
+    /**
+     * "Bearer " 접두어 제거
+     */
+    private String removeBearerPrefix(String bearerToken) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return bearerToken;
     }
 }

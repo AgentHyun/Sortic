@@ -17,13 +17,11 @@ const authApi = {
 };
 
 class AuthService {
-  async login(userId, password, rememberMe = false) {
+  async login(credentials) {
     try {
-      const response = await axiosInstance.post('/login', {
-        userId,
-        password,
-        rememberMe
-      });
+      console.log('AuthService login 요청:', credentials);
+      const response = await axiosInstance.post('/login', credentials);
+      console.log('AuthService 서버 응답:', response.data);
 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
@@ -37,6 +35,7 @@ class AuthService {
         error: '로그인에 실패했습니다.'
       };
     } catch (error) {
+      console.error('AuthService 에러:', error.response || error);
       throw error;
     }
   }

@@ -19,7 +19,7 @@ const Login = () => {
     setFormErrors((prev) => ({ ...prev, [`${field}Error`]: '' }));
   };
 
-  const onFinish = async () => {
+  const onFinish = async (values) => {
     try {
       const { userId, password } = formData;
 
@@ -32,18 +32,31 @@ const Login = () => {
         return;
       }
 
-      const data = await authService.login(userId, password); // 수정: authService.login 호출
-      if (data && data.user) {
+      const loginData = {
+        user_id: userId,
+        password: password
+      };
+      console.log('로그인 요청 데이터:', loginData);
+
+      const response = await authService.login(loginData);
+      console.log('서버 응답:', response);
+
+      if (response.success && response.user) {
         setIsAuthenticated(true);
-        setAuthUser(data.user);
-        message.success(`${data.user.username}님 환영합니다!`);
+        setAuthUser(response.user);
+        message.success(`${response.user.username}님 환영합니다!`);
         navigate('/sorter');
       } else {
         message.error('로그인에 실패했습니다.');
       }
     } catch (error) {
       console.error('Login error:', error);
-      message.error(error.message || '서버 오류가 발생했습니다.');
+      console.error('Error details:', error.response?.data);
+      const errorMsg =
+        typeof error.response?.data === 'string'
+          ? error.response.data
+          : error.response?.data?.message || '서버 오류가 발생했습니다.';
+      message.error(errorMsg);
     }
   };
 

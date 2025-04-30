@@ -42,4 +42,11 @@ public interface AuthService {
      * @return 로그인 결과 (토큰 포함)
      */
     ResponseEntity<?> login(Users user);
+
+    /**
+     +     * Refresh-Token 으로 새 Access-Token 발급
+     +     * @param refreshToken 쿠키로 전달된 Refresh-Token
+     +     * @return 새로운 Access-Token
+     +     */
+    ResponseEntity<?> refresh(String refreshToken);
 }
