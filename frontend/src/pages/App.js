@@ -11,36 +11,37 @@ import SignupPage from '../components/SignupPage/SignupPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
-import AuthProvider from '../Auth/AuthProvider';
 
 import { authLoadingAtom } from '../Auth/AuthAtoms';
 
 const App = () => {
-  const [authLoading] = useAtom(authLoadingAtom); // ✅ 상태만 구독, 인증 확인은 하지 않음
+  const [authLoading] = useAtom(authLoadingAtom); // ✅ AuthProvider에서 설정된 전역 로딩 상태만 구독
 
-  // [1] 다크 모드 초기화
+  // [1] 다크 모드 초기화 (최초 렌더링 시 한 번만 실행)
   useEffect(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark') {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
   }, []);
 
-  // [2] 인증 확인 중이면 로딩 출력
+  // [2] 인증 확인 중일 땐 로딩 화면만 렌더링 (라우팅 안 됨)
   if (authLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // TODO: 스피너 컴포넌트로 교체 가능
   }
 
-  // [3] 인증 확인 이후 라우트 렌더링
+  // [3] 인증 확인 완료 후 앱 라우트 렌더링
   return (
-    <AuthProvider>
+    <>
       <SorticHeader />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+
+        {/* 인증된 사용자만 접근 가능한 라우트 */}
         <Route
           path="/sorter"
           element={
@@ -66,7 +67,7 @@ const App = () => {
           }
         />
       </Routes>
-    </AuthProvider>
+    </>
   );
 };
 

@@ -1,18 +1,18 @@
 // src/auth/AuthService.js
-import axiosInstance from '../Api/AxiosInstance';
+import authAxios from '../Api/authAxios';
 
 // 인증 관련 API 함수 그룹
 const authApi = {
   login: async (credentials) => {
-    const response = await axiosInstance.post('/login', credentials);
+    const response = await authAxios.post('/login', credentials);
     return response.data;
   },
   validateToken: async () => {
-    const response = await axiosInstance.post('/validate-token');
+    const response = await authAxios.post('/validate-token');
     return response.data;
   },
   logout: async () => {
-    await axiosInstance.post('/logout');
+    await authAxios.post('/logout');
   }
 };
 
@@ -20,7 +20,7 @@ class AuthService {
   async login(credentials) {
     try {
       console.log('AuthService login 요청:', credentials);
-      const response = await axiosInstance.post('/login', credentials);
+      const response = await authAxios.post('/login', credentials);
       console.log('AuthService 서버 응답:', response.data);
 
       if (response.data.token) {
@@ -43,7 +43,7 @@ class AuthService {
 
   async logout() {
     try {
-      await axiosInstance.post('/logout');
+      await authAxios.post('/logout');
       localStorage.removeItem('token');
       return { success: true };
     } catch (error) {
@@ -58,7 +58,7 @@ class AuthService {
         return { success: false };
       }
 
-      const response = await axiosInstance.post('/validate-token');
+      const response = await authAxios.post('/validate-token');
       return {
         success: true,
         user: response.data.user

@@ -13,8 +13,8 @@ const LandingPage = () => {
     return (
         <div className={styles.container}>
             <Row className={styles.fullHeight} align="middle">
-                {/* 소개글 영역 - 40% */}
-                <Col xs={24} md={10} className={styles.leftSection}>
+                {/* 소개글 영역 - 58% */}
+                <Col xs={24} md={14} className={styles.leftSection}>
                     <div className={styles.textWrapper}>
                         <Title level={1} className={styles.title}>
                             Sortic에 오신 걸 환영합니다!
@@ -29,8 +29,8 @@ const LandingPage = () => {
                     </div>
                 </Col>
 
-                {/* 캐러셀 영역 - 60% */}
-                <Col xs={24} md={14} className={styles.rightSection}>
+                {/* 캐러셀 영역 - 42% */}
+                <Col xs={24} md={10} className={styles.rightSection}>
                     <Carousel />
                 </Col>
             </Row>

@@ -1,28 +1,47 @@
 import React, { useEffect ,useState } from "react";
 import { useAtom } from 'jotai';
 import {Button, Input, message, Modal} from 'antd';
-import axios from 'axios';
+import apiAxios from '../../../Api/apiAxios'; // // ✅ 주소 수정 axios -> authAxios
 import '../css/billPage.css';
 import { billsAtom } from "../atom/atoms";
-import {Trash,X} from 'lucide-react';
+import {X} from 'lucide-react';
+import { jwtDecode } from 'jwt-decode'; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
+
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
-  const user_id = 'user123';
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newBillName, setNewBillName] = useState('');
+
+  /** ✅ JWT에서 userId 추출 */
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const decoded = jwtDecode(token); // { userId: 'test', sub: ..., iat: ..., exp: ... }
+      return decoded.userId;
+    } catch (err) {
+      message.error('로그인 정보가 유효하지 않습니다.');
+      return null;
+    }
+  };
+
+  const user_id = getUserIdFromToken(); // ✅ 실제 로그인된 사용자 ID
+
+  /** 💡 모든 Bill 목록 가져오기 */
   const fetchBills = () => {
-    axios.get(`http://localhost:8080/api/bills/getAllBills?user_id=${user_id}`)
+    apiAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
       .then(res => setBills(res.data))
       .catch(err => message.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
     fetchBills();
-  }, [user_id]);
+  }, []);
 
+  /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-      const res = await axios.post(`http://localhost:8080/api/bills/addBill`,{
+      await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
         billName : newBillName,
         user_id  : user_id
       });
@@ -35,11 +54,12 @@ const BillPage = () => {
     } catch (error){
       message.error("Bill 추가 실패")
     }
+  };
 
-  }
+  /** ✅ Bill 삭제 처리 */
   const handleDeleteBill = async (billId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
+      await apiAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
         params: { billId }
       });
       message.success("삭제 완료!");

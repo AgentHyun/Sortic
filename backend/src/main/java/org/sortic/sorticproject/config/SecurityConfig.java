@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/validate-token").permitAll()
                 .requestMatchers("/api/auth/refresh").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/bills/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
                 .anyRequest().authenticated())
             /* Username/Password 로그인 폼 disable → JWT만 사용 */
