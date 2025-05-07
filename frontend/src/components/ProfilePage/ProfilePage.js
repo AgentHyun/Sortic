@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { Button, message, Avatar, Input, Tabs } from 'antd';
 import { CameraOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
-import { userAtom } from '../../atoms/userAtom';
+import { userAtom } from '../../Atoms/UserAtom';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
@@ -18,11 +18,11 @@ const ProfilePage = () => {
             try {
                 const user_id = localStorage.getItem('user_id');
                 const response = await fetch(`/api/users/profile?user_id=${user_id}`);
-                
+
                 if (!response.ok) {
                     throw new Error('사용자 정보를 가져오는데 실패했습니다.');
                 }
-                
+
                 const userData = await response.json();
                 setUser(userData);
                 setEditedUser(userData);
@@ -58,11 +58,11 @@ const ProfilePage = () => {
                 },
                 body: JSON.stringify(editedUser),
             });
-            
+
             if (!response.ok) {
                 throw new Error('프로필 업데이트 실패');
             }
-            
+
             setUser(editedUser);
             setIsEditing(false);
             message.success('프로필이 업데이트되었습니다.');
@@ -120,12 +120,12 @@ const ProfilePage = () => {
                 <div className={styles.profileCard}>
                     <div className={styles.profileHeader}>
                         <div className={styles.avatarSection}>
-                            <div 
+                            <div
                                 className={styles.avatarWrapper}
                                 onClick={() => fileInputRef.current?.click()}
                             >
-                                <Avatar 
-                                    size={120} 
+                                <Avatar
+                                    size={120}
                                     src={user.profileImage}
                                     className={styles.avatar}
                                 />
@@ -149,7 +149,7 @@ const ProfilePage = () => {
                                     autoFocus
                                 />
                             ) : (
-                                <div 
+                                <div
                                     className={styles.nickname}
                                     onClick={handleNicknameEdit}
                                 >
@@ -222,16 +222,16 @@ const ProfilePage = () => {
                             </div>
                             <div className={styles.actionButtons}>
                                 {isEditing ? (
-                                    <Button 
-                                        type="primary" 
+                                    <Button
+                                        type="primary"
                                         icon={<SaveOutlined />}
                                         onClick={handleSave}
                                     >
                                         저장
                                     </Button>
                                 ) : (
-                                    <Button 
-                                        type="primary" 
+                                    <Button
+                                        type="primary"
                                         icon={<EditOutlined />}
                                         onClick={handleEditClick}
                                     >
@@ -264,4 +264,4 @@ const ProfilePage = () => {
     );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

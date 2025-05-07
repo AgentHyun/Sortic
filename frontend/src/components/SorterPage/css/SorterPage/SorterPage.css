@@ -50,6 +50,7 @@ body {
 
 /* Modal Input Fields */
 .ant-input {
+    margin-top: 10px; /* 로그인 페이지 비밀번호 위로 쏠림 방안 */
     margin-bottom: 10px;
     border-radius: 8px;
 }

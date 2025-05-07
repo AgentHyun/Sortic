@@ -24,7 +24,7 @@ import jakarta.annotation.PostConstruct;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    
+
     private final String uploadDir = "uploads/profile-images/";
     private final String defaultProfileImage = "/public/profile-images/profile-default.png";
 
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setGrade(0);
 
-        userMapper.save(user);
+        userMapper.insertUser(user);
         return user;
     }
 
@@ -75,17 +75,17 @@ public class UserServiceImpl implements UserService {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("파일이 비어있습니다.");
         }
-        
+
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String newFileName = user_id + "_" + System.currentTimeMillis() + fileExtension;
-        
+
         File targetFile = new File(uploadDir + newFileName);
         file.transferTo(targetFile);
-        
+
         String imageUrl = "/uploads/" + newFileName;
         userMapper.updateProfileImage(user_id, imageUrl);
-        
+
         return imageUrl;
     }
 
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             userMapper.updatePassword(user.getUserId(), encodedPassword);
         }
-        
+
         userMapper.updateUserProfile(user);
     }
 
@@ -110,13 +110,13 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new RuntimeException("해당 이메일로 등록된 사용자가 없습니다.");
         }
-        
+
         String temporaryPassword = generateTemporaryPassword();
         String encodedPassword = passwordEncoder.encode(temporaryPassword);
         user.setPassword(encodedPassword);
-        
+
         userMapper.updatePassword(user.getUserId(), encodedPassword);
-        
+
         // TODO: 이메일 발송 로직 구현
         // emailService.sendTemporaryPassword(email, temporaryPassword);
     }
@@ -136,11 +136,11 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
-        
+
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
         }
-        
+
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedNewPassword);
         userMapper.updatePassword(user_id, encodedNewPassword);

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
+import axios from "axios";
+import { useAtom } from 'jotai';
+import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/AuthAtoms';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -17,71 +20,78 @@ function SignupPage() {
   // 회원가입 처리 중 여부를 나타내는 상태값
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [authLoading] = useAtom(authLoadingAtom);
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(-1);
+    }
+  }, [authLoading, isAuthenticated, navigate]);
+
+  if (authLoading) {
+    return null; // 또는 <Spinner />
+  }
+
   // 회원가입 완료 시 호출되는 핸들러
   const onFinish = async (values) => {
     setIsSubmitting(true); // 중복 제출 방지를 위해 버튼 비활성화
 
     try {
       // 서버에 회원가입 요청 전송
-      const response = await fetch('http://localhost:8080/api/auth/signup', {
-        method: 'POST', // HTTP POST 요청
+      const response = await axios.post('http://localhost:8080/api/auth/signup', values, {
         headers: {
           'Content-Type': 'application/json', // JSON 형식의 본문 전송
         },
-        body: JSON.stringify(values), // 폼 데이터 객체를 JSON 문자열로 변환
       });
 
-      if (response.ok) {
-        // 성공 시 메시지 출력 및 로그인 페이지로 이동
-        message.success('회원가입이 완료되었습니다.');
-        navigate('/login');
-      } else {
-        // 실패 시 서버에서 전달한 에러 메시지 출력
-        const error = await response.text();
-        message.error(error);
-      }
+      // 성공 시 메시지 출력 및 로그인 페이지로 이동
+      message.success('회원가입이 완료되었습니다.');
+      navigate('/login');
     } catch (err) {
-      // 서버 연결 자체에 실패한 경우
-      message.error('서버 오류가 발생했습니다.');
+      // 실패 시 서버에서 전달한 에러 메시지 출력
+      if (err.response) {
+        // 서버에서 반환한 에러 메시지
+        const error = err.response.data || '서버 오류가 발생했습니다.';
+        message.error(error);
+      } else {
+        // 네트워크 오류 등 서버와 연결되지 않은 경우
+        message.error('서버 연결에 실패했습니다.');
+      }
     } finally {
       // 요청 종료 후 버튼 다시 활성화
       setIsSubmitting(false);
     }
   };
 
-  // 아이디 중복 확인 버튼 클릭 시 실행되는 함수
-  const handleCheckId = async (form) => {
-    const id = form.getFieldValue('user_id'); // 입력한 아이디 가져오기
-    if (!id) return; // 아이디 입력이 없으면 리턴
+    const handleCheckId = async (form) => {
+      const id = form.getFieldValue('userId'); // 입력한 아이디 가져오기
+      if (!id) return; // 아이디 입력이 없으면 리턴
 
-    try {
-      // 서버에 중복확인 요청
-      const response = await fetch(`http://localhost:8080/api/auth/check-userid/${id}`);
-      const isAvailable = await response.json(); // 결과를 JSON으로 파싱
+      try {
+        // 서버에 중복확인 요청
+        const response = await axios.get(`http://localhost:8080/api/auth/check-userid`, {
+          params: { user_id: id },
+        });
+        const isAvailable = response.data; // 응답에서 직접 데이터를 가져옵니다.
 
-      if (!isAvailable) {
-        message.error('이미 사용 중인 아이디입니다.'); // 중복된 경우
-      } else {
-        message.success('사용 가능한 아이디입니다.'); // 사용 가능
+        if (!isAvailable) {
+          message.error('이미 사용 중인 아이디입니다.'); // 중복된 경우
+        } else {
+          message.success('사용 가능한 아이디입니다.'); // 사용 가능
+        }
+      } catch (err) {
+        message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
       }
-    } catch (err) {
-      message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
-    }
-  };
+    };
 
   // 실제 렌더링 반환
   return (
     <div className={styles.page}>
       {/* 전체 페이지를 감싸는 최상위 컨테이너로, 중앙 정렬 및 배경 스타일 지정 */}
-
       <div className={styles.card}>
         {/* 가운데 정렬된 카드 형태의 박스. 폼과 타이틀 등을 감쌈 */}
-
-        <Title level={2} className={styles.title}>
-          {/* 페이지 제목 표시 – h2 태그에 해당하며, 스타일 적용 */}
-          회원가입
-        </Title>
-
+        <Title level={2} className={styles.title}>회원가입</Title>
         <Form
           form={form} // 위에서 생성한 폼 인스턴스를 이 Form에 연결
           layout="vertical" // 라벨과 인풋이 세로 정렬로 배치됨
@@ -94,12 +104,11 @@ function SignupPage() {
             {/* 인풋과 버튼을 한 줄에 배치하는 래퍼 */}
             <div className={styles.inlineWrap}>
               <Form.Item
-                name="user_id"
+                name="userId"
                 noStyle // 바깥 Form.Item의 레이아웃만 적용
                 rules={[ /* 아이디 유효성 검사 규칙 정의 */ ]}
               >
-                <Input className={styles.inputShort} allowClear placeholder="아이디" />
-                {/* 아이디 입력창: allowClear는 x 버튼으로 내용 제거 가능 */}
+                <Input className={styles.inputShort} placeholder="아이디" />
               </Form.Item>
 
               <Button
@@ -117,18 +126,18 @@ function SignupPage() {
           <Form.Item
             label="비밀번호"
             name="password"
-            dependencies={['user_id']}
+            dependencies={['userId']}
             rules={[
               { required: true, message: '비밀번호를 입력해주세요.' },
-              { min: 8, message: '비밀번호는 8자 이상이어야 합니다.' },
+              { min: 6, message: '비밀번호는 6자 이상이어야 합니다.' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || value.length < 8) {
+                  if (!value || value.length < 6) {
                     return Promise.resolve();
                 }
 
                   // 아이디 포함 여부 검사
-                  const userId = getFieldValue('user_id');
+                  const userId = getFieldValue('userId');
                   if (userId && userId.length >= 3) {
                     for (let i = 0; i <= userId.length - 3; i++) {
                       const chunk = userId.substring(i, i + 3);
@@ -137,24 +146,23 @@ function SignupPage() {
                     }
                   }
                 }
-                  
+
                   return Promise.resolve();
                 },
               }),
             ]}
           >
-            <Input.Password 
-              className={styles.input} 
-              allowClear 
+            <Input.Password
+              className={styles.input}
               placeholder="비밀번호 (8자 이상)"
             />
           </Form.Item>
 
           {/* 비밀번호 확인 필드 */}
-          <Form.Item 
-            label="비밀번호 확인" 
-            name="confirm" 
-            dependencies={['password']} 
+          <Form.Item
+            label="비밀번호 확인"
+            name="confirm"
+            dependencies={['password']}
             rules={[
               { required: true, message: '비밀번호 확인을 입력해주세요.' },
               ({ getFieldValue }) => ({
@@ -167,24 +175,12 @@ function SignupPage() {
               }),
             ]}
           >
-            <Input.Password 
-              className={styles.input} 
-              allowClear 
-              placeholder="비밀번호 확인" 
-            />
+            <Input.Password className={styles.input} placeholder="비밀번호 확인" />
           </Form.Item>
 
           {/* 닉네임 입력 필드 */}
-          <Form.Item
-            label="닉네임"
-            name="username"
-            rules={[{ required: true, message: '닉네임을 입력해주세요.' }]}
-          >
-            <Input
-              className={styles.input}
-              allowClear
-              placeholder="닉네임"
-            />
+          <Form.Item label="닉네임" name="username" rules={[{ required: true, message: '닉네임을 입력해주세요.' }]}>
+            <Input className={styles.input} placeholder="닉네임" />
           </Form.Item>
 
           {/* 전화번호 입력 필드 */}
@@ -195,9 +191,9 @@ function SignupPage() {
           >
             <Input
               className={styles.input}
-              allowClear
-              placeholder="전화번호"
+              placeholder="'-'하이픈 없이 번호만 입력해 주세요"
               maxLength={11} // 숫자만 입력 시 11자리 제한
+              autoComplete="new-phone"   // 🔹 자동완성 차단
             />
           </Form.Item>
 
@@ -212,8 +208,8 @@ function SignupPage() {
           >
             <Input
               className={styles.input}
-              allowClear
               placeholder="이메일"
+              autoComplete="new-email" // 🔹 자동완성 차단
             />
           </Form.Item>
 
