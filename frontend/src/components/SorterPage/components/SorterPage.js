@@ -717,6 +717,7 @@ const SorterPage = () => {
           billId: Number(billId),
           elementsNameId: Number(elementId),
         });
+        await setFetchBills('user123');
       } catch (error) {
         console.error("🔥 BillElement 추가 실패", error);
       }
