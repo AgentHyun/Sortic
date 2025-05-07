@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { atom } from 'jotai';
 import { message } from 'antd';
-import { billElementsAtom, messageAtom } from '../atom/atoms' // 적절한 atom을 가져옵니다.
+import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms' // 적절한 atom을 가져옵니다.
 
 // BillElement 추가
 export const addBillElementAction = atom(
@@ -74,6 +74,17 @@ export const addBillElementsAction = atom(
       console.error('BillElements 추가 실패:', error);
       set(messageAtom, { type: 'warning', content: 'BillElements 추가 중 오류가 발생했습니다.' });
       message.error("오류 발생!");
+    }
+  }
+);
+export const fetchBillsAction = atom(
+  null,
+  async (_get, set, userId) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`);
+      set(billsAtom, res.data);
+    } catch (err) {
+      console.error('📛 Bill 불러오기 실패:', err);
     }
   }
 );

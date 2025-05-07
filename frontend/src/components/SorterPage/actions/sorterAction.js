@@ -292,12 +292,9 @@ export const getElementsIdBySorterIdAction = atom(
     try {
       // 수정된 API 경로 사용
       const response = await axios.get(`http://localhost:8080/api/sorter-element/sorter/${sorterId}`);
-
       const elementsIds = response.data;  // 요소 ID 배열
-
       // 요소 ID 리스트를 상태에 저장
       set(elementsIdListAtom, elementsIds);
-
 
       return elementsIds;
     } catch (error) {

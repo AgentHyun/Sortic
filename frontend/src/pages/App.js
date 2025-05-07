@@ -8,6 +8,8 @@ import LoginPage from '../components/LoginPage/LoginPage';
 import SignupPage from '../components/SignupPage/SignupPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 import Snb from "../components/Snb/components/Snb";
+import WholeSalePage from "../components/WholesalePage/WholesalePage";
+import WholesalePage from "../components/WholesalePage/WholesalePage";
 
 const App = () => {
   useEffect(() => {
@@ -28,6 +30,7 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/sorter" element={<SorterPage />} />
         <Route path="/sorterDefaultPage" element={<SorterDefaultPage />} />
+        <Route path="/wholesale" element={<WholesalePage />} />
       </Routes>
       <Snb/>
     </>
