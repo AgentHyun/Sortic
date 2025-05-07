@@ -6,7 +6,7 @@ import {useAtom} from "jotai";
 import {historyAtom} from "../Atom/atoms";
 
 const NormalCalculator = ({ onClose }) => {
-  const calculatorRef = useRef(); // ✅ 계산기 컨테이너 ref
+  const calculatorRef = useRef(); //  계산기 컨테이너 ref
 
   const [position, setPosition] = useState({ x: -800, y: -500 });
   const [dragging, setDragging] = useState(false);
@@ -116,7 +116,7 @@ const NormalCalculator = ({ onClose }) => {
       if (previousValue && operator && input) {
         try {
           const rawExpr = `${previousValue}${operator}${input}`;
-          const expression = sanitizeExpression(rawExpr); // ✅ 불필요한 0 제거
+          const expression = sanitizeExpression(rawExpr); // 불필요한 0 제거
           const result = eval(expression.replace(/÷/g, '/').replace(/×/g, '*'));
           const cleaned = result.toString().includes('.') ? parseFloat(result.toString()) : result;
           setHistory((prev) => [...prev, `${previousValue}${operator}${input}=${cleaned}`]);

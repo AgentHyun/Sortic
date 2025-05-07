@@ -97,7 +97,7 @@ const PercentCalculator = ({ onClose }) => {
 
       <div className="percent-calculator-body">
         <div className="calc-block">
-          {'얼마의 몇%는 얼마인가?'}
+          {'금액 중 % 값 구하기'}
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="전체값 (ex:10000)" />
           <span className="inline-label">의</span>
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="%값 (ex:20)" />
@@ -107,7 +107,7 @@ const PercentCalculator = ({ onClose }) => {
         </div>
 
         <div className="calc-block">
-          {'얼마중의 얼마는 몇%인가?'}
+          {'금액의 일부 % 구하기'}
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="전체값 (예: 10000)" />
           <span className="inline-label">의</span>
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="일부값 (예: 500)" />
@@ -117,7 +117,7 @@ const PercentCalculator = ({ onClose }) => {
         </div>
 
         <div className="calc-block">
-          {'얼마가 얼마로 변하면 몇% 증/감인가?'}
+          {'금액의 증감 값의 % 구하기'}
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="시작값 (예: 10000)" />
           <span className="inline-label">→</span>
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="변화값 (예: 25000)" />
@@ -127,7 +127,7 @@ const PercentCalculator = ({ onClose }) => {
         </div>
 
         <div className="calc-block">
-          {'얼마에서 몇퍼센트 증/감하면 얼마인가?'}
+          {'금액에 % 증감 값 구하기'}
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="기본값 (예: 10000)" />
           <span className="inline-label">이/가</span>
           <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="변화율 (예: 25)" />

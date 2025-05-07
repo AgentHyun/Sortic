@@ -6,7 +6,8 @@ import {
   elementNameAtom,
   elementsIdListAtom,
   sorterCardsAtom,
-  selectedSortersAtom
+  selectedSortersAtom,
+  sorterNameByIdAtom,
 } from '../atoms/atoms';
 import { message } from 'antd';
 export const addingElementIdsBySorterAtom = atom({});
@@ -246,7 +247,7 @@ export const moveElementToSorterAction = atom(
       const alreadyExists = targetSorter?.elements_id?.includes(elementsId);
 
       if (alreadyExists) {
-        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+
         return;
       }
 
@@ -267,7 +268,7 @@ export const moveElementToSorterAction = atom(
       message.success(`요소가 정렬자에 추가되었습니다!`);
     } catch (error) {
       if (error.response?.status === 409) {
-        message.warning("해당 요소는 이미 정렬자에 포함되어 있습니다.");
+
       } else {
         console.error('🚨 요소 추가 실패:', error);
         message.error("요소 추가에 실패했습니다.");
@@ -308,3 +309,21 @@ export const getElementsIdBySorterIdAction = atom(
   }
 );
 
+export const getSorterNameByIdAction = atom(
+  null,
+  async (get, set, sorterId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/sorter/name/${sorterId}`);
+      const sorterName = response.data; // 서버에서 반환된 sorter 이름
+
+      // 가져온 sorter 이름을 상태에 설정
+      set(sorterNameByIdAtom, sorterName);
+
+
+    } catch (error) {
+      console.error('🚨 정렬자 이름 조회 실패:', error);
+      set(sorterNameByIdAtom, ''); // 실패 시 상태를 초기화
+      message.error("정렬자 이름 조회에 실패했습니다.");
+    }
+  }
+);

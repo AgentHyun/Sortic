@@ -1,0 +1,205 @@
+.tracking-container {
+  position: fixed;
+  width: 600px;
+  background-color: #fefefe;
+  border: 1px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 9999;
+  user-select: none;
+  transition: box-shadow 0.2s ease-in-out;
+
+}
+
+.tracking-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+.tracking-header {
+  background-color: #f5f5f5;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: grab;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.close-btn {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+.button-group {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.tracking-body {
+  padding: 16px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.ant-select-selection-placeholder {
+  color: #000000 !important; /* 검정색으로 변경 */
+  opacity: 1 !important;
+}
+
+.button-group {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.search-btn {
+  /* 기본 버튼 스타일 */
+  display: block;           /* 너비 100%일 때 확실히 채우도록 */
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 5px solid transparent;  /* 투명한 border를 미리 만들어두고 */
+
+  /* 다중 배경 정의 */
+  background-image:
+    /* 1️⃣ 안쪽(컨텐츠) 배경 */
+    linear-gradient(#001A25, #001A25),
+      /* 2️⃣ 테두리용 그라데이션 */
+    linear-gradient(45deg, #0BF8FD,#FC8812);
+
+  /* 배경의 클립 영역 지정 (순서대로) */
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+}
+.delivery-timeline{
+  border: 5px solid transparent;
+
+  width: 100%;
+  max-height: 400px;
+  overflow: auto;
+}
+.timeline-item {
+
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.timeline-content {
+  padding-left: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 전체 공통 */
+.timeline-txt {
+  font-size: 14px;
+  color: #333;
+}
+
+.timeline-content .time {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* 최신 항목 강조 */
+.timeline-item.highlight {
+  background-color: #fff8e1;
+  border-radius: 8px;
+}
+
+.timeline-item.highlight .timeline-txt strong {
+  color: #000; /* 검정 유지 + bold는 기본 strong */
+}
+
+.timeline-item.highlight .status {
+  color: #ff6f00; /* 오렌지 강조 */
+  font-weight: bold;
+}
+
+.portal-delivery-result{
+  margin-top: 15px;
+
+}
+.delivery-progress-bar {
+  width: 100%;
+  height: 150px;
+  border: 2px solid #fdfdfd ;
+  background-color:#fefefe;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px #1F2933;
+  display: flex;
+  justify-content: center;
+  gap: 8px;                 /* 모든 이미지 사이 일정한 간격 */
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.progress-step {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px; /* 또는 너가 원하는 정렬폭 */
+  text-align: center;
+}
+
+.progress-step img {
+  margin-top: 10px;
+  background-color: #2C3E50;
+  border-radius: 20px;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+  opacity: 1;
+  width: 80px;
+  height: 80px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.progress-step img.active {
+  margin-top:4px;
+  border : 1px solid #ff6f00;
+  box-shadow:  0 0 12px #ff6f00;
+  transform: scale(1.14);
+}
+.step-label div.active{
+  font-size: 16px;
+  font-weight: bold;
+}
+.step-label {
+
+  position: fixed;
+  margin-top: 95px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.delivery-meta{
+  text-align: center;
+}
+.delivery-top{
+  margin: 0 auto;
+  width: 25%;
+  border : 1px solid dimgray;
+  border-radius: 30px;
+}
+.delivery-invoiceNo{
+  font-size: 25px;
+  color: #6e5047;
+}

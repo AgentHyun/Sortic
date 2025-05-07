@@ -49,9 +49,10 @@ import {
   attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom,
   selectedElementIdsAtom, animationClassAtom,
   fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-  editedSorterNameAtom,edtingSorterIdAtom,
+  editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
-  oldSorterNameAtom,
+  oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
+  isDraggingElementsAtom, sorterNameByIdAtom
 
 } from '../atoms/atoms';
 
@@ -76,13 +77,16 @@ import {
   handleElementNameSaveAction,
   setSelectedElementAction,
   openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
+  fetchElementNameByIdAction
 
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
-  ,moveElementToSorterAction
+  ,moveElementToSorterAction, getSorterNameByIdAction
 } from '../actions/sorterAction';
+
+import{addBillElementAction} from "../../BillPage/actions/billElementAction";
 import BillPage from "../../BillPage/components/BillPage";
 
 import {closestCenter} from "@dnd-kit/core";
@@ -122,6 +126,8 @@ const SorterPage = () => {
   const [selectedElementId, setSelectedElementId] = useAtom(selectedElementIdAtom);
   const [, openContextMenu] = useAtom(openContextMenuAction);
   const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
+  const [, setIsDraggingElements] = useAtom(isDraggingElementsAtom);
+
 
   const[, setAddElement] = useAtom(addElementAction);
   const [addElementName, setAddElementName] = useAtom(addElementNameAtom);
@@ -140,7 +146,8 @@ const SorterPage = () => {
   const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
   const [costError, setCostError] = useAtom(costErrorAtom);
   const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
-
+  const [fetchElementNamById, setFetchElementNamById] = useAtom(fetchElementNameByIdAction);
+  const [activeCard, setActiveCard] = useAtom(activeCardAtom);
   const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
   const [, setToggleSelectElementAction] = useAtom(toggleSelectElementAction);
@@ -153,20 +160,25 @@ const SorterPage = () => {
   const [, setDeleteSorter] = useAtom(deleteSorterAction);
   const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
   const[ oldSorterName, setOldSorterName] = useAtom(oldSorterNameAtom);
+  const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
+  const [elementNamesBySorter, setElementNamesBySorter] = useAtom(elementNamesBySorterAtom);
 
+  //sorter
   const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
   const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
   const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
   const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
   const [moveElementToSorter, setMoveElementToSorter] = useAtom(moveElementToSorterAction);
   const [, updateSorterName] = useAtom(updateSorterNameAction)
+  const[,setGetSorterNameByIdAction] = useAtom(getSorterNameByIdAction);
   const sorterRef = useRef(null);
   const [arrowHeight, setArrowHeight] = useState(0);
+  const [sorterNameById,setSorterNameById] = useAtom(sorterNameByIdAtom);
   const setUpdateSorterName = useSetAtom(updateSorterNameAction);
   const navigate = useNavigate();
   const { confirm } = Modal;
   const [activeId, setActiveId] = useState(null);
-  const activeCard = cards.find(card => card.elements_name_id === activeId);
+
   const settings = {
     dots: true,
     infinite: true, // 무한 루프
@@ -199,8 +211,23 @@ const SorterPage = () => {
 
 
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (activeId) {
+        try {
+          // DB에서 activeId에 해당하는 카드 이름을 조회하는 함수
+          const response = await setFetchElementNamById(activeId);
+        } catch (error) {
+          console.error('Error fetching active card:', error);
+        }
+      }
+    };
 
-
+    fetchData();
+  }, [activeId, fetchElementNamById]);// activeId가 변경될 때마다 호출
+  useEffect(() => {
+    console.log('Active Card:', activeCard);
+  }, [activeCard]);
   const fetchElementsByCategory = async() => {
 
     try {
@@ -483,6 +510,10 @@ const SorterPage = () => {
 
     checkCategoryCount();
   }, []);
+// 상태 변경 후 콘솔 출력
+  useEffect(() => {
+    console.log("📤 상태 변경 후 updated[sorterId]:", elementNamesBySorter);
+  }, [elementNamesBySorter]); // elementNamesBySorter가 변경될 때마다 실행
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -501,7 +532,14 @@ const SorterPage = () => {
     };
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
 
-
+  useEffect(() => {
+    if (typeof activeCard === 'string' && activeCard.startsWith('sorter-')) {
+      const sorterId = activeCard.replace('sorter-', '');
+      if (!isNaN(Number(sorterId))) {
+        setGetSorterNameByIdAction(Number(sorterId));
+      }
+    }
+  }, [activeCard, setGetSorterNameByIdAction]);
 
 
   const sectionRef = useRef(null);
@@ -594,60 +632,177 @@ const SorterPage = () => {
   );
 
   const handleDragStart = (event) => {
-    setActiveId(event.active.id);
+    const { active } = event;
+
+    // active.id를 문자열로 강제 변환
+    const activeIdStr = String(active.id);
+    setActiveCard(active.id);
+    let extractedId = activeIdStr;
+
+    // 문자열에 '-'가 포함된 경우 split하여 두 번째 값만 추출
+    if (activeIdStr.includes('-')) {
+      extractedId = activeIdStr.split('-')[1];
+    }
+
+
+    // 추출된 ID를 activeId로 설정
+    setActiveId(extractedId);
+
+
+
   };
+
+
+
+  const [,setAddBillElement] = useAtom(addBillElementAction);
 
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveId(null);
 
+    console.log("액티브 id " + active.id);
+    console.log("오버 id " + (over?.id || "null"));
+
     if (!over || active.id === over.id) return;
 
-    const oldIndex = cards.findIndex((c) => c.elements_name_id === active.id);
-    const newIndex = cards.findIndex((c) => c.elements_name_id === over.id);
-    setCards(arrayMove(cards, oldIndex, newIndex));
+    // ✅ Bill에 드롭된 경우
+    if (typeof over.id === 'string' && over.id.startsWith('bill-')) {
+      const billId = over.id.replace('bill-', '');
+      const elementId = String(active.id).includes("-")
+        ? String(active.id).split("-").pop()
+        : String(active.id);
+
+      console.log(`📦 Bill(${billId})에 요소(${elementId}) 추가 시도`);
+
+      try {
+        await setAddBillElement({
+          billId: Number(billId),
+          elementsNameId: Number(elementId),
+        });
+      } catch (error) {
+        console.error("🔥 BillElement 추가 실패", error);
+      }
+      return; // 다른 로직 중복 방지
+    }
+
+    // ✅ 카드 간 재정렬
+    if (
+      !(typeof active.id === "string" &&
+        typeof over.id === "string" &&
+        active.id.includes("-") &&
+        over.id.includes("-") &&
+        cards.some((c) => c && c.elements_name_id != null))
+    ) {
+      const oldIndex = cards.findIndex((c) => c && c.elements_name_id === active.id);
+      const newIndex = cards.findIndex((c) => c && c.elements_name_id === over.id);
+      setCards(arrayMove(cards, oldIndex, newIndex));
+    }
 
     const overId = String(over.id);
-    console.log("over.id:", overId);
-    console.log("드롭중인 요소 : ", active.id);
+    let elementId;
 
+    const activeIdStr = String(active.id);
+    if (activeIdStr.includes("-")) {
+      elementId = activeIdStr.split("-").pop();
+    } else {
+      elementId = activeIdStr;
+    }
+
+    // ✅ sorter에 드롭된 경우
     if (overId.startsWith("sorter-") || Number(overId)) {
       const sorterId = overId.replace("sorter-", "");
-      const targetSorter = sorters.find(s => String(s.sorter_id) === sorterId);
+      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
 
       if (!targetSorter) {
         console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
         return;
       }
 
-      console.log("✅ 드롭된 정렬자 ID:", sorterId);
-      console.log("📌 드롭된 정렬자 이름:", targetSorter.sorter_name);
-
       try {
-        // 요소 이동 API 호출 (비동기) - sorterId를 파라미터로 전달
         await setMoveElementToSorter({
-          elementsId: active.id,
-          sorterId: targetSorter.sorter_id, // sorterName 대신 sorterId를 전달
+          elementsId: elementId,
+          sorterId: targetSorter.sorter_id,
         });
 
-        // 👉 상태 동기화: 로컬 상태를 즉시 반영 (elements_id가 배열이라고 가정)
         setSorters((prev) =>
           prev.map((s) =>
-            s.sorter_id === targetSorter.sorter_id // sorter_id로 비교
+            s.sorter_id === targetSorter.sorter_id
               ? {
                 ...s,
-                elements_id: [...(s.elements_id || []), active.id],
+                elements_id: [...(s.elements_id || []), elementId],
               }
               : s
           )
         );
-
       } catch (error) {
         console.error("🔥 요소 이동 실패", error);
       }
+    }
 
-    } else {
-      console.log("📦 Sorter가 아닌 다른 곳에 드롭됨");
+    // ✅ sorter 내에서 순서 변경
+    if (
+      typeof active.id === "string" &&
+      typeof over.id === "string" &&
+      active.id.includes("-") &&
+      over.id.includes("-")
+    ) {
+      const [activeSorterId, activeElementId] = active.id.split("-");
+      const [overSorterId, overElementId] = over.id.split("-");
+
+      setIsDraggingElements(true);
+
+      if (overSorterId && overElementId) {
+        const sorterId = overSorterId;
+        const elementId = overElementId;
+
+        const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+        if (!targetSorter) {
+          console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+          return;
+        }
+
+        try {
+          await setMoveElementToSorter({
+            elementsId: elementId,
+            sorterId: targetSorter.sorter_id,
+          });
+
+          setElementNamesBySorter((prev) => {
+            const updated = { ...prev };
+
+            if (updated[sorterId]) {
+              const elementIds = [...(updated[sorterId].ids || [])];
+              const elementNames = [...(updated[sorterId].names || [])];
+
+              const oldIndex = elementIds.indexOf(Number(activeElementId));
+              const newIndex = elementIds.indexOf(Number(overElementId));
+
+              if (oldIndex !== -1 && newIndex !== -1) {
+                const movedId = elementIds[oldIndex];
+                const movedName = elementNames[oldIndex];
+
+                elementIds[oldIndex] = elementIds[newIndex];
+                elementNames[oldIndex] = elementNames[newIndex];
+                elementIds[newIndex] = movedId;
+                elementNames[newIndex] = movedName;
+
+                updated[sorterId] = {
+                  ids: elementIds,
+                  names: elementNames,
+                };
+              } else {
+                console.log("🚨 잘못된 인덱스 - 순서 변경 안됨");
+              }
+            }
+
+            return updated;
+          });
+        } catch (error) {
+          console.error("🔥 요소 이동 실패", error);
+        } finally {
+          setIsDraggingElements(false);
+        }
+      }
     }
   };
 
@@ -661,7 +816,7 @@ const SorterPage = () => {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={cards.map((c) => c.elements_name_id)}
+          items={activeId ? [activeId] : []}
           strategy={rectSortingStrategy}
         >
         <div className="sorter-page-section">
@@ -769,28 +924,30 @@ const SorterPage = () => {
                 }}
               >
                 <div className="box-section">
-                  {cards.map((card) => (
-                    <SortableItem
-                      key={card.elements_name_id}
-                      card={card}
-                      isSelected={selectedElementIds.includes(card.elements_name_id)}
-                      isEditing={
-                        isEditingElement &&
-                        editingElementIndex === card.elements_name_id
-                      }
-                      newElementName={newElementName}
-                      handleElementNameChange={handleElementNameChange}
-                      handleElementSaveName={handleElementSaveName}
-                      handleDoubleClickElementName={handleDoubleClickElementName}
-                      openContextMenu={openContextMenu}
-                      setNewElementName={setNewElementName}
-                      setNewElementPrice={setNewElementPrice}
-                      setSelectedElementId={setSelectedElementId}
-                      setSetSelectedElementAction={setSetSelectedElementAction}
-                      setToggleSelectElementAction={setToggleSelectElementAction}
-                    />
+                  {cards.map((card) =>
+                    card && card.elements_name_id ? (
+                      <SortableItem
+                        key={card.elements_name_id}
+                        card={card}
+                        isSelected={selectedElementIds.includes(card.elements_name_id)}
 
-                  ))}
+                        isEditing={
+                          isEditingElement && editingElementIndex === card.elements_name_id
+                        }
+                        newElementName={newElementName}
+                        handleElementNameChange={handleElementNameChange}
+                        handleElementSaveName={handleElementSaveName}
+                        handleDoubleClickElementName={handleDoubleClickElementName}
+                        openContextMenu={openContextMenu}
+                        setNewElementName={setNewElementName}
+                        setNewElementPrice={setNewElementPrice}
+                        setSelectedElementId={setSelectedElementId}
+                        setSetSelectedElementAction={setSetSelectedElementAction}
+                        setToggleSelectElementAction={setToggleSelectElementAction}
+                      />
+                    ) : null
+                  )}
+
 
 
                 </div>
@@ -798,11 +955,19 @@ const SorterPage = () => {
 
               <DragOverlay>
                 {activeCard ? (
-                  <div className="category-item dragging">
-                    {activeCard.elements_name}
-                  </div>
+                  typeof activeCard === 'string' && activeCard.startsWith('sorter-') ? (
+                    <div className="drag-overlay sorter-overlay">
+                      {sorterNameById|| '불러오는 중...'}
+                    </div>
+                  ) : (
+                    <div className="category-item dragging">
+                      {activeCard}
+                    </div>
+                  )
                 ) : null}
               </DragOverlay>
+
+
 
 
               <ContextMenu />
@@ -894,6 +1059,8 @@ const SorterPage = () => {
               <ElementDetailModal/>
 
             </div>
+
+
 
 
 

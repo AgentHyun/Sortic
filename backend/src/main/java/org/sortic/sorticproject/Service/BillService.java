@@ -1,9 +1,7 @@
 package org.sortic.sorticproject.Service;
 
-import org.sortic.sorticproject.Entity.Bill;
-import org.sortic.sorticproject.Entity.BillCommissionDetail;
-import org.sortic.sorticproject.Entity.BillElementDetail;
-import org.sortic.sorticproject.Entity.BillGroupResponse;
+import org.sortic.sorticproject.Entity.*;
+import org.sortic.sorticproject.Mapper.BillElementMapper;
 import org.sortic.sorticproject.Mapper.BillMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,9 @@ import java.util.List;
 public class BillService {
     @Autowired
     private BillMapper billMapper;
+    @Autowired
+    private BillElementMapper billElementMapper;
+
     // Bill 추가
     public void addBill(Bill bill) {
         billMapper.insertBill(bill);
@@ -72,4 +73,9 @@ public class BillService {
         }
         return resultList;
     }
+
+
+
+
+
 }

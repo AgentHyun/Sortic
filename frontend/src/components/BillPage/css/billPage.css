@@ -96,3 +96,6 @@
   transition: all 0.2s ease;
   background-color: #aaaaaa;
   }
+.bill-img{
+  background-color: transparent;
+}

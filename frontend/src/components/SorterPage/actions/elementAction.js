@@ -18,7 +18,7 @@ import {
   selectedElementIdsAtom, addedElementIdAtom,
   contextMenuAtom,
   newElementPriceAtom, cardsByCategoryAtom,
-  sorterCardsAtom, selectedElementIdsBySorterAtom
+  sorterCardsAtom, selectedElementIdsBySorterAtom, activeCardAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -504,4 +504,29 @@ export const fetchElementPriceByIdAction = atom(
 
   }
 
+);
+// 요소 ID로 이름을 불러오는 액션 함수
+export const fetchElementNameByIdAction = atom(
+  null,
+  async (get, set, elementId) => {
+    try {
+      // 백엔드 API 호출
+      const response = await axios.get(`http://localhost:8080/api/elements/${elementId}`);
+
+      // 성공적으로 요소 이름을 가져온 경우
+      if (response.status === 200) {
+        const elementName = response.data;
+        set(activeCardAtom, elementName);
+        // 상태 업데이트: 가져온 요소 이름을 atom에 설정
+        set(currentElementNameAtom, elementName);
+        return elementName;
+      } else {
+        console.error('잘못된 데이터 형식:', response.data);
+        set(messageAtom, { type: 'error', content: '요소 이름을 조회할 수 없습니다.' });
+      }
+    } catch (error) {
+      console.error('요소 이름 조회 실패', error);
+      set(messageAtom, { type: 'error', content: '요소 이름 조회에 실패했습니다.' });
+    }
+  }
 );

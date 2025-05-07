@@ -17,6 +17,7 @@ const SortableElement = ({ sorterId, id, name, isSelected, onClick, onContextMen
     transition,
     opacity: isDragging ? 0.5 : 1,
     cursor: 'grab',
+    marginTop : '10px',
   };
 
   return (
