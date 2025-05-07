@@ -5,13 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import Carousel from './Carousel';
 import styles from './LandingPage.module.css';
 import { useAtom } from 'jotai';
-import { isAuthenticatedAtom } from '../../Auth/AuthAtoms';
+import { isAuthenticatedAtom, authLoadingAtom } from '../../auth/AuthAtoms';
 
 const { Title, Text } = Typography;
 
 const LandingPage = () => {
     const navigate = useNavigate();
     const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+    const [authLoading] = useAtom(authLoadingAtom);
+    if (authLoading) return null;
 
     return (
         <div className={styles.container}>

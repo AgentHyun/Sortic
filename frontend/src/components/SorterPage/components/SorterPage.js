@@ -59,7 +59,7 @@ import {
     selectedSortersAtom, elementsRefreshTriggerAtom
 } from '../atoms/atoms';
 
-import { authUserAtom } from '../../../Auth/AuthAtoms';
+import { authUserAtom } from '../../../auth/AuthAtoms';
 
 import {
     fetchCategoriesAction,

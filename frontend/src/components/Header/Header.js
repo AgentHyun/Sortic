@@ -3,7 +3,7 @@ import { Layout, Menu, Badge, Avatar, Dropdown } from 'antd';
 import { BellOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { authUserAtom, isAuthenticatedAtom } from '../../Auth/AuthAtoms';
+import { authUserAtom, isAuthenticatedAtom } from '../../auth/AuthAtoms';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
-import { Link, useNavigate } from 'react-router-dom';
-import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../Auth/AuthAtoms';
-import { authService } from '../../Auth/AuthService'; // 소문자, 상대경로로 수정
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/AuthAtoms';
+import { authService } from '../../auth/AuthService'; // 소문자, 상대경로로 수정
 import styles from './css/Login.module.css';
 
 const Login = () => {
@@ -12,15 +12,22 @@ const Login = () => {
   const [formData, setFormData] = useAtom(loginFormAtom);
   const [formErrors, setFormErrors] = useAtom(loginErrorAtom);
   const navigate = useNavigate();
+  const location = useLocation();
   const [form] = Form.useForm();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      navigate(-1);
+      // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
+      if (!location.state?.from) {
+        navigate('/', { replace: true });
+        return;
+      }
+      // 보호된 페이지에서 로그인으로 온 경우 원래 페이지로
+      navigate(location.state.from.pathname, { replace: true });
     }
-  }, [authLoading, isAuthenticated, navigate]);
+  }, [authLoading, isAuthenticated, navigate, location]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -54,7 +61,14 @@ const Login = () => {
         setIsAuthenticated(true);
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
-        navigate('/');
+        
+        // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
+        if (!location.state?.from) {
+          navigate('/', { replace: true });
+          return;
+        }
+        // 보호된 페이지에서 로그인으로 온 경우 원래 페이지로
+        navigate(location.state.from.pathname, { replace: true });
       } else {
         message.error('로그인에 실패했습니다.');
       }

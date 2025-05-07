@@ -24,9 +24,13 @@ authAxios.interceptors.request.use((config) => {
 // 응답 인터셉터
 authAxios.interceptors.response.use((res) => res, (err) => {
   if (err.response?.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/login';
+    // 토큰이 만료되었거나 유효하지 않은 경우
+    const errorMessage = err.response.data?.message || err.response.data;
+    if (errorMessage === '토큰 만료' || errorMessage === '토큰 무효' || errorMessage === '토큰 누락') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
   }
   return Promise.reject(err);
 });

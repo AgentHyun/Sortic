@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import axios from 'axios';
 import { sortersAtom, messageAtom, elementNameAtom, elementsIdListAtom } from '../atoms/atoms';
 import { message } from 'antd';
-import { authUserAtom } from '../../../Auth/AuthAtoms';
+import { authUserAtom } from '../../../auth/AuthAtoms';
 
 
 

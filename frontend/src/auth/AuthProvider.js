@@ -1,73 +1,89 @@
-// frontend/src/Auth/AuthProvider.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
+// frontend/src/auth/AuthProvider.js
+import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { message } from 'antd';
 import { authService } from './AuthService';
 import { useSetAtom } from 'jotai';
-import { authUserAtom, isAuthenticatedAtom, authLoadingAtom } from './AuthAtoms';
+import {
+  authUserAtom,
+  isAuthenticatedAtom,
+  authLoadingAtom
+} from './AuthAtoms';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const location = useLocation();
 
-  // jotai 전역 상태 업데이트 함수들
   const setAuthUser = useSetAtom(authUserAtom);
   const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
   const setAuthLoading = useSetAtom(authLoadingAtom);
 
   const [localError, setLocalError] = useState(null);
+  const initializedRef = useRef(false);
 
-  /** 초기 인증 상태 확인 */
+  const publicPaths = ['/', '/login', '/signup'];
+
   useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     const initializeAuth = async () => {
-      setAuthLoading(true); // 로딩 시작
+      setAuthLoading(true);
       try {
         const result = await authService.checkAuth();
+
         if (result.success) {
           setAuthUser(result.user);
           setIsAuthenticated(true);
         } else {
           setAuthUser(null);
           setIsAuthenticated(false);
-          if (!pathname.includes('/login')) {
-            message.error('로그인이 필요합니다.');
-            navigate('/login');
+
+          if (!publicPaths.includes(location.pathname)) {
+            navigate('/login', { 
+              replace: true,
+              state: { from: location }
+            });
           }
         }
       } catch (err) {
         console.error('Auth initialization error:', err);
-        setLocalError(err.message);
+        setLocalError(err.message || '인증 초기화 실패');
         setAuthUser(null);
         setIsAuthenticated(false);
-        if (!pathname.includes('/login')) {
-          message.error('로그인이 필요합니다.');
-          navigate('/login');
+
+        if (!publicPaths.includes(location.pathname)) {
+          navigate('/login', { 
+            replace: true,
+            state: { from: location }
+          });
         }
       } finally {
-        setAuthLoading(false); // 로딩 종료
+        setAuthLoading(false);
       }
     };
 
-    // 초기 진입 시 한 번만 실행
     initializeAuth();
-  }, []); // ✅ 절대로 pathname 넣지 않음!
+  }, []);
 
   /** 로그인 */
   const login = async (userId, password, rememberMe) => {
     try {
       const result = await authService.login(userId, password, rememberMe);
+
       if (result.success) {
         setAuthUser(result.user);
         setIsAuthenticated(true);
         setLocalError(null);
-        navigate('/sorter');
+        navigate('/sorter', { replace: true });
         return { success: true };
       } else {
-        setLocalError(result.error);
-        message.error(result.error);
-        return { success: false, error: result.error };
+        const errorMsg = result.error || '로그인 실패';
+        setLocalError(errorMsg);
+        message.error(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || '로그인 중 오류가 발생했습니다.';
@@ -84,10 +100,11 @@ export const AuthProvider = ({ children }) => {
       setAuthUser(null);
       setIsAuthenticated(false);
       setLocalError(null);
-      navigate('/login');
+      navigate('/login', { replace: true });
     } catch (err) {
-      setLocalError('로그아웃 중 오류가 발생했습니다.');
-      message.error('로그아웃 중 오류가 발생했습니다.');
+      const errorMsg = '로그아웃 중 오류가 발생했습니다.';
+      setLocalError(errorMsg);
+      message.error(errorMsg);
     }
   };
 

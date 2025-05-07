@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
 import axios from "axios";
 import { useAtom } from 'jotai';
-import { authLoadingAtom, isAuthenticatedAtom } from '../../Auth/AuthAtoms';
+import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/AuthAtoms';
 
 const { Title } = Typography;
 const { Option } = Select;

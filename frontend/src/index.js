@@ -5,7 +5,7 @@ import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as JotaiProvider } from 'jotai';
 import App from './pages/App';
-import AuthProvider from './Auth/AuthProvider'; // ✅ 인증 전역 컨텍스트
+import AuthProvider from './auth/AuthProvider'; // ✅ 인증 전역 컨텍스트
 
 import './index.css';
 import './styles/theme.css';

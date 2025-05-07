@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { message, Modal, Input } from 'antd';
 
 import { addCategoryModalVisibleAtom, currentCategoryAtom,newCategoryAtom } from '../atoms/atoms';
-import { authUserAtom } from '../../../Auth/AuthAtoms';
+import { authUserAtom, authLoadingAtom } from '../../../auth/AuthAtoms';
+
 
 import {
     fetchCategoriesAction,
@@ -32,7 +33,10 @@ const SorterDefaultPage = () => {
     const navigate = useNavigate();
     const [isSelected, setIsSelected] = useState(false);
     const [authUser] = useAtom(authUserAtom);
+    const [authLoading] = useAtom(authLoadingAtom);
     const userId = authUser?.userId;
+
+    if (authLoading) return null;
 
     const handleClick = (e) => {
         e.preventDefault();
