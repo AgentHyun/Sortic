@@ -1013,9 +1013,6 @@ const SorterPage = () => {
               <ElementDetailModal/>
 
             </div>
-<<<<<<< HEAD
-          <BillPage/>
-=======
 
 
 
@@ -1134,7 +1131,6 @@ const SorterPage = () => {
               />
           </div>
 
->>>>>>> l/merge
         </div>
 
 
