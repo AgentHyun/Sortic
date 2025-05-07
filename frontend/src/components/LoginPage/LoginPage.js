@@ -142,4 +142,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login; // Login 컴포넌트를 기본 내보내기로 설정하여 다른 파일에서 쉽게 임포트할 수 있도록 합니다.

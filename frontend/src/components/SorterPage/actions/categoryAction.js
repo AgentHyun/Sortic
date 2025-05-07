@@ -51,6 +51,14 @@ export const fetchAndNumberCategoriesAction = atom(
                 set(currentCategoryNameAtom, firstCategory.category_name);
                 set(currentIndexAtom, 0);
                 await set(fetchElementsByCategoryAction, firstCategory.category_id);
+            } 
+            // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
+            else if (currentCategoryId) {
+                const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
+                if (currentIndex !== -1) {
+                    set(currentIndexAtom, currentIndex);
+                    set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
+                }
             }
             // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
             else if (currentCategoryId) {

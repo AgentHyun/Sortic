@@ -19,7 +19,6 @@ function SignupPage() {
 
   // 회원가입 처리 중 여부를 나타내는 상태값
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
 
@@ -146,7 +145,6 @@ function SignupPage() {
                     }
                   }
                 }
-
                   return Promise.resolve();
                 },
               }),

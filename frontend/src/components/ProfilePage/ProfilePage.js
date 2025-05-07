@@ -22,7 +22,6 @@ const ProfilePage = () => {
                 if (!response.ok) {
                     throw new Error('사용자 정보를 가져오는데 실패했습니다.');
                 }
-
                 const userData = await response.json();
                 setUser(userData);
                 setEditedUser(userData);
@@ -62,7 +61,6 @@ const ProfilePage = () => {
             if (!response.ok) {
                 throw new Error('프로필 업데이트 실패');
             }
-
             setUser(editedUser);
             setIsEditing(false);
             message.success('프로필이 업데이트되었습니다.');
@@ -126,6 +124,7 @@ const ProfilePage = () => {
                             >
                                 <Avatar
                                     size={120}
+
                                     src={user.profileImage}
                                     className={styles.avatar}
                                 />

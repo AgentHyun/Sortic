@@ -100,7 +100,6 @@ const App = () => {
         <Route path="/wholesale" element={<WholesalePage />} />
       </Routes>
     </AuthProvider>
-
   );
 };
 
