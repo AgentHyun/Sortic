@@ -13,8 +13,7 @@ import {
     messageAtom,
     currentIndexAtom
 } from '../atoms/atoms';
-import { authUserAtom } from '../../../auth/AuthAtoms';
-
+import { authUserAtom } from '../../../auth/authAtoms';
 import { fetchElementsByCategoryAction } from './elementAction';
 
 export const fetchAndNumberCategoriesAction = atom(

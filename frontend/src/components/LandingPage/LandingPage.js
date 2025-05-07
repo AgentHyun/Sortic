@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Carousel from './Carousel';
 import styles from './LandingPage.module.css';
 import { useAtom } from 'jotai';
-import { isAuthenticatedAtom, authLoadingAtom } from '../../auth/AuthAtoms';
+import { isAuthenticatedAtom, authLoadingAtom } from '../../auth/authAtoms';
 
 const { Title, Text } = Typography;
 

@@ -21,6 +21,11 @@ apiAxios.interceptors.request.use((config) => {
 });
 
 apiAxios.interceptors.response.use((res) => res, (err) => {
+  if (err.response?.status === 401 && window.location.pathname !== '/login') {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  }
   return Promise.reject(err);
 });
 

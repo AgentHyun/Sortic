@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { message, Modal, Input } from 'antd';
 
 import { addCategoryModalVisibleAtom, currentCategoryAtom,newCategoryAtom } from '../atoms/atoms';
-import { authUserAtom, authLoadingAtom } from '../../../auth/AuthAtoms';
+import { authUserAtom } from '../../../auth/authAtoms';
 
 
 import {
@@ -33,10 +33,8 @@ const SorterDefaultPage = () => {
     const navigate = useNavigate();
     const [isSelected, setIsSelected] = useState(false);
     const [authUser] = useAtom(authUserAtom);
-    const [authLoading] = useAtom(authLoadingAtom);
-    const userId = authUser?.userId;
 
-    if (authLoading) return null;
+    if (authUser) return null;
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -54,7 +52,7 @@ const SorterDefaultPage = () => {
             await setHandleCategoryOk(newCategory); // 새 카테고리 이름 전달
             await setfetchAndNumberCategories();
 
-            const updatedCategories = await setFetchCategories(userId);
+            const updatedCategories = await setFetchCategories(authUser.userId);
 
             const newCat = updatedCategories[updatedCategories.length - 1];
             if (!newCat?.category_id) return;

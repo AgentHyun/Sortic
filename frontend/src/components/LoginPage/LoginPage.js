@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/AuthAtoms';
-import { authService } from '../../auth/AuthService'; // 소문자, 상대경로로 수정
+import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/authAtoms';
+import { authService } from '../../auth/authService';
 import styles from './css/Login.module.css';
 
 const Login = () => {

@@ -7,7 +7,6 @@ import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // use
 import { billsAtom } from "../atom/atoms";
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
-
 import { jwtDecode } from 'jwt-decode'; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 
 const BillPage = () => {
