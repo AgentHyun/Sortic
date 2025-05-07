@@ -32,6 +32,7 @@ const BillPage = () => {
         billName: newBillName,
         userId: userId
       });
+      // 전체 Bill 다시 불러오기
       fetchBills();
       setNewBillName('');
       setIsModalVisible(false);
@@ -47,7 +48,7 @@ const BillPage = () => {
         params: { billId }
       });
       message.success("삭제 완료!");
-      fetchBills();
+      fetchBills(); // 전체 새로고침
     } catch (err) {
       message.error("삭제 실패");
     }
