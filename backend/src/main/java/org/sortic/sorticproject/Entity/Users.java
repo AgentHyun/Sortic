@@ -35,16 +35,4 @@ public class Users {
     private String profile_image;     // 프로필 이미지 URL
     private int grade;                // 구독 등급
     private Timestamp created_signup_time;  // 회원가입 시간
-
-    @Builder
-    public Users(String user_id, String password, String username, String phone, String email, String region) {
-        this.userId = user_id;
-        this.password = password;
-        this.username = username;
-        this.phone = phone;
-        this.email = email;
-        this.region = region;
-        this.grade = 0;  // 기본 구독 등급은 0
-        this.created_signup_time = new Timestamp(System.currentTimeMillis());
     }
-} 

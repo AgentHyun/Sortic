@@ -33,12 +33,4 @@ public interface AuthController {
      */
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody Users user);
-
-    /**
-     * 토큰 유효성 검사
-     * @param token JWT 토큰
-     * @return 토큰 유효성 검사 결과
-     */
-    @PostMapping("/validate")
-    ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token);
 }

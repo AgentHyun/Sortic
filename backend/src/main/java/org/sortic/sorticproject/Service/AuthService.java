@@ -15,25 +15,12 @@ public interface AuthService {
      */
     String generateJwtToken(Users user);
 
-    /**
-     * 토큰 유효성 검사
-     * @param token JWT 토큰
-     * @return 토큰 유효성 검사 결과
-     */
-    ResponseEntity<?> validateToken(String token);
 
     /**
      * 로그아웃 처리
      * @param user_id 사용자 아이디
      */
     void logout(String user_id);
-
-    /**
-     * 토큰에서 사용자 ID 추출
-     * @param token JWT 토큰
-     * @return 사용자 ID
-     */
-    String getUserIdFromToken(String token);
 
     /**
      * 회원가입 처리
@@ -55,4 +42,11 @@ public interface AuthService {
      * @return 로그인 결과 (토큰 포함)
      */
     ResponseEntity<?> login(Users user);
-} 
+
+    /**
+     +     * Refresh-Token 으로 새 Access-Token 발급
+     +     * @param refreshToken 쿠키로 전달된 Refresh-Token
+     +     * @return 새로운 Access-Token
+     +     */
+    ResponseEntity<?> refresh(String refreshToken);
+}

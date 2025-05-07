@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.sortic.sorticproject.Mapper.UserMapper">
-    
+
     <!-- 사용자 정보 저장 -->
-    <insert id="save" parameterType="Users">
-        INSERT INTO Users (user_id, password, username, phone, email, region, grade)
-        VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
+  <insert id="insertUser" parameterType="org.sortic.sorticproject.Entity.Users">
+    INSERT INTO Users (user_id, password, username, phone, email, region, grade)
+      VALUES (#{userId}, #{password}, #{username}, #{phone}, #{email}, #{region}, #{grade})
     </insert>
 
     <!-- 사용자 정보 조회 -->
     <select id="findByUserId" resultType="Users">
-        SELECT 
+        SELECT
             user_id AS userId,
             password,
             username,
@@ -39,15 +39,15 @@
     <update id="updateProfileImage">
         UPDATE Users SET profile_image = #{profileImage} WHERE user_id = #{userId}
     </update>
-    
+
     <!-- 비밀번호 업데이트 -->
     <update id="updatePassword">
         UPDATE Users SET password = #{password} WHERE user_id = #{userId}
     </update>
-    
+
     <!-- 사용자 프로필 업데이트 -->
     <update id="updateUserProfile" parameterType="Users">
-        UPDATE Users SET 
+        UPDATE Users SET
             phone = #{phone},
             email = #{email},
             region = #{region}
@@ -56,7 +56,7 @@
 
     <!-- 이메일로 사용자 조회 -->
     <select id="findByEmail" resultType="Users">
-        SELECT 
+        SELECT
             user_id,
             password,
             username,
@@ -72,7 +72,7 @@
 
     <!-- 이메일과 사용자 이름으로 사용자 조회 -->
     <select id="findByEmailAndUsername" resultType="Users">
-        SELECT 
+        SELECT
             user_id,
             password,
             username,
@@ -85,4 +85,4 @@
         FROM Users
         WHERE email = #{email} AND username = #{username}
     </select>
-</mapper> 
+</mapper>

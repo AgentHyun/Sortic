@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { message, Modal, Input } from 'antd';
 
 import { addCategoryModalVisibleAtom, currentCategoryAtom,newCategoryAtom } from '../atoms/atoms';
+import { authUserAtom, authLoadingAtom } from '../../../auth/AuthAtoms';
+
 
 import {
     fetchCategoriesAction,
@@ -30,7 +32,11 @@ const SorterDefaultPage = () => {
     const [newCategory, setNewCategory] = useAtom(newCategoryAtom);
     const navigate = useNavigate();
     const [isSelected, setIsSelected] = useState(false);
+    const [authUser] = useAtom(authUserAtom);
+    const [authLoading] = useAtom(authLoadingAtom);
+    const userId = authUser?.userId;
 
+    if (authLoading) return null;
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -48,8 +54,7 @@ const SorterDefaultPage = () => {
             await setHandleCategoryOk(newCategory); // 새 카테고리 이름 전달
             await setfetchAndNumberCategories();
 
-            const updatedCategories = await setFetchCategories('user123');
-
+            const updatedCategories = await setFetchCategories(userId);
 
             const newCat = updatedCategories[updatedCategories.length - 1];
             if (!newCat?.category_id) return;
@@ -57,7 +62,6 @@ const SorterDefaultPage = () => {
             setCurrentCategory(newCat.category_id);
             await setFetchElementsByCategory(newCat.category_id);
             await setFetchCategoryById(newCat.category_id);
-
 
             setAddCategoryModalVisible(false);  // 모달 닫기
             // 입력 초기화

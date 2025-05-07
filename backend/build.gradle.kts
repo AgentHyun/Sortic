@@ -26,40 +26,52 @@ repositories {
 }
 
 dependencies {
-    // Spring Boot Starters
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework:spring-web:6.1.4")
-    
-    // JWT
-    api("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
-    
-    // Kotlin Support
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  // ── Spring Boot Starters ───────────────────────────────────────────────
+  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework:spring-web:6.1.4")
 
-    // Database
-    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
-    runtimeOnly("mysql:mysql-connector-java:8.0.33")
+  // ── JWT ───────────────────────────────────────────────────────────────
+  api("io.jsonwebtoken:jjwt-api:0.11.5")
+  runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+  runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-    // Lombok (선택적 - Kotlin에서는 data class를 사용할 수 있음)
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+  // ── Kotlin Support ────────────────────────────────────────────────────
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    // Dev Tools
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+  // ── Database ──────────────────────────────────────────────────────────
+  implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
+  runtimeOnly("mysql:mysql-connector-java:8.0.33")
 
-    // Test Dependencies
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+  // ── MapStruct + Lombok ────────────────────────────────────────────────
+  implementation("org.mapstruct:mapstruct:1.5.5.Final")            // ❶
+  annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final") // ❶
+  compileOnly("org.projectlombok:lombok")
+  annotationProcessor("org.projectlombok:lombok")
+
+  // ── Dev Tools ────────────────────────────────────────────────────────
+  developmentOnly("org.springframework.boot:spring-boot-devtools")
+  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+  // ── Test ─────────────────────────────────────────────────────────────
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+  }
+  testImplementation("org.springframework.security:spring-security-test")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+
+
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "17"
     }
-    testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

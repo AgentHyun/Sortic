@@ -52,7 +52,7 @@ import {
   editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
   oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom, sorterNameByIdAtom
+  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom
 
 } from '../atoms/atoms';
 
@@ -82,16 +82,18 @@ import {
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
-  ,moveElementToSorterAction, getSorterNameByIdAction
+import {
+  addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
+  , moveElementToSorterAction, getSorterNameByIdAction, getElementsIdBySorterIdAction
 } from '../actions/sorterAction';
 
-import{addBillElementAction} from "../../BillPage/actions/billElementAction";
+import {addBillElementAction, addBillElementsAction, fetchBillsAction} from "../../BillPage/actions/billElementAction";
 import BillPage from "../../BillPage/components/BillPage";
 
 import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
+import WholeSale from "../../WholesalePage/WholesalePage";
 
 
 const { Title } = Typography;
@@ -179,6 +181,12 @@ const SorterPage = () => {
   const { confirm } = Modal;
   const [activeId, setActiveId] = useState(null);
 
+  //sorter-element
+  const [getElementsIdBySorterId, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
+  const [elementsIdList, setElemensIdList] = useAtom(elementsIdListAtom);
+  //bill
+  const [addBillElements, setAddBillElementsAction] = useAtom(addBillElementsAction);
+  const [fetchBills, setFetchBills]= useAtom(fetchBillsAction);
   const settings = {
     dots: true,
     infinite: true, // 무한 루프
@@ -659,12 +667,42 @@ const SorterPage = () => {
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveId(null);
-
+    const billId = over.id.replace('bill-', '');
     console.log("액티브 id " + active.id);
     console.log("오버 id " + (over?.id || "null"));
 
     if (!over || active.id === over.id) return;
 
+
+    if (typeof active.id === 'string' && active.id.startsWith('sorter-')) {
+      const sorterId = active.id.replace('sorter-', '');
+      console.log(`📦 Bill(${billId})에 Sorter(${sorterId})의 모든 요소 추가 시도`);
+
+      try {
+
+        const elementIds = await setGetElementsIdBySorterId(sorterId);
+
+
+
+        if (Array.isArray(elementIds) && elementIds.length > 0) {
+          const payload = elementIds.map((elementId) => ({
+            billId: Number(billId),
+            elementsNameId: Number(elementId),
+          }));
+
+          await setAddBillElementsAction(payload);
+          await setFetchBills('user123');
+
+          console.log("✅ 요소들 일괄 추가 완료");
+        } else {
+          console.warn(`⚠️ Sorter(${sorterId})에 요소가 없거나 데이터가 비정상적입니다.`);
+        }
+      } catch (error) {
+        console.error("🔥 요소 일괄 추가 실패", error);
+      }
+
+      return;
+    }
     // ✅ Bill에 드롭된 경우
     if (typeof over.id === 'string' && over.id.startsWith('bill-')) {
       const billId = over.id.replace('bill-', '');
@@ -679,6 +717,7 @@ const SorterPage = () => {
           billId: Number(billId),
           elementsNameId: Number(elementId),
         });
+        await setFetchBills('user123');
       } catch (error) {
         console.error("🔥 BillElement 추가 실패", error);
       }

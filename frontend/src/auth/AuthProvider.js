@@ -1,56 +1,126 @@
-import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { useNavigate } from 'react-router-dom';
+// frontend/src/auth/AuthProvider.js
+import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { message } from 'antd';
-import { isAuthenticatedAtom, authUserAtom, authLoadingAtom } from './authAtoms';
-import { getCurrentUser, validateToken } from './authService';
+import { authService } from './AuthService';
+import { useSetAtom } from 'jotai';
+import {
+  authUserAtom,
+  isAuthenticatedAtom,
+  authLoadingAtom
+} from './AuthAtoms';
 
-const AuthProvider = ({ children }) => {
-    const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-    const [, setAuthUser] = useAtom(authUserAtom);
-    const [, setAuthLoading] = useAtom(authLoadingAtom);
-    const navigate = useNavigate();
+const AuthContext = createContext(null);
 
-    useEffect(() => {
-        const initializeAuth = async () => {
-            setAuthLoading(true);
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    return;
-                }
+export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-                // 토큰 유효성 검사
-                const isValid = await validateToken();
-                if (!isValid) {
-                    throw new Error('Invalid token');
-                }
+  const setAuthUser = useSetAtom(authUserAtom);
+  const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
+  const setAuthLoading = useSetAtom(authLoadingAtom);
 
-                // 사용자 정보 복원
-                const user = getCurrentUser();
-                if (user) {
-                    setIsAuthenticated(true);
-                    setAuthUser(user);
-                }
-            } catch (error) {
-                console.error('Auth initialization error:', error);
-                // 로그인 페이지에서는 에러 메시지 표시하지 않음
-                if (!window.location.pathname.includes('/login')) {
-                    message.error('로그인이 필요합니다.');
-                }
-                localStorage.clear();
-                setIsAuthenticated(false);
-                setAuthUser(null);
-                navigate('/login');
-            } finally {
-                setAuthLoading(false);
-            }
-        };
+  const [localError, setLocalError] = useState(null);
+  const initializedRef = useRef(false);
 
-        initializeAuth();
-    }, [setIsAuthenticated, setAuthUser, setAuthLoading, navigate]);
+  const publicPaths = ['/', '/login', '/signup'];
 
-    return children;
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const initializeAuth = async () => {
+      setAuthLoading(true);
+      try {
+        const result = await authService.checkAuth();
+
+        if (result.success) {
+          setAuthUser(result.user);
+          setIsAuthenticated(true);
+        } else {
+          setAuthUser(null);
+          setIsAuthenticated(false);
+
+          if (!publicPaths.includes(location.pathname)) {
+            navigate('/login', {
+              replace: true,
+              state: { from: location }
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+        setLocalError(err.message || '인증 초기화 실패');
+        setAuthUser(null);
+        setIsAuthenticated(false);
+
+        if (!publicPaths.includes(location.pathname)) {
+          navigate('/login', {
+            replace: true,
+            state: { from: location }
+          });
+        }
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
+  /** 로그인 */
+  const login = async (userId, password, rememberMe) => {
+    try {
+      const result = await authService.login(userId, password, rememberMe);
+
+      if (result.success) {
+        setAuthUser(result.user);
+        setIsAuthenticated(true);
+        setLocalError(null);
+        navigate('/sorter', { replace: true });
+        return { success: true };
+      } else {
+        const errorMsg = result.error || '로그인 실패';
+        setLocalError(errorMsg);
+        message.error(errorMsg);
+        return { success: false, error: errorMsg };
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || '로그인 중 오류가 발생했습니다.';
+      setLocalError(errorMessage);
+      message.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  /** 로그아웃 */
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setAuthUser(null);
+      setIsAuthenticated(false);
+      setLocalError(null);
+      navigate('/login', { replace: true });
+    } catch (err) {
+      const errorMsg = '로그아웃 중 오류가 발생했습니다.';
+      setLocalError(errorMsg);
+      message.error(errorMsg);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ login, logout, error: localError }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export default AuthProvider; 
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export default AuthProvider;

@@ -1,0 +1,156 @@
+/* 전체 레이아웃 */
+.whole-sale-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4rem;
+  padding: 3rem 2rem;
+  background-color:#f9e050;
+  flex-wrap: wrap;
+  padding-bottom: 5.6rem;
+  font-family: 'Orbit', sans-serif;
+
+}
+
+.info-section {
+  background-color:  #f9e050; /* 살짝 투명한 흰색 */
+  padding: 3rem;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 400px;
+  flex-shrink: 0;
+  margin-top: 13rem;
+
+  backdrop-filter: blur(10px); /* 배경을 부드럽게 번지게 */
+  -webkit-backdrop-filter: blur(10px); /* Safari 지원 */
+
+
+  transition: all 0.3s ease;
+}
+
+
+.info-section h2 {
+  font-size: 40px;
+  color:   #9a7064 ;
+  margin-bottom: 1rem;
+}
+.domae{
+ color: #6c4941;
+}
+
+.info-section p {
+  font-size: 30px;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* 오른쪽 도매 등록 UI */
+.whole-sale-page {
+  background-color:  white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 320px;
+  width: 100%;
+  max-width: 540px;
+  height : 75vh;
+  margin-left : 10vw;
+  margin-top : 1rem;
+}
+
+/* 버튼 스타일 */
+.add-button-wholesale {
+  margin-top: 2.5rem;
+  width: 100%;
+  background-color: #555 !important;
+  color:  white !important;
+  border-color: white!important;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 14px 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  font-family: "Orbit", sans-serif;
+}
+
+.add-button-wholesale:hover {
+  background-color: #6a6969 !important;
+  transform: scale(1.03);
+}
+
+/* 버튼 영역 정리 */
+.modal-container .ant-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+/* 공통 버튼 스타일 */
+.modal-container .ant-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* 등록 버튼 */
+.modal-container .ant-btn-primary {
+  background-color: #9a7064;
+  border-color: #9a7064;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.modal-container .ant-btn-primary:hover {
+  background-color: #a67c52 !important;
+  border-color: #a67c52 !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* 취소 버튼 (기본 버튼) */
+.modal-container .ant-btn-default {
+  background-color: #f2f2f2!important;
+  color: #333!important;
+  border: 1px solid #ddd!important;
+}
+
+.modal-container .ant-btn-default:hover {
+  background-color: #dddddd !important;
+  border: 1px solid #ddd!important;
+  transform: translateY(-1px) scale(1.02);
+}
+.modal-container .ant-btn-default:hover {
+  background-color: #e6e6e6;
+}
+/* 모달 입력 필드 */
+.modal-container .domain-name-input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: #fffdf8;
+}
+
+/* 호버 효과 */
+.modal-container .domain-name-input:hover {
+  border-color: #9a7064;
+  background-color: #fffaf0;
+  box-shadow: 0 0 4px rgba(154, 112, 100, 0.3);
+}
+
+/* 포커스 효과 */
+.modal-container .domain-name-input:focus {
+  border-color: #4CAF50 !important;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+  background-color: #ffffff;
+}
