@@ -27,4 +27,14 @@ public interface BillElementMapper {
     // 특정 Element에 대한 모든 BillElement 조회
     @Select("SELECT * FROM Bill_Element WHERE Elements_name_id = #{elementsNameId}")
     List<BillElement> findBillElementsByElementId(@Param("elementsNameId") int elementsNameId);
+
+    @Insert({
+        "<script>",
+        "INSERT INTO Bill_Element (Bill_id, Elements_name_id) VALUES ",
+        "<foreach collection='billElements' item='billElement' separator=','>",
+        "(#{billElement.billId}, #{billElement.elementsNameId})",
+        "</foreach>",
+        "</script>"
+    })
+    void insertMultipleBillElements(@Param("billElements") List<BillElement> billElements);
 }

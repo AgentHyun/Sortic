@@ -39,3 +39,41 @@ export const addBillElementAction = atom(
     }
   }
 );
+export const addBillElementsAction = atom(
+  null,
+  async (get, set, billElementsData) => {
+    if (!billElementsData || billElementsData.length === 0) {
+      set(messageAtom, { type: 'warning', content: '올바른 BillElement 데이터를 입력하세요.' });
+      return;
+    }
+
+    try {
+      console.log("보낼 데이터", JSON.stringify(billElementsData, null, 2));
+      // 여러 BillElement를 한 번에 보낼 데이터로 변환합니다.
+
+      const response = await axios.post('http://localhost:8080/api/bill-elements/add-multiple', billElementsData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.data) {
+        // 새로 추가된 BillElements를 상태에 업데이트
+        set(billElementsAtom, (prevBillElements) => [
+          ...prevBillElements,
+          ...response.data, // 다중 추가된 BillElement들을 배열로 업데이트
+        ]);
+
+        set(messageAtom, { type: 'success', content: 'BillElements가 성공적으로 추가되었습니다!' });
+        message.success("BillElements 추가 성공!");
+      } else {
+        set(messageAtom, { type: 'warning', content: 'BillElements 추가 실패' });
+        message.error("BillElements 추가 실패!");
+      }
+    } catch (error) {
+      console.error('BillElements 추가 실패:', error);
+      set(messageAtom, { type: 'warning', content: 'BillElements 추가 중 오류가 발생했습니다.' });
+      message.error("오류 발생!");
+    }
+  }
+);

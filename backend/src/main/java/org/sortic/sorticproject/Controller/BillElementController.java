@@ -25,7 +25,15 @@ public class BillElementController {
             return ResponseEntity.status(500).body("요소 추가 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
-
+    @PostMapping("/add-multiple")
+    public ResponseEntity<String> addMultipleBillElements(@RequestBody List<BillElement> billElements) {
+        try {
+            billElementService.addMultipleBillElements(billElements);
+            return ResponseEntity.ok("여러 요소가 성공적으로 추가되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("여러 요소 추가 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
     // Bill_Element 삭제하기
     @DeleteMapping("/delete/{billElementId}")
     public ResponseEntity<String> deleteBillElement(@PathVariable int billElementId) {

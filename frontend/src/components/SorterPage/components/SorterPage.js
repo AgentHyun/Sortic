@@ -52,7 +52,7 @@ import {
   editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
   oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom
+  isDraggingElementsAtom, sorterNameByIdAtom
 
 } from '../atoms/atoms';
 
@@ -83,7 +83,7 @@ import {
 
 import {elementsDataAction} from "../actions/elementsDataAction";
 import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction
-  ,moveElementToSorterAction
+  ,moveElementToSorterAction, getSorterNameByIdAction
 } from '../actions/sorterAction';
 
 import{addBillElementAction} from "../../BillPage/actions/billElementAction";
@@ -163,15 +163,17 @@ const SorterPage = () => {
   const [selectedElementNamesBySorter, setSelectedElementNamesBySorter] = useAtom(selectedElementNamesBySorterAtom);
   const [elementNamesBySorter, setElementNamesBySorter] = useAtom(elementNamesBySorterAtom);
 
-
+  //sorter
   const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
   const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
   const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
   const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
   const [moveElementToSorter, setMoveElementToSorter] = useAtom(moveElementToSorterAction);
   const [, updateSorterName] = useAtom(updateSorterNameAction)
+  const[,setGetSorterNameByIdAction] = useAtom(getSorterNameByIdAction);
   const sorterRef = useRef(null);
   const [arrowHeight, setArrowHeight] = useState(0);
+  const [sorterNameById,setSorterNameById] = useAtom(sorterNameByIdAtom);
   const setUpdateSorterName = useSetAtom(updateSorterNameAction);
   const navigate = useNavigate();
   const { confirm } = Modal;
@@ -223,7 +225,9 @@ const SorterPage = () => {
 
     fetchData();
   }, [activeId, fetchElementNamById]);// activeId가 변경될 때마다 호출
-
+  useEffect(() => {
+    console.log('Active Card:', activeCard);
+  }, [activeCard]);
   const fetchElementsByCategory = async() => {
 
     try {
@@ -528,12 +532,15 @@ const SorterPage = () => {
     };
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
 
-
   useEffect(() => {
-    if (activeId) {
-      console.log("액티브", activeId);  // 상태가 업데이트된 후에 실행
+    if (typeof activeCard === 'string' && activeCard.startsWith('sorter-')) {
+      const sorterId = activeCard.replace('sorter-', '');
+      if (!isNaN(Number(sorterId))) {
+        setGetSorterNameByIdAction(Number(sorterId));
+      }
     }
-  }, [activeId]);
+  }, [activeCard, setGetSorterNameByIdAction]);
+
 
   const sectionRef = useRef(null);
   const addSorter = () =>{
@@ -629,7 +636,7 @@ const SorterPage = () => {
 
     // active.id를 문자열로 강제 변환
     const activeIdStr = String(active.id);
-
+    setActiveCard(active.id);
     let extractedId = activeIdStr;
 
     // 문자열에 '-'가 포함된 경우 split하여 두 번째 값만 추출
@@ -637,10 +644,12 @@ const SorterPage = () => {
       extractedId = activeIdStr.split('-')[1];
     }
 
+
     // 추출된 ID를 activeId로 설정
     setActiveId(extractedId);
 
-    console.log("액티브", extractedId);  // 단일 숫자일 경우 그대로, '2-3'일 경우 '3'
+
+
   };
 
 
@@ -946,11 +955,19 @@ const SorterPage = () => {
 
               <DragOverlay>
                 {activeCard ? (
-                  <div className="category-item dragging">
-                    {activeCard}
-                  </div>
+                  typeof activeCard === 'string' && activeCard.startsWith('sorter-') ? (
+                    <div className="drag-overlay sorter-overlay">
+                      {sorterNameById|| '불러오는 중...'}
+                    </div>
+                  ) : (
+                    <div className="category-item dragging">
+                      {activeCard}
+                    </div>
+                  )
                 ) : null}
               </DragOverlay>
+
+
 
 
               <ContextMenu />

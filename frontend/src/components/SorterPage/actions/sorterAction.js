@@ -6,7 +6,8 @@ import {
   elementNameAtom,
   elementsIdListAtom,
   sorterCardsAtom,
-  selectedSortersAtom
+  selectedSortersAtom,
+  sorterNameByIdAtom,
 } from '../atoms/atoms';
 import { message } from 'antd';
 export const addingElementIdsBySorterAtom = atom({});
@@ -308,3 +309,21 @@ export const getElementsIdBySorterIdAction = atom(
   }
 );
 
+export const getSorterNameByIdAction = atom(
+  null,
+  async (get, set, sorterId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/sorter/name/${sorterId}`);
+      const sorterName = response.data; // 서버에서 반환된 sorter 이름
+
+      // 가져온 sorter 이름을 상태에 설정
+      set(sorterNameByIdAtom, sorterName);
+
+
+    } catch (error) {
+      console.error('🚨 정렬자 이름 조회 실패:', error);
+      set(sorterNameByIdAtom, ''); // 실패 시 상태를 초기화
+      message.error("정렬자 이름 조회에 실패했습니다.");
+    }
+  }
+);

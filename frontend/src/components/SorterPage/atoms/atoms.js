@@ -69,19 +69,16 @@ export const newSorterNameAtom = atom('');
 export const sortersAtom = atom([]);
 export const elementNamesBySorterAtom = atom({});
 
-export const editingSorterIndexAtom = atom(null);
+
 
 // 드래그 관련 상태
-export const containerRefAtom = atom(null);
-export const isDraggingAtom = atom(false);
-export const startXAtom = atom(0);
-export const scrollLeftAtom = atom(0);
 
 export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
-export const isComittingSorterAtom = atom(false);
+export const sorterNameByIdAtom = atom('');
+
 export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");

@@ -36,4 +36,9 @@ public class BillElementService {
     public List<BillElement> getBillElementsByElementId(int elementsNameId) {
         return billElementMapper.findBillElementsByElementId(elementsNameId);
     }
+
+    public void addMultipleBillElements(List<BillElement> billElements) {
+        billElementMapper.insertMultipleBillElements(billElements);  // Mapper에서 다중 삽입 처리
+    }
+
 }
