@@ -1,6 +1,6 @@
 // src/components/ProtectedRoute.js
 import { useAtomValue } from 'jotai';
-import { isAuthenticatedAtom, authLoadingAtom } from '../auth/AuthAtoms';
+import { isAuthenticatedAtom, authLoadingAtom } from '../auth/authAtoms';
 import { Navigate, useLocation } from 'react-router-dom';
 
 /**

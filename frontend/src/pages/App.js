@@ -6,15 +6,14 @@ import { Spin } from 'antd';
 
 import SorticHeader from '../components/Header/Header';
 import LandingPage from '../components/LandingPage/LandingPage';
-import SorterPage from '../components/SorterPage/components/SorterPage';
 import LoginPage from '../components/LoginPage/LoginPage';
 import SignupPage from '../components/SignupPage/SignupPage';
-import SorterPage from '../components/SorterPage/components/SorterPage';
+import SorterPageComponent from '../components/SorterPage/components/SorterPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AuthProvider from '../auth/AuthProvider';
-import { authLoadingAtom } from '../auth/AuthAtoms';
+import { authLoadingAtom } from '../auth/authAtoms';
 import Snb from "../components/Snb/components/Snb";
 import WholesalePage from "../components/WholesalePage/WholesalePage";
 
@@ -51,7 +50,7 @@ const App = () => {
           path="/sorter"
           element={
             <ProtectedRoute>
-              <SorterPage />
+              <SorterPageComponent />
             </ProtectedRoute>
           }
         />
@@ -71,32 +70,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/sorter"
-          element={
-            <ProtectedRoute>
-              <SorterPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/sorterDefaultPage"
-          element={
-            <ProtectedRoute>
-              <SorterDefaultPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/sorter" element={<SorterPage />} />
-        <Route path="/sorterDefaultPage" element={<SorterDefaultPage />} />
         <Route path="/wholesale" element={<WholesalePage />} />
       </Routes>
     </AuthProvider>

@@ -2,13 +2,13 @@
 import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { message } from 'antd';
-import { authService } from './AuthService';
+import { authService } from './authService';
 import { useSetAtom } from 'jotai';
 import {
   authUserAtom,
   isAuthenticatedAtom,
   authLoadingAtom
-} from './AuthAtoms';
+} from './authAtoms';
 
 const AuthContext = createContext(null);
 

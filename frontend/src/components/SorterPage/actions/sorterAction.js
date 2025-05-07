@@ -10,7 +10,7 @@ import {
   sorterNameByIdAtom,
 } from '../atoms/atoms';
 import { message } from 'antd';
-import { authUserAtom } from '../../../auth/AuthAtoms';
+import { authUserAtom } from '../../../auth/authAtoms';
 
 
 
