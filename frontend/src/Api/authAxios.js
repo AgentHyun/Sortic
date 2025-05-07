@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const authAxios = axios.create({
-  baseURL: '/api/auth', // 프록시를 사용하는 경우, 백엔드 기본 경로만 사용
+  baseURL: 'http://localhost:8080/api/auth',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json'

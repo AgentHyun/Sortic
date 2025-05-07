@@ -13,18 +13,22 @@ import {
     messageAtom,
     currentIndexAtom
 } from '../atoms/atoms';
-
+import { authUserAtom } from '../../../Auth/AuthAtoms';
 
 import { fetchElementsByCategoryAction } from './elementAction';
-
 
 export const fetchAndNumberCategoriesAction = atom(
     null,
     async (get, set) => {
         try {
-            const user_id = 'user123';
+            const authUser = get(authUserAtom);
+            const user_id = authUser?.userId;
+            if (!user_id) {
+                message.error('로그인이 필요합니다.');
+                return [];
+            }
             const response = await axios.get('http://localhost:8080/api/categories/get_category', {
-                params: { user_id: user_id }
+                params: { user_id }
             });
 
             const categories = response.data;
@@ -65,6 +69,7 @@ export const fetchAndNumberCategoriesAction = atom(
         }
     }
 );
+
 export const fetchCategoriesAction = atom(
     null,
     async (get, set, user_id) => {
@@ -82,17 +87,20 @@ export const fetchCategoriesAction = atom(
     }
 );
 
-
 export const fetchCategoryByIdAction = atom(
     null,
     async (get, set, categoryId) => {
-        const user_id = 'user123';  // 예시로 'user123'을 사용했지만, 실제 값은 get() 등을 통해 가져올 수 있습니다.
-
+        const authUser = get(authUserAtom);
+        const user_id = authUser?.userId;
+        if (!user_id) {
+            message.error('로그인이 필요합니다.');
+            return;
+        }
         try {
             // API 호출 (user_id와 category_id를 params로 전달)
             const response = await axios.get('http://localhost:8080/api/categories/get_category_by_id', {
                 params: {
-                    user_id: user_id,
+                    user_id,
                     category_id: categoryId,
                 },
             });
@@ -168,20 +176,25 @@ export const fetchFirstCategoryAction = atom(
         }
     }
 );
+
 // 카테고리 추가
 export const handleCategoryOkAction = atom(
     null,
     async (get, set) => {
         const newCategory = get(newCategoryAtom);
-
         if (!newCategory) {
             message.warning('카테고리 이름을 입력하세요.');
             return;
         }
-
+        const authUser = get(authUserAtom);
+        const user_id = authUser?.userId;
+        if (!user_id) {
+            message.error('로그인이 필요합니다.');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:8080/api/categories/add_category', {
-                user_id: 'user123',
+                user_id,
                 category_name: newCategory,
             });
 
@@ -212,7 +225,6 @@ export const handleCategoryOkAction = atom(
         }
     }
 );
-
 
 export const deleteCategoryAction = atom(
     null,
@@ -263,7 +275,6 @@ export const deleteCategoryAction = atom(
         }
     }
 );
-
 
 // 카테고리 이름 변경
 export const handleCategoryNameSaveAction = atom(
@@ -359,8 +370,6 @@ export const changeCategoryAction = atom(
         set(currentCategoryNameAtom, newCategory.category_name);
     }
 );
-
-
 
 export const fetchCategoryCountAction = atom(
     null,

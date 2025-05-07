@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { Link, useNavigate } from 'react-router-dom';
-import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom } from '../../Auth/AuthAtoms';
+import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../Auth/AuthAtoms';
 import { authService } from '../../Auth/AuthService'; // 소문자, 상대경로로 수정
 import styles from './css/Login.module.css';
 
@@ -13,6 +13,14 @@ const Login = () => {
   const [formErrors, setFormErrors] = useAtom(loginErrorAtom);
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [authLoading] = useAtom(authLoadingAtom);
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(-1);
+    }
+  }, [authLoading, isAuthenticated, navigate]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -46,7 +54,7 @@ const Login = () => {
         setIsAuthenticated(true);
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
-        navigate('/sorter');
+        navigate('/');
       } else {
         message.error('로그인에 실패했습니다.');
       }
@@ -60,6 +68,10 @@ const Login = () => {
       message.error(errorMsg);
     }
   };
+
+  if (authLoading) {
+    return null; // 또는 <Spinner />
+  }
 
   return (
     <div className={styles.container}>

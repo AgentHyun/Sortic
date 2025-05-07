@@ -59,6 +59,7 @@ import {
     selectedSortersAtom, elementsRefreshTriggerAtom
 } from '../atoms/atoms';
 
+import { authUserAtom } from '../../../Auth/AuthAtoms';
 
 import {
     fetchCategoriesAction,
@@ -163,6 +164,9 @@ const SorterPage = () => {
     const navigate = useNavigate();
     const { confirm } = Modal;
 
+    const [authUser] = useAtom(authUserAtom);
+    const userId = authUser?.userId;
+
     const settings = {
         dots: true,
         infinite: true, // 무한 루프
@@ -217,7 +221,7 @@ const SorterPage = () => {
             console.log("📌 카테고리 목록 갱신 요청 완료");
 
             // ✅ 최신 카테고리 목록을 받아오고 로그 출력
-            const updatedCategories = await setFetchCategories('user123');
+            const updatedCategories = await setFetchCategories(userId);
             console.log("📋 업데이트된 카테고리 목록:", updatedCategories);
 
             // 🔴 만약 updatedCategories가 undefined라면, setFetchCategories 내부를 확인해야 함
@@ -307,7 +311,7 @@ const SorterPage = () => {
             onOk: async () => {
                 try {
                     await setDeleteCategory();
-                    const user_id = 'user123';
+                    const user_id = userId;
                     const count = await fetchCategoryCount(user_id);
                     console.log("카테고리 개수 : " + count);
                     if (count === 0) {
@@ -442,7 +446,7 @@ const SorterPage = () => {
 
     useEffect(() => {
         const checkCategoryCount = async () => {
-            const user_id = 'user123';
+            const user_id = userId;
             const count = await fetchCategoryCount(user_id);
             console.log("카테고리 개수 : " + count);
             if (count === 0) {

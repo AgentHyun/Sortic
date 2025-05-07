@@ -4,11 +4,14 @@ import { Row, Col, Typography, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Carousel from './Carousel';
 import styles from './LandingPage.module.css';
+import { useAtom } from 'jotai';
+import { isAuthenticatedAtom } from '../../Auth/AuthAtoms';
 
 const { Title, Text } = Typography;
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
     return (
         <div className={styles.container}>
@@ -22,10 +25,13 @@ const LandingPage = () => {
                         <Text className={styles.description}>
                             직관적인 Sortic! 지금 경험해보세요!
                         </Text>
-                        <div className={styles.buttons}>
-                            <Button type="primary" onClick={() => navigate('/login')}>로그인</Button>
-                          <Button style={{marginLeft: '1rem'}} onClick={() => navigate('/signup')}>회원가입</Button>
-                        </div>
+                        {/* 로그인 안 된 경우에만 버튼 노출 */}
+                        {!isAuthenticated && (
+                            <div className={styles.buttons}>
+                                <Button type="primary" onClick={() => navigate('/login')}>로그인</Button>
+                                <Button style={{marginLeft: '1rem'}} onClick={() => navigate('/signup')}>회원가입</Button>
+                            </div>
+                        )}
                     </div>
                 </Col>
 

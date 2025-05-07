@@ -2,6 +2,7 @@ import { atom } from 'jotai';
 import axios from 'axios';
 import { sortersAtom, messageAtom, elementNameAtom, elementsIdListAtom } from '../atoms/atoms';
 import { message } from 'antd';
+import { authUserAtom } from '../../../Auth/AuthAtoms';
 
 
 
@@ -17,8 +18,14 @@ const renumberSorters = (list) => {
 // 정렬자 추가
 export const addSorterAction = atom(null, async (get, set) => {
   const currentSorters = get(sortersAtom);
+  const authUser = get(authUserAtom);
+  const user_id = authUser?.userId; // 또는 authUser?.id
+  if (!user_id) {
+    set(messageAtom, { type: 'error', content: '로그인이 필요합니다.' });
+    return;
+  }
   const newSorter = {
-    user_id: 'user123', // 실제 로그인한 유저 ID로 바꿔야 함
+    user_id,
     elements_id: null,
     sorter_number: currentSorters.length + 1,
     sorter_name: `sorter${currentSorters.length + 1}`,
@@ -40,8 +47,14 @@ export const addSorterAction = atom(null, async (get, set) => {
 
 export const addSorterWithElementIdAction = atom(null, async (get, set, elementsId) => {
   const currentSorters = get(sortersAtom);
+  const authUser = get(authUserAtom);
+  const user_id = authUser?.userId; // 또는 authUser?.id
+  if (!user_id) {
+    set(messageAtom, { type: 'error', content: '로그인이 필요합니다.' });
+    return;
+  }
   const newSorter = {
-    user_id: 'user123', // 실제 로그인한 유저 ID로 바꿔야 함
+    user_id,
     elements_id: elementsId,
     sorter_number: currentSorters.length + 1,
     sorter_name: `sorter${currentSorters.length + 1}`,
@@ -100,8 +113,14 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 });
 
 export const fetchSortersByUserAction = atom(null, async (get, set) => {
+  const authUser = get(authUserAtom);
+  const user_id = authUser?.userId; // 또는 authUser?.id
+  if (!user_id) {
+    set(messageAtom, { type: 'error', content: '로그인이 필요합니다.' });
+    return;
+  }
   try {
-    const response = await axios.get(`http://localhost:8080/api/sorter/user/user123`);
+    const response = await axios.get(`http://localhost:8080/api/sorter/user/${user_id}`);
     const data = response.data;
 
 

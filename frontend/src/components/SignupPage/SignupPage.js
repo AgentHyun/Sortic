@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
 import axios from "axios";
+import { useAtom } from 'jotai';
+import { authLoadingAtom, isAuthenticatedAtom } from '../../Auth/AuthAtoms';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -17,6 +19,19 @@ function SignupPage() {
 
   // 회원가입 처리 중 여부를 나타내는 상태값
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [authLoading] = useAtom(authLoadingAtom);
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(-1);
+    }
+  }, [authLoading, isAuthenticated, navigate]);
+
+  if (authLoading) {
+    return null; // 또는 <Spinner />
+  }
 
   // 회원가입 완료 시 호출되는 핸들러
   const onFinish = async (values) => {

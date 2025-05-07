@@ -5,30 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3f2d25d8-7f6b-42a6-82b8-a0f2e4e4dc4a" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/Api/adminAxios.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.10/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.10/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.10/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.10/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.10/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.10/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.10/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.10/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.10/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.10/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Api/AxiosInstance.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Api/authAxios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Api/publicApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Api/apiAxios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Auth/AuthAtoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Auth/AuthAtoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Auth/AuthService.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Auth/AuthService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Api/authAxios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Api/authAxios.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/LandingPage/LandingPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LandingPage/LandingPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/LandingPage/LandingPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LandingPage/LandingPage.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ProtectedRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ProtectedRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LoginPage/LoginPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SignupPage/SignupPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,41 +69,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Sortic 빌드.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feature/s/login",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sdedu/Desktop/Sortic/backend/src/main/resources/mapper",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "프로젝트",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Sortic 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SorticProjectApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/s/bill&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sdedu/Desktop/Sortic/backend/src/main/resources/mapper&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;프로젝트&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "ChangesTree.GroupingKeys": [
-      "directory",
-      "module",
-      "repository"
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\sdedu\Desktop\Sortic\backend\src\main\resources\mapper" />
@@ -168,7 +157,8 @@
       <workItem from="1745495294330" duration="8030000" />
       <workItem from="1745807768716" duration="20994000" />
       <workItem from="1745886575185" duration="29687000" />
-      <workItem from="1745970571746" duration="33820000" />
+      <workItem from="1745970571746" duration="33972000" />
+      <workItem from="1746580461749" duration="9524000" />
     </task>
     <servers />
   </component>
