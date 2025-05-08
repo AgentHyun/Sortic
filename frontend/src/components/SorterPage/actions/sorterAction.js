@@ -11,10 +11,6 @@ import {
 } from '../atoms/atoms';
 import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
-
-
-
-
 export const addingElementIdsBySorterAtom = atom({});
 // 정렬자 번호 재정렬 함수
 const renumberSorters = (list) => {
@@ -29,14 +25,9 @@ const renumberSorters = (list) => {
 export const addSorterAction = atom(null, async (get, set) => {
   const currentSorters = get(sortersAtom);
   const authUser = get(authUserAtom);
-  const user_id = authUser?.userId; // 또는 authUser?.id
-  if (!user_id) {
-    set(messageAtom, { type: 'error', content: '로그인이 필요합니다.' });
-    return;
-  }
+  const userId = authUser?.userId;
   const newSorter = {
-    user_id,
-    elements_id: null,
+    user_id: userId, // 실제 로그인한 유저 ID로 바꿔야 함
     sorter_number: currentSorters.length + 1,
     sorter_name: `sorter${currentSorters.length + 1}`,
   };
@@ -46,12 +37,13 @@ export const addSorterAction = atom(null, async (get, set) => {
     const response = await axios.post('http://localhost:8080/api/sorter/add', newSorter);
 
     // 서버에서 최신 정렬자 목록을 가져와서 상태 업데이트
-    const updatedSortersResponse = await axios.get('http://localhost:8080/api/sorter/user/user123');
+    const updatedSortersResponse = await axios.get(`http://localhost:8080/api/sorter/user/${userId}`);
     const updatedSorters = updatedSortersResponse.data;
 
     set(sortersAtom, updatedSorters);
     set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
     message.success(`${newSorter.sorter_name}(이)가 추가되었습니다!`);
+
   } catch (error) {
     console.error('🚨 정렬자 추가 실패:', error);
     set(messageAtom, { type: 'error', content: '정렬자 추가에 실패했습니다.' });
@@ -99,26 +91,21 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 // 사용자별 정렬자 목록 불러오기
 export const fetchSortersByUserAction = atom(null, async (get, set) => {
   const authUser = get(authUserAtom);
-  const user_id = authUser?.userId; // 또는 authUser?.id
-  if (!user_id) {
-    set(messageAtom, { type: 'error', content: '로그인이 필요합니다.' });
-    return;
-  }
+  const userId = authUser?.userId;
+
   try {
-    const response = await axios.get(`http://localhost:8080/api/sorter/user/${user_id}`);
-    const data = response.data;
-
-    set(sortersAtom, data);
-
+    const response = await axios.get(`http://localhost:8080/api/sorter/user/${userId}`);
+    set(sortersAtom, response.data);
   } catch (error) {
     console.error('🚨 사용자 정렬자 불러오기 실패:', error);
   }
 });
 
-export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, newName }) => {
+// 정렬자 이름 수정
+export const updateSorterNameAction = atom(null, async (get, set, { oldSorterName, newName }) => {
   try {
     const response = await axios.put('http://localhost:8080/api/sorter/update', {
-      sorter_id,
+      oldSorterName,
       sorterName: newName,
     }, {
       headers: {
@@ -129,9 +116,9 @@ export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, n
     const updatedSorters = response.data; // 서버에서 반환된 새로운 sorter 리스트
     const current = get(sortersAtom);
 
-    // 기존 sortersAtom에서 sorter_id이 있는 항목들을 모두 제거하고,
+    // 기존 sortersAtom에서 oldSorterName이 있는 항목들을 모두 제거하고,
     // 서버에서 받은 새 sorter 리스트를 추가
-    const filtered = current.filter(s => s.sorter_name !== sorter_id);
+    const filtered = current.filter(s => s.sorter_name !== oldSorterName);
     const merged = [...filtered, ...updatedSorters];
 
     set(sortersAtom, merged);
@@ -147,35 +134,31 @@ export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, n
 // 다중 정렬자 삭제
 export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIdsToDelete) => {
   const currentSorters = get(sortersAtom);
+  const authUser = get(authUserAtom);
+  const userId = authUser?.userId;
 
-  // 삭제할 sorter가 없을 경우
   if (!Array.isArray(sorterIdsToDelete) || sorterIdsToDelete.length === 0) {
     message.warning("삭제할 정렬자를 선택해주세요.");
     return;
   }
 
   try {
-    // 삭제 요청
     await axios.post('http://localhost:8080/api/sorter/delete/multiple', sorterIdsToDelete);
-    console.log("삭제할 솔터" + sorterIdsToDelete);
-    // 삭제된 정렬자 이름 리스트
+
     const deletedNames = currentSorters
       .filter(s => sorterIdsToDelete.includes(s.sorter_id))
       .map(s => s.sorter_name)
       .join(', ');
 
-    // 남은 정렬자 재정렬
     const updated = currentSorters.filter(s => !sorterIdsToDelete.includes(s.sorter_id));
     const renamed = renumberSorters(updated);
     const renamedWithUserId = renamed.map(sorter => ({
       ...sorter,
-      user_id: sorter.user_id || 'user123',  // 사용자 ID를 설정
+      user_id: sorter.user_id || userId,
     }));
 
-// 재정렬 요청
     const reordered = await axios.post('http://localhost:8080/api/sorter/reorder', renamedWithUserId);
 
-    // 상태 업데이트 (삭제 후 재정렬된 데이터 반영)
     set(sortersAtom, reordered.data);
     message.success(`${deletedNames}(이)가 삭제되었습니다.`);
     set(messageAtom, { type: 'success', content: '정렬자가 삭제되었습니다.' });

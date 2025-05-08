@@ -88,6 +88,7 @@ import {
 } from '../actions/sorterAction';
 
 import {addBillElementAction, addBillElementsAction, fetchBillsAction} from "../../BillPage/actions/billElementAction";
+import { authUserAtom } from '../../../auth/authAtoms';
 import BillPage from "../../BillPage/components/BillPage";
 
 import {closestCenter} from "@dnd-kit/core";
@@ -181,6 +182,7 @@ const SorterPage = () => {
   const { confirm } = Modal;
   const [activeId, setActiveId] = useState(null);
 
+  const [authUser, setAuthUser] = useAtom(authUserAtom);
   //sorter-element
   const [getElementsIdBySorterId, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
   const [elementsIdList, setElemensIdList] = useAtom(elementsIdListAtom);
@@ -203,6 +205,7 @@ const SorterPage = () => {
       fetchElementsByCategory(currentCategory);
     }
   }, [currentCategory]);
+
 
   useEffect(() => {
     // 초기 데이터 로딩
@@ -256,7 +259,8 @@ const SorterPage = () => {
       console.log("📌 카테고리 목록 갱신 요청 완료");
 
       // ✅ 최신 카테고리 목록을 받아오고 로그 출력
-      const updatedCategories = await setFetchCategories('user123');
+      const userId = authUser?.userId;
+      const updatedCategories = await setFetchCategories(userId);
       console.log("📋 업데이트된 카테고리 목록:", updatedCategories);
 
       // 🔴 만약 updatedCategories가 undefined라면, setFetchCategories 내부를 확인해야 함
@@ -279,7 +283,7 @@ const SorterPage = () => {
         return;
       }
       setCurrentCategory(newCategory.category_id);
-
+      setAddCategoryModalVisible(false);
 
 
 
@@ -346,9 +350,10 @@ const SorterPage = () => {
       onOk: async () => {
         try {
           await setDeleteCategory();
-          const userId = 'user123';
+
+          const userId = authUser?.userId;
           const count = await fetchCategoryCount(userId);
-          console.log("카테고리 개수 : " + count);
+
           if (count === 0) {
             navigate('/sorterDefaultPage');
           }
@@ -483,34 +488,34 @@ const SorterPage = () => {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Enter') {
-        if (addElementModalVisible) {
-          e.preventDefault(); // 기본 동작 방지
-          addElement();
-        } else if (attributeModalVisible) {
-          e.preventDefault(); // 기본 제출 방지
-          handleRegister();
-        } else {
-          handleAddCategory(); // 엔터 키를 눌렀을 때 카테고리 추가
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [addElementModalVisible, addElementName, addElementCost, attributeModalVisible, keyValuePairs]);
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if (e.key === 'Enter') {
+  //       if (addElementModalVisible) {
+  //         e.preventDefault(); // 기본 동작 방지
+  //         addElement();
+  //       } else if (attributeModalVisible) {
+  //         e.preventDefault(); // 기본 제출 방지
+  //         handleRegister();
+  //       } else {
+  //         handleAddCategory(); // 엔터 키를 눌렀을 때 카테고리 추가
+  //       }
+  //     }
+  //   };
+  //
+  //   window.addEventListener('keydown', handleKeyDown);
+  //
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, [addElementModalVisible, addElementName, addElementCost, attributeModalVisible, keyValuePairs]);
 
 
   useEffect(() => {
     const checkCategoryCount = async () => {
-      const userId = 'user123'; // 실제 사용자 ID로 대체
+      const userId = authUser?.userId;// 실제 사용자 ID로 대체
       const count = await fetchCategoryCount(userId);
-      console.log("카테고리 개수 : " + count);
+
       if (count === 0) {
         navigate('/sorterDefaultPage');
       }
@@ -691,7 +696,8 @@ const SorterPage = () => {
           }));
 
           await setAddBillElementsAction(payload);
-          await setFetchBills('user123');
+          const userId = authUser?.userId;
+          await setFetchBills(userId);
 
           console.log("✅ 요소들 일괄 추가 완료");
         } else {
@@ -717,7 +723,8 @@ const SorterPage = () => {
           billId: Number(billId),
           elementsNameId: Number(elementId),
         });
-        await setFetchBills('user123');
+        const userId = authUser?.userId;
+        await setFetchBills(userId);
       } catch (error) {
         console.error("🔥 BillElement 추가 실패", error);
       }

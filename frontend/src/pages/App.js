@@ -1,4 +1,3 @@
-// src/pages/App.js
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useAtom } from 'jotai';
@@ -12,10 +11,9 @@ import SorterPageComponent from '../components/SorterPage/components/SorterPage'
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
-import AuthProvider from '../auth/AuthProvider';
+import WholesalePage from '../components/WholesalePage/WholesalePage';
+
 import { authLoadingAtom } from '../auth/authAtoms';
-import Snb from "../components/Snb/components/Snb";
-import WholesalePage from "../components/WholesalePage/WholesalePage";
 
 const App = () => {
   const [authLoading] = useAtom(authLoadingAtom);
@@ -37,15 +35,15 @@ const App = () => {
 
   // ✅ 인증 확인 후 라우팅 렌더
   return (
-    <AuthProvider>
+    <>
       <SorticHeader />
       <Routes>
-        {/* ✅ 공개 접근 가능 페이지 */}
+        {/* 공개 접근 가능 페이지 */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* ✅ 로그인 필요 페이지 */}
+        {/* 로그인 필요 페이지 */}
         <Route
           path="/sorter"
           element={
@@ -72,7 +70,7 @@ const App = () => {
         />
         <Route path="/wholesale" element={<WholesalePage />} />
       </Routes>
-    </AuthProvider>
+    </>
   );
 };
 

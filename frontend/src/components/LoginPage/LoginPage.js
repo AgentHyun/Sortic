@@ -21,7 +21,7 @@ const Login = () => {
     if (!authLoading && isAuthenticated) {
       // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
       if (!location.state?.from) {
-        navigate('/', { replace: true });
+        navigate('/sorter', { replace: true });
         return;
       }
       // 보호된 페이지에서 로그인으로 온 경우 원래 페이지로

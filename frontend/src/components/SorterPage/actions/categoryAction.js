@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { atom } from 'jotai';
+import {atom, useAtom} from 'jotai';
 import { message } from 'antd';
 import {
     categoriesAtom,
@@ -13,26 +13,33 @@ import {
     messageAtom,
     currentIndexAtom
 } from '../atoms/atoms';
-import { authUserAtom } from '../../../auth/authAtoms';
+import { userIdAtom, userAtom  } from '../../../Atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
-
+import { authUserAtom } from '../../../auth/authAtoms';
 export const fetchAndNumberCategoriesAction = atom(
     null,
     async (get, set) => {
         try {
-            const authUser = get(authUserAtom);
-            const user_id = authUser?.userId;
-            if (!user_id) {
+
+          const authUser = get(authUserAtom);
+          const userId = authUser?.userId;
+
+            if (!userId) {
                 message.error('로그인이 필요합니다.');
                 return [];
             }
             const response = await axios.get('http://localhost:8080/api/categories/get_category', {
-                params: { user_id }
+                params: { user_id: userId }
             });
 
-            const categories = response.data;
+          const categories = response.data;
+          if (!categories || categories.length === 0) {
+            console.log('카테고리 데이터가 없습니다.');
+            return [];
+          }
+          console.log("카테고리들", categories);
 
-            // 각 카테고리에 번호 부여
+          // 각 카테고리에 번호 부여
             const numberedCategories = categories.map((category, index) => ({
                 ...category,
                 number: index + 1,
@@ -50,7 +57,7 @@ export const fetchAndNumberCategoriesAction = atom(
                 set(currentCategoryNameAtom, firstCategory.category_name);
                 set(currentIndexAtom, 0);
                 await set(fetchElementsByCategoryAction, firstCategory.category_id);
-            } 
+            }
             // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
             else if (currentCategoryId) {
                 const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
@@ -80,8 +87,11 @@ export const fetchCategoriesAction = atom(
     null,
     async (get, set, user_id) => {
         try {
+          const authUser = get(authUserAtom);
+          const userId = authUser?.userId;
+
             const response = await axios.get('http://localhost:8080/api/categories/get_category', {
-                params: { user_id: user_id }
+                params: { user_id: userId }
             });
             set(categoriesAtom, response.data);
             return response.data; // ✅ 최신 카테고리 목록 반환 추가
@@ -97,9 +107,9 @@ export const fetchCategoriesAction = atom(
 export const fetchCategoryByIdAction = atom(
     null,
     async (get, set, categoryId) => {
-        const authUser = get(authUserAtom);
-        const user_id = authUser?.userId;
-        if (!user_id) {
+      const authUser = get(authUserAtom);
+      const userId = authUser?.userId;
+        if (userId) {
             message.error('로그인이 필요합니다.');
             return;
         }
@@ -107,7 +117,7 @@ export const fetchCategoryByIdAction = atom(
             // API 호출 (user_id와 category_id를 params로 전달)
             const response = await axios.get('http://localhost:8080/api/categories/get_category_by_id', {
                 params: {
-                    user_id: user_id,
+                    user_id: userId,
                     category_id: categoryId,
                 },
             });
@@ -147,8 +157,10 @@ export const fetchFirstCategoryAction = atom(
     null,
     async (get, set, user_id) => {
         try {
+          const authUser = get(authUserAtom);
+          const userId = authUser?.userId;
             const response = await axios.get('http://localhost:8080/api/categories/get_first_category', {
-                params: { user_id: user_id }
+                params: { user_id: userId }
             });
 
             if (response.data) {
@@ -157,7 +169,7 @@ export const fetchFirstCategoryAction = atom(
                 // 첫 번째 카테고리 상태 업데이트
                 set(currentCategoryAtom, firstCategory.category_id);
                 set(currentCategoryNameAtom, firstCategory.category_name);
-
+                console.log("첫번쨰 카테고리" + get(currentCategoryAtom));
                 // 카테고리 목록에 첫 번째 카테고리 추가 (중복되지 않게 처리)
                 set(categoriesAtom, (prevCategories) => {
                     // 중복 체크 후 카테고리 추가
@@ -188,21 +200,24 @@ export const handleCategoryOkAction = atom(
     null,
     async (get, set) => {
         const newCategory = get(newCategoryAtom);
+      const authUser = get(authUserAtom);
+      const userId = authUser?.userId;
+
 
         if (!newCategory) {
             message.warning('카테고리 이름을 입력하세요.');
             return;
         }
-        const authUser = get(authUserAtom);
-        const user_id = authUser?.userId;
-        if (!user_id) {
+
+
+        if (!userId) {
             message.error('로그인이 필요합니다.');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:8080/api/categories/add_category', {
-                user_id,
+              user_id: userId,
                 category_name: newCategory,
             });
 
@@ -384,8 +399,10 @@ export const fetchCategoryCountAction = atom(
     null,
     async (get, set, user_id) => {
         try {
+          const authUser = get(authUserAtom);
+          const userId = authUser?.userId;
             const response = await axios.get('http://localhost:8080/api/categories/count_categories', {
-                params: { user_id: user_id }
+                params: { user_id: userId }
             });
 
             const count = response.data;
