@@ -1,25 +1,31 @@
 #!/bin/bash
 
-echo "🔍 .gitignore에 포함된 항목 중 Git에 추적되고 있는 파일 검사 중..."
+# ck.sh (최신 정밀 버전)
+# Git에 추적되고 있지만 .gitignore에 의해 무시되어야 하는 파일/디렉토리 감지
 
-# 1. 예외 파일 목록 추출 (줄 앞 ! 제거)
-mapfile -t exceptions < <(grep '^!' .gitignore | sed 's/^!//')
+echo "\n⚡ .gitignore 무시 대상인데 Git에 추적되고 있는 항목 탐지 중...\n"
 
-# 2. 무시할 패턴만 필터링
-grep -v '^#' .gitignore | grep -v '^$' | grep -v '^!' | while read pattern; do
-  git ls-files "$pattern" 2>/dev/null | while read file; do
-    skip=false
-    for ex in "${exceptions[@]}"; do
-      if [ "$file" = "$ex" ]; then
-        skip=true
-        break
-      fi
-    done
-    if [ "$skip" = false ]; then
+found=false
+
+# Git 추적 중인 모든 파일 기준으로 확인
+git ls-files | while read file; do
+  # .gitignore에 의해 무시되는지 확인
+  if echo "$file" | git check-ignore --stdin --quiet; then
+    if [ "$found" = false ]; then
       echo "⚠️ 무시 대상인데 Git에 추적되고 있는 항목 발견:"
-      echo "$file"
+      found=true
     fi
-  done
+    echo "$file"
+  fi
+
+  # note: check-ignore는 무시 대상이 아니면 아무 것도 출력하지 않음
+
 done
 
-echo "✅ 검사 완료"
+if [ "$found" = false ]; then
+  echo "✅ 검사 완료: Git에 추적 중인 무시 대상 항목 없음"
+else
+  echo "\n❗ 위 항목들은 .gitignore에 의해 무시되어야 하지만 Git에 추적되고 있습니다."
+  echo "👉 다음 명령어로 Git 추적에서 제거하세요:"
+  echo "   git rm --cached [파일명]"
+fi
