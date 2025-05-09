@@ -30,12 +30,7 @@
   font-size: 1.5rem;
   margin-bottom: 10px;
   word-break: keep-all;
-
-  /* 🔥 아래 두 줄 삭제! */
-  /* display: flex;
-     justify-content: space-between;
-     align-items: center; */
-}
+  }
 
 .bill-add {
   width: 100%;
@@ -98,4 +93,81 @@
   }
 .bill-img{
   background-color: transparent;
+}
+
+
+
+.custom-detail-modal ul {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+  list-style-type: none;
+}
+
+.custom-detail-modal li {
+
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+.bill-element-map{
+  padding-top: 5px;
+}
+.count-controls {
+  display: flex;
+  align-items: center;
+}
+
+.count-minus,
+.count-plus {
+  cursor: pointer;
+  margin: 0 6px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+/* Minus hover: 빨간 포인트 + 연한 배경 */
+.count-minus:hover {
+  color: #ff4d4f;
+  background-color: rgba(255, 77, 79, 0.15);
+}
+
+/* Plus hover: 파란 포인트 + 연한 배경 */
+.count-plus:hover {
+  color: #1890ff;
+  background-color: rgba(24, 144, 255, 0.15);
+}
+.total-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.total-label {
+  font-size: 16px;
+  color: red;
+  flex: 1;
+  text-align: center;
+}
+
+.total-amount {
+  font-size: 20px;
+  font-weight: bold;
+  flex: 1;
+  text-align: left ;
+}
+.commission-header{
+  width: 75px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+.commission-header:hover{
+  background-color: #999999;
+
+}
+.commission-modal-add-btn{
+  width: 100%;
 }

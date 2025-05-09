@@ -1,9 +1,6 @@
 package org.sortic.sorticproject.Service;
 
-import org.sortic.sorticproject.Entity.Bill;
-import org.sortic.sorticproject.Entity.BillCommissionDetail;
-import org.sortic.sorticproject.Entity.BillElementDetail;
-import org.sortic.sorticproject.Entity.BillGroupResponse;
+import org.sortic.sorticproject.Entity.*;
 import org.sortic.sorticproject.Mapper.BillMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,5 +68,20 @@ public class BillService {
             resultList.add(response);
         }
         return resultList;
+    }
+    public List<BillElementsData> getElementsDataByNameId(int elementsNameId) {
+        return billMapper.getElementsDataByNameId(elementsNameId);
+    }
+
+    public void increaseElementCount(int billId, int elementsNameId) {
+        billMapper.increaseElementCount(billId, elementsNameId);
+    }
+
+    public void decreaseElementCount(int billId, int elementsNameId) {
+        billMapper.decreaseElementCount(billId, elementsNameId);
+    }
+
+    public void deleteElementFromBill(int billId, int elementsNameId) {
+        billMapper.deleteElementFromBill(billId, elementsNameId);
     }
 }

@@ -1,9 +1,9 @@
-package org.sortic.sorticproject.Entity;
+    package org.sortic.sorticproject.Entity;
 
-import lombok.Data;
+    import lombok.Data;
 
-@Data
-public class BillCommissionDetail {
-    private String commissionName;
-    private int commission;
-}
+    @Data
+    public class BillCommissionDetail {
+        private String commissionName;
+        private int commission;
+    }
