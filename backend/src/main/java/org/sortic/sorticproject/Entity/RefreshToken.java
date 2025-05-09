@@ -1,14 +1,12 @@
 package org.sortic.sorticproject.Entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class RefreshToken {
     private String userId;
     private String token;
-    private long   expiry;
+    private long expiry;
 }

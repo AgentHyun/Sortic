@@ -13,7 +13,7 @@ import {
     messageAtom,
     currentIndexAtom
 } from '../atoms/atoms';
-import { userIdAtom, userAtom  } from '../../../Atoms/userAtom';
+import { userIdAtom, userAtom  } from '../../../atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
 import { authUserAtom } from '../../../auth/authAtoms';
 export const fetchAndNumberCategoriesAction = atom(
