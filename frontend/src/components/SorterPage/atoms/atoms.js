@@ -89,6 +89,10 @@ export const selectedElementNamesBySorterAtom = atom({});
 export const selectedSorterIdsAtom = atom([]);
 export const selectedElementIdSorterAtom = atom(0);
 export const isDraggingElementsAtom = atom(false);
+
+
+
+
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

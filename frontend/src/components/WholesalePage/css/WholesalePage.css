@@ -135,16 +135,16 @@
   padding: 12px 16px;
   font-size: 16px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc!important;
   transition: all 0.3s ease;
   outline: none;
-  background-color: #fffdf8;
+  background-color: #fffdf8!important;
 }
 
 /* 호버 효과 */
 .modal-container .domain-name-input:hover {
-  border-color: #9a7064;
-  background-color: #fffaf0;
+  border-color: #9a7064!important;
+  background-color: #fffaf0!important;
   box-shadow: 0 0 4px rgba(154, 112, 100, 0.3);
 }
 
@@ -153,4 +153,95 @@
   border-color: #4CAF50 !important;
   box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
   background-color: #ffffff;
+}
+.wholesale-links-list {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  padding: 2.5rem;
+  border-radius: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s ease;
+  text-align: center;
+  justify-content: center;
+}
+
+.wholesale-link-item {
+  padding: 2.5rem;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(100, 100, 255, 0.05);
+  font-family: 'Orbit', sans-serif;
+  line-height: 1.6;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  height: auto;
+  min-height: 140px;
+
+  /* ✅ 은은한 테두리 */
+  border: 1px solid #e0e7ff; /* 파스텔 블루 느낌 */
+}
+
+.wholesale-link-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 20px rgba(60, 115, 232, 0.15);
+  background-color: #f5f9ff;
+
+  /* hover 시 테두리 강조 */
+  border-color: #94b3fd;
+}
+
+.wholesale-link-item::before {
+
+  position: absolute;
+  font-size: 2rem;
+  top: -10px;
+  right: -10px;
+  opacity: 0.15;
+  transform: rotate(20deg);
+}
+
+.wholesale-link-item .name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+  word-break: break-word;
+}
+
+.wholesale-link-item .code {
+  font-size: 0.95rem;
+  color: #6b7280;
+  background-color: #eef2ff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  display: inline-block;
+  word-break: break-word;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.wholesale-empty-message {
+  grid-column: 1 / -1; /* 두 칸 전체 차지 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-size: 1rem;
+  color: #888;
+  text-align: center;
 }
