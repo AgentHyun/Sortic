@@ -1,0 +1,51 @@
+.carousel {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--bg-color);
+}
+
+.carousel :global(.slick-slide) {
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+
+.slideItem {
+    width: 100%;
+    height: 400px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.slideItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* 화살표 스타일링 */
+.carousel :global(.slick-prev),
+.carousel :global(.slick-next) {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+}
+
+.carousel :global(.slick-prev:before),
+.carousel :global(.slick-next:before) {
+    font-size: 40px;
+    color: var(--text-color);
+}
+
+/* 인디케이터 스타일링 */
+.carousel :global(.slick-dots) {
+    bottom: -30px;
+}
+
+.carousel :global(.slick-dots li button:before) {
+    color: var(--text-color);
+} 

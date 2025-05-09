@@ -76,6 +76,24 @@
   transition: all 0.3s ease;
 }
 
+/* 입력창 포커스/호버 스타일 */
+.input:hover,
+.select .ant-select-selector:hover,
+.ant-input:hover,
+.ant-input-password:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+}
+
+.input:focus,
+.select .ant-select-selector:focus,
+.ant-input:focus,
+.ant-input-password:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px rgba(22, 119, 255, 0.1);
+  outline: none;
+}
+
 .input::placeholder,
 .select .ant-select-selection-placeholder,
 .ant-input::placeholder {

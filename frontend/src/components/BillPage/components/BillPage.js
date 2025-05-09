@@ -1,69 +1,119 @@
 import React, { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { Button, Input, message, Modal } from 'antd';
-import axios from 'axios';
-import { Trash, X, Plus } from 'lucide-react';
+import axios from 'axios'; // 임시 apiAxios로 변경해야함
+import apiAxios from '../../../Api/apiAxios'; // ✅ 주소 수정 axios -> authAxios
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // useSortable import 제거
 import { billsAtom } from "../atom/atoms";
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
+import { jwtDecode } from 'jwt-decode'; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
+import { authUserAtom } from '../../../auth/authAtoms';
+import { fetchBillsAction } from '../actions/billAction';
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
-  const userId = 'user123';
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newBillName, setNewBillName] = useState('');
-  const [editingBillId, setEditingBillId] = useState(false);
+  const [editingBillId, setEditingBillId] = useState(null);
   const [editedBillName, setEditedBillName] = useState('');
+  const [authUser] = useAtom(authUserAtom);
+  const [, setFetchBills] = useAtom(fetchBillsAction);
 
+  /** ✅ JWT에서 userId 추출 */
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const decoded = jwtDecode(token); // { userId: 'test', sub: ..., iat: ..., exp: ... }
+      return decoded.userId;
+    } catch (err) {
+      message.error('로그인 정보가 유효하지 않습니다.');
+      return null;
+    }
+  };
+
+  const user_id = getUserIdFromToken(); // ✅ 실제 로그인된 사용자 ID
+
+  /** 💡 모든 Bill 목록 가져오기 */
   const fetchBills = () => {
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
+    apiAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
       .then(res => setBills(res.data))
       .catch(err => console.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
-    fetchBills();
-  }, [userId]);
+    const loadBills = async () => {
+      if (!authUser?.userId) {
+        message.warning('로그인이 필요합니다.');
+        return;
+      }
+      try {
+        await setFetchBills(authUser.userId);
+      } catch (error) {
+        console.error('Bill 불러오기 실패', error);
+        message.error('Bill을 불러오는데 실패했습니다.');
+      }
+    };
+    loadBills();
+  }, [authUser, setFetchBills]);
 
+  /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
+    if (!newBillName.trim()) {
+      message.warning('Bill 이름을 입력해주세요.');
+      return;
+    }
+    if (!authUser?.userId) {
+      message.warning('로그인이 필요합니다.');
+      return;
+    }
     try {
-      const res = await axios.post(`http://localhost:8080/api/bills/addBill`, {
-        billName: newBillName,
-        userId: userId
+      await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
+        billName : newBillName,
+        user_id  : user_id
       });
-      fetchBills();
+      // 전체 Bill 다시 불러오기
+      await setFetchBills(authUser.userId);
       setNewBillName('');
       setIsModalVisible(false);
       message.success("Bill이 추가되었습니다!");
     } catch (error) {
-      console.error("Bill 추가 실패");
+      console.error("Bill 추가 실패", error);
+      message.error("Bill 추가에 실패했습니다.");
     }
   };
 
   const handleDeleteBill = async (billId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
+      await apiAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
         params: { billId }
       });
       message.success("삭제 완료!");
-      fetchBills();
-    } catch (err) {
-      message.error("삭제 실패");
+      await setFetchBills(authUser.userId);
+    } catch (error) {
+      console.error('Bill 삭제 실패', error);
+      message.error('Bill 삭제에 실패했습니다.');
     }
   };
 
-  const handleUpdateBillName = async (billId) => {
+  const handleUpdateBillName = async (billId, newName) => {
+    if (!newName.trim()) {
+      message.warning('Bill 이름을 입력해주세요.');
+      return;
+    }
     try {
-      await axios.put(`http://localhost:8080/api/bills/updateBillName`, {
+      await apiAxios.put('/bills/updateBillName', {
         billId: billId,
-        billName: editedBillName,
+        billName: newName,
       });
       message.success("Bill 이름 수정 성공");
       setEditingBillId(null);
-      fetchBills();
-    } catch (err) {
-      message.error("Bill 이름 수정 실패");
+      setEditedBillName('');
+      await setFetchBills(authUser.userId);
+    } catch (error) {
+      console.error('Bill 이름 업데이트 실패', error);
+      message.error('Bill 이름 업데이트에 실패했습니다.');
     }
   };
 

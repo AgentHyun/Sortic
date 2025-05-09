@@ -47,11 +47,11 @@
 }
 
 .textWrapper {
-  max-width: 480px;
+  max-width: 600px;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 700;
   color: var(--text-color) !important;
   margin-bottom: var(--spacing-md);

@@ -7,7 +7,7 @@
   padding: 3rem 2rem;
   background-color:#f9e050;
   flex-wrap: wrap;
-  padding-bottom: 5.6rem;
+  padding-bottom: 9rem;
   font-family: 'Orbit', sans-serif;
 
 }
@@ -17,9 +17,9 @@
   padding: 3rem;
   border-radius: 16px;
   text-align: center;
-  max-width: 400px;
+  max-width: 500px;
   flex-shrink: 0;
-  margin-top: 13rem;
+  margin-top: 10rem;
 
   backdrop-filter: blur(10px); /* 배경을 부드럽게 번지게 */
   -webkit-backdrop-filter: blur(10px); /* Safari 지원 */

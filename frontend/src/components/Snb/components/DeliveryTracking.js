@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { X } from "lucide-react";
-import axios from 'axios';
+import apiAxios from '../../../Api/apiAxios';
 import '../css/delivery.css';
 import { message, Select } from "antd";
+import image1 from '../css/deliveryImage/delivery1.png';
+import image2 from '../css/deliveryImage/delivery2.png';
+import image3 from '../css/deliveryImage/delivery3.png';
+import image4 from '../css/deliveryImage/delivery4.png';
+import image5 from '../css/deliveryImage/delivery5.png';
 const { Option } = Select;
 
 const DeliveryTracking = ({ onClose }) => {
   const [position, setPosition] = useState({ x: -800, y: -500 });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const deliveryImages = [image1, image2, image3, image4, image5];
+  const deliveryLevel = [['포탈 원소','수집 중'],['포탈 에너지',' 충전 중'],['포탈 게이트', '여는 중'],['포탈 좌표','설정 중'],['포탈 오픈!',' 상품 도착!']]
 
-  const deliveryLevel = ['원소 수집 중','에너지 충전 중','게이트 여는 중','좌표 설정 중','포탈 오픈 완료!'+'상품 도착!']
 
   const [companyList, setCompanyList] = useState([]);
   const [selectedCode, setSelectedCode] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [trackingInfo, setTrackingInfo] = useState(null);
+
+  const company = companyList.find(c => c.Code === selectedCode);
+  const companyName = company?.Name || '알 수 없음';
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -52,7 +61,7 @@ const DeliveryTracking = ({ onClose }) => {
   useEffect(() => {
     const fetchCompanyList = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/delivery/getCompanyList');
+        const res = await apiAxios.get('/delivery/getCompanyList');
         const companies = res.data.Company || res.data.company || res.data;
         setCompanyList(companies);
       } catch (err) {
@@ -73,7 +82,7 @@ const DeliveryTracking = ({ onClose }) => {
       return;
     }
     try {
-      const res = await axios.post('http://localhost:8080/api/delivery/tracking', {
+      const res = await apiAxios.post('/delivery/tracking', {
         code: selectedCode,
         invoice: invoiceNumber,
       });
@@ -141,20 +150,21 @@ const DeliveryTracking = ({ onClose }) => {
         ) : (
           <div className="portal-delivery-result">
             <div className="delivery-meta">
-              <div>운송장<p/> <strong>{trackingInfo.invoiceNo}</strong></div>
-              <div><strong>상품명:</strong> {trackingInfo.itemName}</div>
-              <div><strong>현재상태:</strong> {trackingInfo.lastStateDetail?.kind}</div>
-              <div><strong>현재위치:</strong> {trackingInfo.lastStateDetail?.where}</div>
+              <div className="delivery-top">운송장 번호</div>
+              <div className="delivery-invoiceNo"> <strong>{trackingInfo.invoiceNo}</strong></div>
+              <div className="delevery-company"><strong> {companyName}</strong></div>
             </div>
 
             <div className="delivery-progress-bar">
               {deliveryLevel.map((label, idx) => (
                 <div key={idx} className="progress-step">
                   <img
-                    src={''}
-                    className={trackingInfo.level >= idx + 1 ? 'active' : ''}
+                    src={deliveryImages[idx]}
+                    className={trackingInfo.level === idx +2 ? 'active' : ''}
                   />
-                  <div className="step-label">{label}</div>
+                  <div className="step-label">{Array.isArray(label)
+                    ? label.map((line, i) => <div key={i} className={trackingInfo.level === idx +2? 'active' : ''} >{line}</div>)
+                    : label}</div>
                 </div>
               ))}
             </div>
@@ -162,16 +172,16 @@ const DeliveryTracking = ({ onClose }) => {
             <div className="delivery-timeline">
               {Array.isArray(trackingInfo.trackingDetails) &&
                 [...trackingInfo.trackingDetails].reverse().map((step, i) => (
-                  <div key={i} className="timeline-item">
-                    <div className="dot" />
+                  <div key={i} className={`timeline-item ${i === 0 ? 'highlight' : ''}`}>
                     <div className="timeline-content">
-                      <div><strong>{step.where}</strong> | {step.kind}</div>
-                      <div className="time"> {step.timeString}</div>
+                      <div className="timeline-txt">
+                        <strong>{step.where}</strong> | <span className="status">{step.kind}</span>
+                      </div>
+                      <div className="time">{step.timeString}</div>
                     </div>
                   </div>
                 ))}
             </div>
-
             <div className="button-group">
               <button onClick={() => setTrackingInfo(null)} className="search-btn">
                 ← 다시 조회하기
