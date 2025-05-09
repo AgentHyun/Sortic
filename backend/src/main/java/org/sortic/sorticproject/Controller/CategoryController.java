@@ -38,19 +38,19 @@ public class CategoryController {
 
     // GET 방식으로 user_id로 카테고리 목록 조회
     @GetMapping("/get_category")
-    public List<Category> getCategories(@RequestParam String user_id) {
-        return categoryService.getCategoriesByUserId(user_id);
+    public List<Category> getCategories(@RequestParam String userId) {
+        return categoryService.getCategoriesByUserId(userId);
     }
 
     // 사용자 ID와 카테고리 ID로 카테고리 조회
     @GetMapping("/get_category_by_id")
-    public Category getCategoryById(@RequestParam String user_id, @RequestParam int category_id) {
-        return categoryService.getCategoryById(user_id, category_id);
+    public Category getCategoryById(@RequestParam String userId, @RequestParam int category_id) {
+        return categoryService.getCategoryById(userId, category_id);
     }
 
     @GetMapping("/get_first_category")
-    public Category getFirstCategory(@RequestParam String user_id) {
-        List<Category> categories = categoryService.getCategoriesByUserId(user_id);
+    public Category getFirstCategory(@RequestParam String userId) {
+        List<Category> categories = categoryService.getCategoriesByUserId(userId);
         if (categories != null && !categories.isEmpty()) {
             return categories.get(0); // 첫 번째 카테고리 반환
         }
@@ -61,8 +61,8 @@ public class CategoryController {
 
     // 사용자 ID로 카테고리 개수 조회
     @GetMapping("/count_categories")
-    public int countCategories(@RequestParam String user_id) {
-        return categoryService.countCategoriesByUserId(user_id);
+    public int countCategories(@RequestParam String userId) {
+        return categoryService.countCategoriesByUserId(userId);
     }
 
 

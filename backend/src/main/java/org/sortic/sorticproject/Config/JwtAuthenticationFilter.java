@@ -1,4 +1,4 @@
-package org.sortic.sorticproject.config;
+package org.sortic.sorticproject.Config;
 
 
 import org.sortic.sorticproject.security.CustomUserDetailsService;

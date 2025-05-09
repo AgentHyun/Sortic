@@ -1,77 +1,62 @@
-########################
-# ✅ 환경변수
-########################
+############################################
+# ✅ 환경 변수
+############################################
+.env
+.env.*                  # .env.local, .env.production 등 모든 변형
 
-.env                       # API 키, 비밀번호 등 민감 정보
-.env.*                    # .env.local, .env.production 등 모든 변형도 제외
+############################################
+# ✅ 운영체제 / 에디터 관련
+############################################
+.DS_Store		# macOS
+Thumbs.db	# Windows
+*.swp		# vim 임시 파일
+*.code-workspace	# VSCode 워크스페이스 파일
+.vscode/		# VSCode 설정 폴더
+.idea/		# IntelliJ 설정 폴더 (서브폴더 포함 무시)
+**/.idea/		# 모든 서브 디렉토리의 .idea 폴더도 무시
+*.iml		# IntelliJ 모듈 설정 파일
 
-########################
-# ✅ 운영체제/에디터 파일
-########################
+############################################
+# ✅ 로그 / 디버그 / 임시 파일
+############################################
+*.log
+*.tmp
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 
-.DS_Store                  # macOS에서 자동 생성되는 메타 파일
-Thumbs.db                  # Windows에서 자동 생성되는 미리보기 캐시
+############################################
+# ✅ node / frontend 관련
+############################################
+node_modules/
+**/node_modules/	# frontend/backend 등 모든 위치 포함
+dist/
+build/
+.cache/
+coverage/
+.npm/
 
-########################
-# ✅ 로그/임시파일
-########################
-
-*.log                  # 에러, 디버그 로그 등
-*.tmp                  # 임시 파일
-npm-debug.log*         # npm 에러 로그
-yarn-debug.log*        # yarn 에러 로그
-pnpm-debug.log*        # pnpm 에러 로그
-
-########################
-# ✅ IDE 설정 파일 (IntelliJ, VSCode 등)
-########################
-
-.idea/                     # IntelliJ 프로젝트 설정
-frontend/.idea/
-backend/.idea/
-*.iml                      # IntelliJ 모듈 설정
-.vscode/                   # VSCode 워크스페이스 설정
-
-########################
-# ✅ 프론트엔드 (React, Vite 등)
-########################
-
-node_modules/          # 패키지 설치 폴더 (npm/yarn)
-dist/                  # Vite, Vue 등 빌드 결과물
-build/                 # React 등 빌드 결과물
-frontend/build/        # React 등 빌드 결과물
-.cache/                # 캐시 폴더 (vite, next 등)
-coverage/              # 테스트 커버리지 결과
-.npm/                      # npm 캐시 디렉토리
-
-########################
-# ✅ 백엔드 관련
-########################
-
-.gradle/                   # Gradle 빌드 캐시
-backend/build/             # Java 빌드 결과물
-out/                       # Java 클래스 빌드 폴더
-*.class                    # 컴파일된 바이트코드
+############################################
+# ✅ backend 관련 (Java / Gradle / Maven)
+############################################
+.gradle/
+build/
+**/build/              # frontend/backend 모두 대응
+target/
+*.class
 *.jar
 *.war
 *.ear
-target/                    # Maven 등에서 사용되는 빌드 폴더
+out/
 
-########################
-# ✅ 테스트 & 리포트
-########################
-
+############################################
+# ✅ 테스트 / 리포트
+############################################
 test-output/
 reports/
-*.swp                      # vim 임시 파일
 
-########################
+############################################
 # ✅ 기타
-########################
-
-yarn.lock                  # npm을 사용할 경우 추가
-
-# VSCode settings folder
-.vscode/		# VSCode 에디터 설정 폴더 (settings.json, launch.json 등)
-*.code-workspace	# VSCode가 만드는 워크스페이스 파일
+############################################
 .cursor/
+yarn.lock              # npm 기준 사용 시 제외

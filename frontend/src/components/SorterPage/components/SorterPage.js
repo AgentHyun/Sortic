@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useAtom, useSetAtom} from 'jotai';
-import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
+import { Input, Modal, message , Button, Popover, Tooltip, Typography, Spin} from 'antd';
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 

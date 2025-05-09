@@ -2,6 +2,7 @@ package org.sortic.sorticproject.Controller;
 
 import org.sortic.sorticproject.Service.SorterElementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,31 +20,51 @@ public class SorterElementController {
 
     // 특정 Sorter에 속한 Element ID 목록 가져오기
     @GetMapping("/sorter/{sorterId}")
-    public List<Integer> getElementIdsBySorterId(@PathVariable int sorterId) {
-        return sorterElementService.getElementIdsBySorterId(sorterId);
+    public ResponseEntity<?> getElementIdsBySorterId(@PathVariable int sorterId) {
+        try {
+            List<Integer> elementIds = sorterElementService.getElementIdsBySorterId(sorterId);
+            return ResponseEntity.ok(elementIds);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("요소 ID 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     // 특정 Element ID로 요소 이름 가져오기
     @GetMapping("/element/{elementId}/name")
-    public String getElementNameById(@PathVariable int elementId) {
-        return sorterElementService.getElementNameById(elementId);
+    public ResponseEntity<?> getElementNameById(@PathVariable int elementId) {
+        try {
+            String elementName = sorterElementService.getElementNameById(elementId);
+            return ResponseEntity.ok(elementName);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("요소 이름 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     // 정렬자에 요소 추가
     @PostMapping("/add")
-    public void addElementToSorter(
+    public ResponseEntity<?> addElementToSorter(
         @RequestParam int sorterId,
         @RequestParam int elementId
     ) {
-        sorterElementService.addElementToSorter(sorterId, elementId);
+        try {
+            sorterElementService.addElementToSorter(sorterId, elementId);
+            return ResponseEntity.ok("요소가 성공적으로 추가되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("요소 추가 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     // 정렬자에서 요소 제거
     @DeleteMapping("/remove")
-    public void removeElementFromSorter(
+    public ResponseEntity<?> removeElementFromSorter(
         @RequestParam int sorterId,
         @RequestParam int elementId
     ) {
-        sorterElementService.removeElementFromSorter(sorterId, elementId);
+        try {
+            sorterElementService.removeElementFromSorter(sorterId, elementId);
+            return ResponseEntity.ok("요소가 성공적으로 제거되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("요소 제거 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 }

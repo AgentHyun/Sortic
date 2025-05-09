@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X } from "lucide-react";
-import axios from 'axios';
+import apiAxios from '../../../Api/apiAxios';
 import '../css/delivery.css';
 import { message, Select } from "antd";
 import image1 from '../css/deliveryImage/delivery1.png';
@@ -61,7 +61,7 @@ const DeliveryTracking = ({ onClose }) => {
   useEffect(() => {
     const fetchCompanyList = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/delivery/getCompanyList');
+        const res = await apiAxios.get('/delivery/getCompanyList');
         const companies = res.data.Company || res.data.company || res.data;
         setCompanyList(companies);
       } catch (err) {
@@ -82,7 +82,7 @@ const DeliveryTracking = ({ onClose }) => {
       return;
     }
     try {
-      const res = await axios.post('http://localhost:8080/api/delivery/tracking', {
+      const res = await apiAxios.post('/delivery/tracking', {
         code: selectedCode,
         invoice: invoiceNumber,
       });
