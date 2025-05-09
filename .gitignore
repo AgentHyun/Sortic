@@ -45,6 +45,7 @@ build/
 target/
 *.class
 *.jar
+!gradle/wrapper/gradle-wrapper.jar  # ✅ Gradle Wrapper는 꼭 포함해야 함
 *.war
 *.ear
 out/
