@@ -106,6 +106,10 @@ public class WholesaleService {
         }
         wholesaleMapper.insertUserWholesaleCode(userCode);
     }
+    public String findUserIdByWholesaleName(String wholesaleName) {
+        return wholesaleMapper.findUserIdByWholesaleName(wholesaleName);
+    }
+
 
 
 

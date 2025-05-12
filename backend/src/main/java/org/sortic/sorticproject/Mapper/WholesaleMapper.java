@@ -96,5 +96,12 @@ public interface WholesaleMapper {
 """)
     void insertUserWholesaleCode(UserWholesaleCode userCode);
 
+    @Select("""
+    SELECT wc.user_id
+    FROM Wholesale_Link wl
+    JOIN Wholesale_Code wc ON wl.wholesale_code_id = wc.wholesale_code_id
+    WHERE wl.wholesale_name = #{wholesaleName}
+""")
+    String findUserIdByWholesaleName(@Param("wholesaleName") String wholesaleName);
 
 }

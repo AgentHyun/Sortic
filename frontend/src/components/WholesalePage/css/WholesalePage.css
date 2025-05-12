@@ -58,6 +58,7 @@
   width: 100%;
   max-width: 540px;
   height : 75vh;
+  position: relative;
   margin-left : 10vw;
 
 }
@@ -469,21 +470,23 @@
   cursor:pointer;
 }
 .register-code-button {
-
-  margin-bottom : 0.5rem;
-  width: 100%;
-  background-color:  #1c283c !important;
-  color:  white !important;
-  border-color: white!important;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 480px;
+  background-color: #1c283c !important;
+  color: white !important;
+  border: none;
   font-size: 17px;
   font-weight: 500;
   padding: 14px 24px;
-  height : 5vh!important;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  font-family: "Orbit", sans-serif;
+  z-index: 10;
 }
+
 
 .register-code-button:hover {
   background-color: #6a6969 !important;

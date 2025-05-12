@@ -95,7 +95,7 @@ export const fetchWholesaleLinksAction = atom(null, async (get, set) => {
   try {
     const response = await axios.get(`http://localhost:8080/api/wholesale/links/${userId}`);
     set(wholesaleLinksAtom, response.data);
-    console.log("링크스 ↓↓↓");
+
     console.table(get(wholesaleLinksAtom));
 
   } catch (error) {
@@ -163,7 +163,7 @@ export const updateWholesaleMemoAction = atom(null, async (get, set, { wholesale
       wholesaleLinkId,
       wholesaleMemo,
     });
-    message.success("도매 메모가 수정되었습니다.");
+    message.success("메모가 수정되었습니다.");
     // 필요 시 리스트 갱신
     set(fetchWholesaleLinksAction);
   } catch (error) {
@@ -198,5 +198,28 @@ export const registerToUserWholesaleCodeAction = atom(null, async (get, set, who
   } catch (err) {
     console.error("🚨 유저 도매 코드 등록 실패:", err);
     message.error("유저 도매 코드 등록 중 오류가 발생했습니다.");
+  }
+});
+export const getUserIdByLinkNameAction = atom(null, async (get, set, wholesaleName) => {
+  if (!wholesaleName || wholesaleName.trim() === "") {
+    message.error("도매 링크 이름이 비어 있습니다.");
+    return null;
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/wholesale/user-id/by-link-name`, {
+      params: { name: wholesaleName },
+    });
+
+    const userId = response.data.userId;
+    return userId;
+  } catch (error) {
+    console.error("🚨 링크 이름으로 유저 ID 조회 실패:", error);
+    if (error.response?.status === 404) {
+      message.warning("해당 이름의 링크에 해당하는 유저를 찾을 수 없습니다.");
+    } else {
+      message.error("유저 ID 조회 중 오류가 발생했습니다.");
+    }
+    return null;
   }
 });

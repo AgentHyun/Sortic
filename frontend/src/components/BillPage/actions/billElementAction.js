@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { atom } from 'jotai';
 import { message } from 'antd';
-import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms' // 적절한 atom을 가져옵니다.
+import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms'
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // 적절한 atom을 가져옵니다.
 
 // BillElement 추가
 export const addBillElementAction = atom(
@@ -79,8 +80,9 @@ export const addBillElementsAction = atom(
 );
 export const fetchBillsAction = atom(
   null,
-  async (_get, set, userId) => {
+  async (get, set, userId) => {
     try {
+      userId = get(selectedUserIdAtom);
       const res = await axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`);
       set(billsAtom, res.data);
     } catch (err) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useAtom, useSetAtom} from 'jotai';
-import { Input, Modal, message , Button, Popover, Tooltip, Typography} from 'antd';
+import {Input, Modal, message, Dropdown, Button, Popover, Tooltip, Typography, Menu} from 'antd';
 import {  DeleteOutlined, PlusOutlined, } from "@ant-design/icons";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
@@ -15,7 +15,6 @@ import ElementDetailModal from "./ElementDetailModal"
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../css/SorterPage/Sorter.css";
-import "../css/SorterPage/Card.css";
 import "../css/SorterPage/SorterPage.css";
 import "../css/SorterPage/Category.css";
 import "../css/SorterPage/Element.css";
@@ -52,7 +51,7 @@ import {
   editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
   oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom
+  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom, selectedUserIdAtom, selectedUserNameAtom
 
 } from '../atoms/atoms';
 
@@ -95,6 +94,8 @@ import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import WholeSale from "../../WholesalePage/WholesalePage";
+import {fetchWholesaleLinksAction, getUserIdByLinkNameAction} from "../../WholesalePage/action/wholesaleAction";
+import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 
 
 const { Title } = Typography;
@@ -189,16 +190,16 @@ const SorterPage = () => {
   //bill
   const [addBillElements, setAddBillElementsAction] = useAtom(addBillElementsAction);
   const [fetchBills, setFetchBills]= useAtom(fetchBillsAction);
-  const settings = {
-    dots: true,
-    infinite: true, // 무한 루프
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-    centerMode: true,
-    centerPadding: '40px'
-  };
+
+  // 도매
+
+  const [, fetchLinks] = useAtom(fetchWholesaleLinksAction);
+  const [links] = useAtom(wholesaleLinksAtom);
+  const [, getUserIdByLinkName] = useAtom(getUserIdByLinkNameAction);
+
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
   useEffect(() => {
     if (currentCategory !== null) {
       console.log("🚀 currentCategory가 변경됨ㅋㅋ, 새로운 요소 가져오기:", currentCategory);
@@ -216,12 +217,9 @@ const SorterPage = () => {
       const height = sorterRef.current.offsetHeight;
       setArrowHeight(height * 0.85);
     }
-
     setFetchSortersByUser();
 
-
-
-  }, []);
+  }, [selectedUserId]);
   useEffect(() => {
     const fetchData = async () => {
       if (activeId) {
@@ -353,10 +351,10 @@ const SorterPage = () => {
 
           const userId = authUser?.userId;
           const count = await fetchCategoryCount(userId);
-
           if (count === 0) {
-            navigate('/sorterDefaultPage');
+            navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
           }
+
         } catch (error) {
           console.error('카테고리 삭제 에러:', error);
           message.error('카테고리 삭제에 실패했습니다.');
@@ -485,40 +483,14 @@ const SorterPage = () => {
 
 
 
-
-////////////////////////////////////////////////////////////////////////////////
-
-  // useEffect(() => {
-  //   const handleKeyDown = (e) => {
-  //     if (e.key === 'Enter') {
-  //       if (addElementModalVisible) {
-  //         e.preventDefault(); // 기본 동작 방지
-  //         addElement();
-  //       } else if (attributeModalVisible) {
-  //         e.preventDefault(); // 기본 제출 방지
-  //         handleRegister();
-  //       } else {
-  //         handleAddCategory(); // 엔터 키를 눌렀을 때 카테고리 추가
-  //       }
-  //     }
-  //   };
-  //
-  //   window.addEventListener('keydown', handleKeyDown);
-  //
-  //   return () => {
-  //     window.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, [addElementModalVisible, addElementName, addElementCost, attributeModalVisible, keyValuePairs]);
-
-
   useEffect(() => {
     const checkCategoryCount = async () => {
-      const userId = authUser?.userId;// 실제 사용자 ID로 대체
+      const userId =  selectedUserId;// 실제 사용자 ID로 대체
       const count = await fetchCategoryCount(userId);
 
-      if (count === 0) {
-        navigate('/sorterDefaultPage');
-      }
+      // if (count === 0) {
+      //   navigate('/sorterDefaultPage');
+      // }
     };
 
     checkCategoryCount();
@@ -696,8 +668,8 @@ const SorterPage = () => {
           }));
 
           await setAddBillElementsAction(payload);
-          const userId = authUser?.userId;
-          await setFetchBills(userId);
+          const userId =   selectedUserId;
+          await setFetchBills(selectedUserId);
 
           console.log("✅ 요소들 일괄 추가 완료");
         } else {
@@ -723,7 +695,7 @@ const SorterPage = () => {
           billId: Number(billId),
           elementsNameId: Number(elementId),
         });
-        const userId = authUser?.userId;
+        const userId = selectedUserId;
         await setFetchBills(userId);
       } catch (error) {
         console.error("🔥 BillElement 추가 실패", error);
@@ -852,9 +824,43 @@ const SorterPage = () => {
     }
   };
 
+  const handleLinkClick = async () => {
+    await fetchLinks(); // 링크 조회
+    setDropdownVisible(true); // 드롭다운 열기
+  };
+  const handleMenuClick = async (linkName) => {
 
+
+    const userId = await getUserIdByLinkName(linkName);
+    setSelectedUserName(linkName);
+
+    if (userId) {
+      setSelectedUserId(userId); // ✅ authUser.userId 대신 사용 가능
+
+    }
+    setfetchAndNumberCategories();
+
+  };
+
+
+  const menu = (
+    <Menu>
+      {links.length > 0 ? (
+        links.map((link, index) => (
+          <Menu.Item key={index} onClick={() => handleMenuClick(link.wholesaleName)}>
+            {link.wholesaleName || '이름 없음'}
+          </Menu.Item>
+        ))
+      ) : (
+        <Menu.Item disabled>도매 링크가 없습니다</Menu.Item>
+      )}
+    </Menu>
+  );
   return (
     <div>
+
+
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -867,6 +873,17 @@ const SorterPage = () => {
         >
         <div className="sorter-page-section">
 
+          <Dropdown
+            overlay={menu}
+            trigger={['click']}
+            open={dropdownVisible}
+            onOpenChange={(visible) => setDropdownVisible(visible)}
+            overlayClassName="modern-dropdown"
+            placement="bottomCenter"           >
+            <Button className="cta" onClick={handleLinkClick}>
+              {selectedUserName ? selectedUserName : 'Link'}
+            </Button>
+          </Dropdown>
 
           <div className={"sorter-header-section"}>
 
@@ -944,7 +961,7 @@ const SorterPage = () => {
                         />
                       ) : (
                         <span className={`category-name-title ${animationClass}`}>
-            {currentCategoryName || '로딩중..'}
+            {currentCategoryName || ''}
           </span>
                       )}
                     </div>

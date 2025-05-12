@@ -150,6 +150,21 @@ public class WholesaleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("등록 중 오류 발생");
         }
     }
+    @GetMapping("/user-id/by-link-name")
+    public ResponseEntity<?> getUserIdByLinkName(@RequestParam String name) {
+        try {
+            String userId = wholesaleService.findUserIdByWholesaleName(name);
+            if (userId == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "해당 이름의 도매 링크에 대한 유저 ID를 찾을 수 없습니다."));
+            }
+            return ResponseEntity.ok(Collections.singletonMap("userId", userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
+        }
+    }
+
 
 
 }
