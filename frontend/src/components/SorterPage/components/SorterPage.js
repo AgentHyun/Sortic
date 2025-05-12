@@ -213,10 +213,7 @@ const SorterPage = () => {
     setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
 
     // 화살표 높이 설정
-    if (sorterRef.current) {
-      const height = sorterRef.current.offsetHeight;
-      setArrowHeight(height * 0.85);
-    }
+
     setFetchSortersByUser();
 
   }, [selectedUserId]);
@@ -504,7 +501,7 @@ const SorterPage = () => {
     const observer = new ResizeObserver(entries => {
       if (entries[0]) {
         const height = entries[0].contentRect.height;
-        setArrowHeight(height * 0.95);
+
       }
     });
 
@@ -900,7 +897,7 @@ const SorterPage = () => {
                     gap: '0px',
                     padding: '8px',
                     width: 'auto',
-                    height: `${arrowHeight}px`,
+
                   }}
                 >
                   <ChevronLeft
@@ -935,11 +932,9 @@ const SorterPage = () => {
               <div className='sorter-header'>
 
 
-                {/* + 추가 버튼 */}
-                <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
-                  <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
-                    +
-                  </button>
+                {/* - 삭제 버튼 */}
+                <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
+                  <button className="category-btn-delete" onClick={handleDeleteCategory}>-</button>
                 </Tooltip>
 
                 {/* 카테고리 제목 */}
@@ -967,11 +962,13 @@ const SorterPage = () => {
                     </div>
                   </div>
                 </Popover>
-
-                {/* - 삭제 버튼 */}
-                <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
-                  <button className="category-btn" onClick={handleDeleteCategory}>-</button>
+                {/* + 추가 버튼 */}
+                <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
+                  <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
+                    +
+                  </button>
                 </Tooltip>
+
 
 
               </div>
@@ -1139,7 +1136,7 @@ const SorterPage = () => {
                     gap: '0px',
                     padding: '8px',
                     width: 'auto',
-                    height: `${arrowHeight}px`,
+
                   }}
                 >
                   <div
@@ -1176,7 +1173,13 @@ const SorterPage = () => {
                      overlayClassName="custom-tooltip"
                      placement="top"
                      arrow={true}>
-              <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
+              <button
+                type="text"
+                className="element-btn-delete"
+                onClick={handleDeleteSelectedElements}
+              >
+                <Trash className = "trash" size={20} />
+              </button>
             </Tooltip>
             <SwitchTransition mode="out-in">
               <CSSTransition
@@ -1186,6 +1189,8 @@ const SorterPage = () => {
               >
                 {selectedSorters.length > 0 ? (
                   <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
+
+
                     <button
                       className="delete-selected-btn show-delete-btn"
                       onClick={multiDeleteSorters}
@@ -1214,13 +1219,9 @@ const SorterPage = () => {
                      overlayClassName="custom-tooltip-red"
                      placement="top"
                      arrow={true}>
-              <button
-                type="text"
-                className="element-btn-delete"
-                onClick={handleDeleteSelectedElements}
-              >
-                <Trash className = "trash" size={20} />
-              </button>
+
+              <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
+
             </Tooltip>
           </div>
 

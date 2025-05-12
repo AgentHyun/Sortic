@@ -10,13 +10,14 @@ body {
     margin-top: 20px;
     padding: 20px;
     width: 70vw;
-    background-color: white; /* 배경색 흰색 */
+    background-color: #E0F8E0; /* 배경색 흰색 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 34vh; /* 고정 높이 */
+
+    height: 30vh; /* 고정 높이 */
     box-sizing: border-box; /* 패딩 포함된 박스 크기 */
 }
 /* Sorter Header */
@@ -26,8 +27,8 @@ body {
     align-items: center;
     margin-bottom: 20px;
     margin-right: 12px;
-
-    width: 96%;
+    height : 4.3vh;
+    width: 106%;
 
 }
 
@@ -163,13 +164,13 @@ body {
 
 .modern-dropdown .ant-dropdown-menu-item:hover {
   background-color: #f5f5f5!important;
-  color: #1c283c!important;
+  color: #404040!important;
   cursor: pointer;
 }
 
 /* 비활성 항목 */
 .modern-dropdown .ant-dropdown-menu-item-disabled {
-  color: #aaa !important;
+  color: #404040 !important;
   cursor: not-allowed;
   background-color: transparent !important;
 }
