@@ -1,23 +1,10 @@
 package org.sortic.sorticproject.security.token;
 
-import lombok.RequiredArgsConstructor;
-import org.sortic.sorticproject.Mapper.RefreshTokenMapper;
-import org.springframework.stereotype.Service;
-
-@Service
-@RequiredArgsConstructor
-public class RefreshTokenService {
-    private final RefreshTokenMapper refreshTokenMapper;
-
-    public void save(String userId, String token, long expiry) {
-        refreshTokenMapper.save(userId, token, expiry);
-    }
-
-    public String find(String userId) {
-        return refreshTokenMapper.find(userId);
-    }
-
-    public void delete(String userId) {
-        refreshTokenMapper.delete(userId);
-    }
+/**
+ * 리프레시 토큰 저장/조회/삭제 기능 인터페이스
+ */
+public interface RefreshTokenService {
+    void save(String userId, String token, long expiry);
+    String find(String userId);
+    void delete(String userId);
 }

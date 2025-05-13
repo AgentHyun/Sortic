@@ -5,6 +5,9 @@ import org.sortic.sorticproject.Entity.RefreshToken;
 import org.sortic.sorticproject.Mapper.RefreshTokenMapper;
 import org.springframework.stereotype.Service;
 
+/**
+ * RefreshTokenService 구현체
+ */
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
