@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 /**
  * 웹 관련 설정을 담당하는 설정 클래스
@@ -11,11 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration // 스프링의 설정 클래스임을 나타내는 어노테이션
 public class WebConfig implements WebMvcConfigurer {
-    
+
     /**
      * CORS(Cross-Origin Resource Sharing) 설정을 정의하는 메서드
      * 프론트엔드와 백엔드 간의 교차 출처 리소스 공유를 허용
-     * 
+     *
      * @param registry CORS 설정을 등록하기 위한 CorsRegistry 객체
      */
     @Override
@@ -33,9 +34,21 @@ public class WebConfig implements WebMvcConfigurer {
         // 프로필 이미지 서빙 설정
         registry.addResourceHandler("/profile-images/**")
                 .addResourceLocations("file:uploads/profile-images/");
-        
+
         // 기본 프로필 이미지 서빙 설정
         registry.addResourceHandler("/public/**")
                 .addResourceLocations("classpath:/public/");
     }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // "/" 또는 "/about" 같은 1-depth 경로에 대해 index.html 반환
+        registry.addViewController("/{spring:[a-zA-Z0-9-_]+}")
+            .setViewName("forward:/index.html");
+
+        // "/about/us", "/dashboard/123" 같은 2-depth 이상 경로에 대해 index.html 반환
+        registry.addViewController("/{spring:^(?!api|profile-images|public).*$}/**")
+            .setViewName("forward:/index.html");
+    }
+
 }

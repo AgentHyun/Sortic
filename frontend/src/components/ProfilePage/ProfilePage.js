@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { Button, message, Avatar, Input, Tabs } from 'antd';
 import { CameraOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
-import { userAtom } from '../../Atoms/userAtom';
+import { userAtom } from '../../atoms/userAtom';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {

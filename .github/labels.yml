@@ -1,0 +1,42 @@
+- color: b392f0
+  description: 백엔드 관련 이슈
+  name: backend
+- color: f9d02f
+  description: 외부 요인으로 진행 불가
+  name: blocked
+- color: d73a4a
+  description: 기능 오류 또는 예외 발생
+  name: bug
+- color: 1d76db
+  description: 문서, 설정, 비기능성 작업
+  name: chore
+- color: ffffff
+  description: 결정되지 않은 논의용 이슈
+  name: discussion
+- color: 0075ca
+  description: 문서 관련 작업
+  name: documentation
+- color: cfd3d7
+  description: 중복 이슈
+  name: duplicate
+- color: a2eeef
+  description: 새로운 기능 요청
+  name: enhancement
+- color: cfd3d7
+  description: 프론트엔드 관련 이슈
+  name: frontend
+- color: e4e669
+  description: 형식 오류, 조건 불충족 등
+  name: invalid
+- color: cc317c
+  description: 질문/확인이 필요한 이슈
+  name: question
+- color: fbca04
+  description: 구조 개선, 리팩토링
+  name: refactor
+- color: 8c564b
+  description: 일반 작업 항목
+  name: task
+- color: ffffff
+  description: wontfix
+  name: wontfix
