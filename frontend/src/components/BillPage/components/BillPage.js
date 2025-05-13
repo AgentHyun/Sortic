@@ -19,9 +19,10 @@ const BillPage = () => {
   const [commissionModalVisible, setCommissionModalVisible] = useState(false);
   const [commissionAddModalVisible,setCommissionAddModalVisible] = useState(false);
   const [commissionName,setCommissionName] = useState("");
-  const [commissionValue,setCommissionValue] = useState(0);
+  const [commissionValue,setCommissionValue] = useState('');
   const [selectedBillId, setSelectedBillId] = useState(null);
-
+  const [selectedBillForCommission, setSelectedBillForCommission] = useState(null);
+  const [selectedCommissionIds, setSelectedCommissionIds] = useState([]);
   const fetchBills = () => {
     axios
       .get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
@@ -129,6 +130,7 @@ const BillPage = () => {
         commission: Number(commissionValue)
       });
       message.success('수수료 추가 완료!');
+      setSelectedBillId('')
       setCommissionAddModalVisible(false);
       setCommissionName('');
       setCommissionValue('');
@@ -136,6 +138,23 @@ const BillPage = () => {
     } catch (err) {
       console.error('수수료 추가 실패', err);
       message.error('수수료 추가 실패');
+    }
+  };
+  const handleDeleteSelectedCommissions = async () => {
+    try {
+      await axios.delete("http://localhost:8080/api/bills/deleteSelectedCommissions", {
+        data: {
+          billId: selectedBillId,
+          commissionIds: selectedCommissionIds,
+        },
+      });
+      message.success("선택 수수료 삭제 완료!");
+      setCommissionModalVisible(false);
+      setSelectedCommissionIds([]);
+      fetchBills();
+    } catch (err) {
+      console.error("수수료 삭제 실패", err);
+      message.error("삭제 실패");
     }
   };
 
@@ -226,14 +245,14 @@ const BillPage = () => {
                  onClick={(e)=>{
                    e.stopPropagation();
                    setSelectedBillId(bill.billId);
+                   setSelectedBillForCommission(bill);
                    setCommissionModalVisible(true);
-
                  }}
             >🧾 수수료</div>
             <ul>
               {Array.isArray(bill.commissions) &&
                 bill.commissions.map((c, idx) => (
-                  <li key={idx}>
+                  <li key={idx} className="bill-commission-map">
                     {c.commissionName} - {c.commission}원
                   </li>
                 ))}
@@ -257,6 +276,7 @@ const BillPage = () => {
         onCancel={() => setIsModalVisible(false)}
         okText="추가"
         cancelText="취소"
+        closable={false}
       >
         <Input
           placeholder="Bill 이름을 입력하세요"
@@ -269,6 +289,7 @@ const BillPage = () => {
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
+        closable={false}
         className="custom-detail-modal"
       >
         {selectedBillDetails.map((el, idx) => (
@@ -291,28 +312,79 @@ const BillPage = () => {
       <Modal
         title="수수료"
         open={commissionModalVisible}
-        onCancel={() => setCommissionModalVisible(false)}
+        onCancel={() => {
+          setCommissionModalVisible(false);
+          setSelectedCommissionIds([]);
+          setSelectedBillForCommission(null);
+        }}
+        closable={false}
         footer={null}
         className="commission-modal"
       >
-        <Button className="commission-modal-add-btn"
-          onClick={()=>{
+        {selectedCommissionIds.length > 0 && (
+          <Button
+            danger
+            onClick={handleDeleteSelectedCommissions}
+            style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}
+          >
+            선택 삭제
+          </Button>
+        )}
+
+        <div className="commission-card-container">
+          {selectedBillForCommission?.commissions?.map((c) => {
+            const id = c.billCommissionId; // 진짜 DB에 있는 고유 ID
+
+            return (
+              <div
+                key={id}
+                className={`commission-card ${selectedCommissionIds.includes(id) ? "selected" : ""}`}
+                onClick={() => {
+                  setSelectedCommissionIds((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((v) => v !== id) // 선택 해제
+                      : [...prev, id]               // 선택 추가
+                  );
+                }}
+              >
+                <strong>{c.commissionName}</strong>
+                <br />
+                {c.commission}원
+              </div>
+            );
+          })}
+        </div>
+
+
+        {/* 추가 버튼 */}
+        <Button
+          className="commission-modal-add-btn"
+          onClick={() => {
             setCommissionModalVisible(false);
             setCommissionAddModalVisible(true);
           }}
-        ><Plus/></Button>
-
+          style={{ marginTop: "16px" }}
+        >
+          <Plus /> 수수료 추가
+        </Button>
       </Modal>
+
       <Modal
         title="수수료 추가"
         open={commissionAddModalVisible}
         onCancel={()=>setCommissionAddModalVisible(false)}
-        onOk={handleAddCommission}
+        onOk={() => {
+          if (!commissionName || commissionValue === "") {
+            message.warning("수수료 이름과 값을 입력해주세요");
+            return;
+          }
+          handleAddCommission();
+        }}
         okText="추가"
+        closable={false}
       >
-        <Input placeholder="수수료 이름" onChange={(e)=>setCommissionName(e.target.value)}></Input>
-        <Input type="number" placeholder="값" onChange={(e)=>setCommissionValue(e.target.value)}></Input>
-
+        <Input placeholder="수수료 이름" value={commissionName}  onChange={(e)=>setCommissionName(e.target.value)}></Input>
+        <Input type="number" placeholder="값" value={commissionValue} onChange={(e)=>setCommissionValue(e.target.value)}></Input>
       </Modal>
     </div>
   );

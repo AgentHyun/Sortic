@@ -84,4 +84,11 @@ public class BillService {
     public void deleteElementFromBill(int billId, int elementsNameId) {
         billMapper.deleteElementFromBill(billId, elementsNameId);
     }
+
+    public void addCommission(BillCommissionDetail billCommissionDetail) {
+        billMapper.insertCommission(billCommissionDetail);
+    }
+    public void deleteSelectedCommissions(int billId, List<Integer> commissionIds) {
+        billMapper.deleteSelectedCommissions(billId, commissionIds);
+    }
 }

@@ -46,7 +46,7 @@ public interface BillMapper {
 
 
     @Select("""
-        SELECT commission_name AS commissionName, commission
+        SELECT bill_commission_id AS billCommissionId , commission_name AS commissionName, commission
         FROM Bill_Commission
         WHERE Bill_id = #{billId}
     """)
@@ -81,4 +81,20 @@ public interface BillMapper {
 
     @Delete("DELETE FROM Bill_Element WHERE bill_id = #{billId} AND elements_name_id = #{elementsNameId}")
     void deleteElementFromBill(@Param("billId") int billId, @Param("elementsNameId") int elementsNameId);
+
+    @Insert("""
+    insert into bill_commission (bill_id,commission_name,commission) values (#{billId},#{commissionName},#{commission})
+""")void insertCommission (BillCommissionDetail commission);
+
+    @Delete({
+        "<script>",
+        "DELETE FROM bill_commission",
+        "WHERE bill_id = #{billId}",
+        "AND bill_commission_id IN",
+        "<foreach item='id' collection='commissionIds' open='(' separator=',' close=')'>",
+        "#{id}",
+        "</foreach>",
+        "</script>"
+    })
+    void deleteSelectedCommissions(@Param("billId") int billId, @Param("commissionIds") List<Integer> commissionIds);
 }

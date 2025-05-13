@@ -1,9 +1,6 @@
 package org.sortic.sorticproject.Controller;
 
-import org.sortic.sorticproject.Entity.Bill;
-import org.sortic.sorticproject.Entity.BillCommissionDetail;
-import org.sortic.sorticproject.Entity.BillElementsData;
-import org.sortic.sorticproject.Entity.BillGroupResponse;
+import org.sortic.sorticproject.Entity.*;
 import org.sortic.sorticproject.Service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,4 +55,16 @@ public class BillController {
         billService.deleteElementFromBill(billId, elementsNameId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/addCommission")
+    public void addCommission(@RequestBody BillCommissionDetail commission) {
+        billService.addCommission(commission);
+    }
+
+    @DeleteMapping("/deleteSelectedCommissions")
+    public void deleteSelectedCommissions(@RequestBody BillDeleteRequest deleteRequest) {
+    billService.deleteSelectedCommissions(deleteRequest.getBillId(),deleteRequest.getCommissionIds());
+    }
+
+
 }
