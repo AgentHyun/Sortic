@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
-import axios from "axios";
+import authAxios from '../../Api/authAxios';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 
@@ -38,10 +38,8 @@ function SignupPage() {
 
     try {
       // 서버에 회원가입 요청 전송
-      const response = await axios.post('http://localhost:8080/api/auth/signup', values, {
-        headers: {
-          'Content-Type': 'application/json', // JSON 형식의 본문 전송
-        },
+      const response = await authAxios.post('/auth/signup', values, {
+        headers: { 'Content-Type': 'application/json' }
       });
 
       // 성공 시 메시지 출력 및 로그인 페이지로 이동
@@ -63,26 +61,26 @@ function SignupPage() {
     }
   };
 
-    const handleCheckId = async (form) => {
-      const id = form.getFieldValue('userId'); // 입력한 아이디 가져오기
-      if (!id) return; // 아이디 입력이 없으면 리턴
+  const handleCheckId = async (form) => {
+    const id = form.getFieldValue('userId'); // 입력한 아이디 가져오기
+    if (!id) return; // 아이디 입력이 없으면 리턴
 
-      try {
-        // 서버에 중복확인 요청
-        const response = await axios.get(`http://localhost:8080/api/auth/check-userid`, {
-          params: { user_id: id },
-        });
-        const isAvailable = response.data; // 응답에서 직접 데이터를 가져옵니다.
+    try {
+      // 서버에 중복확인 요청
+      const response = await authAxios.get('/auth/check-userid', {
+        params: { userId: id }
+      });
+      const isAvailable = response.data; // 응답에서 직접 데이터를 가져옵니다.
 
-        if (!isAvailable) {
-          message.error('이미 사용 중인 아이디입니다.'); // 중복된 경우
-        } else {
-          message.success('사용 가능한 아이디입니다.'); // 사용 가능
-        }
-      } catch (err) {
-        message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
+      if (!isAvailable) {
+        message.error('이미 사용 중인 아이디입니다.'); // 중복된 경우
+      } else {
+        message.success('사용 가능한 아이디입니다.'); // 사용 가능
       }
-    };
+    } catch (err) {
+      message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
+    }
+  };
 
   // 실제 렌더링 반환
   return (

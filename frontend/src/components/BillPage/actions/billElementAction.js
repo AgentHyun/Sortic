@@ -1,4 +1,4 @@
-import axios from 'axios';
+import apiAxios from '../../../Api/apiAxios';
 import { atom } from 'jotai';
 import { message } from 'antd';
 import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms'
@@ -18,7 +18,7 @@ export const addBillElementAction = atom(
       console.log("보낼 데이터", JSON.stringify(billElementData, null, 2));
 // 이 값을 콘솔에 찍어보세요.
 
-      const response = await axios.post('http://localhost:8080/api/bill-elements/add', billElementData, {
+      const response = await apiAxios.post('/bill-elements/add', billElementData, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -52,7 +52,7 @@ export const addBillElementsAction = atom(
       console.log("보낼 데이터", JSON.stringify(billElementsData, null, 2));
       // 여러 BillElement를 한 번에 보낼 데이터로 변환합니다.
 
-      const response = await axios.post('http://localhost:8080/api/bill-elements/add-multiple', billElementsData, {
+      const response = await apiAxios.post('/bill-elements/add-multiple', billElementsData, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -82,8 +82,7 @@ export const fetchBillsAction = atom(
   null,
   async (get, set, userId) => {
     try {
-      userId = get(selectedUserIdAtom);
-      const res = await axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`);
+      const res = await apiAxios.get(`/bills/getAllBills?userId=${userId}`);
       set(billsAtom, res.data);
     } catch (err) {
       console.error('📛 Bill 불러오기 실패:', err);

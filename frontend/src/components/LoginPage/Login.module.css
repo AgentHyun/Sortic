@@ -48,6 +48,19 @@
   width: 100%;
 }
 
+.inputPassword {
+  height: 40px;
+  font-size: 15px;
+  border: 1px solid var(--border-color);
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  padding: 0 12px;
+  width: calc(100% + 6px); /* 3px 좌우 확대 = 6px */
+}
+
 /* 다크모드에서의 입력 필드 스타일 */
 :global(.dark) .input,
 :global(.dark) .input:hover,

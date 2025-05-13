@@ -1,11 +1,18 @@
-# 텍스트 파일 자동 관리
+######################################################
+# 📝 텍스트 파일 줄바꿈 자동 관리 (OS 간 호환)
+######################################################
 * text=auto
-
-# Gradle은 LF 고정
 /gradlew text eol=lf
+*.sh text eol=lf
+*.js text eol=lf
+*.java text eol=lf
+*.sql text eol=lf
+*.jsp text eol=lf
 *.bat text eol=crlf
 
-# 바이너리 파일 무조건 제외
+######################################################
+# 📦 바이너리 파일 처리 – Git이 텍스트처럼 다루지 않도록 명시
+######################################################
 *.jar binary
 *.png binary
 *.jpg binary
@@ -16,7 +23,9 @@
 *.woff binary
 *.woff2 binary
 
-# GitHub 언어 통계 정확도 향상
+######################################################
+# 📊 GitHub 언어 통계 개선 (linguist-language)
+######################################################
 *.jsp linguist-language=HTML
 *.sql linguist-language=SQL
 *.js linguist-language=JavaScript
