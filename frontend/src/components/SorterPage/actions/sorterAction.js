@@ -6,9 +6,11 @@ import {
   elementNameAtom,
   elementsIdListAtom,
   sorterCardsAtom,
-  selectedSortersAtom
+  selectedSortersAtom,
+  sorterNameByIdAtom, selectedUserIdAtom,
 } from '../atoms/atoms';
 import { message } from 'antd';
+import { authUserAtom } from '../../../auth/authAtoms';
 export const addingElementIdsBySorterAtom = atom({});
 // 정렬자 번호 재정렬 함수
 const renumberSorters = (list) => {
@@ -22,8 +24,9 @@ const renumberSorters = (list) => {
 // 정렬자 추가
 export const addSorterAction = atom(null, async (get, set) => {
   const currentSorters = get(sortersAtom);
+  const userId = get(selectedUserIdAtom);
   const newSorter = {
-    user_id: 'user123', // 실제 로그인한 유저 ID로 바꿔야 함
+    user_id: userId, // 실제 로그인한 유저 ID로 바꿔야 함
     sorter_number: currentSorters.length + 1,
     sorter_name: `sorter${currentSorters.length + 1}`,
   };
@@ -33,7 +36,7 @@ export const addSorterAction = atom(null, async (get, set) => {
     const response = await axios.post('http://localhost:8080/api/sorter/add', newSorter);
 
     // 서버에서 최신 정렬자 목록을 가져와서 상태 업데이트
-    const updatedSortersResponse = await axios.get('http://localhost:8080/api/sorter/user/user123');
+    const updatedSortersResponse = await axios.get(`http://localhost:8080/api/sorter/user/${userId}`);
     const updatedSorters = updatedSortersResponse.data;
 
     set(sortersAtom, updatedSorters);
@@ -86,12 +89,12 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 
 // 사용자별 정렬자 목록 불러오기
 export const fetchSortersByUserAction = atom(null, async (get, set) => {
+
+  const userId = get(selectedUserIdAtom);
+  console.log("정렬자 유저" + userId);
   try {
-    const response = await axios.get(`http://localhost:8080/api/sorter/user/user123`);
-    const data = response.data;
-
-    set(sortersAtom, data);
-
+    const response = await axios.get(`http://localhost:8080/api/sorter/user/${userId}`);
+    set(sortersAtom, response.data);
   } catch (error) {
     console.error('🚨 사용자 정렬자 불러오기 실패:', error);
   }
@@ -130,35 +133,30 @@ export const updateSorterNameAction = atom(null, async (get, set, { oldSorterNam
 // 다중 정렬자 삭제
 export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIdsToDelete) => {
   const currentSorters = get(sortersAtom);
+  const userId = get(selectedUserIdAtom);
 
-  // 삭제할 sorter가 없을 경우
   if (!Array.isArray(sorterIdsToDelete) || sorterIdsToDelete.length === 0) {
     message.warning("삭제할 정렬자를 선택해주세요.");
     return;
   }
 
   try {
-    // 삭제 요청
     await axios.post('http://localhost:8080/api/sorter/delete/multiple', sorterIdsToDelete);
-    console.log("삭제할 솔터" + sorterIdsToDelete);
-    // 삭제된 정렬자 이름 리스트
+
     const deletedNames = currentSorters
       .filter(s => sorterIdsToDelete.includes(s.sorter_id))
       .map(s => s.sorter_name)
       .join(', ');
 
-    // 남은 정렬자 재정렬
     const updated = currentSorters.filter(s => !sorterIdsToDelete.includes(s.sorter_id));
     const renamed = renumberSorters(updated);
     const renamedWithUserId = renamed.map(sorter => ({
       ...sorter,
-      user_id: sorter.user_id || 'user123',  // 사용자 ID를 설정
+      user_id: sorter.user_id || userId,
     }));
 
-// 재정렬 요청
     const reordered = await axios.post('http://localhost:8080/api/sorter/reorder', renamedWithUserId);
 
-    // 상태 업데이트 (삭제 후 재정렬된 데이터 반영)
     set(sortersAtom, reordered.data);
     message.success(`${deletedNames}(이)가 삭제되었습니다.`);
     set(messageAtom, { type: 'success', content: '정렬자가 삭제되었습니다.' });
@@ -291,12 +289,9 @@ export const getElementsIdBySorterIdAction = atom(
     try {
       // 수정된 API 경로 사용
       const response = await axios.get(`http://localhost:8080/api/sorter-element/sorter/${sorterId}`);
-
       const elementsIds = response.data;  // 요소 ID 배열
-
       // 요소 ID 리스트를 상태에 저장
       set(elementsIdListAtom, elementsIds);
-
 
       return elementsIds;
     } catch (error) {
@@ -308,3 +303,21 @@ export const getElementsIdBySorterIdAction = atom(
   }
 );
 
+export const getSorterNameByIdAction = atom(
+  null,
+  async (get, set, sorterId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/sorter/name/${sorterId}`);
+      const sorterName = response.data; // 서버에서 반환된 sorter 이름
+
+      // 가져온 sorter 이름을 상태에 설정
+      set(sorterNameByIdAtom, sorterName);
+
+
+    } catch (error) {
+      console.error('🚨 정렬자 이름 조회 실패:', error);
+      set(sorterNameByIdAtom, ''); // 실패 시 상태를 초기화
+      message.error("정렬자 이름 조회에 실패했습니다.");
+    }
+  }
+);

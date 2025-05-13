@@ -1,7 +1,9 @@
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
+import {selectedElementIdsAtom, isEditingElementAtom,editingElementIndexAtom} from "../atoms/atoms";
 import SortableItem from "./SortableItem";
 import React, { useState, useEffect, useRef } from 'react';
+import {useAtom} from "jotai";
 const SortableContainer = ({ cards, setCards, ...itemProps }) => {
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -12,6 +14,8 @@ const SortableContainer = ({ cards, setCards, ...itemProps }) => {
     );
 
     const [activeId, setActiveId] = useState(null);
+    const [selectedElementIds, setSelectedElementIds] = useAtom(selectedElementIdsAtom);
+
     const activeCard = cards.find(card => card.elements_name_id === activeId);
 
     const handleDragStart = (event) => {
@@ -51,7 +55,7 @@ const SortableContainer = ({ cards, setCards, ...itemProps }) => {
                                 key={card.elements_name_id}
                                 card={card}
                                 {...itemProps}
-                                isSelected={itemProps.selectedElementIds.includes(card.elements_name_id)}
+                                isSelected={selectedElementIds.includes(card.elements_name_id)}
                                 isEditing={itemProps.isEditingElement && itemProps.editingElementIndex === card.elements_name_id}
                             />
                         ))}

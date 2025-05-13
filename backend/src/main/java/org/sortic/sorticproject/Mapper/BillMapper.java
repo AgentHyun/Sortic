@@ -11,20 +11,20 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
 
-    @Insert("insert into bill (user_id,bill_name) values (#{userId},#{billName})")
+    @Insert("insert into bill (user_id,bill_name) values (#{user_id},#{billName})")
     void insertBill(Bill bill);
 
     @Delete("DELETE FROM bill WHERE bill_id = #{billId}")
     void deleteBillById(int billId);
 
-    @Select("Select * from Bill Where user_id = #{userId}")
+    @Select("Select * from Bill Where user_id = #{user_id}")
     @Results(id = "BillMap", value = {
         @Result(property = "billId", column = "bill_id"),
-        @Result(property = "userId", column = "user_id"),
+        @Result(property = "user_id", column = "user_id"),
         @Result(property = "billName", column = "bill_name"),
         @Result(property = "createBillTime", column = "created_bill_time")
     })
-    List<Bill> findBillsByUserId(@Param("userId") String userId);
+    List<Bill> findBillsByUserId(@Param("user_id") String user_id);
 
 
 

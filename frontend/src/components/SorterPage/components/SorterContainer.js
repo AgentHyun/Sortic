@@ -23,6 +23,7 @@ import SorterBox from "./SorterBox";
 import axios from "axios";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import SortableElement from "./SortableElement";
+import SortableSorter from "./SortableSorter";
 
 const SorterContainer = ({
                            sorters,
@@ -59,6 +60,8 @@ const SorterContainer = ({
   const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
   const [activeElement, setActiveElement] = useState(null);
   const isFirstRender = useRef(true);
+
+
   useEffect(() => {
     const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
       (key) => selectedElementIdsBySorter[key].length > 0
@@ -171,7 +174,7 @@ const SorterContainer = ({
           const elementNames = elementNamesBySorter[sorter.sorter_id]?.names || [];
 
           return (
-            <div key={sorter.sorter_id} className="sorter-wrapper">
+            <SortableSorter key={sorter.sorter_id} sorter={sorter}>
               <div
                 onClick={() => handleSorterClick(sorter.sorter_id)}
                 className={`sorter-card ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`}
@@ -224,19 +227,17 @@ const SorterContainer = ({
                         })}
                       </div>
                     </SorterBox>
-                    {activeElement && (
-                      <DragOverlay>
-                        <div>Active: {activeElement}</div>
-                      </DragOverlay>
-                    )}
+
+
+
                   </SortableContext>
                 ) : (
-                  <SorterBox sorterId={sorter.sorter_id}>
-                    <div className="element-names">No Items</div>
-                  </SorterBox>
+                  <SorterBox sorterId={sorter.sorter_id}/>
+
+
                 )}
               </div>
-            </div>
+            </SortableSorter>
           );
         })}
 

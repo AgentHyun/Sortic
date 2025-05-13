@@ -1,18 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { Button, Input, message, Modal } from "antd";
-import axios from "axios";
-import "../css/billPage.css";
+import React, { useState, useEffect } from "react";
+import { useAtom } from 'jotai';
+import { Button, Input, message, Modal } from 'antd';
+import axios from 'axios'; // 임시 apiAxios로 변경해야함
+import apiAxios from '../../../Api/apiAxios'; // ✅ 주소 수정 axios -> authAxios
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // useSortable import 제거
 import { billsAtom } from "../atom/atoms";
+import '../css/billPage.css';
+import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
+import { jwtDecode } from 'jwt-decode';
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 import { X, Plus, Minus } from "lucide-react";
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
-  const userId = "user123";
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newBillName, setNewBillName] = useState("");
+  const [newBillName, setNewBillName] = useState('');
   const [editingBillId, setEditingBillId] = useState(false);
-  const [editedBillName, setEditedBillName] = useState("");
+  const [editedBillName, setEditedBillName] = useState('');
+  const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
+
+  /** ✅ JWT에서 userId 추출 */
+  const getUserIdFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const decoded = jwtDecode(token); // { userId: 'test', sub: ..., iat: ..., exp: ... }
+      return decoded.userId;
+    } catch (err) {
+      message.error('로그인 정보가 유효하지 않습니다.');
+      return null;
+    }
+  };
+
+  const user_id = selectedUserId; // ✅ 실제 로그인된 사용자 ID
+
+  /** 💡 모든 Bill 목록 가져오기 */
+
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedBillDetails, setSelectedBillDetails] = useState([]);
   const [selectedBillTitle, setSelectedBillTitle] = useState("");
@@ -24,46 +47,48 @@ const BillPage = () => {
   const [selectedBillForCommission, setSelectedBillForCommission] = useState(null);
   const [selectedCommissionIds, setSelectedCommissionIds] = useState([]);
   const fetchBills = () => {
-    axios
-      .get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`)
-      .then((res) => setBills(res.data))
-      .catch((err) => console.error("Bill 불러오기 실패", err));
+    apiAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
+      .then(res => setBills(res.data))
+      .catch(err => console.error('Bill 불러오기 실패', err));
   };
 
   useEffect(() => {
     fetchBills();
-  }, [userId]);
+  }, []);
 
+  /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-      await axios.post(`http://localhost:8080/api/bills/addBill`, {
-        billName: newBillName,
-        userId: userId,
+
+
+      await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
+        billName : newBillName,
+        user_id  : user_id
       });
+      // 전체 Bill 다시 불러오기
       fetchBills();
-      setNewBillName("");
+      setNewBillName('');
       setIsModalVisible(false);
       message.success("Bill이 추가되었습니다!");
     } catch (error) {
       console.error("Bill 추가 실패");
     }
-  };
 
+  };
   const handleDeleteBill = async (billId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/bills/deleteBill`, {
-        params: { billId },
+      await apiAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
+        params: { billId }
       });
       message.success("삭제 완료!");
-      fetchBills();
+      fetchBills(); // 전체 새로고침
     } catch (err) {
       message.error("삭제 실패");
     }
   };
-
   const handleUpdateBillName = async (billId) => {
     try {
-      await axios.put(`http://localhost:8080/api/bills/updateBillName`, {
+      await apiAxios.put(`/bills/updateBillName`, {
         billId: billId,
         billName: editedBillName,
       });
@@ -76,7 +101,7 @@ const BillPage = () => {
   };
 
   const handleIncrease = async (billId, elementsNameId) => {
-    await axios.put(`http://localhost:8080/api/bills/increaseCount`, null, {
+    await apiAxios.put(`/bills/increaseCount`, null, {
       params: { billId, elementsNameId },
     });
     fetchBills();
@@ -84,11 +109,11 @@ const BillPage = () => {
 
   const handleDecrease = async (billId, elementsNameId, currentCount) => {
     if (currentCount <= 1) {
-      await axios.delete(`http://localhost:8080/api/bills/deleteElement`, {
+      await apiAxios.delete(`/bills/deleteElement`, {
         params: { billId, elementsNameId },
       });
     } else {
-      await axios.put(`http://localhost:8080/api/bills/decreaseCount`, null, {
+      await apiAxios.put(`/bills/decreaseCount`, null, {
         params: { billId, elementsNameId },
       });
     }
@@ -104,8 +129,8 @@ const BillPage = () => {
             console.warn("⚠️ 요소 ID 없음:", el);
             return Promise.resolve({ data: [] });
           }
-          return axios.get(
-            `http://localhost:8080/api/bills/getElementsdata?elementsNameId=${id}`
+          return apiAxios.get(
+            `/bills/getElementsdata?elementsNameId=${id}`
           );
         })
       );
@@ -124,7 +149,7 @@ const BillPage = () => {
   };
   const handleAddCommission = async () => {
     try {
-      await axios.post(`http://localhost:8080/api/bills/addCommission`, {
+      await apiAxios.post(`/bills/addCommission`, {
         billId: selectedBillId, // 해당 bill의 ID
         commissionName: commissionName,
         commission: Number(commissionValue)
@@ -142,7 +167,7 @@ const BillPage = () => {
   };
   const handleDeleteSelectedCommissions = async () => {
     try {
-      await axios.delete("http://localhost:8080/api/bills/deleteSelectedCommissions", {
+      await apiAxios.delete('/bills/deleteSelectedCommissions', {
         data: {
           billId: selectedBillId,
           commissionIds: selectedCommissionIds,
@@ -159,6 +184,7 @@ const BillPage = () => {
   };
 
   return (
+
     <div className="bill-container">
       <div className="bill-add">
         <Button
@@ -169,6 +195,28 @@ const BillPage = () => {
           + Bill
         </Button>
       </div>
+
+      <SortableContext
+        items={bills.map(bill => bill.billId)} // bills의 ID로 SortableContext 구성
+        strategy={rectSortingStrategy}
+      >
+        {bills.map((bill) => (
+          <DroppableBillBox
+            key={bill.billId}
+            bill={bill}
+            onDelete={handleDeleteBill}
+            isEditing={editingBillId === bill.billId}
+            onEditStart={(id, name) => {
+              setEditingBillId(id);
+              setEditedBillName(name);
+            }}
+            onEditSubmit={handleUpdateBillName}
+            editedName={editedBillName}
+            onEditNameChange={(e) => setEditedBillName(e.target.value)}
+          />
+        ))}
+      </SortableContext>
+
 
       {bills.map((bill) => (
         <div

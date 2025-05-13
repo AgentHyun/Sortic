@@ -69,19 +69,16 @@ export const newSorterNameAtom = atom('');
 export const sortersAtom = atom([]);
 export const elementNamesBySorterAtom = atom({});
 
-export const editingSorterIndexAtom = atom(null);
+
 
 // 드래그 관련 상태
-export const containerRefAtom = atom(null);
-export const isDraggingAtom = atom(false);
-export const startXAtom = atom(0);
-export const scrollLeftAtom = atom(0);
 
 export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
-export const isComittingSorterAtom = atom(false);
+export const sorterNameByIdAtom = atom('');
+
 export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");
@@ -92,6 +89,10 @@ export const selectedElementNamesBySorterAtom = atom({});
 export const selectedSorterIdsAtom = atom([]);
 export const selectedElementIdSorterAtom = atom(0);
 export const isDraggingElementsAtom = atom(false);
+
+
+
+
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -100,5 +101,7 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
+export const selectedUserIdAtom = atom (null);
+export const selectedUserNameAtom = atom(null);
 //
 
