@@ -641,7 +641,27 @@ const SorterPage = () => {
 
     console.log("액티브 id:", activeIdStr);
     console.log("오버 id:", overIdStr);
+    if (
+      !(typeof active.id === "string" &&
+        typeof over.id === "string" &&
+        active.id.includes("-") &&
+        over.id.includes("-") &&
+        cards.some((c) => c && c.elements_name_id != null))
+    ) {
+      const oldIndex = cards.findIndex((c) => c && c.elements_name_id === active.id);
+      const newIndex = cards.findIndex((c) => c && c.elements_name_id === over.id);
+      setCards(arrayMove(cards, oldIndex, newIndex));
+    }
 
+    const overId = String(over.id);
+    let elementId;
+
+
+    if (activeIdStr.includes("-")) {
+      elementId = activeIdStr.split("-").pop();
+    } else {
+      elementId = activeIdStr;
+    }
     // ✅ sorter → bill : 모든 요소 추가
     if (activeIdStr.startsWith("sorter-") && overIdStr.startsWith("bill-")) {
       const sorterId = activeIdStr.replace("sorter-", "");
