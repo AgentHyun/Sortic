@@ -1,6 +1,7 @@
 package org.sortic.sorticproject.Mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.sortic.sorticproject.Entity.Users;
 import org.apache.ibatis.annotations.Param;
 
@@ -76,5 +77,8 @@ public interface UserMapper {
      * @return Users 사용자 정보
      */
     Users findByEmailAndUsername(@Param("email") String email, @Param("username") String username);
+
+
+
 
 }

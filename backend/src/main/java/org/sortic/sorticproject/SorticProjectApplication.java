@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan("org.sortic.sorticproject.Mapper")
 @MapperScan(basePackages = "org.sortic.sorticproject.Mapper")
 public class SorticProjectApplication {
 

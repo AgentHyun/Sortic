@@ -7,7 +7,8 @@ import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // use
 import { billsAtom } from "../atom/atoms";
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
-import { jwtDecode } from 'jwt-decode'; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
+import { jwtDecode } from 'jwt-decode';
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
@@ -15,7 +16,7 @@ const BillPage = () => {
   const [newBillName, setNewBillName] = useState('');
   const [editingBillId, setEditingBillId] = useState(false);
   const [editedBillName, setEditedBillName] = useState('');
-
+  const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
 
   /** ✅ JWT에서 userId 추출 */
   const getUserIdFromToken = () => {
@@ -30,7 +31,7 @@ const BillPage = () => {
     }
   };
 
-  const user_id = getUserIdFromToken(); // ✅ 실제 로그인된 사용자 ID
+  const user_id = selectedUserId; // ✅ 실제 로그인된 사용자 ID
 
   /** 💡 모든 Bill 목록 가져오기 */
   const fetchBills = () => {
@@ -46,6 +47,8 @@ const BillPage = () => {
   /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
+
+
       await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
         billName : newBillName,
         user_id  : user_id

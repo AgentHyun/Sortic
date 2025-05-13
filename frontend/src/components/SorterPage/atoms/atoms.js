@@ -89,6 +89,10 @@ export const selectedElementNamesBySorterAtom = atom({});
 export const selectedSorterIdsAtom = atom([]);
 export const selectedElementIdSorterAtom = atom(0);
 export const isDraggingElementsAtom = atom(false);
+
+
+
+
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -97,5 +101,7 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
+export const selectedUserIdAtom = atom (null);
+export const selectedUserNameAtom = atom(null);
 //
 

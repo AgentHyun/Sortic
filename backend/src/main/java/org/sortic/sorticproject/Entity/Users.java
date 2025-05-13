@@ -35,4 +35,6 @@ public class Users {
     private String profile_image;     // 프로필 이미지 URL
     private int grade;                // 구독 등급
     private Timestamp created_signup_time;  // 회원가입 시간
-    }
+
+
+}

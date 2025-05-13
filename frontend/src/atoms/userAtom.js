@@ -16,3 +16,5 @@ export const userAtom = atom({
 
 // user_id만 추출한 atom
 export const userIdAtom = selectAtom(userAtom, (user) => user.user_id);
+
+export const isOpenWholesaleAtom = atom(false);

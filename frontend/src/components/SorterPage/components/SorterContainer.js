@@ -232,9 +232,9 @@ const SorterContainer = ({
 
                   </SortableContext>
                 ) : (
-                  <SorterBox sorterId={sorter.sorter_id}>
-                    <div className="element-names">No Items</div>
-                  </SorterBox>
+                  <SorterBox sorterId={sorter.sorter_id}/>
+
+
                 )}
               </div>
             </SortableSorter>

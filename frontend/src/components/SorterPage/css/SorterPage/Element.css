@@ -1,19 +1,21 @@
 .element-btn {
-    background-color: transparent; /* 기본 배경 색 */
-    color: #1F2933 ;
+     /* 기본 배경 색 */
+    color: #272727 ;
     font-size: 30px;
     border-radius: 8px;
+    margin-right : 1px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05), 0px 4px 8px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     width: 10vw;
     height : 40px;
-    border: 2px solid #1F2933 ;
+    background-color: transparent;
     align-items: center;
     margin-left: 14.5vw;
     justify-content: center;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
-
-
+    margin-top: -40px;
+    border : none;
 
 
 }
@@ -28,17 +30,22 @@
 }
 
 .element-btn-delete {
-    font-size: 18px;
-    color: #1F2933 ;
-    width: 10vw;
-    height : 40px;
-    border: 2px solid #1F2933 ;
-    border-radius: 8px;
-    cursor: pointer;
-    align-items: center;
-    margin-right: 14.5vw;
-    background-color: transparent;
+  font-size: 18px;
+  color: #1F2933;
+  width: 10vw;
+  margin-top: -40px;
+  height: 40px;
+  background-color: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  margin-left: -2px;
+  border: none;
+  margin-right: 14.5vw;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* ✅ 왼쪽 아래와 오른쪽 아래 그림자 추가 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05), 0px 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 
@@ -57,10 +64,10 @@
     display: flex;
     flex-direction: row;
     margin-top : 3vh;
-    margin-bottom : -6vh;
+    margin-bottom : -5.5vh;
 
-    width: 100%; /* 또는 적당한 너비 */
-
+    width: 70vw; /* 또는 적당한 너비 */
+    margin-left : 15.2vw;
 
     /* margin-top: -20vh;를 제거 */
 
@@ -68,9 +75,9 @@
 }
 
 .category-item.selected {
-    color : #956d62;
+    color : white;
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
-    background: #f9e050; /* ✅ 부드러운 컬러 그라데이션 */
+    background: #354927; /* ✅ 부드러운 컬러 그라데이션 */
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
     transform: scale(1.02); /* ✅ 살짝 확대 효과 */
@@ -197,6 +204,7 @@
     align-items: center;
     background-color: white;
     color: #333;
+    margin-left :17px;
     padding: 12px 18px;
     border-radius: 12px;
     font-size: 16px;
@@ -210,6 +218,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
+    margin-top : 20px;
 }
 
 .category-item:hover {
@@ -222,18 +231,20 @@
 .box-section {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    margin-right : 1.4vw;
     align-content: flex-start; /* 여러 줄 정렬 시 상단 기준 */
-    gap: 10px;
-    /* 스크롤 처리 */
+    background-color: white;
     overflow-y: auto;  /* 세로 스크롤 필요 시 나타남 */
     overflow-x: hidden; /* 가로 스크롤 방지 */
     padding-right: 20px;
     padding-left :2.5px;
-
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    width: 100%; /* 부모 요소의 너비에 맞게 채움 */
-    height: 100%; /* 부모 높이에 맞게 채움 */
+    border-radius: 10px;
+    width: 64vw;
+    text-align: center;
+    justify-content: center;
+    height: 20vh; /* 부모 높이에 맞게 채움 */
     max-height: 100%; /* 부모 요소의 최대 높이에 맞게 제한 */
     transition: transform 0.3s ease, opacity 0.3s ease;
     will-change: transform, opacity;
