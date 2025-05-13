@@ -1,6 +1,7 @@
 package org.sortic.sorticproject.Service;
 
 import org.sortic.sorticproject.Entity.Users;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
  * 사용자 관련 비즈니스 로직을 정의하는 서비스 인터페이스
  * 사용자 정보 관리, 프로필 관리 등의 기능을 제공
  */
+@Service
 public interface UserService {
     /**
      * 새로운 사용자를 시스템에 등록
@@ -58,4 +60,6 @@ public interface UserService {
      * 비밀번호 변경
      */
     void changePassword(String user_id, String currentPassword, String newPassword);
+
+
 }

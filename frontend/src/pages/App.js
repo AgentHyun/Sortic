@@ -14,6 +14,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import WholesalePage from '../components/WholesalePage/WholesalePage';
 
 import { authLoadingAtom } from '../auth/authAtoms';
+import Snb from "../components/Snb/components/Snb";
 
 const App = () => {
   const [authLoading] = useAtom(authLoadingAtom);
@@ -49,14 +50,17 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SorterPageComponent />
+              <Snb/>
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/sorterDefaultPage"
           element={
             <ProtectedRoute>
               <SorterDefaultPage />
+
             </ProtectedRoute>
           }
         />

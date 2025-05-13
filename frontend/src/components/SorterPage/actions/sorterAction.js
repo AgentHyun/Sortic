@@ -7,7 +7,7 @@ import {
   elementsIdListAtom,
   sorterCardsAtom,
   selectedSortersAtom,
-  sorterNameByIdAtom,
+  sorterNameByIdAtom, selectedUserIdAtom,
 } from '../atoms/atoms';
 import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
@@ -24,8 +24,7 @@ const renumberSorters = (list) => {
 // 정렬자 추가
 export const addSorterAction = atom(null, async (get, set) => {
   const currentSorters = get(sortersAtom);
-  const authUser = get(authUserAtom);
-  const userId = authUser?.userId;
+  const userId = get(selectedUserIdAtom);
   const newSorter = {
     user_id: userId, // 실제 로그인한 유저 ID로 바꿔야 함
     sorter_number: currentSorters.length + 1,
@@ -90,9 +89,9 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 
 // 사용자별 정렬자 목록 불러오기
 export const fetchSortersByUserAction = atom(null, async (get, set) => {
-  const authUser = get(authUserAtom);
-  const userId = authUser?.userId;
 
+  const userId = get(selectedUserIdAtom);
+  console.log("정렬자 유저" + userId);
   try {
     const response = await apiAxios.get(`/sorter/user/${userId}`);
     set(sortersAtom, response.data);
@@ -134,8 +133,7 @@ export const updateSorterNameAction = atom(null, async (get, set, { oldSorterNam
 // 다중 정렬자 삭제
 export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIdsToDelete) => {
   const currentSorters = get(sortersAtom);
-  const authUser = get(authUserAtom);
-  const userId = authUser?.userId;
+  const userId = get(selectedUserIdAtom);
 
   if (!Array.isArray(sorterIdsToDelete) || sorterIdsToDelete.length === 0) {
     message.warning("삭제할 정렬자를 선택해주세요.");

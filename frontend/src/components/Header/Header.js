@@ -60,6 +60,7 @@ const SorticHeader = () => {
       <div className={styles['menu-container']}>
         <div className={styles['menu-item']}><Link to="/">Home</Link></div>
         <div className={styles['menu-item']}><Link to="/sorter">Sorter</Link></div>
+        <div className={styles['menu-item']}><Link to="/wholesale">Code</Link></div>
         <div className={styles['menu-item']}>Cart</div>
         <div className={styles['menu-item']}>Q&A</div>
         <div className={styles['menu-item']}>Community</div>

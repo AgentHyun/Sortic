@@ -1,5 +1,4 @@
-
-// resize  할 때 마다  넓이에 맞게 width 반영 필요
+// resize 할 때 마다 넓이에 맞게 width 반영 필요
 
 import React, { useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
@@ -9,22 +8,24 @@ import { linesAtom } from '../Atom/atoms';
 
 let lastCursorX = 0;
 
+// 계산 결과가 표시 가능한 값인지 판별
 const isRenderable = (val) => val === null || ['string', 'number', 'boolean'].includes(typeof val);
 
 const NoteCalculator = ({ onClose }) => {
-  const [lines, setLines] = useAtom(linesAtom);
-  const [results, setResults] = React.useState([]);
-  const [variables, setVariables] = React.useState({});
-  const [position, setPosition] = React.useState({ x: -800, y: -500 });
+  const [lines, setLines] = useAtom(linesAtom); // 사용자 입력 줄 상태
+  const [results, setResults] = React.useState([]); // 계산 결과
+  const [variables, setVariables] = React.useState({}); // 변수 스코프
+  const [position, setPosition] = React.useState({ x: -1000, y: -500 });
   const [dragging, setDragging] = React.useState(false);
   const [offset, setOffset] = React.useState({ x: 0, y: 0 });
 
-  const inputRefs = useRef([]);
-  const mirrorRef = useRef(null);
+  const inputRefs = useRef([]); // input element 참조
+  const mirrorRef = useRef(null); // 너비 측정용 mirror span
   const containerRef = useRef(null);
 
-  const [maxInputWidth, setMaxInputWidth] = React.useState(600);
+  const [maxInputWidth, setMaxInputWidth] = React.useState(600); // 가장 긴 입력에 맞춰 input 너비 조정
 
+  // 입력 내용 기반 input width 조정
   useEffect(() => {
     if (!mirrorRef.current) return;
 
@@ -43,6 +44,7 @@ const NoteCalculator = ({ onClose }) => {
     if (updated) setMaxInputWidth(currentMax);
   }, [lines]);
 
+  // 드래그 이동 처리
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!dragging) return;
@@ -61,6 +63,7 @@ const NoteCalculator = ({ onClose }) => {
     };
   }, [dragging, offset]);
 
+  // 전체 줄 파싱 및 계산
   const parseAllLines = () => {
     const newResults = [];
     const scope = {};
@@ -72,6 +75,7 @@ const NoteCalculator = ({ onClose }) => {
       }
       try {
         if (line.includes('=')) {
+          // 변수 할당식
           const eqIdx = line.indexOf('=');
           const left = line.slice(0, eqIdx).trim();
           const right = line.slice(eqIdx + 1).trim();
@@ -85,6 +89,7 @@ const NoteCalculator = ({ onClose }) => {
           scope[left] = val;
           newResults.push(val);
         } else {
+          // 수식 단독 계산 또는 변수 호출
           if (scope[line] !== undefined) {
             newResults.push(scope[line]);
           } else {
@@ -106,6 +111,7 @@ const NoteCalculator = ({ onClose }) => {
     setResults(newResults);
   };
 
+  // 줄 변경 시 재계산
   useEffect(() => {
     try {
       parseAllLines();
@@ -120,6 +126,7 @@ const NoteCalculator = ({ onClose }) => {
     setLines(updated);
   };
 
+  // 키보드 입력 핸들링 (줄 추가/삭제/이동 등)
   const handleKeyDown = (e, index) => {
     const currentInput = inputRefs.current[index];
     if (!currentInput) return;
@@ -194,13 +201,14 @@ const NoteCalculator = ({ onClose }) => {
         }
       }, 0);
     }
+
     if (e.key === 'ArrowLeft' && cursorPos === 0 && index > 0) {
       e.preventDefault();
       const targetInput = inputRefs.current[index - 1];
       if (targetInput) {
         const len = targetInput.value.length;
         targetInput.focus();
-        targetInput.setSelectionRange(len, len); // 맨 끝으로
+        targetInput.setSelectionRange(len, len);
       }
     }
 
@@ -213,10 +221,9 @@ const NoteCalculator = ({ onClose }) => {
       const targetInput = inputRefs.current[index + 1];
       if (targetInput) {
         targetInput.focus();
-        targetInput.setSelectionRange(0, 0); // 맨 앞으로
+        targetInput.setSelectionRange(0, 0);
       }
     }
-
   };
 
   return (

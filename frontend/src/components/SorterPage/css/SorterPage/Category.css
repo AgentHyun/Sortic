@@ -11,8 +11,8 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: 	 #1c283c;
-    color: #fff;
+    background-color: transparent;
+    color: black;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
@@ -22,23 +22,33 @@
     height: 130px;
 }
 
+.category-btn-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width : 10vw;
+  font-size: 60px;
+  padding-bottom: 10px;
+  height : 8vh;
+  min-width : 60px;
+  border : none;
+  background-color: transparent;
+  margin-left: 1vw;
+}
 .category-btn {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 8.5vw;
-    height : 40px;
-    font-size: 30px;
+    width : 10vw;
+    font-size: 40px;
+    height : 8vh;
+
     min-width : 60px;
+
+
 }
 
-.category-btn:hover,
-.category-btn-box:hover {
-  background-color: #3a4e71;  /* 기존 색상보다 밝고 부드러운 색상으로 변경 */
-  color: #f0f0f0;  /* 텍스트 색상을 더 밝게 */
-  transform: scale(1.08);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+
 
 .category-btn i {
     margin-right: 10px;
@@ -54,6 +64,7 @@
     font-size: 24px;
     font-weight: 600;
     color: #000;
+
 }
 
 /* Category Name */
@@ -65,22 +76,18 @@
     font-family: "Orbit", sans-serif;
     font-size: 1.6rem;
     font-weight: bold;
-    color: white;
-    background-color:	 #1c283c;
+    color: black;
+    background-color: transparent;
     width: 30vw;
     height: 80px;
     min-width: 180px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
 }
 
-.category-name:hover {
-  background-color: #3a4e71;  /* 기존 색상보다 밝고 부드러운 색상으로 변경 */
-  color: #f0f0f0;  /* 텍스트 색상을 더 밝게 */
-  transform: scale(1.08);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+
 
 
 
@@ -91,6 +98,7 @@
     font-size: 16px;
     font-weight: 500;
     color: #333;
+  height : 5vh;
     background-color: transparent;
     padding: 6px 12px;
     border: none;
@@ -107,7 +115,7 @@
 .category-name input:focus,
 .category-item input:focus,
 .element-item input:focus{
-    background-color: #f4f4f4;
+    background-color: transparent;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
 }
@@ -225,7 +233,8 @@
 
 
 .arrow-right-btn {
-    border: 2px solid #e0e0e0;
+    border: 1px solid rgba(31, 41, 51, 0.1);
+
     border-radius: 12px;
     padding: 10px;
     background-color: transparent;
@@ -233,11 +242,13 @@
     display: flex;
     align-items: center;
     width: 3vw;
+    height : 30vh;
     justify-content: center;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 .arrow-left-btn {
-    border: 1px solid rgba(31, 41, 51, 0.2);
+    border: 1px solid rgba(31, 41, 51, 0.1);
+
     border-radius: 12px;
     padding: 10px;
     background-color: transparent;
@@ -246,7 +257,7 @@
     align-items: center;
     justify-content: center;
     width: 3vw;
-    height: 3vw;
+    height : 30vh;
     color: #1F2933;
     font-size: 18px;
     transition: all 0.25s ease;
@@ -277,8 +288,8 @@
 
 .arrow-left-btn:hover,
 .arrow-right-btn:hover {
-    transform: scaleY(1.13);
-    background-color: #f1f0f0;
+    transform: scaleY(1.05);
+    background-color: #fdfdf7;
     color : white;
     cursor : pointer;
 }

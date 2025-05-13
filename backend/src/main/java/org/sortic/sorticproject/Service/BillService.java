@@ -73,9 +73,26 @@ public class BillService {
         }
         return resultList;
     }
+    public List<BillElementsData> getElementsDataByNameId(int elementsNameId) {
+        return billMapper.getElementsDataByNameId(elementsNameId);
+    }
 
+    public void increaseElementCount(int billId, int elementsNameId) {
+        billMapper.increaseElementCount(billId, elementsNameId);
+    }
 
+    public void decreaseElementCount(int billId, int elementsNameId) {
+        billMapper.decreaseElementCount(billId, elementsNameId);
+    }
 
+    public void deleteElementFromBill(int billId, int elementsNameId) {
+        billMapper.deleteElementFromBill(billId, elementsNameId);
+    }
 
-
+    public void addCommission(BillCommissionDetail billCommissionDetail) {
+        billMapper.insertCommission(billCommissionDetail);
+    }
+    public void deleteSelectedCommissions(int billId, List<Integer> commissionIds) {
+        billMapper.deleteSelectedCommissions(billId, commissionIds);
+    }
 }

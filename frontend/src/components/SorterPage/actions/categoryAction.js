@@ -2,93 +2,87 @@ import apiAxios from '../../../Api/apiAxios';
 import {atom, useAtom} from 'jotai';
 import { message } from 'antd';
 import {
-    categoriesAtom,
-    currentCategoryAtom,
-    currentCategoryNameAtom,
-    newCategoryAtom,
-    isEditingCategoryAtom,
-    newCategoryNameAtom,
-    addCategoryModalVisibleAtom,
-    cardsAtom,
-    messageAtom,
-    currentIndexAtom
+  categoriesAtom,
+  currentCategoryAtom,
+  currentCategoryNameAtom,
+  newCategoryAtom,
+  isEditingCategoryAtom,
+  newCategoryNameAtom,
+  addCategoryModalVisibleAtom,
+  cardsAtom,
+  messageAtom,
+  currentIndexAtom, selectedUserIdAtom
 } from '../atoms/atoms';
 import { userIdAtom, userAtom  } from '../../../atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
 import { authUserAtom } from '../../../auth/authAtoms';
 export const fetchAndNumberCategoriesAction = atom(
-    null,
-    async (get, set) => {
-        try {
 
-          const authUser = get(authUserAtom);
-          const userId = authUser?.userId;
+  null,
+  async (get, set) => {
+    try {
+      // ✅ 무조건 초기화
+      set(categoriesAtom, []);
+      set(currentCategoryAtom, null);
+      set(currentCategoryNameAtom, '');
+      set(currentIndexAtom, -1);
 
-            if (!userId) {
-                message.error('로그인이 필요합니다.');
-                return [];
-            }
-            const response = await apiAxios.get('/categories/get_category', {
-                params: { userId: userId }
-            });
+      const userId = get(selectedUserIdAtom);
+      if (!userId) {
+        console.warn("유저 ID 없음: 카테고리 조회 생략");
+        return [];
+      }
 
-          const categories = response.data;
-          if (!categories || categories.length === 0) {
-            console.log('카테고리 데이터가 없습니다.');
-            return [];
-          }
-          console.log("카테고리들", categories);
+      const response = await axios.get('http://localhost:8080/api/categories/get_category', {
+        params: { user_id: userId }
+      });
 
-          // 각 카테고리에 번호 부여
-            const numberedCategories = categories.map((category, index) => ({
-                ...category,
-                number: index + 1,
-            }));
+      const categories = response.data;
 
-            set(categoriesAtom, numberedCategories);
+      // ✅ 카테고리가 아예 없으면 조기 종료 (이후 로직 실행 X)
+      if (!categories || categories.length === 0) {
+        console.log('📭 카테고리 없음 → 상태 초기화 유지');
+        return [];
+      }
 
-            // 현재 선택된 카테고리 ID 가져오기
-            const currentCategoryId = get(currentCategoryAtom);
+      // ✅ 번호 붙이기
+      const numberedCategories = categories.map((category, index) => ({
+        ...category,
+        number: index + 1,
+      }));
 
-            // 현재 카테고리가 없고 카테고리 목록이 있는 경우
-            if (!currentCategoryId && numberedCategories.length > 0) {
-                const firstCategory = numberedCategories[0];
-                set(currentCategoryAtom, firstCategory.category_id);
-                set(currentCategoryNameAtom, firstCategory.category_name);
-                set(currentIndexAtom, 0);
-                await set(fetchElementsByCategoryAction, firstCategory.category_id);
-            }
-            // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
-            else if (currentCategoryId) {
-                const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
-                if (currentIndex !== -1) {
-                    set(currentIndexAtom, currentIndex);
-                    set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
-                }
-            }
-            // 현재 카테고리가 있는 경우, 해당 카테고리의 인덱스 찾기
-            else if (currentCategoryId) {
-                const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
-                if (currentIndex !== -1) {
-                    set(currentIndexAtom, currentIndex);
-                    set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
-                }
-            }
+      set(categoriesAtom, numberedCategories);
 
-            return numberedCategories;
-        } catch (error) {
-            console.error('카테고리 조회 실패:', error);
-            message.error('카테고리 조회에 실패했습니다.');
-            return [];
+      const currentCategoryId = get(currentCategoryAtom);
+
+      if (!currentCategoryId && numberedCategories.length > 0) {
+        const firstCategory = numberedCategories[0];
+        set(currentCategoryAtom, firstCategory.category_id);
+        set(currentCategoryNameAtom, firstCategory.category_name);
+        set(currentIndexAtom, 0);
+        await set(fetchElementsByCategoryAction, firstCategory.category_id);
+      } else if (currentCategoryId) {
+        const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
+        if (currentIndex !== -1) {
+          set(currentIndexAtom, currentIndex);
+          set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
         }
+      }
+
+      return numberedCategories;
+    } catch (error) {
+      console.error('🚨 카테고리 조회 실패:', error);
+      message.error('카테고리 조회에 실패했습니다.');
+      return [];
     }
+  }
 );
+
 export const fetchCategoriesAction = atom(
     null,
     async (get, set, user_id) => {
         try {
-          const authUser = get(authUserAtom);
-          const userId = authUser?.userId;
+          const userId = get(selectedUserIdAtom);
 
             const response = await apiAxios.get('/categories/get_category', {
                 params: { userId: userId }
@@ -107,8 +101,7 @@ export const fetchCategoriesAction = atom(
 export const fetchCategoryByIdAction = atom(
     null,
     async (get, set, categoryId) => {
-      const authUser = get(authUserAtom);
-      const userId = authUser?.userId;
+      const userId = get(selectedUserIdAtom);
         if (userId) {
             message.error('로그인이 필요합니다.');
             return;
@@ -200,8 +193,7 @@ export const handleCategoryOkAction = atom(
     null,
     async (get, set) => {
         const newCategory = get(newCategoryAtom);
-      const authUser = get(authUserAtom);
-      const userId = authUser?.userId;
+      const userId = get(selectedUserIdAtom);
 
 
         if (!newCategory) {

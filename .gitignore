@@ -7,14 +7,14 @@
 ############################################
 # ✅ 운영체제 / 에디터 관련
 ############################################
-.DS_Store		# macOS
-Thumbs.db	# Windows
-*.swp		# vim 임시 파일
-*.code-workspace	# VSCode 워크스페이스 파일
-.vscode/		# VSCode 설정 폴더
-.idea/		# IntelliJ 설정 폴더 (서브폴더 포함 무시)
-**/.idea/		# 모든 서브 디렉토리의 .idea 폴더도 무시
-*.iml		# IntelliJ 모듈 설정 파일
+.DS_Store               # macOS
+Thumbs.db              # Windows
+*.swp                   # vim 임시 파일
+*.code-workspace       # VSCode 워크스페이스 파일
+.vscode/               # VSCode 설정 폴더
+.idea/                 # IntelliJ 설정 폴더 (서브폴더 포함 무시)
+**/.idea/              # 모든 서브 디렉토리의 .idea 폴더도 무시
+*.iml                  # IntelliJ 모듈 설정 파일
 
 ############################################
 # ✅ 로그 / 디버그 / 임시 파일
@@ -29,7 +29,7 @@ pnpm-debug.log*
 # ✅ node / frontend 관련
 ############################################
 node_modules/
-**/node_modules/	# frontend/backend 등 모든 위치 포함
+**/node_modules/       # frontend/backend 등 모든 위치 포함
 dist/
 build/
 .cache/

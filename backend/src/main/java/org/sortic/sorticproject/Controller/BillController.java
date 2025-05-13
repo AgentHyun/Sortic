@@ -1,8 +1,6 @@
 package org.sortic.sorticproject.Controller;
 
-import org.sortic.sorticproject.Entity.Bill;
-import org.sortic.sorticproject.Entity.BillCommissionDetail;
-import org.sortic.sorticproject.Entity.BillGroupResponse;
+import org.sortic.sorticproject.Entity.*;
 import org.sortic.sorticproject.Service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +56,36 @@ public class BillController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("청구서 이름 업데이트 중 오류가 발생했습니다: " + e.getMessage());
         }
+    }
+    @GetMapping("/getElementsdata")
+    public List<BillElementsData> getElementsData(@RequestParam int elementsNameId) {
+        return billService.getElementsDataByNameId(elementsNameId);
+    }
+
+    @PutMapping("/increaseCount")
+    public void increaseElementCount(@RequestParam int billId, @RequestParam int elementsNameId) {
+        billService.increaseElementCount(billId, elementsNameId);
+    }
+
+    @PutMapping("/decreaseCount")
+    public void decreaseElementCount(@RequestParam int billId, @RequestParam int elementsNameId) {
+        billService.decreaseElementCount(billId, elementsNameId);
+    }
+
+
+    @DeleteMapping("/deleteElement")
+    public ResponseEntity<Void> deleteElement(@RequestParam int billId, @RequestParam int elementsNameId) {
+        billService.deleteElementFromBill(billId, elementsNameId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/addCommission")
+    public void addCommission(@RequestBody BillCommissionDetail commission) {
+        billService.addCommission(commission);
+    }
+
+    @DeleteMapping("/deleteSelectedCommissions")
+    public void deleteSelectedCommissions(@RequestBody BillDeleteRequest deleteRequest) {
+    billService.deleteSelectedCommissions(deleteRequest.getBillId(),deleteRequest.getCommissionIds());
     }
 }
