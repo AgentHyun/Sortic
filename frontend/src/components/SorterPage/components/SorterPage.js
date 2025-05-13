@@ -1169,7 +1169,7 @@ const SorterPage = () => {
           </div>
 
           <div className = "element-btn-section">
-            <Tooltip title="카테고리 요소 추가"
+            <Tooltip title="카테고리 요소 삭제"
                      overlayClassName="custom-tooltip"
                      placement="top"
                      arrow={true}>
@@ -1215,7 +1215,7 @@ const SorterPage = () => {
                 )}
               </CSSTransition>
             </SwitchTransition>
-            <Tooltip title="카테고리 요소 삭제"
+            <Tooltip title="카테고리 요소 추가"
                      overlayClassName="custom-tooltip-red"
                      placement="top"
                      arrow={true}>
@@ -1242,12 +1242,12 @@ const SorterPage = () => {
                 handleSorterNameDoubleClick={handleSorterNameDoubleClick}
               />
           </div>
-
+          <BillPage/>
 
         </div>
 
 
-        <BillPage/>
+
       </SortableContext>
       </DndContext>
     </div>

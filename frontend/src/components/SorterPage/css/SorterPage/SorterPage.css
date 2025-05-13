@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #ffffff; /* White background */
+    background-color: #F1F3C2; /* White background */
     color: #333; /* Dark text for readability */
     margin: 0;
     padding: 0;
@@ -10,7 +10,8 @@ body {
     margin-top: 20px;
     padding: 20px;
     width: 70vw;
-    background-color: #E0F8E0; /* 배경색 흰색 */
+    background-color: #CEDF9F; /* 배경색 흰색 */
+    /*#E0F8E0*/
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     display: flex;
