@@ -26,6 +26,7 @@ export const fetchElementsByCategoryAction = atom(
   null,
   async (get, set, categoryId) => {
     try {
+
       const response = await axios.get('http://localhost:8080/api/elements/get_elements_by_category', {
         params: { category_id: categoryId },
       });
@@ -300,50 +301,7 @@ const warning = (msg, set) => {
   set(messageAtom, { type: 'warning', content: msg });
 };
 
-// 상품 추가 액션
-const API_BASE_URL = '/api/products';
 
-export const handleElementOkAction = atom(
-  null,
-  async (get, set) => {
-    const newElementName = get(newElementNameAtom);
-    const newElementCost = get(addElementCostAtom);
-    const cards = get(cardsAtom);
-    const currentCategory = get(currentCategoryAtom);
-    const card_image = "default_image_url"; // 이미지 URL 하드코딩 (필요시 수정)
-
-    if (!newElementName || !newElementCost) {
-      warning('상품 이름과 가격을 입력하세요.', set);
-      return;
-    }
-
-    const productCost = parseInt(newElementCost, 10);
-    if (isNaN(productCost)) {
-      warning('가격은 숫자만 입력 가능합니다.', set);
-      return;
-    }
-
-    const newElement = {
-      category_id: currentCategory,
-      elements_name: newElementName,
-      elements_price: productCost || 0,
-      elements_image: card_image,
-    };
-
-    try {
-      const response = await axios.post('http://localhost:8080/api/elements/add_element', newElement);
-
-      success('상품이 추가되었습니다!', set);
-      set(cardsAtom, [...cards, newElement]);
-      set(addElementModalVisibleAtom, false);
-      set(newElementNameAtom, '');
-
-    } catch (error) {
-      warning('상품 추가 실패!', set);
-      console.error(error);
-    }
-  }
-);
 
 export const handleElementNameSaveAction = atom(
   null,
@@ -505,27 +463,34 @@ export const fetchElementPriceByIdAction = atom(
   }
 
 );
-// 요소 ID로 이름을 불러오는 액션 함수
 export const fetchElementNameByIdAction = atom(
   null,
   async (get, set, elementId) => {
     try {
-      // 백엔드 API 호출
-      const response = await axios.get(`http://localhost:8080/api/elements/${elementId}`);
+      const id = typeof elementId === 'number' ? elementId : Number(elementId);
+      if (isNaN(id)) {
+        console.warn("🚫 elementId가 숫자가 아님:", elementId);
+        set(messageAtom, { type: 'error', content: '잘못된 요소 ID입니다.' });
+        return;
+      }
 
-      // 성공적으로 요소 이름을 가져온 경우
+      console.log("🛰️ 호출 URL →", `/api/elements/${id}`);
+
+      const response = await axios.get(`http://localhost:8080/api/elements/${id}`);
+      console.log("✅ 응답:", response.data);
+
       if (response.status === 200) {
         const elementName = response.data;
+        console.log("요소 이름 " + elementName);
         set(activeCardAtom, elementName);
-        // 상태 업데이트: 가져온 요소 이름을 atom에 설정
         set(currentElementNameAtom, elementName);
         return elementName;
       } else {
-        console.error('잘못된 데이터 형식:', response.data);
+        console.error('❌ 잘못된 데이터 형식:', response.data);
         set(messageAtom, { type: 'error', content: '요소 이름을 조회할 수 없습니다.' });
       }
     } catch (error) {
-      console.error('요소 이름 조회 실패', error);
+      console.error('🔥 요소 이름 조회 실패', error);
       set(messageAtom, { type: 'error', content: '요소 이름 조회에 실패했습니다.' });
     }
   }

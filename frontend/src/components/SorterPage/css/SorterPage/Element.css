@@ -7,14 +7,15 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05), 0px 4px 8px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     width: 10vw;
-    height : 40px;
-    background-color: transparent;
+    height: 5.3vh;
+
+    background-color: #fafaee;
     align-items: center;
     margin-left: 14.5vw;
     justify-content: center;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
-    margin-top: -40px;
+
     border : none;
 
 
@@ -33,15 +34,14 @@
   font-size: 18px;
   color: #1F2933;
   width: 10vw;
-  margin-top: -40px;
-  height: 40px;
-  background-color: transparent;
+  height: 5.3vh;
+  background-color: #fafaee;
   border-radius: 8px;
   cursor: pointer;
   align-items: center;
   margin-left: -2px;
   border: none;
-  margin-right: 14.5vw;
+  margin-right:35.5vw;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
   /* ✅ 왼쪽 아래와 오른쪽 아래 그림자 추가 */
@@ -63,21 +63,15 @@
 .element-btn-section {
     display: flex;
     flex-direction: row;
-    margin-top : 3vh;
-    margin-bottom : -5.5vh;
-
-    width: 70vw; /* 또는 적당한 너비 */
-    margin-left : 15.2vw;
-
-    /* margin-top: -20vh;를 제거 */
-
-
+    width: 80vw; /* 또는 적당한 너비 */
+    margin-left : 14.7vw;
 }
 
 .category-item.selected {
-    color : white;
+
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
-    background: #354927; /* ✅ 부드러운 컬러 그라데이션 */
+    color: #635C3B;
+    background: #f2faad;
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
     transform: scale(1.02); /* ✅ 살짝 확대 효과 */
@@ -222,8 +216,8 @@
 }
 
 .category-item:hover {
-    background-color: #f4c03a;
-    color: white;
+    color: #635C3B;
+    background: #f2faad;
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }

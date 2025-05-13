@@ -40,7 +40,6 @@ export const fetchAndNumberCategoriesAction = atom(
 
       // ✅ 카테고리가 아예 없으면 조기 종료 (이후 로직 실행 X)
       if (!categories || categories.length === 0) {
-        console.log('📭 카테고리 없음 → 상태 초기화 유지');
         return [];
       }
 

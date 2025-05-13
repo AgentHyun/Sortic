@@ -12,9 +12,7 @@ export const addBillElementAction = atom(
       set(messageAtom, { type: 'warning', content: '올바른 BillElement 데이터를 입력하세요.' });
       return;
     }
-
     try {
-
       console.log("보낼 데이터", JSON.stringify(billElementData, null, 2));
 // 이 값을 콘솔에 찍어보세요.
 

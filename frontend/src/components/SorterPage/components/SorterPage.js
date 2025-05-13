@@ -150,7 +150,7 @@ const SorterPage = () => {
   const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
   const [costError, setCostError] = useAtom(costErrorAtom);
   const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
-  const [fetchElementNamById, setFetchElementNamById] = useAtom(fetchElementNameByIdAction);
+  const [fetchElementNameById, setFetchElementNameById] = useAtom(fetchElementNameByIdAction);
   const [activeCard, setActiveCard] = useAtom(activeCardAtom);
   const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
@@ -202,18 +202,15 @@ const SorterPage = () => {
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
   useEffect(() => {
     if (currentCategory !== null) {
-      console.log("🚀 currentCategory가 변경됨ㅋㅋ, 새로운 요소 가져오기:", currentCategory);
       fetchElementsByCategory(currentCategory);
     }
-  }, [currentCategory]);
+  }, [currentCategory], );
 
 
   useEffect(() => {
     // 초기 데이터 로딩
     setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
-
     // 화살표 높이 설정
-
     setFetchSortersByUser();
 
   }, [selectedUserId]);
@@ -222,7 +219,7 @@ const SorterPage = () => {
       if (activeId) {
         try {
           // DB에서 activeId에 해당하는 카드 이름을 조회하는 함수
-          const response = await setFetchElementNamById(activeId);
+          const response = await setFetchElementNameById(activeId);
         } catch (error) {
           console.error('Error fetching active card:', error);
         }
@@ -230,7 +227,7 @@ const SorterPage = () => {
     };
 
     fetchData();
-  }, [activeId, fetchElementNamById]);// activeId가 변경될 때마다 호출
+  }, [activeId, setFetchElementNameById]);
   useEffect(() => {
     console.log('Active Card:', activeCard);
   }, [activeCard]);
@@ -492,10 +489,6 @@ const SorterPage = () => {
 
     checkCategoryCount();
   }, []);
-// 상태 변경 후 콘솔 출력
-  useEffect(() => {
-    console.log("📤 상태 변경 후 updated[sorterId]:", elementNamesBySorter);
-  }, [elementNamesBySorter]); // elementNamesBySorter가 변경될 때마다 실행
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -513,7 +506,6 @@ const SorterPage = () => {
       if (sectionRef.current) observer.unobserve(sectionRef.current);
     };
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
-
   useEffect(() => {
     if (typeof activeCard === 'string' && activeCard.startsWith('sorter-')) {
       const sorterId = activeCard.replace('sorter-', '');
@@ -522,6 +514,7 @@ const SorterPage = () => {
       }
     }
   }, [activeCard, setGetSorterNameByIdAction]);
+
 
 
   const sectionRef = useRef(null);
@@ -635,103 +628,129 @@ const SorterPage = () => {
   };
 
 
-
   const [,setAddBillElement] = useAtom(addBillElementAction);
-
   const handleDragEnd = async (event) => {
     const { active, over } = event;
-    setActiveId(null);
-    const billId = over.id.replace('bill-', '');
-    console.log("액티브 id " + active.id);
-    console.log("오버 id " + (over?.id || "null"));
-
     if (!over || active.id === over.id) return;
 
+    const activeIdStr = String(active.id);
+    const overIdStr = String(over.id);
 
-    if (typeof active.id === 'string' && active.id.startsWith('sorter-')) {
-      const sorterId = active.id.replace('sorter-', '');
+    setActiveId(null);
+    setActiveId(activeIdStr);
+
+    console.log("액티브 id:", activeIdStr);
+    console.log("오버 id:", overIdStr);
+
+    // ✅ sorter → bill : 모든 요소 추가
+    if (activeIdStr.startsWith("sorter-") && overIdStr.startsWith("bill-")) {
+      const sorterId = activeIdStr.replace("sorter-", "");
+      const billId = Number(overIdStr.replace("bill-", ""));
+
       console.log(`📦 Bill(${billId})에 Sorter(${sorterId})의 모든 요소 추가 시도`);
 
       try {
-
         const elementIds = await setGetElementsIdBySorterId(sorterId);
-
-
 
         if (Array.isArray(elementIds) && elementIds.length > 0) {
           const payload = elementIds.map((elementId) => ({
-            billId: Number(billId),
+            billId,
             elementsNameId: Number(elementId),
           }));
 
           await setAddBillElementsAction(payload);
-          const userId =   selectedUserId;
           await setFetchBills(selectedUserId);
-
           console.log("✅ 요소들 일괄 추가 완료");
         } else {
-          console.warn(`⚠️ Sorter(${sorterId})에 요소가 없거나 데이터가 비정상적입니다.`);
+          console.warn(`⚠️ Sorter(${sorterId})에 요소가 없거나 비정상입니다.`);
         }
       } catch (error) {
         console.error("🔥 요소 일괄 추가 실패", error);
       }
-
       return;
     }
-    // ✅ Bill에 드롭된 경우
-    if (typeof over.id === 'string' && over.id.startsWith('bill-')) {
-      const billId = over.id.replace('bill-', '');
-      const elementId = String(active.id).includes("-")
-        ? String(active.id).split("-").pop()
-        : String(active.id);
+
+    // ✅ 요소 → bill : 단일 요소 추가
+    if (overIdStr.startsWith("bill-")) {
+      const billId = Number(overIdStr.replace("bill-", ""));
+      const elementId = activeIdStr.includes("-")
+        ? activeIdStr.split("-").pop()
+        : activeIdStr;
 
       console.log(`📦 Bill(${billId})에 요소(${elementId}) 추가 시도`);
 
       try {
         await setAddBillElement({
-          billId: Number(billId),
+          billId,
           elementsNameId: Number(elementId),
         });
-        const userId = selectedUserId;
-        await setFetchBills(userId);
+        await setFetchBills(selectedUserId);
       } catch (error) {
         console.error("🔥 BillElement 추가 실패", error);
       }
-      return; // 다른 로직 중복 방지
+      return;
     }
 
-    // ✅ 카드 간 재정렬
-    if (
-      !(typeof active.id === "string" &&
-        typeof over.id === "string" &&
-        active.id.includes("-") &&
-        over.id.includes("-") &&
-        cards.some((c) => c && c.elements_name_id != null))
-    ) {
-      const oldIndex = cards.findIndex((c) => c && c.elements_name_id === active.id);
-      const newIndex = cards.findIndex((c) => c && c.elements_name_id === over.id);
-      setCards(arrayMove(cards, oldIndex, newIndex));
-    }
+    // ✅ sorter → sorter : 모든 요소 이동
+    if (activeIdStr.startsWith("sorter-") && overIdStr.startsWith("sorter-")) {
+      const sourceSorterId = activeIdStr.replace("sorter-", "");
+      const targetSorterId = overIdStr.replace("sorter-", "");
 
-    const overId = String(over.id);
-    let elementId;
-
-    const activeIdStr = String(active.id);
-    if (activeIdStr.includes("-")) {
-      elementId = activeIdStr.split("-").pop();
-    } else {
-      elementId = activeIdStr;
-    }
-
-    // ✅ sorter에 드롭된 경우
-    if (overId.startsWith("sorter-") || Number(overId)) {
-      const sorterId = overId.replace("sorter-", "");
-      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+      const elementIds = await setGetElementsIdBySorterId(sourceSorterId);
+      const targetSorter = sorters.find(
+        (s) => String(s.sorter_id) === targetSorterId
+      );
 
       if (!targetSorter) {
-        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+        console.log(`⚠️ 정렬자 ID ${targetSorterId}에 해당하는 정렬자 없음`);
         return;
       }
+
+      console.log(`📦 Sorter(${targetSorterId})에 Sorter(${sourceSorterId})의 요소들 추가 시도`);
+
+      try {
+        await Promise.all(
+          elementIds.map((elementId) =>
+            setMoveElementToSorter({
+              elementsId: elementId,
+              sorterId: targetSorter.sorter_id,
+            })
+          )
+        );
+
+        setSorters((prev) =>
+          prev.map((s) =>
+            s.sorter_id === targetSorter.sorter_id
+              ? {
+                ...s,
+                elements_id: [...(s.elements_id || []), ...elementIds.map(String)],
+              }
+              : s
+          )
+        );
+      } catch (error) {
+        console.error("🔥 정렬자 간 요소 이동 실패", error);
+      }
+      return;
+    }
+
+    // ✅ 요소 → sorter : 단일 요소 추가
+    if (overIdStr.startsWith("sorter-") && !activeIdStr.startsWith("sorter-")) {
+      const sorterId = overIdStr.replace("sorter-", "");
+      const elementId = activeIdStr.includes("-")
+        ? activeIdStr.split("-").pop()
+        : activeIdStr;
+
+      const targetSorter = sorters.find(
+        (s) => String(s.sorter_id) === sorterId
+      );
+
+      if (!targetSorter) {
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자 없음`);
+        return;
+      }
+
+      console.log("📥 요소를 정렬자에 추가");
 
       try {
         await setMoveElementToSorter({
@@ -752,71 +771,67 @@ const SorterPage = () => {
       } catch (error) {
         console.error("🔥 요소 이동 실패", error);
       }
+      return;
     }
 
-    // ✅ sorter 내에서 순서 변경
+    // ✅ sorter 내부 순서 변경
     if (
-      typeof active.id === "string" &&
-      typeof over.id === "string" &&
-      active.id.includes("-") &&
-      over.id.includes("-")
+      activeIdStr.includes("-") &&
+      overIdStr.includes("-")
     ) {
-      const [activeSorterId, activeElementId] = active.id.split("-");
-      const [overSorterId, overElementId] = over.id.split("-");
+      const activeElementId = activeIdStr.split("-").pop();
+      const overElementId = overIdStr.split("-").pop();
+      const sorterId = overIdStr.split("-")[0];
+
+      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+      if (!targetSorter) {
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자 없음`);
+        return;
+      }
 
       setIsDraggingElements(true);
 
-      if (overSorterId && overElementId) {
-        const sorterId = overSorterId;
-        const elementId = overElementId;
+      try {
+        await setMoveElementToSorter({
+          elementsId: overElementId,
+          sorterId: targetSorter.sorter_id,
+        });
 
-        const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
-        if (!targetSorter) {
-          console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
-          return;
-        }
+        setElementNamesBySorter((prev) => {
+          const updated = { ...prev };
 
-        try {
-          await setMoveElementToSorter({
-            elementsId: elementId,
-            sorterId: targetSorter.sorter_id,
-          });
+          if (updated[sorterId]) {
+            const elementIds = [...(updated[sorterId].ids || [])];
+            const elementNames = [...(updated[sorterId].names || [])];
 
-          setElementNamesBySorter((prev) => {
-            const updated = { ...prev };
+            const oldIndex = elementIds.indexOf(Number(activeElementId));
+            const newIndex = elementIds.indexOf(Number(overElementId));
 
-            if (updated[sorterId]) {
-              const elementIds = [...(updated[sorterId].ids || [])];
-              const elementNames = [...(updated[sorterId].names || [])];
+            if (oldIndex !== -1 && newIndex !== -1) {
+              [elementIds[oldIndex], elementIds[newIndex]] = [
+                elementIds[newIndex],
+                elementIds[oldIndex],
+              ];
+              [elementNames[oldIndex], elementNames[newIndex]] = [
+                elementNames[newIndex],
+                elementNames[oldIndex],
+              ];
 
-              const oldIndex = elementIds.indexOf(Number(activeElementId));
-              const newIndex = elementIds.indexOf(Number(overElementId));
-
-              if (oldIndex !== -1 && newIndex !== -1) {
-                const movedId = elementIds[oldIndex];
-                const movedName = elementNames[oldIndex];
-
-                elementIds[oldIndex] = elementIds[newIndex];
-                elementNames[oldIndex] = elementNames[newIndex];
-                elementIds[newIndex] = movedId;
-                elementNames[newIndex] = movedName;
-
-                updated[sorterId] = {
-                  ids: elementIds,
-                  names: elementNames,
-                };
-              } else {
-                console.log("🚨 잘못된 인덱스 - 순서 변경 안됨");
-              }
+              updated[sorterId] = {
+                ids: elementIds,
+                names: elementNames,
+              };
+            } else {
+              console.log("🚨 잘못된 인덱스 - 순서 변경 실패");
             }
+          }
 
-            return updated;
-          });
-        } catch (error) {
-          console.error("🔥 요소 이동 실패", error);
-        } finally {
-          setIsDraggingElements(false);
-        }
+          return updated;
+        });
+      } catch (error) {
+        console.error("🔥 정렬자 내 순서 변경 실패", error);
+      } finally {
+        setIsDraggingElements(false);
       }
     }
   };
@@ -905,7 +920,7 @@ const SorterPage = () => {
                     style={{
                       width: '40px',
                       height: '180px',
-                      color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                      color: isLeftRed ? '#f5222d' : '#635C3B ',
                       strokeWidth: 2,
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
@@ -916,7 +931,7 @@ const SorterPage = () => {
                     style={{
                       fontSize: '32px',
                       fontWeight: 'bold',
-                      color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                      color: isLeftRed ? '#f5222d' : '#635C3B ',
                     }}
                     className= 'left-arrow-text'
                   >
@@ -1012,7 +1027,6 @@ const SorterPage = () => {
 
                 </div>
               </div>
-
               <DragOverlay>
                 {activeCard ? (
                   typeof activeCard === 'string' && activeCard.startsWith('sorter-') ? (
@@ -1026,6 +1040,8 @@ const SorterPage = () => {
                   )
                 ) : null}
               </DragOverlay>
+
+
 
 
 
@@ -1143,7 +1159,7 @@ const SorterPage = () => {
                     style={{
                       fontSize: '32px',
                       fontWeight: 'bold',
-                      color: isRightRed ? '#f5222d' : '#2E3A59 ',
+                      color: isRightRed ? '#f5222d' : '#635C3B ',
 
                     }}
                     className = 'right-arrow-text'
@@ -1155,7 +1171,7 @@ const SorterPage = () => {
                     style={{
                       width: '40px',
                       height: '180px',
-                      color: isRightRed ? '#f5222d' : '#2E3A59 ',
+                      color: isRightRed ? '#f5222d' : '#635C3B ',
                       strokeWidth: 2,
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
@@ -1170,7 +1186,7 @@ const SorterPage = () => {
 
           <div className = "element-btn-section">
             <Tooltip title="카테고리 요소 삭제"
-                     overlayClassName="custom-tooltip"
+                     overlayClassName="custom-tooltip-red"
                      placement="top"
                      arrow={true}>
               <button
@@ -1181,42 +1197,9 @@ const SorterPage = () => {
                 <Trash className = "trash" size={20} />
               </button>
             </Tooltip>
-            <SwitchTransition mode="out-in">
-              <CSSTransition
-                key={selectedSorters.length > 0 ? "delete" : "add"}
-                timeout={300}
-                classNames="fade"
-              >
-                {selectedSorters.length > 0 ? (
-                  <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
 
-
-                    <button
-                      className="delete-selected-btn show-delete-btn"
-                      onClick={multiDeleteSorters}
-                    >
-                      Delete
-                    </button>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Sorter 추가"
-                           overlayClassName="custom-tooltip"
-                           placement="top"
-                           arrow={true}>
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      onClick={addSorter}
-                      className="sorter-btn"
-                    >
-                      Sorter
-                    </Button>
-                  </Tooltip>
-                )}
-              </CSSTransition>
-            </SwitchTransition>
             <Tooltip title="카테고리 요소 추가"
-                     overlayClassName="custom-tooltip-red"
+                     overlayClassName="custom-tooltip"
                      placement="top"
                      arrow={true}>
 
@@ -1224,8 +1207,43 @@ const SorterPage = () => {
 
             </Tooltip>
           </div>
+<div className= "sorter-btn-section">
+          <SwitchTransition mode="out-in">
+            <CSSTransition
+              key={selectedSorters.length > 0 ? "delete" : "add"}
+              timeout={300}
+              classNames="fade"
+            >
+              {selectedSorters.length > 0 ? (
+                <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
 
 
+                  <button
+                    className="delete-selected-btn show-delete-btn"
+                    onClick={multiDeleteSorters}
+                  >
+                    Delete
+                  </button>
+                </Tooltip>
+              ) : (
+                <Tooltip title="Sorter 추가"
+                         overlayClassName="custom-tooltip"
+                         placement="top"
+                         arrow={true}>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={addSorter}
+                    className="sorter-effect-btn"
+                  >
+                    Sorter
+                  </Button>
+                </Tooltip>
+              )}
+            </CSSTransition>
+          </SwitchTransition>
+
+</div>
           <div className="sorter-sort-section" id="sorter-sort-section" >
 
               <SorterContainer

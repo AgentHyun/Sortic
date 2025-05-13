@@ -7,17 +7,16 @@ body {
     padding: 0;
 }
 .sorter-section {
-    margin-top: 20px;
+    margin-top: 2.7vh;
     padding: 20px;
     width: 70vw;
-    background-color: #CEDF9F; /* 배경색 흰색 */
-    /*#E0F8E0*/
+    margin-right : 20px;
+    background-color: #CEDF9F;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
     height: 30vh; /* 고정 높이 */
     box-sizing: border-box; /* 패딩 포함된 박스 크기 */
 }
@@ -214,7 +213,7 @@ body {
   padding-bottom: 10px;
 }
 .cta:hover {
-  color: #aaaaaa !important;
+  color: #a7b57f !important;
 
 }
 .cta::after {
@@ -225,7 +224,7 @@ body {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #000000!important;
+  background-color: #a7b57f !important;
   transform-origin: bottom right;
   transition: transform 0.25s ease-out;
 }

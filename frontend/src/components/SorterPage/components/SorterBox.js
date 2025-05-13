@@ -3,7 +3,7 @@ import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 
 const SorterBox = ({ sorterId, children }) => {
-  const { setNodeRef, isOver } = useDroppable({ id: sorterId.toString() });
+  const { setNodeRef, isOver } = useDroppable({ id: "sorter-" + sorterId.toString() });
 
   return (
     <div

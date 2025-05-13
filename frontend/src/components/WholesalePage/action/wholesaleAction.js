@@ -4,16 +4,10 @@ import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
 import { wholesaleCodesAtom, wholesaleLinksAtom } from '../atoms/atoms';
 import {isOpenWholesaleAtom} from "../../../Atoms/userAtom";
+import {cardsAtom, currentCategoryAtom} from "../../SorterPage/atoms/atoms";
+import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 // 도매 코드 생성
-export const createWholesaleCodeAction = atom(null, async (get, set, newCode) => {
-  try {
-    await axios.post('http://localhost:8080/api/wholesale/code', newCode);
-    message.success("도매 코드가 생성되었습니다.");
-  } catch (error) {
-    console.error("🚨 도매 코드 생성 실패:", error);
-    message.error("도매 코드 생성에 실패했습니다.");
-  }
-});
+
 
 // 도매 코드 조회
 export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
@@ -27,18 +21,7 @@ export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
   }
 });
 
-// 도매 코드 삭제
-export const deleteWholesaleCodeAction = atom(null, async (get, set, codeId) => {
-  try {
-    await axios.delete(`http://localhost:8080/api/wholesale/code/${codeId}`);
-    message.success("도매 코드가 삭제되었습니다.");
-    // 삭제 후 갱신
-    set(fetchWholesaleCodesAction);
-  } catch (error) {
-    console.error("🚨 도매 코드 삭제 실패:", error);
-    message.error("도매 코드 삭제에 실패했습니다.");
-  }
-});
+
 
 export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLinkId) => {
   if (!wholesaleLinkId) {
@@ -115,6 +98,7 @@ export const getWholesaleCodeValueByIdAction = atom(
       const response = await axios.get(
         `http://localhost:8080/api/wholesale/code/${wholesaleCodeId}`
       );
+      await set(fetchElementsByCategoryAction, get(currentCategoryAtom)); // 필요한 경우
 
       const code = response.data?.wholesaleCode;
       if (code === undefined) {

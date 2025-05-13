@@ -10,20 +10,20 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
 
-    @Insert("insert into bill (user_id,bill_name) values (#{user_id},#{billName})")
+    @Insert("INSERT INTO bill (user_id, bill_name) VALUES (#{userId}, #{billName})")
     void insertBill(Bill bill);
 
     @Delete("DELETE FROM bill WHERE bill_id = #{billId}")
     void deleteBillById(int billId);
 
-    @Select("Select * from Bill Where user_id = #{user_id}")
+    @Select("SELECT * FROM bill WHERE user_id = #{userId}")
     @Results(id = "BillMap", value = {
         @Result(property = "billId", column = "bill_id"),
-        @Result(property = "user_id", column = "user_id"),
+        @Result(property = "userId", column = "user_id"), // ✅ 자바 필드명 기준
         @Result(property = "billName", column = "bill_name"),
         @Result(property = "createBillTime", column = "created_bill_time")
     })
-    List<Bill> findBillsByUserId(@Param("user_id") String user_id);
+    List<Bill> findBillsByUserId(@Param("userId") String userId); // ✅ 파라미터명도 통일
 
     @Select("""
         SELECT en.elements_name, en.elements_price
@@ -37,7 +37,6 @@ public interface BillMapper {
     })
     List<BillElementDetail> findElementsByBillId(@Param("billId") int billId);
 
-
     @Select("""
         SELECT commission_named AS commissionName, commission
         FROM Bill_Commission
@@ -45,8 +44,6 @@ public interface BillMapper {
     """)
     List<BillCommissionDetail> findCommissionsByBillId(@Param("billId") int billId);
 
-    @Update("UPDATE Bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
-    void updateBillName(@Param("billId")int billId,@Param("billName") String billName);
-
-
+    @Update("UPDATE bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
+    void updateBillName(@Param("billId") int billId, @Param("billName") String billName);
 }

@@ -91,7 +91,7 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 export const fetchSortersByUserAction = atom(null, async (get, set) => {
 
   const userId = get(selectedUserIdAtom);
-  console.log("정렬자 유저" + userId);
+
   try {
     const response = await axios.get(`http://localhost:8080/api/sorter/user/${userId}`);
     set(sortersAtom, response.data);
