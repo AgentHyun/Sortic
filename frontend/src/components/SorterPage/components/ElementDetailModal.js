@@ -141,7 +141,6 @@ const ElementDetailModal = () => {
                             <div className="detail-top">
                                 {editingField === "name" ? (
                                     <input
-
                                         size="small"
                                         value={newElementName}
                                         onChange={(e) => setNewElementName(e.target.value)}

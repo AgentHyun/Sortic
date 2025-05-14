@@ -1083,9 +1083,17 @@ const SorterPage = () => {
                 okButtonProps={{
                   className: 'custom-ok-button',
                   style: {
-                    backgroundColor: '#3b4a4d', // 원하는 색상으로 변경
+                    backgroundColor: '#929e6e', // 원하는 색상으로 변경
                     border : 'none',
                   }
+                }}
+                cancelButtonProps={{
+                  className: "custom-cancel-button", // ✅ 클래스 이름 부여
+                  style: {
+                    backgroundColor: '#f2f2f2',         // ✅ 예시 색상
+                    color: '#333',
+                    border: '1px solid #ccc',
+                  },
                 }}
               >
                 <div className="element-name-section">
@@ -1108,7 +1116,6 @@ const SorterPage = () => {
 
                   />
                 </div>
-
               </Modal>
 
               <Modal
@@ -1119,7 +1126,19 @@ const SorterPage = () => {
                 okText="확인"
                 cancelText="취소"
                 okButtonProps={{
-                  className: "attribute-ok-button"
+                  className: "attribute-ok-button",
+                  style: {
+                    backgroundColor: '#929e6e', // 원하는 색상으로 변경
+                    border : 'none',
+                  }
+                }}
+                cancelButtonProps={{
+                  className: "custom-cancel-button",
+                  style: {
+                    backgroundColor: '#f2f2f2',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                  },
                 }}
               >
                 {keyValuePairs.map((pair, index) => (
@@ -1141,6 +1160,7 @@ const SorterPage = () => {
                       icon={<DeleteOutlined />}
                       danger
                       onClick={() => removeKeyValuePair(index)}
+                      style={{marginTop : 9 }}
                     />
                   </div>
                 ))}

@@ -216,23 +216,19 @@
 
 
 .arrow-right-btn {
-    border: 1px solid rgba(31, 41, 51, 0.1);
     border-radius: 12px;
     padding: 10px;
     background-color: #CEDF9F;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
-  margin-left : -20px;
+    margin-left : -20px;
     width: 3vw;
     height : 30vh;
     justify-content: center;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 .arrow-left-btn {
-    border: 1px solid rgba(31, 41, 51, 0.1);
-
-
     border-radius: 12px;
     padding: 10px;
     background-color: #CEDF9F;

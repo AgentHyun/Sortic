@@ -32,12 +32,15 @@
 
 .info-section h2 {
   font-size: 40px;
-  color: #7a7a34;
+  color: #4E3629; /* 더 따뜻한 톤의 진한 갈색 */
   margin-bottom: 1rem;
 }
-.domae{
- color: #8dbc60;
+
+.domae {
+  color: #f1c40f;  /* 눈에 잘 띄는 진한 노랑 */
+  font-weight: 800;
 }
+
 
 .info-section p {
   font-size: 30px;
@@ -63,26 +66,26 @@
 
 }
 
-/* 버튼 스타일 */
 .add-button-wholesale {
-  --color: rgb(74, 94, 60); /* 기존 배경과 어울리는 톤으로 변경 */
+  --color: #5aa31e;
+  background: linear-gradient(135deg, #a6dd60, #76a80b) !important;
+  border-radius: 12px;
   padding: 0.8em 1.7em;
-  background: #76a80b !important;
-  border-radius: 0.3em;
-  position: relative;
-  overflow: hidden;
   font-family: "Orbit", sans-serif;
-  cursor: pointer;
-  transition: 0.5s;
-  font-weight: 400;
   font-size: 17px;
-
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--color);
+  color: white !important;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  border: none;
+  width: 10vw;
+  min-width: 180px;
+  height: 45px;
   z-index: 1;
-  width : 10vw;
-  height : 45px;
-  border : none;
+  box-shadow: 0 6px 14px rgba(110, 160, 60, 0.25);
+  transition: background 0.4s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .add-button-wholesale::before,
@@ -312,7 +315,8 @@
 
 .add-button-wholesale.delete-mode {
   --color: #cf2222;
-  background-color: #ef5e5f !important;
+  background: linear-gradient(135deg, #f87171, #dc2626) !important;
+
   color: white;
   border: 1px solid #ff7875 !important;
   font-size: 17px;
@@ -517,28 +521,30 @@
 .register-code-button {
   padding: 17px 40px;
   cursor: pointer;
-  background-color: white !important;
-  box-shadow: rgba(0, 0, 0, 0.05) 0 0 8px;
+  background: linear-gradient(135deg, #f1c40f, #e1b20a);
+  box-shadow: 0 6px 14px rgba(241, 196, 15, 0.35);
+  border-radius: 12px;
+  border: none;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   font-size: 15px;
-  transition: all 0.5s ease;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color : black!important;
+  font-weight: 600;
+  font-family: 'Orbit', sans-serif;
+  color: white !important;
+  transition: all 0.3s ease;
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
   max-width: 480px;
-
-  font-weight: 500;
   z-index: 10;
 }
 
+
 .register-code-button:hover {
   letter-spacing: 3px;
-  background-color: #ecae3d!important;
+  background: linear-gradient(135deg, #ecae3d, #f3a930) !important;
   color: #ffffff !important;
   box-shadow: rgba(236, 174, 61, 0.5) 0px 7px 29px 0px;
 }
