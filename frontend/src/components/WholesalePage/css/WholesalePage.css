@@ -5,7 +5,7 @@
   align-items: flex-start;
   gap: 4rem;
   padding: 2rem 2rem;
-  background-color:#f9e050;
+  background-color: #F1F3C2;
   flex-wrap: wrap;
   padding-bottom: 15rem;
   font-family: 'Orbit', sans-serif;
@@ -14,11 +14,11 @@
 }
 
 .info-section {
-  background-color:  #f9e050; /* 살짝 투명한 흰색 */
+  background-color: transparent; /* 살짝 투명한 흰색 */
   padding: 3rem;
   border-radius: 16px;
   text-align: center;
-  max-width: 500px;
+  max-width: 550px;
   flex-shrink: 0;
   margin-top: 10rem;
 
@@ -32,11 +32,11 @@
 
 .info-section h2 {
   font-size: 40px;
-  color:   #9a7064 ;
+  color: #7a7a34;
   margin-bottom: 1rem;
 }
 .domae{
- color: #6c4941;
+ color: #8dbc60;
 }
 
 .info-section p {
@@ -65,25 +65,62 @@
 
 /* 버튼 스타일 */
 .add-button-wholesale {
-  margin-top: 0.6rem;
-  margin-bottom : 0.5rem;
-  width: 100%;
-  background-color:  #1c283c !important;
-  color:  white !important;
-  border-color: white!important;
-  font-size: 17px;
-  font-weight: 500;
-  padding: 14px 24px;
-  height : 5vh;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  --color: rgb(74, 94, 60); /* 기존 배경과 어울리는 톤으로 변경 */
+  padding: 0.8em 1.7em;
+  background: #76a80b !important;
+  border-radius: 0.3em;
+  position: relative;
+  overflow: hidden;
   font-family: "Orbit", sans-serif;
+  cursor: pointer;
+  transition: 0.5s;
+  font-weight: 400;
+  font-size: 17px;
+
+  text-transform: uppercase;
+  color: var(--color);
+  z-index: 1;
+  width : 10vw;
+  height : 45px;
+  border : none;
+}
+
+.add-button-wholesale::before,
+.add-button-wholesale::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: var(--color);
+  transition: 1s ease;
+}
+
+.add-button-wholesale::before {
+  top: -1em;
+  left: -1em;
+}
+
+.add-button-wholesale::after {
+  left: calc(100% + 1em);
+  top: calc(100% + 1em);
+}
+
+.add-button-wholesale:hover::before,
+.add-button-wholesale:hover::after {
+  height: 410px;
+  width: 530px;
 }
 
 .add-button-wholesale:hover {
-  background-color: #6a6969 !important;
-  transform: scale(1.03);
+  color: #fff;
+}
+
+.add-button-wholesale:active {
+  filter: brightness(.8);
 }
 
 /* 버튼 영역 정리 */
@@ -104,15 +141,15 @@
 
 /* 등록 버튼 */
 .modal-container .ant-btn-primary {
-  background-color: #9a7064;
-  border-color: #9a7064;
+  background-color: #8dbc60;
+  border-color: #8dbc60;
   color: white;
   transition: all 0.3s ease;
 }
 
 .modal-container .ant-btn-primary:hover {
-  background-color: #a67c52 !important;
-  border-color: #a67c52 !important;
+  background-color: #9ed36d !important;
+  border-color: #a0d56e !important;
   transform: translateY(-1px) scale(1.02);
 }
 
@@ -274,13 +311,20 @@
 
 
 .add-button-wholesale.delete-mode {
-  background-color: #ff4d4f!important;
+  --color: #cf2222;
+  background-color: #ef5e5f !important;
   color: white;
-  border: 1px solid #ff7875!important;
+  border: 1px solid #ff7875 !important;
   font-size: 17px;
   font-weight: 500;
   font-family: "Orbit", sans-serif;
 }
+.add-button-wholesale.delete-mode:hover {
+  background-color: #e04a4b !important;
+  color: white !important;
+}
+
+
 .wholesale-preview-item {
   background-color: #f5f5f5; /* 연한 회색 */
   padding: 12px 16px;
@@ -308,7 +352,7 @@
   font-weight: 600;
   font-size: 1.15rem;
   padding: 1rem 2rem;                    /* 내부 공간 확보 */
-  border-left: 4px solid #f9e050;
+  border-left: 4px solid #edea82;
   /* 왼쪽 컬러 바 강조 */
   border-radius: 8px;                      /* 부드러운 모서리 */
   box-shadow:
@@ -469,28 +513,42 @@
 .wholesale-link-header:hover{
   cursor:pointer;
 }
+
 .register-code-button {
+  padding: 17px 40px;
+  cursor: pointer;
+  background-color: white !important;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color : black!important;
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
   max-width: 480px;
-  background-color: #1c283c !important;
-  color: white !important;
-  border: none;
-  font-size: 17px;
+
   font-weight: 500;
-  padding: 14px 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
-
 .register-code-button:hover {
-  background-color: #6a6969 !important;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-  transform: scale(1.03);
-  cursor: pointer;
+  letter-spacing: 3px;
+  background-color: #ecae3d!important;
+  color: #ffffff !important;
+  box-shadow: rgba(236, 174, 61, 0.5) 0px 7px 29px 0px;
 }
+
+.register-code-button:active {
+  letter-spacing: 3px;
+  background-color: #d29b36 !important ;
+  color: #ffffff !important;
+  box-shadow: rgba(236, 174, 61, 0.5) 0px 7px 29px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+}
+

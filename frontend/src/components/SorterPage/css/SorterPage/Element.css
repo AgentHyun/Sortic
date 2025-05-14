@@ -1,6 +1,6 @@
 .element-btn {
      /* 기본 배경 색 */
-    color: #272727 ;
+    color: #5b9a29 !important;
     font-size: 30px;
     border-radius: 8px;
     margin-right : 1px;
@@ -32,7 +32,7 @@
 
 .element-btn-delete {
   font-size: 18px;
-  color: #1F2933;
+  color: red!important;
   width: 10vw;
   height: 5.3vh;
   background-color: #fafaee;
@@ -71,7 +71,7 @@
 
     border-radius: 10px; /* ✅ 더 부드러운 모서리 */
     color: #635C3B;
-    background: #f2faad;
+    background: #f5fd94;
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
     transform: scale(1.02); /* ✅ 살짝 확대 효과 */
@@ -217,7 +217,7 @@
 
 .category-item:hover {
     color: #635C3B;
-    background: #f2faad;
+    background: #f5fd94;
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }

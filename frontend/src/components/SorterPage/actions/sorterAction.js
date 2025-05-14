@@ -262,7 +262,7 @@ export const moveElementToSorterAction = atom(
       );
 
       set(sortersAtom, updatedSorters);
-      message.success(`요소가 정렬자에 추가되었습니다!`);
+    
     } catch (error) {
       if (error.response?.status === 409) {
 

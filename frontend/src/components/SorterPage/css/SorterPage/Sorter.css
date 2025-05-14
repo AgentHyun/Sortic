@@ -1,44 +1,45 @@
+
 /* 전체 영역 */
 .sorter-sort-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 40px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  width: 100%;
 }
 
 
 
 /* 슬라이드 영역 */
 .sorter-scroll-wrapper {
-    width: 99%;
-    padding: 16px 0;
-    min-width : 1000px;
+  width: 99%;
+  padding: 16px 0;
+  min-width : 1000px;
 }
 
 /* Sorter 카드 */
 .sorter-wrapper {
-    position: relative;
-    width : 23vw;
-    height: 50vh;
-    margin : 3vw;
-    background-color: #CEDF9F;
-    border-radius: 20px;
-    box-shadow: 0 10px 18px 10px rgba(0, 0, 0, 0.08);
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 1;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* transition 속도 조정 */
-    padding: 20px;
+  position: relative;
+  width : 23vw;
+  height: 50vh;
+  background-color: #CEDF9F;
+  border-radius: 20px;
+  box-shadow: 0 10px 18px 10px rgba(0, 0, 0, 0.08);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; /* transition 속도 조정 */
 
 
+
+  box-sizing: border-box;
 }
 
 .sorter-wrapper:hover {
-    transform: translateY(-6px);
-    cursor : pointer;
+  transform: translateY(-6px);
+  cursor : pointer;
 
 
 }
@@ -47,20 +48,23 @@
 
 /* Sorter 제목 */
 .sorter-title {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    color: #635C3B;
-    margin-bottom: 16px;
-    font-family: "Orbit", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #635C3B;
+  font-family: "Orbit", sans-serif;
+  height : 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
 
 }
 
 .sorter-title:hover {
-    cursor : pointer;
-    background-color: transparent;
+  cursor : pointer;
+  background-color: transparent;
 
-    transform: scale(1.08);
+  transform: scale(1.08);
 
 }
 .sorter-btn-section{
@@ -70,29 +74,31 @@
 }
 /* Sorter 내용 박스 */
 .sorter-box {
-    background-color: white;
-    flex-grow: 1;
-    border-radius: 14px;
-    position: relative;
-    padding: 16px;
-    display: flex;
-    width: 21vw;
-    height : 41.5vh;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    color: #333;
+  background-color: white;
+  border-radius: 14px;
+  position: relative;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-
+  overflow-y: auto;
+  height: 41.5vh;
+  width: 21vw;
+  max-width: 21vw;
+  flex-grow: 1;
+  flex-basis: 0;
 
 
 }
+
 .sorter-list {
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  gap: 20px;
+  gap: 100px;
   margin-left : 4.6vw;
   padding-bottom: 10px;
   scrollbar-width: thin; /* Firefox */
@@ -102,21 +108,21 @@
 
 
 .delete-btn {
-    position: absolute;
-    top: 14px;
-    right: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(6px);
-    border : none;
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease, opacity 0.3s ease; /* 속도 빠르게 */
-    opacity: 0;
-    pointer-events: none;
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border : none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease, opacity 0.3s ease; /* 속도 빠르게 */
+  opacity: 0;
+  pointer-events: none;
   margin-right : 10.5px;
   margin-bottom : -10px;
 
@@ -126,18 +132,18 @@
 /* hover 시 스타일 */
 .sorter-wrapper:hover .delete-btn,
 .sorter-box:hover .delete-btn {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .delete-btn:hover {
-    background: #ff4d4f;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  background: #ff4d4f;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .delete-btn:hover svg {
-    color: #fff;
+  color: #fff;
 }
 
 
@@ -146,27 +152,27 @@
 }
 
 .sorter-name-input {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    background-color: transparent;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 8px;
-    width: auto;
-    min-width: 90px;
-    max-width: 160px;
-    text-align: center;
-    outline: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; /* 빠른 전환 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  background-color: transparent;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  width: auto;
+  min-width: 90px;
+  max-width: 160px;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; /* 빠른 전환 */
 }
 
 /* 선택된 Sorter */
 .selected-sorter {
   border-radius: 25px;
   padding: 12px 16px;
-  background-color: #f2faad; /* 연한 올리브 톤 */
+  background-color: #f2fa83;; /* 연한 올리브 톤 */
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.12),
     0 0 20px rgba(200, 220, 180, 0.4);
@@ -175,16 +181,10 @@
   font-weight: 600;
   font-family: "Poppins", sans-serif;
   color: #2d2d2d;
+  transform: scale(1.06);
 }
 
-/* hover 시 */
-.selected-sorter:hover {
-  transform: scale(1.06);
-  background-color: #e9f48d; /* ✅ 살짝 진하게 변경 */
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.15),
-    0 0 25px rgba(240, 248, 162, 0.5);
-}
+
 
 
 /* active 시 */
@@ -196,61 +196,61 @@
 
 
 .element-names {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    gap: 20px;
-    justify-content: center;
-    align-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-content: center;
 
 }
 
 
 
 .element-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    color: #333;
-    padding: 12px 18px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    border: 1px solid #d0d0d0;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    min-width: 90px;
-    max-width: calc(33.33% - 20px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: #333;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #d0d0d0;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  min-width: 90px;
+  max-width: calc(33.33% - 20px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
 }
 
 .element-item:hover {
-    background-color: #f2faad;
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  background-color: #f5fd94;
+  color:  #635C3B;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .element-item.selected {
-    color: #635C3B;
-    background: #f2faad;
+  color: #635C3B;
+  background: #f5fd94;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(76, 88, 91, 0.3);
-    transition: all 0.3s ease-in-out;
-    transform: scale(1.02);
-    font-weight: 600;
-    font-family: "Poppins", sans-serif;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  transform: scale(1.02);
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .element-item.selected:hover {
-    box-shadow: 0 6px 18px rgba(76, 88, 91, 0.4);
-    transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(76, 88, 91, 0.4);
+  transform: scale(1.05);
 }
 
 
@@ -276,7 +276,7 @@
 .selected-sorter-item {
   color: #635C3B;
   border-radius: 10px;
-  background: #f2faad;
+  background: #f5fd94;
   box-shadow: 0 4px 20px rgba(76, 88, 91, 0.3);
   transition: all 0.3s ease-in-out;
   transform: scale(1.02);
@@ -325,8 +325,9 @@
   text-transform: uppercase;
   color: var(--color);
   z-index: 1;
-  width : 10vw;
-  height : 45px;
+  width: 10vw;
+  min-width: 200px;
+  height: 5vh;
   border : none;
 }
 

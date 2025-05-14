@@ -145,7 +145,7 @@ const WholesalePage = () => {
         <h2>
           <strong className="domae">도매 코드</strong>로 연결된<br />정보를 확인해보세요!
         </h2>
-        <p>"도매 코드를 등록하면<br />클릭 한 번으로<br /> 도매인의 정보가 조회돼요."</p>
+        <p>"도매 코드를 등록하면<br />클릭 한 번으로<br />도매인의 Sorter가 조회돼요."</p>
       </div>
 
       <div className="whole-sale-page">
@@ -164,7 +164,7 @@ const WholesalePage = () => {
           block
           className={`add-button-wholesale ${selectedLinkId ? 'delete-mode' : ''}`}
         >
-          {selectedLinkId ? '도매 링크' : '도매 코드'}
+          {selectedLinkId ? 'Code' : 'Code'}
         </Button>
 
         <div className="wholesale-links-list">
@@ -210,7 +210,7 @@ const WholesalePage = () => {
                         }}
                       >
                         <div className="memo-text">
-                          {memoTexts[link.wholesaleLinkId] || '메모 없음'}
+                          {memoTexts[link.wholesaleLinkId] || ''}
                         </div>
                       </div>
                     </div>
@@ -229,7 +229,7 @@ const WholesalePage = () => {
               type="primary"
               block
               className="register-code-button"
-              style={{ backgroundColor: '#1c283c', color: 'white', fontWeight: '600', height: '48px' }}
+              style={{backgroundColor: '#1c283c', color: 'white', fontWeight: '600', height: '48px'}}
               onClick={() => {
                 const selectedLink = links.find(link => link.wholesaleLinkId === selectedLinkId);
                 if (selectedLink?.wholesaleCodeId) {
@@ -239,7 +239,8 @@ const WholesalePage = () => {
                 }
               }}
             >
-              등록
+            register
+
             </Button>
           </div>
         )}

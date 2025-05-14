@@ -10,17 +10,11 @@ const SorterBox = ({ sorterId, children }) => {
       ref={setNodeRef}
       className="sorter-box"
       style={{
-        minHeight: '120px', // ✅ 최소 높이 지정
-        minWidth: '200px',
         backgroundColor: isOver ? '#fff8e1' : '#ffffff',
         borderRadius: '12px',
-
         padding: '20px',
         position: 'relative',
         transform: isOver ? 'scale(1.02)' : 'scale(1)',
-        transition: 'all 0.25s ease-in-out, transform 0.2s ease-in-out',
-
-        // ✅ 부모 안에 꽉 차게 만드세요.
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',

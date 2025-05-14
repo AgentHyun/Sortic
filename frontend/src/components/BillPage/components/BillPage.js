@@ -8,7 +8,8 @@ import { billsAtom } from "../atom/atoms";
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
 import { jwtDecode } from 'jwt-decode';
-import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms";
+import {PlusOutlined} from "@ant-design/icons"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
@@ -92,9 +93,15 @@ const BillPage = () => {
   return (
     <div className="bill-container">
       <div className="bill-add">
-        <Button type="primary" className="add-bill-btn" onClick={() => setIsModalVisible(true)}>
-          + Bill
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setIsModalVisible(true)}
+          className="sorter-effect-btn"
+        >
+          Bill
         </Button>
+
       </div>
 
       <SortableContext

@@ -186,7 +186,7 @@ const SorterPage = () => {
   const [authUser, setAuthUser] = useAtom(authUserAtom);
   //sorter-element
   const [getElementsIdBySorterId, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
-  const [elementsIdList, setElemensIdList] = useAtom(elementsIdListAtom);
+  const [elementsIdList, setElementsIdList] = useAtom(elementsIdListAtom);
   //bill
   const [addBillElements, setAddBillElementsAction] = useAtom(addBillElementsAction);
   const [fetchBills, setFetchBills]= useAtom(fetchBillsAction);
@@ -861,17 +861,13 @@ const SorterPage = () => {
     setDropdownVisible(true); // 드롭다운 열기
   };
   const handleMenuClick = async (linkName) => {
-
-
     const userId = await getUserIdByLinkName(linkName);
     setSelectedUserName(linkName);
-
     if (userId) {
       setSelectedUserId(userId); // ✅ authUser.userId 대신 사용 가능
-
     }
+    setCards([]);
     setfetchAndNumberCategories();
-
   };
 
 
