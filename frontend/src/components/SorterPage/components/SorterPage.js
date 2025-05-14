@@ -44,14 +44,31 @@ import {
   cardsAtom,
   sortersAtom,
   selectedElementIdAtom,
-  originalElementNameAtom, currentIndexAtom,
-  attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom,
-  selectedElementIdsAtom, animationClassAtom,
-  fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-  editedSorterNameAtom, edtingSorterIdAtom,
-  selectedSortersAtom, elementsRefreshTriggerAtom,
-  oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom, selectedUserIdAtom, selectedUserNameAtom
+  originalElementNameAtom,
+  currentIndexAtom,
+  attributeModalVisibleAtom,
+  keyValuePairsAtom,
+  addedElementIdAtom,
+  selectedElementIdsAtom,
+  animationClassAtom,
+  fadeInOutAtom,
+  newElementPriceAtom,
+  popoverVisibleAtom,
+  costErrorAtom,
+  editedSorterNameAtom,
+  edtingSorterIdAtom,
+  selectedSortersAtom,
+  elementsRefreshTriggerAtom,
+  oldSorterNameAtom,
+  activeCardAtom,
+  selectedElementNamesBySorterAtom,
+  elementNamesBySorterAtom,
+  isDraggingElementsAtom,
+  sorterNameByIdAtom,
+  elementsIdListAtom,
+  selectedUserIdAtom,
+  selectedUserNameAtom,
+  defaultAttributesAtom
 
 } from '../atoms/atoms';
 
@@ -131,6 +148,7 @@ const SorterPage = () => {
   const [, openContextMenu] = useAtom(openContextMenuAction);
   const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
   const [, setIsDraggingElements] = useAtom(isDraggingElementsAtom);
+  const [defaultAttributes, setDefaultAttributes] = useAtom(defaultAttributesAtom);
 
 
   const[, setAddElement] = useAtom(addElementAction);
@@ -857,6 +875,8 @@ const SorterPage = () => {
   };
 
   const handleLinkClick = async () => {
+    setDefaultAttributes([]);  // 빈 배열로 초기화
+
     await fetchLinks(); // 링크 조회
     setDropdownVisible(true); // 드롭다운 열기
   };

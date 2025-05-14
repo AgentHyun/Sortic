@@ -48,6 +48,8 @@ export const contextMenuAtom = atom({
 export const costErrorAtom = atom('');
 export const elementsIdListAtom = atom([]);
 export const elementsRefreshTriggerAtom = atom(0);
+//처음 속성값 저장하는 Atom
+export const defaultAttributesAtom = atom([]);
 // element name을 저장할 atom
 export const elementNameAtom = atom(null);
 export const elementDetailDataAtom = atom(null);

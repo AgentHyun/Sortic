@@ -18,7 +18,7 @@ import {
   selectedElementIdsAtom, addedElementIdAtom,
   contextMenuAtom,
   newElementPriceAtom, cardsByCategoryAtom,
-  sorterCardsAtom, selectedElementIdsBySorterAtom, activeCardAtom
+  sorterCardsAtom, selectedElementIdsBySorterAtom, activeCardAtom, keyValuePairsAtom, defaultAttributesAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -191,9 +191,20 @@ export const addElementAction = atom(
         set(addedElementIdAtom, newElementId);
         set(addElementNameAtom, "");
         set(addElementCostAtom, "");
-        set(selectedElementIdAtom, newElementId);
-        set(addElementModalVisibleAtom, false);
-        set(attributeModalVisibleAtom, true);
+
+
+        const defaults = get(defaultAttributesAtom);
+        const initializedPairs = Array.isArray(defaults)
+          ? defaults.map((item) => ({ key: item.key, value: '' }))  // key만 유지, value 비움
+          : [];
+
+
+
+        set(keyValuePairsAtom, initializedPairs);          // ✅ 속성 초기화
+        set(selectedElementIdAtom, newElementId);          // ✅ 요소 선택 ID 설정
+        set(addElementModalVisibleAtom, false);            // 🔒 모달 닫기
+        set(attributeModalVisibleAtom, true);              // ✅ 속성 모달 열기
+
         set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
       }
     } catch (error) {

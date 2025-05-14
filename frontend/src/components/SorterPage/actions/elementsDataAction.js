@@ -8,7 +8,8 @@ import {
     attributeModalVisibleAtom,
     elementDetailModalAtom,
     elementDetailDataAtom, elementAttributesAtom,selectedElementIdAtom,
-    tempValueAtom,  elementsDataAtom, editingElementIndexAtom, editingElementIdAtom
+    tempValueAtom,  elementsDataAtom, editingElementIndexAtom, editingElementIdAtom,
+  defaultAttributesAtom
 } from '../atoms/atoms';
 
 
@@ -60,8 +61,9 @@ export const elementsDataAction = atom(
                 }
 
             );
+          set(defaultAttributesAtom, filteredPairs.map(p => ({ key: p.key })));
 
-            if (response.status === 200) {
+          if (response.status === 200) {
                 set(messageAtom, { type: 'success', content: '속성 추가 성공!' });
                 set(keyValuePairsAtom, []); // 입력 초기화
                 set(attributeModalVisibleAtom, false); // 모달 닫기
