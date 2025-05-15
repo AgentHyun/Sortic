@@ -57,7 +57,7 @@ const ContextMenu = () => {
             >
                 상세 정보 <Inspect size={15} color="black" />
             </div>
-          {isExternalUser && (
+          {!isExternalUser && (
             <div className = 'context-delete'
                 onClick={() => {
                     deleteElement();

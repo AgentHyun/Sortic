@@ -1008,7 +1008,7 @@ const SorterPage = () => {
               <div className='sorter-header'>
 
 
-                {isExternalUser && (
+                {!isExternalUser && (
                   <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
                     <button className="category-btn-delete" onClick={handleDeleteCategory}>-</button>
                   </Tooltip>
@@ -1041,7 +1041,7 @@ const SorterPage = () => {
                 </Popover>
                 {/* + 추가 버튼 */}
 
-                {isExternalUser && (
+                {!isExternalUser && (
                 <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
                   <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
                     +
@@ -1293,7 +1293,7 @@ const SorterPage = () => {
 
           </div>
 
-          {isExternalUser && (
+          {!isExternalUser && (
             <div className="element-btn-section">
               <Tooltip
                 title="카테고리 요소 삭제"

@@ -38,7 +38,7 @@ const WholesalePage = () => {
   const [, registerToUserCode] = useAtom(registerToUserWholesaleCodeAction);
   const [memoTexts, setMemoTexts] = useState({});
   const [editingMemoId, setEditingMemoId] = useState(null);
-
+  const [showHintCard, setShowHintCard] = useState(false);
   useEffect(() => {
     fetchLinks();
     setIsOpenWholesale(true);
@@ -103,6 +103,18 @@ const WholesalePage = () => {
       setEditingMemoId(null);
     }
   };
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setShowHintCard(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
 
   const handleAddClick = () => setModalVisible(true);
 
@@ -142,17 +154,52 @@ const WholesalePage = () => {
   return (
     <div className="whole-sale-page-container">
       <div className="info-section">
-        <h2>
-          <strong className="domae">도매 코드</strong>로 연결된<br />정보를 확인해보세요!
-        </h2>
-        <p>"도매 코드를 등록하면<br />클릭 한 번으로<br />도매인의 Sorter가 조회돼요."</p>
-      </div>
 
+        <div className="typewriter">
+          <div className="slide"><i></i></div>
+          <div className="paper"></div>
+          <div className="keyboard"></div>
+        </div>
+
+        <h2>
+          <strong className="domae">도매 코드</strong>로 연결된<br/>정보를 확인해보세요!
+        </h2>
+        <button className="faq-button" onClick={() => setShowHintCard(!showHintCard)}> {/* ✅ 클릭 시 모달 */}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
+          </svg>
+          <span className="tooltip">HINT</span>
+        </button>
+      </div>
+      {showHintCard && (
+        <div className="custom-hint-overlay">
+          <div className="cards">
+            <div className="card first">
+              <p className="first-tip">Connect</p>
+              <p className="first-second-text"><span className="green-color">+CODE</span>를 눌러 도매 상인의 코드를 추가해요</p>
+            </div>
+            <div className="card second">
+              <p className="second-tip">Select</p>
+              <p className="second-second-text">등록된 <span className="yellow-color"> LINK</span>를 눌러 선택해요</p>
+            </div>
+            <div className="card third">
+              <p className="third-tip">Register</p>
+              <p className="third-second-text"><span className="orange-color">REGISTER</span>를 눌러 내 링크에 등록해요</p>
+            </div>
+
+
+          </div>
+          <button className="hint-close-button" onClick={() => setShowHintCard(false)}>
+            ×
+          </button>
+        </div>
+
+      )}
       <div className="whole-sale-page">
         <Button
           type={selectedLinkId ? 'default' : 'primary'}
           danger={!!selectedLinkId}
-          icon={selectedLinkId ? <MinusOutlined /> : <PlusOutlined />}
+          icon={selectedLinkId ? <MinusOutlined/> : <PlusOutlined/>}
           onClick={() => {
             if (selectedLinkId) {
               handleDelete(selectedLinkId);
@@ -164,7 +211,7 @@ const WholesalePage = () => {
           block
           className={`add-button-wholesale ${selectedLinkId ? 'delete-mode' : ''}`}
         >
-          {selectedLinkId ? 'Code' : 'Code'}
+        {selectedLinkId ? 'Code' : 'Code'}
         </Button>
 
         <div className="wholesale-links-list">

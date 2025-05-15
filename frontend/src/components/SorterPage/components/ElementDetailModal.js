@@ -118,7 +118,7 @@ const ElementDetailModal = () => {
 
                    <div className="detail-btn-section">
                     {/* 편집 모드 토글 버튼 */}
-                     {isExternalUser && (
+                     {!isExternalUser && (
                        <>
                          <button
                            onClick={() => setIsEditing(!isEditing)}
@@ -144,7 +144,7 @@ const ElementDetailModal = () => {
 
                    </div>
 
-                  <div className={`detail-header ${isExternalUser ? 'external-user' : 'internal-user'}`}>
+                  <div className={`detail-header ${!isExternalUser ? 'external-user' : 'internal-user'}`}>
                         <img
                             src={process.env.PUBLIC_URL + "/favicon.ico"}
                             alt="element"

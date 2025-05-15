@@ -269,7 +269,7 @@ body {
 }
 .custom-input:hover{
   background-color: #f4f4f3 !important;
-  color : white!important;
+  color : black!important;
   border : none!important;
 }
 .custom-input:focus {
@@ -277,3 +277,5 @@ body {
   -webkit-transition: 0.1s;
   transition: 0.5s;
 }
+
+
