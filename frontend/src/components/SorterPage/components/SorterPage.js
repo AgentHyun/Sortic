@@ -1326,6 +1326,8 @@ const SorterPage = () => {
               </Tooltip>
             </div>
           )}
+
+          {!isExternalUser && (
 <div className= "sorter-btn-section">
           <SwitchTransition mode="out-in">
             <CSSTransition
@@ -1363,6 +1365,11 @@ const SorterPage = () => {
           </SwitchTransition>
 
 </div>
+)}
+
+
+
+          {!isExternalUser && (
           <div className="sorter-sort-section" id="sorter-sort-section" >
 
               <SorterContainer
@@ -1379,8 +1386,10 @@ const SorterPage = () => {
                 handleSorterNameDoubleClick={handleSorterNameDoubleClick}
               />
           </div>
+            )}
+          {!isExternalUser && (
           <BillPage/>
-
+            )}
         </div>
 
 

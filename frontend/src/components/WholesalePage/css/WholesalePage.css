@@ -200,11 +200,16 @@
   background-color: #ffffff;
 }
 .wholesale-links-list {
-  margin-top: 2rem;
-
+  padding: 50px;
+  min-height: 400px;
+  
+  margin-top: 2.5rem;
+  border : 2px solid #fde894;
   display: grid;
+  border-radius: 10px;
   gap :1.5rem;
   overflow-y: auto;
+
   grid-template-columns: 1fr; /* ✅ 한 줄에 하나만 배치 */
 
 }
@@ -298,9 +303,7 @@
   border: 5px solid #fff78d;
   border-radius: 12px;
   transition: all 0.1s ease-in-out;
-
   position: relative;
-
   /* 더 깊고 또렷한 입체감 */
   box-shadow:
     0 4px 6px rgba(0, 0, 0, 0.06),
@@ -1033,4 +1036,18 @@
   font-weight: 900;
   color : #edea82;
   font-family: 'Inter', sans-serif;
+}
+
+.link-title{
+
+  margin-bottom : -55px;
+  margin-top : 10px;
+  margin-right : 320px;
+  color : white;
+  background-color: #ede985;
+  border-radius: 10px;
+  padding : 5px;
+  font-weight: 700;
+  position: relative;  /* 또는 absolute/fixed, 상황에 따라 다름 */
+  z-index: 9999;
 }

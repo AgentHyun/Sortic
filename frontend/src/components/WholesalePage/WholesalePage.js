@@ -213,7 +213,7 @@ const WholesalePage = () => {
         >
         {selectedLinkId ? 'Code' : 'Code'}
         </Button>
-
+         <div className="link-title">Link</div>
         <div className="wholesale-links-list">
           {Array.isArray(links) && links.length > 0 ? (
             links.map((link) => (
