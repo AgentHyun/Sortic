@@ -80,6 +80,7 @@ function SignupPage() {
           message.success('사용 가능한 아이디입니다.'); // 사용 가능
         }
       } catch (err) {
+        console.log(err)
         message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
       }
     };

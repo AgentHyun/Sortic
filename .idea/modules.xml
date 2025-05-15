@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Sortic.iml" filepath="$PROJECT_DIR$/.idea/Sortic.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Sortic-Project.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Sortic-Project.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend/Sortic.backend.main.iml" filepath="$PROJECT_DIR$/.idea/modules/backend/Sortic.backend.main.iml" />
     </modules>
   </component>
 </project>

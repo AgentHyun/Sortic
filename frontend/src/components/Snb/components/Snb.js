@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { PanelRightOpen, PanelRightClose } from 'lucide-react';
 import '../css/snb.css';
-import { Calculator, NotebookPen, Percent, Truck } from 'lucide-react';
+import { Calculator, NotebookPen, Percent, Truck, MessageCircleMore} from 'lucide-react';
 import NormalCalculator from './NormalCalculator.js';
 import NoteCalculator from "./NoteCalculator";
 import PercentCalculator from "./PercentCalculator";
 import DeliveryTracking from "./DeliveryTracking";
+import Chat from "./Chat";
 
 const Snb = () => {
   const [isOpen, setIsOpen] = useState(false); // 전체 버튼 열림 상태
@@ -16,12 +17,14 @@ const Snb = () => {
   const [isNoteCalculatorVisible, setIsNoteCalculatorVisible] = useState(false);
   const [isPercentCalculatorVisible, setIsPercentCalculatorVisible] = useState(false);
   const [isDeliveryTrackingVisible, setIsDeliveryTrackingVisible] = useState(false);
+  const [isChatVisible,setIsChatVisible] = useState(false);
 
   // 강제 리렌더용 키값 (다시 누르면 재생성되게)
   const [normalKey, setNormalKey] = useState(0);
   const [noteKey, setNoteKey] = useState(0);
   const [percentKey, setPercentKey] = useState(0);
   const [deliveryKey, setDeliveryKey] = useState(0);
+  const [chatKey,setChatKey]=useState(0);
 
   const handleOpenNormalCalc = () => {
     setIsNormalCalculatorVisible(false);
@@ -54,6 +57,13 @@ const Snb = () => {
       setIsDeliveryTrackingVisible(true);
     }, 0);
   };
+  const handleOpenChat = () => {
+    setIsChatVisible(false);
+    setTimeout(()=>{
+      setChatKey(prev=>prev+1);
+      setIsChatVisible(true);
+    },0)
+  }
 
   return (
     <div className="snb-container">
@@ -80,7 +90,7 @@ const Snb = () => {
           {/* 각 툴 버튼 */}
           <button className="snb-btn" onClick={handleOpenNoteCalc}><NotebookPen /></button>
           <button className="snb-btn" onClick={handleOpenDeliveryTracking}><Truck /></button>
-          <button className="snb-btn">4</button>
+          <button className="snb-btn" onClick={handleOpenChat}><MessageCircleMore/></button>
         </div>
       </div>
 
@@ -90,27 +100,32 @@ const Snb = () => {
       </div>
 
       {/* 팝업 툴 컴포넌트 */}
-      <div className="Normal-calc-container">
+      <div className="snb-Normal-calc-container">
         {isNormalCalculatorVisible && (
           <NormalCalculator key={normalKey} onClose={() => setIsNormalCalculatorVisible(false)} />
         )}
       </div>
 
-      <div className="percent-calc-container">
+      <div className="snb-percent-calc-container">
         {isPercentCalculatorVisible && (
           <PercentCalculator key={percentKey} onClose={() => setIsPercentCalculatorVisible(false)} />
         )}
       </div>
 
-      <div className="note-calc-container">
+      <div className="snb-note-calc-container">
         {isNoteCalculatorVisible && (
           <NoteCalculator key={noteKey} onClose={() => setIsNoteCalculatorVisible(false)} />
         )}
       </div>
 
-      <div className="delivery-tracking-container">
+      <div className="snb-delivery-tracking-container">
         {isDeliveryTrackingVisible && (
           <DeliveryTracking key={deliveryKey} onClose={() => setIsDeliveryTrackingVisible(false)} />
+        )}
+      </div>
+      <div className="snb-chat-container">
+        {isChatVisible && (
+          <Chat key={chatKey} onClose={()=>setIsChatVisible(false)}/>
         )}
       </div>
     </div>

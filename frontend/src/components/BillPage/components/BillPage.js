@@ -4,50 +4,40 @@ import { Button, Input, message, Modal } from 'antd';
 import axios from 'axios'; // 임시 apiAxios로 변경해야함
 import apiAxios from '../../../Api/apiAxios'; // ✅ 주소 수정 axios -> authAxios
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // useSortable import 제거
-import { billsAtom } from "../atom/atoms";
+import {
+  billsAtom, commissionAddModalVisibleAtom, commissionModalVisibleAtom, commissionNameAtom, commissionValueAtom,
+  detailModalVisibleAtom,
+  isModalVisibleAtom,
+  selectedBillDetailsAtom, selectedBillForCommissionAtom, selectedBillIdAtom,
+  selectedBillTitleAtom, selectedCommissionIdsAtom
+} from "../atom/atoms";
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
 import { jwtDecode } from 'jwt-decode';
 import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 import { X, Plus, Minus } from "lucide-react";
+import {userIdAtom} from "../../../Atoms/userAtom";
+import {authUserAtom} from "../../../auth/authAtoms";
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useAtom(isModalVisibleAtom);
   const [newBillName, setNewBillName] = useState('');
-  const [editingBillId, setEditingBillId] = useState(false);
-  const [editedBillName, setEditedBillName] = useState('');
-  const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
-
-  /** ✅ JWT에서 userId 추출 */
-  const getUserIdFromToken = () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No token found');
-      const decoded = jwtDecode(token); // { userId: 'test', sub: ..., iat: ..., exp: ... }
-      return decoded.userId;
-    } catch (err) {
-      message.error('로그인 정보가 유효하지 않습니다.');
-      return null;
-    }
-  };
-
-  const user_id = selectedUserId; // ✅ 실제 로그인된 사용자 ID
-
+  const [user,] = useAtom(authUserAtom)
+  const userId = user.userId
   /** 💡 모든 Bill 목록 가져오기 */
-
-  const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [selectedBillDetails, setSelectedBillDetails] = useState([]);
-  const [selectedBillTitle, setSelectedBillTitle] = useState("");
-  const [commissionModalVisible, setCommissionModalVisible] = useState(false);
-  const [commissionAddModalVisible,setCommissionAddModalVisible] = useState(false);
-  const [commissionName,setCommissionName] = useState("");
-  const [commissionValue,setCommissionValue] = useState('');
-  const [selectedBillId, setSelectedBillId] = useState(null);
-  const [selectedBillForCommission, setSelectedBillForCommission] = useState(null);
-  const [selectedCommissionIds, setSelectedCommissionIds] = useState([]);
+  const [detailModalVisible, setDetailModalVisible] = useAtom(detailModalVisibleAtom);
+  const [selectedBillDetails, setSelectedBillDetails] = useAtom(selectedBillDetailsAtom);
+  const [selectedBillTitle, setSelectedBillTitle] = useAtom(selectedBillTitleAtom);
+  const [commissionModalVisible, setCommissionModalVisible] = useAtom(commissionModalVisibleAtom);
+  const [commissionAddModalVisible, setCommissionAddModalVisible] = useAtom(commissionAddModalVisibleAtom);
+  const [commissionName, setCommissionName] = useAtom(commissionNameAtom);
+  const [commissionValue, setCommissionValue] = useAtom(commissionValueAtom);
+  const [selectedBillId, setSelectedBillId] = useAtom(selectedBillIdAtom);
+  const [selectedBillForCommission, setSelectedBillForCommission] = useAtom(selectedBillForCommissionAtom);
+  const [selectedCommissionIds, setSelectedCommissionIds] = useAtom(selectedCommissionIdsAtom);
   const fetchBills = () => {
-    apiAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
+    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`) // ✅ 주소 수정
       .then(res => setBills(res.data))
       .catch(err => console.error('Bill 불러오기 실패', err));
   };
@@ -59,11 +49,9 @@ const BillPage = () => {
   /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-
-
-      await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
+      await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
         billName : newBillName,
-        user_id  : user_id
+        userId  : userId
       });
       // 전체 Bill 다시 불러오기
       fetchBills();
@@ -75,81 +63,10 @@ const BillPage = () => {
     }
 
   };
-  const handleDeleteBill = async (billId) => {
-    try {
-      await apiAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
-        params: { billId }
-      });
-      message.success("삭제 완료!");
-      fetchBills(); // 전체 새로고침
-    } catch (err) {
-      message.error("삭제 실패");
-    }
-  };
-  const handleUpdateBillName = async (billId) => {
-    try {
-      await apiAxios.put(`/bills/updateBillName`, {
-        billId: billId,
-        billName: editedBillName,
-      });
-      message.success("Bill 이름 수정 성공");
-      setEditingBillId(null);
-      fetchBills();
-    } catch (err) {
-      message.error("Bill 이름 수정 실패");
-    }
-  };
 
-  const handleIncrease = async (billId, elementsNameId) => {
-    await apiAxios.put(`/bills/increaseCount`, null, {
-      params: { billId, elementsNameId },
-    });
-    fetchBills();
-  };
-
-  const handleDecrease = async (billId, elementsNameId, currentCount) => {
-    if (currentCount <= 1) {
-      await apiAxios.delete(`/bills/deleteElement`, {
-        params: { billId, elementsNameId },
-      });
-    } else {
-      await apiAxios.put(`/bills/decreaseCount`, null, {
-        params: { billId, elementsNameId },
-      });
-    }
-    fetchBills();
-  };
-
-  const handleBillDoubleClick = async (bill) => {
-    try {
-      const allData = await Promise.all(
-        bill.elements.map((el) => {
-          const id = el.elementsNameId || el.elements_name_id || el.elements_nameId;
-          if (!id) {
-            console.warn("⚠️ 요소 ID 없음:", el);
-            return Promise.resolve({ data: [] });
-          }
-          return apiAxios.get(
-            `/bills/getElementsdata?elementsNameId=${id}`
-          );
-        })
-      );
-
-      const mapped = bill.elements.map((el, idx) => ({
-        ...el,
-        details: allData[idx]?.data || [],
-      }));
-
-      setSelectedBillTitle(bill.billName);
-      setSelectedBillDetails(mapped);
-      setDetailModalVisible(true);
-    } catch (err) {
-      message.error("요소 세부 데이터 조회 실패");
-    }
-  };
   const handleAddCommission = async () => {
     try {
-      await apiAxios.post(`/bills/addCommission`, {
+      await axios.post(`/api/bills/addCommission`, {
         billId: selectedBillId, // 해당 bill의 ID
         commissionName: commissionName,
         commission: Number(commissionValue)
@@ -167,7 +84,7 @@ const BillPage = () => {
   };
   const handleDeleteSelectedCommissions = async () => {
     try {
-      await apiAxios.delete('/bills/deleteSelectedCommissions', {
+      await axios.delete('/api/bills/deleteSelectedCommissions', {
         data: {
           billId: selectedBillId,
           commissionIds: selectedCommissionIds,
@@ -204,118 +121,9 @@ const BillPage = () => {
           <DroppableBillBox
             key={bill.billId}
             bill={bill}
-            onDelete={handleDeleteBill}
-            isEditing={editingBillId === bill.billId}
-            onEditStart={(id, name) => {
-              setEditingBillId(id);
-              setEditedBillName(name);
-            }}
-            onEditSubmit={handleUpdateBillName}
-            editedName={editedBillName}
-            onEditNameChange={(e) => setEditedBillName(e.target.value)}
           />
         ))}
       </SortableContext>
-
-
-      {bills.map((bill) => (
-        <div
-          key={bill.billId}
-          className="bill-box"
-          onDoubleClick={() => handleBillDoubleClick(bill)}
-        >
-          <X
-            className="delete-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteBill(bill.billId);
-            }}
-          />
-          <div className="bill-title">
-            {editingBillId === bill.billId ? (
-              <Input
-                value={editedBillName}
-                onChange={(e) => setEditedBillName(e.target.value)}
-                onBlur={() => handleUpdateBillName(bill.billId)}
-                onPressEnter={() => handleUpdateBillName(bill.billId)}
-                autoFocus
-              />
-            ) : (
-              <div
-                onDoubleClick={(e) => {
-                  e.stopPropagation();
-                  setEditingBillId(bill.billId);
-                  setEditedBillName(bill.billName);
-                }}
-              >
-                {bill.billName}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <h4>📦 항목  {`(${bill.elements.length}개)`}</h4>
-            <ul>
-              {Array.isArray(bill.elements) &&
-                bill.elements.map((el, idx) => (
-                  <li key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }} className="bill-element-map">
-                    <span>
-                      {el.elementsName} - {el.elementsPrice}원
-                    </span>
-                    <span className="count-controls">
-                      <Minus
-                        size={14}
-                        className="count-minus"
-                        onClick={() => handleDecrease(bill.billId, el.elementsNameId, el.elementCount)}
-                        onDoubleClick={(e) => e.stopPropagation()}
-                      />
-                      {el.elementCount}
-                      <Plus
-                        size={14}
-                        className="count-plus"
-                        onClick={() => handleIncrease(bill.billId, el.elementsNameId)}
-                        onDoubleClick={(e) => e.stopPropagation()}
-                      />
-                    </span>
-
-                  </li>
-
-                ))}
-            </ul>
-            <p>
-              <strong>총 요소 금액:</strong> {bill.totalElementPrice}원
-            </p>
-          </div>
-
-          <div>
-            <div className="commission-header"
-                 onDoubleClick={(e) => e.stopPropagation()}
-                 onClick={(e)=>{
-                   e.stopPropagation();
-                   setSelectedBillId(bill.billId);
-                   setSelectedBillForCommission(bill);
-                   setCommissionModalVisible(true);
-                 }}
-            >🧾 수수료</div>
-            <ul>
-              {Array.isArray(bill.commissions) &&
-                bill.commissions.map((c, idx) => (
-                  <li key={idx} className="bill-commission-map">
-                    {c.commissionName} - {c.commission}원
-                  </li>
-                ))}
-            </ul>
-            <p>
-              <strong>총 수수료:</strong> {bill.totalCommission}원
-            </p>
-          </div>
-
-          <div className="total-section">
-            <span className="total-label">총합 :</span>
-            <span className="total-amount">{bill.grandTotal}원</span>
-          </div>
-        </div>
-      ))}
 
       <Modal
         title="새로운 Bill 추가"

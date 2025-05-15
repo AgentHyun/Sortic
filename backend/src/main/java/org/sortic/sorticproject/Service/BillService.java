@@ -40,21 +40,25 @@ public class BillService {
         for (Bill bill : billList) {
             int billId = bill.getBillId();
             String billName = bill.getBillName();
+
             // 3. Element 목록 가져오기
             List<BillElementDetail> elements = billMapper.findElementsByBillId(billId);
+
             // 4. Commission 목록 가져오기
             List<BillCommissionDetail> commissions = billMapper.findCommissionsByBillId(billId);
 
-            // 5. 요소 가격 총합 계산
+            // 5. 요소 가격 총합 계산 (elementCount 반영)
             int totalElementPrice = 0;
             for (BillElementDetail el : elements) {
-                totalElementPrice += el.getElementsPrice();
+                totalElementPrice += el.getElementsPrice() * el.getElementCount();
             }
+
             // 6. 수수료 가격 총합
             int totalCommission = 0;
             for (BillCommissionDetail com : commissions){
                 totalCommission += com.getCommission();
             }
+
             // 7 총합
             int grandTotal = totalCommission + totalElementPrice;
 
@@ -73,6 +77,7 @@ public class BillService {
         }
         return resultList;
     }
+
     public List<BillElementsData> getElementsDataByNameId(int elementsNameId) {
         return billMapper.getElementsDataByNameId(elementsNameId);
     }
