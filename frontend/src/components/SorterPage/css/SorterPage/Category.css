@@ -10,7 +10,9 @@
 .category-btn {
     border: none;
     border-radius: 8px;
+    margin-left: 25vw;
     cursor: pointer;
+    margin-right : 1.3vw;
     background-color: transparent;
     color: #929e6e !important;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
@@ -31,6 +33,7 @@
   padding-bottom: 10px;
   height : 8vh;
   min-width : 60px;
+  margin-right : 25vw;
   border : none;
   color :#929e6e;
 
@@ -60,6 +63,8 @@
 .category-name-title {
     margin-top: -3px;
   color: #635C3B;
+
+
 }
 
 /* Category Title */
@@ -67,6 +72,7 @@
     font-size: 24px;
     font-weight: 600;
     color: #635C3B;
+
 
 }
 
@@ -81,7 +87,7 @@
     font-weight: bold;
     color: black;
     background-color: transparent;
-    width: 30vw;
+    width: 100%;
     height: 80px;
     min-width: 180px;
     border-radius: 10px;
@@ -292,4 +298,10 @@
 
 .slide-in-right {
   animation: fadeInSlideRight 0.3s ease forwards;
+}
+
+.category-ok-button:hover{
+  background-color: #c4d592 !important; /* hover 시 다른 색으로 변경 */
+  cursor: pointer; /* 마우스 커서 모양을 pointer로 변경 */
+
 }

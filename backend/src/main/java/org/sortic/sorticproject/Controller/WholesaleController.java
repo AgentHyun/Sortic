@@ -73,7 +73,7 @@ public class WholesaleController {
         }
     }
     @PostMapping("/link/by-code")
-    public ResponseEntity<?> createLinkByCode(@RequestParam int wholesaleCode,
+    public ResponseEntity<?> createLinkByCode(@RequestParam String wholesaleCode,
                                               @RequestParam String userId) {
         try {
             wholesaleService.addWholesaleLinkByCode(wholesaleCode, userId);
@@ -111,10 +111,9 @@ public class WholesaleController {
             List<WholesaleCode> result = wholesaleService.searchWholesaleCodesByKeyword(keyword);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            e.printStackTrace(); // ✅ 콘솔에 전체 원인 출력
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("도매 코드 검색 중 오류 발생: " + e.getClass().getSimpleName());
         }
-
     }
     @PutMapping("/link/memo")
     public ResponseEntity<?> updateWholesaleMemo(@RequestBody WholesaleLink link) {

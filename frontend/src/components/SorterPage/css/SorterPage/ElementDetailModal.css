@@ -33,19 +33,32 @@
 
 
 
-}
-
-/* 헤더 (이미지 + 정보) */
-.detail-header-section {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-
-    justify-content: space-between;
-    margin-top : -127px;
-
 
 }
+
+
+
+.detail-header.internal-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap : 0;
+  margin : 0;
+  background-color: transparent;
+}
+
+.detail-header.external-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top : -100px;
+  flex-direction: row;
+  gap : 0;
+
+  background-color: transparent;
+}
+
 
 .detail-img {
     width: 80px;
@@ -63,9 +76,7 @@
     border-radius: 10px;
     margin-left : 10px;
     background-color: white;
-    box-shadow:
-            0 4px 8px rgba(0, 0, 0, 0.12),
-            0 8px 24px rgba(0, 0, 0, 0.15);
+
 }
 
 .detail-title {
@@ -284,6 +295,8 @@
     justify-content: flex-end;
     flex-direction: column;
     margin-left : 487px;
+
+
 }
 
 .Element-Detail-Modal-edit-btn{
@@ -357,3 +370,9 @@
 .custom-cancel-button:hover{
   background-color: #e6e4e4 !important;
 }
+
+.ant-modal-close:hover {
+  background-color: transparent !important;
+  color :  #929e6e!important;
+}
+

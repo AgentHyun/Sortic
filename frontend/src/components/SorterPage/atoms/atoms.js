@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import {authUserAtom} from "../../../auth/authAtoms";
 
 // 메시지 API 관련 상태
 
@@ -103,7 +104,27 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
-export const selectedUserIdAtom = atom (null);
+const selectedUserIdInternalAtom = atom(null);
+
+// 외부에서 읽고 쓸 수 있는 atom (로그인 유저 ID를 기본값으로 제공)
+export const selectedUserIdAtom = atom(
+  (get) => {
+    const internalValue = get(selectedUserIdInternalAtom);
+    if (internalValue !== null) return internalValue;
+
+    const authUser = get(authUserAtom);
+    return authUser?.userId || null;
+  },
+  (get, set, newUserId) => {
+    set(selectedUserIdInternalAtom, newUserId);
+  }
+);
+export const currentUserIdAtom = atom((get) => {
+  const authUser = get(authUserAtom);
+  return authUser?.userId || null;
+});
+export const currentUserNameAtom = atom (null);
+export const isExternalUserAtom = atom(false);
 export const selectedUserNameAtom = atom(null);
 //
 

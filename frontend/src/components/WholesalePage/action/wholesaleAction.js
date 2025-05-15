@@ -108,7 +108,7 @@ export const getWholesaleCodeValueByIdAction = atom(
       return code;
     } catch (error) {
       console.error("🚨 도매 코드 값 조회 실패:", error);
-      message.error("도매 코드 값을 불러오지 못했습니다.");
+
       return null;
     }
   }

@@ -74,7 +74,7 @@
     background: #f5fd94;
     box-shadow: 0 4px 12px rgba(76, 88, 91, 0.3); /* ✅ 입체감 있는 그림자 */
     transition: all 0.3s ease-in-out;
-    transform: scale(1.02); /* ✅ 살짝 확대 효과 */
+    transform: scale(1.01); /* ✅ 살짝 확대 효과 */
 
     /* ✅ 텍스트 스타일 */
 
@@ -88,7 +88,7 @@
 /* 선택된 요소에 마우스 올릴 때 효과 */
 .category-item.selected:hover {
     box-shadow: 0 6px 18px rgba(76, 88, 91, 0.4);
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 /* 모달 제목 스타일 */
 .element-modal-title {
@@ -127,7 +127,6 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 1rem;
-
     transition: all 0.3s ease;
     background-color: #f9f9f9;
     color: #333;
@@ -223,7 +222,7 @@
     .category-item:hover {
     color: #635C3B;
     background: #f5fd94;
-    transform: scale(1.05);
+    transform: scale(1.02);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 

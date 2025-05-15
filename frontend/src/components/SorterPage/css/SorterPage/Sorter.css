@@ -57,7 +57,7 @@
   padding-bottom: 50px;
   padding-top : 30px;
   margin-left : 4.6vw;
-
+  width : 100%;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #ccc transparent; /* Firefox */
 }
@@ -158,10 +158,11 @@
 }
 
 .sorter-wrapper {
-  width: 23vw;
+  width: 23.5vw;
   height: 50vh;
   min-width: 300px;
   min-height: 400px;
+  margin-left : 1.5vw;
   background-color: #CEDF9F;
   border-radius: 20px;
   box-shadow: 0 10px 18px 10px rgba(0, 0, 0, 0.08);
@@ -280,7 +281,7 @@
   background: #f5fd94;
   box-shadow: 0 4px 20px rgba(76, 88, 91, 0.3);
   transition: all 0.3s ease-in-out;
-  transform: scale(1.02);
+  transform: scale(1.01);
   font-weight: 600;
   font-family: "Poppins", sans-serif;
   letter-spacing: 0.5px;

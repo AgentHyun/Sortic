@@ -22,15 +22,36 @@ body {
 }
 /* Sorter Header */
 .sorter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-right: 12px;
-    height : 4.3vh;
-    width: 106%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  height: 4.3vh;
+  width: 100%;
+  max-width: 800px; /* 원하는 너비로 조절 */
+  padding: 0 16px;
 }
+
+.header-slot {
+  flex: 1;
+  text-align: center;
+}
+
+/* 왼쪽 정렬 */
+.header-slot.left {
+  text-align: left;
+}
+
+/* 가운데 정렬 (항상 중앙) */
+.header-slot.center {
+  text-align: center;
+}
+
+/* 오른쪽 정렬 */
+.header-slot.right {
+  text-align: right;
+}
+
 
 
 /* Modal Styles */
@@ -234,4 +255,25 @@ body {
   transform-origin: bottom left;
 
 
+}
+.custom-input {
+  font-weight: 500;
+  font-size: 14px;
+  height: 40px;
+  width : 100%;
+  border-radius: 5px;
+  padding-left: 10px;
+  border: none!important;
+  border-bottom: 1px solid #e5e5e5!important;
+  outline: none;
+}
+.custom-input:hover{
+  background-color: #f4f4f3 !important;
+  color : white!important;
+  border : none!important;
+}
+.custom-input:focus {
+  border-bottom: 2px solid #a7b57f!important;
+  -webkit-transition: 0.1s;
+  transition: 0.5s;
 }

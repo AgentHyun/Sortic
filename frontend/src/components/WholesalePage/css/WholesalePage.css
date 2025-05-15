@@ -534,8 +534,8 @@
   transition: all 0.3s ease;
   position: absolute;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  
+
   width: 90%;
   max-width: 480px;
   z-index: 10;
