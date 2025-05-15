@@ -1,4 +1,4 @@
-import apiAxios from '../../../Api/apiAxios';
+import publicAxios from '../../../api/publicAxios';
 import { atom, useSetAtom, useAtomValue , useAtom} from 'jotai';
 import { message } from 'antd';
 
@@ -26,7 +26,7 @@ export const fetchElementsByCategoryAction = atom(
   null,
   async (get, set, categoryId) => {
     try {
-      const response = await apiAxios.get('/elements/get_elements_by_category', {
+      const response = await publicAxios.get('/elements/get_elements_by_category', {
         params: { category_id: categoryId },
       });
 
@@ -90,7 +90,7 @@ export const handleBulkDeleteElementsAction = atom(
       // 전역 선택된 요소 삭제 요청
       if (hasGlobalSelection) {
         console.log("🚀 전역 삭제 요청 보냄:", selectedIds);
-        const response = await apiAxios.delete('/elements/delete_multiple_elements', {
+        const response = await publicAxios.delete('/elements/delete_multiple_elements', {
           data: { elements_name_ids: selectedIds },
           headers: { 'Content-Type': 'application/json' }
         });
@@ -125,7 +125,7 @@ export const handleBulkDeleteElementsAction = atom(
             for (const elementId of elementIds) {
               try {
                 // 서버로 삭제 요청 보내기 (DELETE 요청 사용)
-                const sorterDeleteResponse = await apiAxios.delete(
+                const sorterDeleteResponse = await publicAxios.delete(
                   '/sorter-element/remove',
                   {
                     params: { sorterId: sorterName, elementId: elementId }
@@ -181,7 +181,7 @@ export const addElementAction = atom(
 
     try {
       // ✅ 서버에 요소 추가 요청
-      const response = await apiAxios.post('/elements/add_element', newElement);
+      const response = await publicAxios.post('/elements/add_element', newElement);
       if (response.status === 200) {
         console.log("✅ 요소 추가 성공!", response.data);
         const newElementId = response.data.elements_name_id;
@@ -217,7 +217,7 @@ export const handleDeleteElementAction = atom(
     }
 
     try {
-      await apiAxios.delete('/elements/delete_element', {
+      await publicAxios.delete('/elements/delete_element', {
         params: { elements_name_id: selectedElementId }
       });
 
@@ -331,7 +331,7 @@ export const handleElementOkAction = atom(
     };
 
     try {
-      const response = await apiAxios.post('/elements/add_element', newElement);
+      const response = await publicAxios.post('/elements/add_element', newElement);
 
       success('상품이 추가되었습니다!', set);
       set(cardsAtom, [...cards, newElement]);
@@ -365,7 +365,7 @@ export const handleElementNameSaveAction = atom(
 
     try {
 
-      await apiAxios.put('/elements/update_element', {
+      await publicAxios.put('/elements/update_element', {
         elements_name_id: editingElementIndex,
         elements_name: newElementName  // ✅ 한글 그대로 전송
 
@@ -414,7 +414,7 @@ export const handleElementPriceSaveAction = atom(
     }
 
     try {
-      await apiAxios.put('/elements/update_element_price', {
+      await publicAxios.put('/elements/update_element_price', {
         elements_name_id: editingElementIndex,
         elements_price: newPrice
       }, {
@@ -478,7 +478,7 @@ export const fetchElementPriceByIdAction = atom(
   null,
   async (get, set, elementId) => {
     try {
-      const response = await apiAxios.get('/elements/get_element_price', {
+      const response = await publicAxios.get('/elements/get_element_price', {
         params: {elements_name_id: elementId}
       });
 
@@ -511,7 +511,7 @@ export const fetchElementNameByIdAction = atom(
   async (get, set, elementId) => {
     try {
       // 백엔드 API 호출
-      const response = await apiAxios.get(`/elements/${elementId}`);
+      const response = await publicAxios.get(`/elements/${elementId}`);
 
       // 성공적으로 요소 이름을 가져온 경우
       if (response.status === 200) {

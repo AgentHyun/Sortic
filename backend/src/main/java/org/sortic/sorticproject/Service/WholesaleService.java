@@ -47,12 +47,12 @@ public class WholesaleService {
         wholesaleMapper.deleteWholesaleLink(linkId);
     }
 
-    public String findUsernameByUserId(String userId) {
-        String username = wholesaleMapper.findUsernameByUserId(userId);
-        if (username == null) {
-            throw new RuntimeException("해당 유저를 찾을 수 없습니다.");
+    public String findStoreNameByUserId(String userId) {
+        String storeName = wholesaleMapper.findStoreNameByUserId(userId);
+        if (storeName == null) {
+            throw new RuntimeException("도매처 이름을 찾을 수 없습니다.");
         }
-        return username;
+        return storeName;
     }
 
     public void addWholesaleLinkByCode(int wholesaleCode, String currentUserId) {
@@ -64,16 +64,16 @@ public class WholesaleService {
 
         // 2. 코드 소유자의 유저 이름 조회
         String codeOwnerId = codeEntity.getUserId();
-        String username = wholesaleMapper.findUsernameByUserId(codeOwnerId);
-        if (username == null) {
-            throw new IllegalArgumentException("해당 유저의 이름을 찾을 수 없습니다.");
+        String storeName = wholesaleMapper.findStoreNameByUserId(codeOwnerId);
+        if (storeName == null) {
+            throw new RuntimeException("도매처 이름을 찾을 수 없습니다.");
         }
 
         // 3. WholesaleLink 객체 생성 (현재 로그인한 유저가 등록자)
         WholesaleLink link = new WholesaleLink();
         link.setUserId(currentUserId); // 등록하는 사용자 ID
         link.setWholesaleCodeId(codeEntity.getWholesaleCodeId());
-        link.setWholesaleName(username); // 코드 소유자의 닉네임
+        link.setWholesaleName(storeName); // 코드 소유자의 닉네임
 
         wholesaleMapper.insertWholesaleLink(link);}
         catch (DuplicateKeyException e) {

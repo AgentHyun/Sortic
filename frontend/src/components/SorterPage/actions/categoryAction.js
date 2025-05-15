@@ -1,4 +1,4 @@
-import apiAxios from '../../../Api/apiAxios';
+import publicAxios from '../../../api/publicAxios';
 import {atom, useAtom} from 'jotai';
 import { message } from 'antd';
 import {
@@ -13,11 +13,10 @@ import {
   messageAtom,
   currentIndexAtom, selectedUserIdAtom
 } from '../atoms/atoms';
-import { userIdAtom, userAtom  } from '../../../atoms/userAtom';
-import { fetchElementsByCategoryAction } from './elementAction';
 import { authUserAtom } from '../../../auth/authAtoms';
-export const fetchAndNumberCategoriesAction = atom(
+import { fetchElementsByCategoryAction } from './elementAction';
 
+export const fetchAndNumberCategoriesAction = atom(
   null,
   async (get, set) => {
     try {
@@ -33,7 +32,7 @@ export const fetchAndNumberCategoriesAction = atom(
         return [];
       }
 
-      const response = await axios.get('http://localhost:8080/api/categories/get_category', {
+      const response = await publicAxios.get('/categories/get_category', {
         params: { user_id: userId }
       });
 
@@ -84,7 +83,7 @@ export const fetchCategoriesAction = atom(
         try {
           const userId = get(selectedUserIdAtom);
 
-            const response = await apiAxios.get('/categories/get_category', {
+            const response = await publicAxios.get('/categories/get_category', {
                 params: { userId: userId }
             });
             set(categoriesAtom, response.data);
@@ -108,7 +107,7 @@ export const fetchCategoryByIdAction = atom(
         }
         try {
             // API 호출 (user_id와 category_id를 params로 전달)
-            const response = await apiAxios.get('/categories/get_category_by_id', {
+            const response = await publicAxios.get('/categories/get_category_by_id', {
                 params: {
                     userId: userId,
                     category_id: categoryId,
@@ -152,7 +151,7 @@ export const fetchFirstCategoryAction = atom(
         try {
           const authUser = get(authUserAtom);
           const userId = authUser?.userId;
-            const response = await apiAxios.get('/categories/get_first_category', {
+            const response = await publicAxios.get('/categories/get_first_category', {
                 params: { user_id: userId }
             });
 
@@ -208,7 +207,7 @@ export const handleCategoryOkAction = atom(
         }
 
         try {
-            const response = await apiAxios.post('/categories/add_category', {
+            const response = await publicAxios.post('/categories/add_category', {
               user_id: userId,
                 category_name: newCategory,
             });
@@ -255,7 +254,7 @@ export const deleteCategoryAction = atom(
         }
 
         try {
-            await apiAxios.post('/categories/delete_category', {
+            await publicAxios.post('/categories/delete_category', {
                 category_id: currentCategory,
             });
 
@@ -305,7 +304,7 @@ export const handleCategoryNameSaveAction = atom(
         }
 
         try {
-            await apiAxios.put(
+            await publicAxios.put(
                 '/categories/update_category_name',
                 { category_id: currentCategory, category_name: newCategoryName }, // ✅ data로 전달
                 {
@@ -393,7 +392,7 @@ export const fetchCategoryCountAction = atom(
         try {
           const authUser = get(authUserAtom);
           const userId = authUser?.userId;
-            const response = await apiAxios.get('/categories/count_categories', {
+            const response = await publicAxios.get('/categories/count_categories', {
                 params: { user_id: userId }
             });
 

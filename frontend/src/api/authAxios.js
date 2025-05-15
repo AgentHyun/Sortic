@@ -1,8 +1,8 @@
-// ✅ src/api/authAxios.js
+// ✅ src/authAxios.js
 import axios from 'axios';
 
 const authAxios = axios.create({
-  baseURL: 'http://localhost:8080/api/auth',
+  baseURL: '/auth',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json'

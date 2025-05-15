@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { Button, message, Avatar, Input, Tabs } from 'antd';
 import { CameraOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
-import { userAtom } from '../../atoms/userAtom';
+import { authUserAtom } from '../../auth/authAtoms';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
-    const [user, setUser] = useAtom(userAtom);
+    const [user, setUser] = useAtom(authUserAtom);
     const [isEditing, setIsEditing] = useState(false);
     const [editedUser, setEditedUser] = useState({ ...user });
     const [isEditingNickname, setIsEditingNickname] = useState(false);

@@ -1,13 +1,13 @@
 import { atom } from 'jotai';
-import axios from 'axios';
+import publicAxios from '../../../api/publicAxios';
 import { message } from 'antd';
-import { authUserAtom } from '../../../auth/authAtoms';
+import { authUserAtom, isOpenWholesaleAtom } from '../../../auth/authAtoms';
 import { wholesaleCodesAtom, wholesaleLinksAtom } from '../atoms/atoms';
-import {isOpenWholesaleAtom} from "../../../Atoms/userAtom";
+
 // 도매 코드 생성
 export const createWholesaleCodeAction = atom(null, async (get, set, newCode) => {
   try {
-    await axios.post('http://localhost:8080/api/wholesale/code', newCode);
+    await publicAxios.post('/wholesale/code', newCode);
     message.success("도매 코드가 생성되었습니다.");
   } catch (error) {
     console.error("🚨 도매 코드 생성 실패:", error);
@@ -19,7 +19,7 @@ export const createWholesaleCodeAction = atom(null, async (get, set, newCode) =>
 export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
   const userId = get(authUserAtom)?.userId;
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/codes/${userId}`);
+    const response = await publicAxios.get(`/wholesale/codes/${userId}`);
     set(wholesaleCodesAtom, response.data);
   } catch (error) {
     console.error("🚨 도매 코드 조회 실패:", error);
@@ -30,7 +30,7 @@ export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
 // 도매 코드 삭제
 export const deleteWholesaleCodeAction = atom(null, async (get, set, codeId) => {
   try {
-    await axios.delete(`http://localhost:8080/api/wholesale/code/${codeId}`);
+    await publicAxios.delete(`/wholesale/code/${codeId}`);
     message.success("도매 코드가 삭제되었습니다.");
     // 삭제 후 갱신
     set(fetchWholesaleCodesAction);
@@ -47,7 +47,7 @@ export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLi
   }
 
   try {
-    await axios.delete(`http://localhost:8080/api/wholesale/link/${wholesaleLinkId}`);
+    await publicAxios.delete(`/wholesale/link/${wholesaleLinkId}`);
     message.success("도매 링크가 삭제되었습니다.");
     await set(fetchWholesaleLinksAction, null); // 리스트 새로고침
   } catch (error) {
@@ -62,8 +62,8 @@ export const createWholesaleLinkAction = atom(null, async (get, set, { wholesale
 
     const authUser = get(authUserAtom);
     const userId = authUser?.userId;
-    await axios.post(
-      `http://localhost:8080/api/wholesale/link/by-code`,
+    await publicAxios.post(
+      `/wholesale/link/by-code`,
       null,
       {
         params: {
@@ -93,7 +93,7 @@ export const createWholesaleLinkAction = atom(null, async (get, set, { wholesale
 export const fetchWholesaleLinksAction = atom(null, async (get, set) => {
   const userId = get(authUserAtom)?.userId;
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/links/${userId}`);
+    const response = await publicAxios.get(`/wholesale/links/${userId}`);
     set(wholesaleLinksAtom, response.data);
 
     console.table(get(wholesaleLinksAtom));
@@ -112,8 +112,8 @@ export const getWholesaleCodeValueByIdAction = atom(
   null,
   async (get, set, wholesaleCodeId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/wholesale/code/${wholesaleCodeId}`
+      const response = await publicAxios.get(
+        `/wholesale/code/${wholesaleCodeId}`
       );
 
       const code = response.data?.wholesaleCode;
@@ -132,7 +132,7 @@ export const getWholesaleCodeValueByIdAction = atom(
 // 포함 검색용 도매 코드 리스트 가져오기
 export const searchWholesaleCodesAction = atom(null, async (get, set, keyword) => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/wholesale/code/search`, {
+    const res = await publicAxios.get(`/wholesale/code/search`, {
       params: { keyword },
     });
     return res.data; // [{ wholesaleCodeId, wholesaleCode, userId }, ...]
@@ -141,25 +141,20 @@ export const searchWholesaleCodesAction = atom(null, async (get, set, keyword) =
     return [];
   }
 });
-export const getUsernameByUserIdAction = atom(null, async (get, set, userId) => {
-  if (!userId) {
-    message.error('userId가 없습니다.');
-    return null;
-  }
-
+export const getStoreNameByUserIdAction = atom(null, async (get, set, userId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/username/${userId}`);
-    const username = response.data.username;
-    return username;
+    const response = await publicAxios.get(`/wholesale/store-name/${userId}`);
+    const storeName = response.data.store_name;
+    return storeName;
   } catch (error) {
-    console.error('🚨 username 조회 실패:', error);
-    message.error('도매처 이름(username) 조회에 실패했습니다.');
+    console.error('🚨 store_name 조회 실패:', error);
+    message.error('도매처 조회에 실패했습니다.');
     return null;
   }
 });
 export const updateWholesaleMemoAction = atom(null, async (get, set, { wholesaleLinkId, wholesaleMemo }) => {
   try {
-    await axios.put(`http://localhost:8080/api/wholesale/link/memo`, {
+    await publicAxios.put(`/wholesale/link/memo`, {
       wholesaleLinkId,
       wholesaleMemo,
     });
@@ -173,7 +168,7 @@ export const updateWholesaleMemoAction = atom(null, async (get, set, { wholesale
 });
 export const getWholesaleMemoAction = atom(null, async (get, set, wholesaleLinkId) => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/wholesale/link/memo/${wholesaleLinkId}`);
+    const res = await publicAxios.get(`/wholesale/link/memo/${wholesaleLinkId}`);
     return res.data.memo; // { memo: "내용" } 형태에서 memo 추출
   } catch (error) {
     console.error("🚨 메모 조회 실패:", error);
@@ -190,7 +185,7 @@ export const registerToUserWholesaleCodeAction = atom(null, async (get, set, who
   }
 
   try {
-    await axios.post(`http://localhost:8080/api/wholesale/user-code`, {
+    await publicAxios.post(`/wholesale/user-code`, {
       userWholesaleCode: wholesaleCodeId,
       userId,
     });
@@ -207,7 +202,7 @@ export const getUserIdByLinkNameAction = atom(null, async (get, set, wholesaleNa
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/user-id/by-link-name`, {
+    const response = await publicAxios.get(`/wholesale/user-id/by-link-name`, {
       params: { name: wholesaleName },
     });
 

@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import apiAxios from '../../../Api/apiAxios';
+import publicAxios from '../../../api/publicAxios';
 import { message } from 'antd';
 
 // Bill 목록을 가져오는 액션
@@ -11,7 +11,7 @@ export const fetchBillsAction = atom(
         message.warning('로그인이 필요합니다.');
         return [];
       }
-      const response = await apiAxios.get(`/bills/getAllBills?userId=${userId}`);
+      const response = await publicAxios.get(`/bills/getAllBills?userId=${userId}`);
       return response.data;
     } catch (error) {
       console.error('Bill 불러오기 실패:', error);
@@ -30,7 +30,7 @@ export const addBillAction = atom(
         message.warning('로그인이 필요합니다.');
         return;
       }
-      await apiAxios.post('/bills/addBill', {
+      await publicAxios.post('/bills/addBill', {
         billName,
         user_id: userId
       });
@@ -49,7 +49,7 @@ export const deleteBillAction = atom(
   null,
   async (get, set, billId) => {
     try {
-      await apiAxios.delete('/bills/deleteBill', {
+      await publicAxios.delete('/bills/deleteBill', {
         params: { billId }
       });
       message.success('Bill이 삭제되었습니다.');
@@ -67,7 +67,7 @@ export const updateBillNameAction = atom(
   null,
   async (get, set, { billId, billName }) => {
     try {
-      await apiAxios.put('/bills/updateBillName', {
+      await publicAxios.put('/bills/updateBillName', {
         billId,
         billName
       });
@@ -79,4 +79,4 @@ export const updateBillNameAction = atom(
       return false;
     }
   }
-); 
+);

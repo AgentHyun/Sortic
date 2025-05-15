@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { Button, Input, message, Modal } from 'antd';
-import axios from 'axios'; // 임시 apiAxios로 변경해야함
-import apiAxios from '../../../Api/apiAxios'; // ✅ 주소 수정 axios -> authAxios
+import axios from 'axios'; // 임시 publicAxios로 변경해야함
+import publicAxios from '../../../api/publicAxios'; // ✅ 주소 수정 axios -> authAxios
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // useSortable import 제거
 import { billsAtom } from "../atom/atoms";
 import '../css/billPage.css';
@@ -21,7 +21,7 @@ const BillPage = () => {
   const [newBillName, setNewBillName] = useState('');
   const [editingBillId, setEditingBillId] = useState(null);
   const [editedBillName, setEditedBillName] = useState('');
-  
+
   const [authUser] = useAtom(authUserAtom);
   const [, setFetchBills] = useAtom(fetchBillsAction);
 
@@ -55,7 +55,7 @@ const BillPage = () => {
   const [selectedBillForCommission, setSelectedBillForCommission] = useState(null);
   const [selectedCommissionIds, setSelectedCommissionIds] = useState([]);
   const fetchBills = () => {
-    apiAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
+    publicAxios.get(`/bills/getAllBills?user_id=${user_id}`) // ✅ 주소 수정
       .then(res => setBills(res.data))
       .catch(err => console.error('Bill 불러오기 실패', err));
   };
@@ -89,7 +89,7 @@ const BillPage = () => {
     try {
 
 
-      await apiAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
+      await publicAxios.post(`/bills/addBill`,{ // ✅ 주소 수정
         billName : newBillName,
         user_id  : user_id
       });
@@ -106,7 +106,7 @@ const BillPage = () => {
   };
   const handleDeleteBill = async (billId) => {
     try {
-      await apiAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
+      await publicAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
         params: { billId }
       });
       message.success("삭제 완료!");
@@ -119,9 +119,9 @@ const BillPage = () => {
 
   const handleUpdateBillName = async (billId) => {
     try {
-      await apiAxios.put(`/bills/updateBillName`, {
+      await publicAxios.put(`/bills/updateBillName`, {
         billId: billId,
-        billName: newName,
+        billName: editedBillName,
       });
       message.success("Bill 이름 수정 성공");
       setEditingBillId(null);
@@ -134,7 +134,7 @@ const BillPage = () => {
   };
 
   const handleIncrease = async (billId, elementsNameId) => {
-    await apiAxios.put(`/bills/increaseCount`, null, {
+    await publicAxios.put(`/bills/increaseCount`, null, {
       params: { billId, elementsNameId },
     });
     fetchBills();
@@ -142,11 +142,11 @@ const BillPage = () => {
 
   const handleDecrease = async (billId, elementsNameId, currentCount) => {
     if (currentCount <= 1) {
-      await apiAxios.delete(`/bills/deleteElement`, {
+      await publicAxios.delete(`/bills/deleteElement`, {
         params: { billId, elementsNameId },
       });
     } else {
-      await apiAxios.put(`/bills/decreaseCount`, null, {
+      await publicAxios.put(`/bills/decreaseCount`, null, {
         params: { billId, elementsNameId },
       });
     }
@@ -162,7 +162,7 @@ const BillPage = () => {
             console.warn("⚠️ 요소 ID 없음:", el);
             return Promise.resolve({ data: [] });
           }
-          return apiAxios.get(
+          return publicAxios.get(
             `/bills/getElementsdata?elementsNameId=${id}`
           );
         })
@@ -182,7 +182,7 @@ const BillPage = () => {
   };
   const handleAddCommission = async () => {
     try {
-      await apiAxios.post(`/bills/addCommission`, {
+      await publicAxios.post(`/bills/addCommission`, {
         billId: selectedBillId, // 해당 bill의 ID
         commissionName: commissionName,
         commission: Number(commissionValue)
@@ -200,7 +200,7 @@ const BillPage = () => {
   };
   const handleDeleteSelectedCommissions = async () => {
     try {
-      await apiAxios.delete('/bills/deleteSelectedCommissions', {
+      await publicAxios.delete('/bills/deleteSelectedCommissions', {
         data: {
           billId: selectedBillId,
           commissionIds: selectedCommissionIds,

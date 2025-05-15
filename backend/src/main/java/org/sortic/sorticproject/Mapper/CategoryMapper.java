@@ -11,20 +11,22 @@ import java.util.List;
 public interface CategoryMapper {
 
     // 카테고리 추가
-    @Insert("INSERT INTO Categories (user_id, category_name) VALUES (#{user_id}, #{category_name})")
+    @Insert("INSERT INTO Categories (user_id, category_name) VALUES (#{userId}, #{categoryName})")
     void insertCategory(Category category);
 
     // 카테고리 삭제
-    @Delete("DELETE FROM Categories WHERE category_id = #{category_id}")
-    void deleteCategoryById(@Param("category_id") int category_id);
+    @Delete("DELETE FROM Categories WHERE category_id = #{categoryId}")
+    void deleteCategoryById(int categoryId);
 
     // 사용자 ID로 카테고리 목록 조회
-    @Select("SELECT category_id, user_id, category_name, created_category_time FROM Categories WHERE user_id = #{user_id}")
-    List<Category> getCategoriesByUserId(@Param("user_id") String user_id);
+    @Select("SELECT category_id, user_id AS userId, category_name AS categoryName, created_category_time " +
+            "FROM Categories WHERE user_id = #{userId}")
+    List<Category> getCategoriesByUserId(@Param("userId") String userId);
 
     // 사용자 ID와 카테고리 ID로 카테고리 이름 조회
-    @Select("SELECT category_id, user_id, category_name, created_category_time FROM Categories WHERE user_id = #{user_id} AND category_id = #{category_id}")
-    Category getCategoryById(@Param("user_id") String user_id, @Param("category_id") int category_id);
+    @Select("SELECT category_id, user_id AS userId, category_name AS categoryName, created_category_time " +
+            "FROM Categories WHERE user_id = #{userId} AND category_id = #{categoryId}")
+    Category getCategoryById(@Param("userId") String userId, @Param("categoryId") int categoryId);
 
     // 최대 category_id 조회
     @Select("SELECT MAX(category_id) FROM Categories")
@@ -36,7 +38,7 @@ public interface CategoryMapper {
     @Update("UPDATE Categories SET category_name = #{category_name} WHERE category_id = #{category_id}")
     void updateCategoryName(@Param("category_id") int category_id, @Param("category_name") String category_name);
 
-    @Select("SELECT COUNT(*) FROM Categories WHERE user_id = #{user_id}")
-    int countCategoriesByUserId(@Param("user_id") String user_id);
+    @Select("SELECT COUNT(*) FROM Categories WHERE user_id = #{userId}")
+    int countCategoriesByUserId(@Param("userId") String userId);
 
 }

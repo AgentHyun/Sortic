@@ -2,25 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Select, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
-import authAxios from '../../Api/authAxios';
+import publicAxios from '../../api/publicAxios';
+import authAxios from '../../api/authAxios';
+import axios from 'axios';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-// 회원가입 페이지 컴포넌트 정의
 function SignupPage() {
-  // 폼 인스턴스를 생성하여 필드 값 컨트롤
   const [form] = Form.useForm();
-
-  // 페이지 이동에 사용되는 훅
   const navigate = useNavigate();
-
-  // 회원가입 처리 중 여부를 나타내는 상태값
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
+
+  const [keyword, setKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [address, setAddress] = useState({
+    zipcode: '',
+    roadAddress: '',
+    detailAddress: ''
+  });
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
@@ -28,212 +32,138 @@ function SignupPage() {
     }
   }, [authLoading, isAuthenticated, navigate]);
 
-  if (authLoading) {
-    return null; // 또는 <Spinner />
-  }
-
-  // 회원가입 완료 시 호출되는 핸들러
-  const onFinish = async (values) => {
-    setIsSubmitting(true); // 중복 제출 방지를 위해 버튼 비활성화
-
+  const searchAddress = async () => {
+    if (!keyword.trim()) {
+      message.warning('주소 키워드를 입력해주세요.');
+      return;
+    }
     try {
-      // 서버에 회원가입 요청 전송
-      const response = await authAxios.post('/auth/signup', values, {
+      const response = await axios.get('https://business.juso.go.kr/addrlink/addrLinkApi.do', {
+        params: {
+          confmKey: process.env.REACT_APP_JUSO_KEY,
+          currentPage: 1,
+          countPerPage: 10,
+          keyword: keyword,
+          resultType: 'json'
+        }
+      });
+      const juso = response.data?.results?.juso;
+      if (juso?.length > 0) {
+        setSearchResults(juso);
+      } else {
+        message.info('검색 결과가 없습니다.');
+        setSearchResults([]);
+      }
+    } catch (err) {
+      console.error('주소 검색 실패:', err);
+      message.error('주소 검색에 실패했습니다.');
+    }
+  };
+
+  const handleSubmit = async (values) => {
+    const { confirm, ...signupData } = values;
+    const fullForm = {
+      ...signupData,
+      zipcode: address.zipcode,
+      roadAddress: address.roadAddress,
+      detailAddress: address.detailAddress
+    };
+
+    setIsSubmitting(true);
+    try {
+      await authAxios.post('/signup', fullForm, {
         headers: { 'Content-Type': 'application/json' }
       });
-
-      // 성공 시 메시지 출력 및 로그인 페이지로 이동
       message.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (err) {
-      // 실패 시 서버에서 전달한 에러 메시지 출력
       if (err.response) {
-        // 서버에서 반환한 에러 메시지
         const error = err.response.data || '서버 오류가 발생했습니다.';
         message.error(error);
       } else {
-        // 네트워크 오류 등 서버와 연결되지 않은 경우
         message.error('서버 연결에 실패했습니다.');
       }
     } finally {
-      // 요청 종료 후 버튼 다시 활성화
       setIsSubmitting(false);
     }
   };
 
   const handleCheckId = async (form) => {
-    const id = form.getFieldValue('userId'); // 입력한 아이디 가져오기
-    if (!id) return; // 아이디 입력이 없으면 리턴
-
+    const id = form.getFieldValue('userId');
+    if (!id) return;
+    if (id.length < 4 || id.length > 20) {
+      message.warning('아이디는 4~20자 사이여야 합니다.');
+      return;
+    }
     try {
-      // 서버에 중복확인 요청
-      const response = await authAxios.get('/auth/check-userid', {
-        params: { userId: id }
-      });
-      const isAvailable = response.data; // 응답에서 직접 데이터를 가져옵니다.
-
+      const response = await publicAxios.get(`/users/check-userid`, { params: { userId: id } });
+      const isAvailable = response.data;
       if (!isAvailable) {
-        message.error('이미 사용 중인 아이디입니다.'); // 중복된 경우
+        message.error('이미 사용 중인 아이디입니다.');
+        form.setFields([{ name: 'userId', errors: ['이미 사용 중인 아이디입니다.'] }]);
       } else {
-        message.success('사용 가능한 아이디입니다.'); // 사용 가능
+        message.success('사용 가능한 아이디입니다.');
+        form.setFields([{ name: 'userId', errors: [] }]);
       }
     } catch (err) {
-      message.error('서버 오류가 발생했습니다.'); // 네트워크 오류
+      message.error('아이디 중복 확인에 실패했습니다.');
+      form.setFields([{ name: 'userId', errors: ['아이디 중복 확인에 실패했습니다.'] }]);
     }
   };
 
-  // 실제 렌더링 반환
+  if (authLoading) return null;
+
   return (
     <div className={styles.page}>
-      {/* 전체 페이지를 감싸는 최상위 컨테이너로, 중앙 정렬 및 배경 스타일 지정 */}
       <div className={styles.card}>
-        {/* 가운데 정렬된 카드 형태의 박스. 폼과 타이틀 등을 감쌈 */}
         <Title level={2} className={styles.title}>회원가입</Title>
         <Form
-          form={form} // 위에서 생성한 폼 인스턴스를 이 Form에 연결
-          layout="vertical" // 라벨과 인풋이 세로 정렬로 배치됨
-          onFinish={onFinish} // 제출 시 실행될 콜백 함수 연결
-          requiredMark="true" // 필수 입력 항목 표시
-          className={styles.form} // 커스텀 CSS 클래스 지정
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          requiredMark="true"
+          className={styles.form}
         >
-          {/* 아이디 입력 필드 */}
           <Form.Item label="아이디" required>
-            {/* 인풋과 버튼을 한 줄에 배치하는 래퍼 */}
             <div className={styles.inlineWrap}>
-              <Form.Item
-                name="userId"
-                noStyle // 바깥 Form.Item의 레이아웃만 적용
-                rules={[ /* 아이디 유효성 검사 규칙 정의 */ ]}
-              >
+              <Form.Item name="userId" noStyle>
                 <Input className={styles.inputShort} placeholder="아이디" />
               </Form.Item>
-
-              <Button
-                className={styles.checkButton}
-                onClick={() => handleCheckId(form)}
-                type="default"
-              >
-                {/* 아이디 중복확인 버튼 */}
+              <Button className={styles.checkButton} onClick={() => handleCheckId(form)} type="default">
                 중복확인
               </Button>
             </div>
           </Form.Item>
 
-          {/* 비밀번호 입력 필드 */}
-          <Form.Item
-            label="비밀번호"
-            name="password"
-            dependencies={['userId']}
-            rules={[
-              { required: true, message: '비밀번호를 입력해주세요.' },
-              { min: 6, message: '비밀번호는 6자 이상이어야 합니다.' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || value.length < 6) {
-                    return Promise.resolve();
-                }
-
-                  // 아이디 포함 여부 검사
-                  const userId = getFieldValue('userId');
-                  if (userId && userId.length >= 3) {
-                    for (let i = 0; i <= userId.length - 3; i++) {
-                      const chunk = userId.substring(i, i + 3);
-                      if (value.includes(chunk)) {
-                        return Promise.reject(new Error('비밀번호에 아이디의 연속된 3자 이상의 문자열을 포함할 수 없습니다.'));
-                    }
+          <Form.Item label="비밀번호" name="password" dependencies={['userId']} rules={[{ required: true, message: '비밀번호를 입력해주세요.' }, { min: 6, message: '비밀번호는 6자 이상이어야 합니다.' }, ({ getFieldValue }) => ({ validator(_, value) {
+              if (!value || value.length < 6) return Promise.resolve();
+              const userId = getFieldValue('userId');
+              if (userId && userId.length >= 3) {
+                for (let i = 0; i <= userId.length - 3; i++) {
+                  const chunk = userId.substring(i, i + 3);
+                  if (value.includes(chunk)) {
+                    return Promise.reject(new Error('비밀번호에 아이디의 연속된 3자 이상의 문자열을 포함할 수 없습니다.'));
                   }
                 }
-                  return Promise.resolve();
-                },
-              }),
-            ]}
-          >
-            <Input.Password
-              className={styles.input}
-              placeholder="비밀번호 (8자 이상)"
-            />
+              }
+              return Promise.resolve();
+            }})]}>
+            <Input.Password className={styles.input} placeholder="비밀번호 (8자 이상)" />
           </Form.Item>
 
-          {/* 비밀번호 확인 필드 */}
-          <Form.Item
-            label="비밀번호 확인"
-            name="confirm"
-            dependencies={['password']}
-            rules={[
-              { required: true, message: '비밀번호 확인을 입력해주세요.' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('비밀번호가 일치하지 않습니다.'));
-                },
-              }),
-            ]}
-          >
+          <Form.Item label="비밀번호 확인" name="checkpassword" dependencies={['password']} rules={[{ required: true, message: '비밀번호 확인을 입력해주세요.' }, ({ getFieldValue }) => ({ validator(_, value) { return value === getFieldValue('password') ? Promise.resolve() : Promise.reject(new Error('비밀번호가 일치하지 않습니다.')); }})]}>
             <Input.Password className={styles.input} placeholder="비밀번호 확인" />
           </Form.Item>
 
-          {/* 닉네임 입력 필드 */}
-          <Form.Item label="닉네임" name="username" rules={[{ required: true, message: '닉네임을 입력해주세요.' }]}>
-            <Input className={styles.input} placeholder="닉네임" />
-          </Form.Item>
+          <Form.Item label="상호명" name="store_name" rules={[{ required: true, message: '상호명을 입력해주세요.' }]}> <Input className={styles.input} placeholder="상호명" /> </Form.Item>
 
-          {/* 전화번호 입력 필드 */}
-          <Form.Item
-            label="전화번호"
-            name="phone"
-            rules={[{ required: true, message: '전화번호를 입력해주세요.' }]}
-          >
-            <Input
-              className={styles.input}
-              placeholder="'-'하이픈 없이 번호만 입력해 주세요"
-              maxLength={11} // 숫자만 입력 시 11자리 제한
-              autoComplete="new-phone"   // 🔹 자동완성 차단
-            />
-          </Form.Item>
+          <Form.Item label="이메일" name="email" rules={[{ required: true, message: '이메일을 입력해주세요.' }, { type: 'email', message: '올바른 이메일 형식이 아닙니다.' }]}> <Input className={styles.input} placeholder="이메일" autoComplete="new-email" /> </Form.Item>
 
-          {/* 이메일 입력 필드 */}
-          <Form.Item
-            label="이메일"
-            name="email"
-            rules={[
-            { required: true, message: '이메일을 입력해주세요.' },
-            { type: 'email', message: '올바른 이메일 형식이 아닙니다.' }
-            ]}
-          >
-            <Input
-              className={styles.input}
-              placeholder="이메일"
-              autoComplete="new-email" // 🔹 자동완성 차단
-            />
-          </Form.Item>
+          <Form.Item label="전화번호" name="phone" rules={[{ required: true, message: '전화번호를 입력해주세요.' }]}> <Input className={styles.input} placeholder="'-' 하이픈 없이 번호만 입력해 주세요" maxLength={11} autoComplete="new-phone" /> </Form.Item>
 
-          {/* 거주지역 선택 필드 */}
-          <Form.Item
-            label="거주지역"
-            name="region"
-            rules={[{ required: true, message: '거주지역을 선택해주세요.' }]}
-          >
-            <Select placeholder="거주지역 선택">
-              <Option value="서울">서울</Option>
-              <Option value="경기">경기</Option>
-              <Option value="부산">부산</Option>
-              <Option value="대전">대전</Option>
-              <Option value="광주">광주</Option>
-              <Option value="기타">기타</Option>
-              {/* Select 안에 있는 Option들은 실제 선택지 목록 */}
-            </Select>
-          </Form.Item>
-
-          {/* 하단 제출 버튼 컨테이너 */}
           <div className={styles.buttonContainer}>
-            <button
-              type="submit" // HTML 기본 submit 동작
-              className={styles.submitButton}
-              disabled={isSubmitting} // 중복 제출 방지
-            >
-              {isSubmitting ? '처리 중...' : '회원가입'} {/* 처리 중 상태 텍스트 전환 */}
+            <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+              {isSubmitting ? '처리 중...' : '회원가입'}
             </button>
           </div>
         </Form>
@@ -242,5 +172,4 @@ function SignupPage() {
   );
 }
 
-// 이 컴포넌트를 외부에서 사용할 수 있도록 export
 export default SignupPage;

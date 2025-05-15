@@ -1,34 +1,29 @@
+// frontend/src/components/Header/SorticHeader.jsx
 import React, { useEffect } from 'react';
-import { Layout, Menu, Badge, Avatar, Switch, Dropdown } from 'antd';
+import { Layout, Menu, Badge, Avatar, Dropdown } from 'antd';
 import { BellOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
+import { useLogout } from '../../auth/authService';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 
 const { Header } = Layout;
 
 const SorticHeader = () => {
-  const [user, setAuthUser] = useAtom(authUserAtom);
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [user] = useAtom(authUserAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const logout = useLogout();
   const navigate = useNavigate();
 
-  // 로그아웃 처리 함수
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('sidebarCollapsed');
-    localStorage.removeItem('sortCategory');
-
-    // jotai 상태 초기화
-    setAuthUser(null);
-    setIsAuthenticated(false);
-
-    navigate('/');
+  // ✅ 로그아웃 처리
+  const handleLogout = async () => {
+    await logout(); // jotai 상태 초기화 포함
+    navigate('/');  // 홈으로 이동
   };
 
+  // ✅ 유저 드롭다운 메뉴
   const userMenuItems = [
     {
       key: 'profile',
@@ -44,6 +39,7 @@ const SorticHeader = () => {
     },
   ];
 
+  // ✅ 다크모드 테마 반영
   useEffect(() => {
     const saved = localStorage.getItem('theme');
     if (saved === 'dark') {
@@ -75,7 +71,7 @@ const SorticHeader = () => {
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <div className={styles['user-info']}>
                 <Avatar icon={<UserOutlined />} className={styles.avatar} />
-                <span className={styles.username}>{user?.username || 'Guest'}</span>
+                <span className={styles.store_name}>{user?.store_name}</span>
               </div>
             </Dropdown>
           </>

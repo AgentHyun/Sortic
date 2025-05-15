@@ -51,7 +51,7 @@ import {
   editedSorterNameAtom, edtingSorterIdAtom,
   selectedSortersAtom, elementsRefreshTriggerAtom,
   oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom, selectedUserIdAtom, selectedUserNameAtom
+  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom, selectedUserIdAtom, selectedStoreNameAtom
 
 } from '../atoms/atoms';
 
@@ -199,7 +199,8 @@ const SorterPage = () => {
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
-  const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
+  const [selectedStoreName, setSelectedStoreName] = useAtom(selectedStoreNameAtom);
+
   useEffect(() => {
     if (currentCategory !== null) {
       console.log("🚀 currentCategory가 변경됨ㅋㅋ, 새로운 요소 가져오기:", currentCategory);
@@ -829,7 +830,7 @@ const SorterPage = () => {
 
 
     const userId = await getUserIdByLinkName(linkName);
-    setSelectedUserName(linkName);
+    setSelectedStoreName(linkName);
 
     if (userId) {
       setSelectedUserId(userId); // ✅ authUser.userId 대신 사용 가능
@@ -878,7 +879,7 @@ const SorterPage = () => {
             overlayClassName="modern-dropdown"
             placement="bottomCenter"           >
             <Button className="cta" onClick={handleLinkClick}>
-              {selectedUserName ? selectedUserName : 'Link'}
+              {selectedStoreName ? selectedStoreName : 'Link'}
             </Button>
           </Dropdown>
 

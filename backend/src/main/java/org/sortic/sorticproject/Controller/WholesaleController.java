@@ -62,16 +62,16 @@ public class WholesaleController {
         wholesaleService.deleteWholesaleLink(id);
     }
 
-    @GetMapping("/username/{userId}")
-    public ResponseEntity<?> getUsernameByUserId(@PathVariable String userId) {
+    @GetMapping("/store-name/{userId}")
+    public ResponseEntity<?> getStoreNameByUserId(@PathVariable String userId) {
         try {
-            String username = wholesaleService.findUsernameByUserId(userId);
-            return ResponseEntity.ok(Collections.singletonMap("username", username));
+            String storeName = wholesaleService.findStoreNameByUserId(userId);
+            return ResponseEntity.ok(Collections.singletonMap("store_name", storeName));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("도매처 이름 조회 실패");
         }
     }
+
     @PostMapping("/link/by-code")
     public ResponseEntity<?> createLinkByCode(@RequestParam int wholesaleCode,
                                               @RequestParam String userId) {
@@ -85,10 +85,6 @@ public class WholesaleController {
         }
     }
 
-
-
-
-
     @GetMapping("/code/{id}")
     public ResponseEntity<?> getWholesaleCodeById(@PathVariable int id) {
         try {
@@ -99,7 +95,6 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", e.getMessage()));
         }
     }
-
 
     @GetMapping("/code/search")
     public ResponseEntity<?> searchWholesaleCodes(@RequestParam(value = "keyword", required = false) String keyword) {
@@ -114,8 +109,8 @@ public class WholesaleController {
             e.printStackTrace(); // ✅ 콘솔에 전체 원인 출력
             return ResponseEntity.badRequest().body("도매 코드 검색 중 오류 발생: " + e.getClass().getSimpleName());
         }
-
     }
+
     @PutMapping("/link/memo")
     public ResponseEntity<?> updateWholesaleMemo(@RequestBody WholesaleLink link) {
         try {
@@ -137,6 +132,7 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", "메모를 찾을 수 없습니다."));
         }
     }
+
     // 유저 도매 코드 등록
     @PostMapping("/user-code")
     public ResponseEntity<?> createUserWholesaleCode(@RequestBody UserWholesaleCode userCode) {
@@ -150,6 +146,7 @@ public class WholesaleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("등록 중 오류 발생");
         }
     }
+
     @GetMapping("/user-id/by-link-name")
     public ResponseEntity<?> getUserIdByLinkName(@RequestParam String name) {
         try {
@@ -164,7 +161,4 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }
     }
-
-
-
 }

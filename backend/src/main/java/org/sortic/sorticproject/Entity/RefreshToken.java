@@ -1,19 +1,15 @@
 package org.sortic.sorticproject.Entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-/**
- * 사용자 리프레시 토큰 엔티티
- */
 @Getter
 @Setter
-@NoArgsConstructor                // 기본 생성자
-@AllArgsConstructor               // 모든 필드 생성자
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RefreshToken {
-    private String userId;        // 사용자 ID (외래키)
-    private String token;         // 리프레시 토큰 문자열
-    private long expiry;          // 토큰 만료 시간 (예: UNIX 타임스탬프)
+    private String userId;     // 유저 아이디 (Users.user_id 참조)
+    private String token;      // 리프레시 토큰 문자열
+    private long expiry;       // 만료 시간 (Unix Timestamp로 관리)
 }
+

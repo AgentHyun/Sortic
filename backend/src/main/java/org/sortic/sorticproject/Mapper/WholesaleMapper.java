@@ -14,7 +14,7 @@ public interface WholesaleMapper {
     // 도매 코드 CRUD
     @Insert("INSERT INTO Wholesale_Code (wholesale_code, user_id) VALUES (#{wholesaleCode}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "wholesaleCodeId")
-    void insertWholesaleCode(WholesaleCode code);
+    void insertWholesaleCode(WholesaleCode code); // ✅ Dto 하나로 받게 변경
 
     @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
     List<WholesaleCode> getWholesaleCodesByUserId(String userId);
@@ -48,9 +48,9 @@ public interface WholesaleMapper {
 
     @Delete("DELETE FROM Wholesale_Link WHERE wholesale_link_id = #{wholesaleLinkId}")
     void deleteWholesaleLink(int wholesaleLinkId);
-    //래현 추가 user_id로 username찾는 로직
-    @Select("SELECT username FROM Users WHERE user_id = #{userId}")
-    String findUsernameByUserId(@Param("userId") String userId);
+    //래현 추가 user_id로 store_name 찾는 로직
+    @Select("SELECT store_name FROM Users WHERE user_id = #{userId}")
+    String findStoreNameByUserId(@Param("userId") String userId);
 
     @Select("SELECT * FROM Wholesale_Code WHERE wholesale_code = #{wholesaleCode}")
     @Results({
@@ -68,11 +68,11 @@ public interface WholesaleMapper {
         wc.wholesale_code_id,
         wc.wholesale_code,
         wc.user_id,
-        u.username AS ignored_username
+        u.store_name AS ignored_store_name
     FROM Wholesale_Code wc
     JOIN Users u ON wc.user_id = u.user_id
     WHERE CAST(wc.wholesale_code AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
-       OR u.username LIKE CONCAT('%', #{keyword}, '%')
+       OR u.store_name LIKE CONCAT('%', #{keyword}, '%')
 """)
     @Results({
         @Result(column = "wholesale_code_id", property = "wholesaleCodeId"),
@@ -103,5 +103,33 @@ public interface WholesaleMapper {
     WHERE wl.wholesale_name = #{wholesaleName}
 """)
     String findUserIdByWholesaleName(@Param("wholesaleName") String wholesaleName);
+
+    @Select("SELECT store_name FROM Users WHERE user_id = #{userId}")
+    String getStoreNameByUserId(String userId);
+
+    @Select("SELECT * FROM Wholesale_Link WHERE wholesale_code_id = #{wholesaleCodeId}")
+    @Results({
+        @Result(column = "wholesale_code_id", property = "wholesaleCodeId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "wholesale_name", property = "wholesaleName"),
+        @Result(column = "wholesale_memo", property = "wholesaleMemo")
+    })
+    WholesaleLink getWholesaleLinkByCodeId(String wholesaleCodeId);
+
+    @Select("SELECT wc.wholesale_code_id, wc.wholesale_code, " +
+            "wc.user_id, " +
+            "wl.wholesale_name, wl.wholesale_memo " +
+            "FROM Wholesale_Code wc " +
+            "LEFT JOIN Wholesale_Link wl ON wc.wholesale_code_id = wl.wholesale_code_id " +
+            "JOIN Users u ON wc.user_id = u.user_id " +
+            "WHERE wc.wholesale_code = #{wholesaleCode}")
+    @Results({
+        @Result(column = "wholesale_code_id", property = "wholesaleCodeId"),
+        @Result(column = "wholesale_code", property = "wholesaleCode"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "wholesale_name", property = "wholesaleName"),
+        @Result(column = "wholesale_memo", property = "wholesaleMemo")
+    })
+    WholesaleCode getWholesaleCodeByCode(String wholesaleCode);
 
 }

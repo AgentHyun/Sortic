@@ -1,18 +1,18 @@
 // src/Api/index.js
 
 export { default as authAxios } from './authAxios';  // 로그인/회원가입 인증 관련 전용 인스턴스
-export { default as apiAxios } from './apiAxios';    // 나머지 공통 API 호출용 인스턴스
+export { default as publicAxios } from './publicAxios';    // 나머지 공통 API 호출용 인스턴스
 export { default as adminAxios } from './adminAxios';
 
 // 이런식으로 전부 불러올 수 있음
-// import { authAxios, apiAxios } from '@/Api'
-// import { authAxios, apiAxios } from '@/Api';
+// import { authAxios, publicAxios } from '@/Api'
+// import { authAxios, publicAxios } from '@/Api';
 //
 // // 로그인
 // authAxios.post('/login', { userId, password });
 //
 // // 사용자 데이터 조회
-// apiAxios.get('/users/profile');
+// publicAxios.get('/users/profile');
 
 
 

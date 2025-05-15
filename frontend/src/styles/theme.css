@@ -41,7 +41,7 @@
 .title,
 .description,
 .menu-item,
-.username {
+.store-name {
   color: var(--text-color);
 }
 
