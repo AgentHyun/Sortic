@@ -13,8 +13,6 @@ import java.util.List;
 public class BillService {
     @Autowired
     private BillMapper billMapper;
-    @Autowired
-    private BillElementMapper billElementMapper;
 
     // Bill 추가
     public void addBill(Bill bill) {

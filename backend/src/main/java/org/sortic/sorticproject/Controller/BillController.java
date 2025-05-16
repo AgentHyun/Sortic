@@ -12,6 +12,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/bills")
 public class BillController {
+
+
+
     @Autowired
     private BillService billService;
 
@@ -23,6 +26,7 @@ public class BillController {
     @PostMapping("/addBill")
     public void addBill(@RequestBody Bill bill) {
         billService.addBill(bill);
+        System.out.println("dd"+bill);
     }
 
     @DeleteMapping("/deleteBill")
@@ -63,7 +67,7 @@ public class BillController {
 
     @DeleteMapping("/deleteSelectedCommissions")
     public void deleteSelectedCommissions(@RequestBody BillDeleteRequest deleteRequest) {
-    billService.deleteSelectedCommissions(deleteRequest.getBillId(),deleteRequest.getCommissionIds());
+        billService.deleteSelectedCommissions(deleteRequest.getBillId(),deleteRequest.getCommissionIds());
     }
 
 

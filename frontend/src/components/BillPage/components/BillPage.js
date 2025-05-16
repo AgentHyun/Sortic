@@ -56,9 +56,11 @@ const BillPage = () => {
           wholesaleLinkId : link.wholesaleLinkId
         });
       }
-
+      console.log('bill추가')
       // 전체 Bill 다시 불러오기
+
       fetchBills();
+      console.log(bills)
       setNewBillName('');
       setIsModalVisible(false);
       message.success("Bill이 추가되었습니다!");

@@ -13,8 +13,6 @@ public interface BillMapper {
 
 
     @Insert("insert into bill (user_id,bill_name,wholesale_Link_Id) values (#{userId},#{billName},#{wholesaleLinkId})")
-
-
     void insertBill(Bill bill);
 
     @Delete("DELETE FROM bill WHERE bill_id = #{billId}")
@@ -38,8 +36,7 @@ public interface BillMapper {
     FROM Bill_Element be
     JOIN Elements_name en ON be.elements_name_id = en.elements_name_id
     WHERE be.Bill_id = #{billId}
-""")
-    @Results(id = "BillElementDetailMap", value = {
+""")@Results(id = "BillElementDetailMap", value = {
         @Result(property = "elementCount",column = "element_count"),
         @Result(property = "elementsNameId", column = "elements_name_id"),
         @Result(property = "elementsName", column = "elements_name"),
