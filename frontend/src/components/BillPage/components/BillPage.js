@@ -18,6 +18,8 @@ import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디�
 import { X, Plus, Minus } from "lucide-react";
 import {userIdAtom} from "../../../Atoms/userAtom";
 import {authUserAtom} from "../../../auth/authAtoms";
+import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {fetchBillsAction} from "../actions/billActions";
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
@@ -36,11 +38,8 @@ const BillPage = () => {
   const [selectedBillId, setSelectedBillId] = useAtom(selectedBillIdAtom);
   const [selectedBillForCommission, setSelectedBillForCommission] = useAtom(selectedBillForCommissionAtom);
   const [selectedCommissionIds, setSelectedCommissionIds] = useAtom(selectedCommissionIdsAtom);
-  const fetchBills = () => {
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`) // ✅ 주소 수정
-      .then(res => setBills(res.data))
-      .catch(err => console.error('Bill 불러오기 실패', err));
-  };
+  const [wholesaleLink] = useAtom(wholesaleLinksAtom);
+  const [,fetchBills] = useAtom(fetchBillsAction);
 
   useEffect(() => {
     fetchBills();
@@ -49,10 +48,15 @@ const BillPage = () => {
   /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-      await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
-        billName : newBillName,
-        userId  : userId
-      });
+      for (const link of wholesaleLink) {
+        console.log(link.wholesaleLinkId)
+        await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
+          billName : newBillName,
+          userId  : userId,
+          wholesaleLinkId : link.wholesaleLinkId
+        });
+      }
+
       // 전체 Bill 다시 불러오기
       fetchBills();
       setNewBillName('');

@@ -48,6 +48,7 @@ function SignupPage() {
       message.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (err) {
+      console.log(err);
       // 실패 시 서버에서 전달한 에러 메시지 출력
       if (err.response) {
         // 서버에서 반환한 에러 메시지

@@ -13,16 +13,15 @@ import {
 } from "../atom/atoms";
 import {authUserAtom} from "../../../auth/authAtoms";
 import html2canvas from "html2canvas";
+import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {fetchBillsAction} from "../actions/billActions";
 const DroppableBillBox = ({
                             bill,
 
                           }) => {
-  const [bills, setBills] = useAtom(billsAtom);
   const {setNodeRef, isOver} = useDroppable({id: `bill-${bill.billId}`,});
   const [editingBillId, setEditingBillId] = useState(false);
   const [editedBillName, setEditedBillName] = useState('');
-  const [user,] = useAtom(authUserAtom)
-  const userId = user.userId
   const [detailModalVisible, setDetailModalVisible] = useAtom(detailModalVisibleAtom);
   const [selectedBillDetails, setSelectedBillDetails] = useAtom(selectedBillDetailsAtom);
   const [selectedBillTitle, setSelectedBillTitle] = useAtom(selectedBillTitleAtom);
@@ -31,15 +30,8 @@ const DroppableBillBox = ({
   const [selectedBillForCommission, setSelectedBillForCommission] = useAtom(selectedBillForCommissionAtom);
   const boxRef = React.useRef(null);
   const { Option } = Select;
-  const fetchBills = () => {
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`) // ✅ 주소 수정
-      .then(res => setBills(res.data))
-      .catch(err => console.error('Bill 불러오기 실패', err));
-  };
+  const [,fetchBills] = useAtom(fetchBillsAction);
 
-  useEffect(() => {
-    fetchBills();
-  }, []);
 
   /** ✅ Bill 추가 처리 */
 
@@ -350,11 +342,11 @@ const DroppableBillBox = ({
                }}
           >🧾 수수료
           </div>
-          <ul>
+          <ul className="bill-commission-box">
             {Array.isArray(bill.commissions) &&
               bill.commissions.map((c, idx) => (
                 <li key={idx} className="bill-commission-map">
-                  {c.commissionName} - {c.commission}원
+                  {c.commissionName}
                 </li>
               ))}
           </ul>

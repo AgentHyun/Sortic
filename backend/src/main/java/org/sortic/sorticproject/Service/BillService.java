@@ -29,9 +29,9 @@ public class BillService {
         billMapper.updateBillName(billId,billName);
     }
     // Bill 전체 불러오기
-    public List<BillGroupResponse> getBillDetails(String userId){
+    public List<BillGroupResponse> getBillDetails(String userId,String wholesaleLinkId){
         // 1. 해당 유저의 Bill 목록 가져오기
-        List<Bill> billList = billMapper.findBillsByUserId(userId);
+        List<Bill> billList = billMapper.findBillsByUserId(userId,wholesaleLinkId);
 
         // 최종 결과 리스트
         List<BillGroupResponse> resultList = new ArrayList<>();

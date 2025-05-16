@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class Bill {
     private int billId;
     private String userId;
+    private String wholesaleLinkId;
     private String billName;
     private Timestamp createBillTime;
 }

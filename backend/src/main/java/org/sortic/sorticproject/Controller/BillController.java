@@ -16,8 +16,8 @@ public class BillController {
     private BillService billService;
 
     @GetMapping("/getAllBills")
-    public List<BillGroupResponse> getbills(@RequestParam String userId){
-        return billService.getBillDetails(userId);
+    public List<BillGroupResponse> getbills(@RequestParam String userId, @RequestParam String wholesaleLinkId){
+        return billService.getBillDetails(userId,wholesaleLinkId);
     }
 
     @PostMapping("/addBill")

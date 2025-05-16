@@ -2,7 +2,9 @@ import axios from 'axios';
 import { atom } from 'jotai';
 import { message } from 'antd';
 import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms'
-import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // 적절한 atom을 가져옵니다.
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms";
+import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {authUserAtom} from "../../../auth/authAtoms"; // 적절한 atom을 가져옵니다.
 
 // BillElement 추가
 export const addBillElementAction = atom(
@@ -152,15 +154,14 @@ export const addBillElementsAction = atom(
   }
 );
 
-export const fetchBillsAction = atom(
-  null,
-  async (get, set, userId) => {
-    try {
-      userId = get(selectedUserIdAtom);
-      const res = await axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}`);
-      set(billsAtom, res.data);
-    } catch (err) {
-      console.error('📛 Bill 불러오기 실패:', err);
-    }
+export const fetchBillsAction = atom(null,async (get,set)=>{
+  const wholesaleLink = get(wholesaleLinksAtom);
+  const user = get(authUserAtom);
+  const userId = user.userId;
+  for (const link of wholesaleLink) {
+    console.log(link.wholesaleLinkId)
+    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${link.wholesaleLinkId}`) // ✅ 주소 수정
+      .then(res => set(billsAtom,res.data))
+      .catch(err => console.error('Bill 불러오기 실패', err));
   }
-);
+});

@@ -259,12 +259,22 @@
   border: 2px solid #007bff;
   background-color: #e6f0ff;
 }
-
+.bill-commission-box{
+  border: 1px solid #c2c2c2;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #fcfcfc;
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
 .bill-commission-map{
-  padding-top: 5px;
+  text-align: center;
   list-style: none;        /* 점 없애기 */
-  padding-left: 0;         /* 왼쪽 들여쓰기 제거 */
-  margin: 0;
+  padding: 0 10px;
+  border : 1px solid #cecece;
+  border-radius: 10px;
 }
 .order-container{
   margin-top: 20px;
