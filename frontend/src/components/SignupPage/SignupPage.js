@@ -1,10 +1,11 @@
-// ✅ SignupPage.js (UI 상호작용 리팩토링 포함)
+// ✅ SignupPage.js (이메일 인증 연동 포함 리팩토링 완료)
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, message, Checkbox } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
 import publicAxios from '../../api/publicAxios';
 import authAxios from '../../api/authAxios';
+import { sendEmailCode, verifyEmailCode } from '../service/emailService';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 
@@ -18,6 +19,7 @@ function SignupPage() {
   const [authLoading] = useAtom(authLoadingAtom);
 
   const [emailSent, setEmailSent] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [showVerificationInput, setShowVerificationInput] = useState(false);
   const [countdown, setCountdown] = useState(300);
   const [isIdChecked, setIsIdChecked] = useState(false);
@@ -36,10 +38,14 @@ function SignupPage() {
   }, [emailSent, countdown]);
 
   const handleSubmit = async (values) => {
-    const { checkpassword, ...signupData } = values;
+    const { checkpassword, verificationCode, ...signupData } = values;
+    if (!isEmailVerified) {
+      message.warning('이메일 인증을 완료해주세요.');
+      return;
+    }
     setIsSubmitting(true);
     try {
-      await authAxios.post('/users/signup', signupData);
+      await publicAxios.post('/users/signup', signupData);
       message.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (err) {
@@ -51,7 +57,10 @@ function SignupPage() {
 
   const handleCheckId = async () => {
     const id = form.getFieldValue('userId');
-    if (!id) return;
+    if (!id) {
+      form.validateFields(['userId']);
+      return;
+    }
     try {
       const { data } = await publicAxios.get(`/users/check-userid`, { params: { userId: id } });
       if (data) {
@@ -69,7 +78,10 @@ function SignupPage() {
 
   const handleCheckStore = async () => {
     const store = form.getFieldValue('store_name');
-    if (!store) return;
+    if (!store) {
+      form.validateFields(['store_name']);
+      return;
+    }
     try {
       const { data } = await publicAxios.get(`/users/check-store`, { params: { storeName: store } });
       if (data) {
@@ -85,19 +97,61 @@ function SignupPage() {
     }
   };
 
-  const handleSendVerification = () => {
-    setEmailSent(true);
-    setShowVerificationInput(true);
-    setCountdown(300);
-    message.success('인증번호를 이메일로 발송했습니다.');
+  const handleSendVerification = async () => {
+    const email = form.getFieldValue('email');
+    if (!email) {
+      form.validateFields(['email']);
+      return;
+    }
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValid) {
+      message.warning('유효한 이메일을 입력해주세요.');
+      return;
+    }
+    try {
+      await sendEmailCode(email);
+      setEmailSent(true);
+      setShowVerificationInput(true);
+      setCountdown(300);
+      setIsEmailVerified(false);
+      message.success('인증번호를 이메일로 발송했습니다.');
+    } catch {
+      message.error('인증번호 발송에 실패했습니다.');
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    const email = form.getFieldValue('email');
+    const code = form.getFieldValue('verificationCode');
+    if (!code) {
+      form.validateFields(['verificationCode']);
+      return;
+    }
+    try {
+      await verifyEmailCode(email, code);
+      setIsEmailVerified(true);
+      message.success('이메일 인증이 완료되었습니다.');
+    } catch {
+      message.error('인증번호가 올바르지 않거나 만료되었습니다.');
+      setIsEmailVerified(false);
+    }
   };
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
         <Title level={2} className={styles.title}>회원가입</Title>
-        <Form form={form} layout="vertical" onFinish={handleSubmit} className={styles.form}>
-          <Form.Item label="아이디" name="userId" rules={[{ required: true, message: '아이디는 필수입니다.' }, { pattern: /^[a-zA-Z0-9@._-]{4,20}$/, message: '아이디는 4~20자, 영어/숫자/@._-만 허용됩니다.' }]}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className={styles.form}
+          onValuesChange={(changed) => {
+            if ('userId' in changed) setIsIdChecked(false);
+            if ('store_name' in changed) setIsStoreChecked(false);
+          }}
+        >
+          <Form.Item label="아이디" name="userId" rules={[{ required: true, message: '아이디를 입력하세요.' }, { pattern: /^[a-zA-Z0-9@._-]{4,20}$/, message: '아이디는 4~20자, 영어/숫자/@._-만 허용됩니다.' }]}>
             <Input className={styles.inputShort} placeholder="아이디" />
           </Form.Item>
           <Button onClick={handleCheckId} disabled={isIdChecked}>{isIdChecked ? '사용 가능' : '중복확인'}</Button>
@@ -122,7 +176,7 @@ function SignupPage() {
             <Input.Password className={styles.input} placeholder="비밀번호 확인" />
           </Form.Item>
 
-          <Form.Item label="상호명" name="store_name" rules={[{ required: true, message: '상호명은 필수입니다.' }, { min: 2, max: 10, message: '상호명은 2~10글자 내로 입력해주세요.' }]}>
+          <Form.Item label="상호명" name="store_name" rules={[{ required: true, message: '상호명을 입력하세요.' }, { min: 2, max: 10, message: '상호명은 2~10글자 내로 입력해주세요.' }]}>
             <Input className={styles.input} placeholder="상호명" />
           </Form.Item>
           <Button onClick={handleCheckStore} disabled={isStoreChecked}>{isStoreChecked ? '사용 가능' : '중복확인'}</Button>
@@ -137,8 +191,8 @@ function SignupPage() {
               <Form.Item name="verificationCode" label="인증번호 입력" rules={[{ required: true, message: '인증번호를 입력해주세요.' }]}>
                 <Input className={styles.inputShort} placeholder="인증번호" />
               </Form.Item>
-              <Button>인증확인</Button>
-              <div className={styles.timer}>남은 시간: {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, '0')} 내에 입력해주세요</div>
+              <Button onClick={handleVerifyCode} disabled={isEmailVerified}>인증확인</Button>
+                <div className={styles.timer}>남은 시간: {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, '0')} 내에 입력해주세요</div>
             </>
           )}
 
