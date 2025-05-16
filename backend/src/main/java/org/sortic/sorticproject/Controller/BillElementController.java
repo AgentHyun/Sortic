@@ -1,4 +1,4 @@
-package org.sortic.sorticproject.controller;
+package org.sortic.sorticproject.Controller;
 
 import org.sortic.sorticproject.Entity.BillElement;
 import org.sortic.sorticproject.Service.BillElementService;
@@ -22,6 +22,7 @@ public class BillElementController {
             billElementService.addBillElement(billElement);
             return ResponseEntity.ok("요소가 성공적으로 추가되었습니다.");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("요소 추가 중 오류가 발생했습니다: " + e.getMessage());
         }
     }

@@ -29,9 +29,9 @@ public class BillService {
         billMapper.updateBillName(billId,billName);
     }
     // Bill 전체 불러오기
-    public List<BillGroupResponse> getBillDetails(String userId){
+    public List<BillGroupResponse> getBillDetails(String userId,String wholesaleLinkId){
         // 1. 해당 유저의 Bill 목록 가져오기
-        List<Bill> billList = billMapper.findBillsByUserId(userId);
+        List<Bill> billList = billMapper.findBillsByUserId(userId,wholesaleLinkId);
 
         // 최종 결과 리스트
         List<BillGroupResponse> resultList = new ArrayList<>();
@@ -40,21 +40,25 @@ public class BillService {
         for (Bill bill : billList) {
             int billId = bill.getBillId();
             String billName = bill.getBillName();
+
             // 3. Element 목록 가져오기
             List<BillElementDetail> elements = billMapper.findElementsByBillId(billId);
+
             // 4. Commission 목록 가져오기
             List<BillCommissionDetail> commissions = billMapper.findCommissionsByBillId(billId);
 
-            // 5. 요소 가격 총합 계산
+            // 5. 요소 가격 총합 계산 (elementCount 반영)
             int totalElementPrice = 0;
             for (BillElementDetail el : elements) {
-                totalElementPrice += el.getElementsPrice();
+                totalElementPrice += el.getElementsPrice() * el.getElementCount();
             }
+
             // 6. 수수료 가격 총합
             int totalCommission = 0;
             for (BillCommissionDetail com : commissions){
                 totalCommission += com.getCommission();
             }
+
             // 7 총합
             int grandTotal = totalCommission + totalElementPrice;
 
@@ -74,8 +78,26 @@ public class BillService {
         return resultList;
     }
 
+    public List<BillElementsData> getElementsDataByNameId(int elementsNameId) {
+        return billMapper.getElementsDataByNameId(elementsNameId);
+    }
 
+    public void increaseElementCount(int billId, int elementsNameId) {
+        billMapper.increaseElementCount(billId, elementsNameId);
+    }
 
+    public void decreaseElementCount(int billId, int elementsNameId) {
+        billMapper.decreaseElementCount(billId, elementsNameId);
+    }
 
+    public void deleteElementFromBill(int billId, int elementsNameId) {
+        billMapper.deleteElementFromBill(billId, elementsNameId);
+    }
 
+    public void addCommission(BillCommissionDetail billCommissionDetail) {
+        billMapper.insertCommission(billCommissionDetail);
+    }
+    public void deleteSelectedCommissions(int billId, List<Integer> commissionIds) {
+        billMapper.deleteSelectedCommissions(billId, commissionIds);
+    }
 }
