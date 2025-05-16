@@ -947,7 +947,8 @@ const SorterPage = () => {
     if (count === 0) {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
     }
-
+    setfetchAndNumberCategories();
+    setFetchBills();
 
   };
 
@@ -987,10 +988,9 @@ const SorterPage = () => {
           setUsernamesByCodeId(updatedMap); // ✅ 업데이트된 맵 저장
         }
       },
-    }
+    })
 
-    setfetchAndNumberCategories();
-    setFetchBills();
+
 
   };
 

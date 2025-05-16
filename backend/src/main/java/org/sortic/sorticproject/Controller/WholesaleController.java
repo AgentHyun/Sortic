@@ -144,6 +144,7 @@ public class WholesaleController {
             wholesaleService.addUserWholesaleCode(userCode);
             return ResponseEntity.ok("유저 도매 코드가 등록되었습니다.");
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();

@@ -197,7 +197,7 @@ export const registerToUserWholesaleCodeAction = atom(null, async (get, set, who
   try {
     await axios.post(`http://localhost:8080/api/wholesale/user-code`, {
       userWholesaleCode: wholesaleCodeId,
-      userId,
+      userId : userId,
     });
     message.success("도매 코드가 유저에게 등록되었습니다.");
   } catch (err) {

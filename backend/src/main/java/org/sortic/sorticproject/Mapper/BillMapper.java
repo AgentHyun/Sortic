@@ -59,6 +59,8 @@ public interface BillMapper {
     @Update("UPDATE Bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
     void updateBillName(@Param("billId")int billId,@Param("billName") String billName);
 
+
+
     @Select("SELECT * FROM elements_data WHERE elements_name_id = #{elementsNameId}")
     @Results({
         @Result(property = "elementsId", column = "elements_id"),
@@ -102,7 +104,5 @@ public interface BillMapper {
     })
     void deleteSelectedCommissions(@Param("billId") int billId, @Param("commissionIds") List<Integer> commissionIds);
 
-    @Update("UPDATE bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
-    void updateBillName(@Param("billId") int billId, @Param("billName") String billName);
 
 }
