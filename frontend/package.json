@@ -15,7 +15,9 @@
     "axios": "^1.8.4",
 
     "font-awesome": "^4.7.0",
-    "http-proxy-middleware": "^3.0.5",
+
+    "http-proxy-middleware": "^2.0.6",
+
     "jotai": "^2.12.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.487.0",

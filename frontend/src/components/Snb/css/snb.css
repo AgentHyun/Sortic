@@ -108,15 +108,18 @@
     transform: translateX(0);
   }
 }
-.Normal-calc-container{
+.snb-Normal-calc-container{
   position: fixed;
 }
-.note-calc-container{
+.snb-note-calc-container{
   position: fixed;
 }
-.percent-calc-container{
+.snb-percent-calc-container{
   position: fixed;
 }
-.delivery-tracking-container{
+.snb-delivery-tracking-container{
+  position: fixed;
+}
+.snb-chat-container{
   position: fixed;
 }

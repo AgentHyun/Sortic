@@ -73,7 +73,6 @@ export const createWholesaleLinkAction = atom(null, async (get, set, { wholesale
 
 
 
-
 // 도매 링크 조회
 export const fetchWholesaleLinksAction = atom(null, async (get, set) => {
   const userId = get(authUserAtom)?.userId;

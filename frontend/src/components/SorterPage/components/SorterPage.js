@@ -989,7 +989,9 @@ const SorterPage = () => {
       },
     }
 
-    );
+    setfetchAndNumberCategories();
+    setFetchBills();
+
   };
 
 

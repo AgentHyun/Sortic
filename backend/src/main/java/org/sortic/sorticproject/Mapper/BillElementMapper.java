@@ -9,6 +9,8 @@ import java.util.List;
 public interface BillElementMapper {
 
     // BillElement 추가
+
+
     @Insert("INSERT INTO Bill_Element (Bill_id, Elements_name_id,  Element_count ) VALUES (#{billId}, #{elementsNameId}),1")
     void insertBillElement(BillElement billElement);
 
@@ -30,9 +32,9 @@ public interface BillElementMapper {
 
     @Insert({
         "<script>",
-        "INSERT INTO Bill_Element (Bill_id, Elements_name_id) VALUES ",
+        "INSERT INTO Bill_Element (Bill_id, Elements_name_id,element_count) VALUES ",
         "<foreach collection='billElements' item='billElement' separator=','>",
-        "(#{billElement.billId}, #{billElement.elementsNameId})",
+        "(#{billElement.billId}, #{billElement.elementsNameId},1)",
         "</foreach>",
         "</script>"
     })

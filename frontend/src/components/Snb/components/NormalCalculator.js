@@ -1,35 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X,ScrollText } from 'lucide-react';
+import { X, ScrollText } from 'lucide-react';
 import { message } from 'antd';
 import '../css/calculator.css';
-import {useAtom} from "jotai";
-import {historyAtom} from "../Atom/atoms";
+import { useAtom } from "jotai";
+import { historyAtom } from "../Atom/atoms";
 
 const NormalCalculator = ({ onClose }) => {
-  const calculatorRef = useRef(); //  계산기 컨테이너 ref
+  const calculatorRef = useRef(); // 계산기 전체 영역 참조
 
-  const [position, setPosition] = useState({ x: -800, y: -500 });
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: -1000, y: -500 }); // 위치 상태
+  const [dragging, setDragging] = useState(false); // 드래그 여부
+  const [offset, setOffset] = useState({ x: 0, y: 0 }); // 마우스 클릭 위치 보정
 
-  const [input, setInput] = useState('');
-  const [previousValue, setPreviousValue] = useState('');
-  const [operator, setOperator] = useState('');
-  //기록 관련 상태
-  const [history, setHistory] = useAtom(historyAtom);
-  const historyRef = useRef(null);
-  //숫자 앞에 불필요한 0 제거
-    const sanitizeExpression = (expr) => {
-      return expr.replace(/\b0+(\d)/g, '$1'); // ex: "01" → "1", "002" → "2"
-    };
+  const [input, setInput] = useState(''); // 현재 입력값
+  const [previousValue, setPreviousValue] = useState(''); // 이전 값 (연산자 앞)
+  const [operator, setOperator] = useState(''); // 현재 연산자
 
-  // history 바뀔 때 마다 맨 아래로
+  const [history, setHistory] = useAtom(historyAtom); // 계산 내역
+  const historyRef = useRef(null); // 내역 영역 스크롤용 참조
+
+  // 숫자 앞 불필요한 0 제거 (ex: 012 → 12)
+  const sanitizeExpression = (expr) => {
+    return expr.replace(/\b0+(\d)/g, '$1');
+  };
+
+  // 계산 내역이 바뀔 때마다 맨 아래로 스크롤
   useEffect(() => {
     if (historyRef.current) {
       historyRef.current.scrollTop = historyRef.current.scrollHeight;
     }
   }, [history]);
-  // 마우스 드래그 이동
+
+  // 드래그 이동 처리
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!dragging) return;
@@ -38,17 +40,12 @@ const NormalCalculator = ({ onClose }) => {
         y: e.clientY - offset.y,
       });
     };
-
-    const handleMouseUp = () => {
-      setDragging(false);
-    };
-
+    const handleMouseUp = () => setDragging(false);
     if (dragging) {
       document.body.style.userSelect = 'none';
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
-
     return () => {
       document.body.style.userSelect = 'auto';
       document.removeEventListener('mousemove', handleMouseMove);
@@ -56,16 +53,13 @@ const NormalCalculator = ({ onClose }) => {
     };
   }, [dragging, offset]);
 
-  // 키보드 입력 - 계산기 포커스 중일 때만 허용
+  // 키보드 입력 허용 (계산기 내부 포커스 시만)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      const isFocusInsideCalculator =
-        calculatorRef.current?.contains(document.activeElement);
-
+      const isFocusInsideCalculator = calculatorRef.current?.contains(document.activeElement);
       if (!isFocusInsideCalculator) return;
 
       const key = e.key;
-
 
       if (!isNaN(key)) {
         if (input.length >= 10) return;
@@ -98,9 +92,10 @@ const NormalCalculator = ({ onClose }) => {
     });
   };
 
-  //  버튼 클릭 처리
+  // 버튼 클릭 처리 로직
   const handleButtonClick = (value) => {
     if (input.length > 10 && !["C", "DEL", "=", "%"].includes(value)) return;
+
     if (value === 'C') {
       setInput('');
       setPreviousValue('');
@@ -108,15 +103,15 @@ const NormalCalculator = ({ onClose }) => {
     } else if (value === 'DEL') {
       setInput((prev) => prev.slice(0, -1));
     } else if (["+", "-", "×", "÷"].includes(value)) {
-      // 연산자를 연속으로 눌렀을 때 예외처리
+      // 연산자 중복 입력 처리
       if (!input && previousValue && operator) {
-        setOperator(value); // 연산자만 바꾼다
+        setOperator(value);
         return;
       }
       if (previousValue && operator && input) {
         try {
           const rawExpr = `${previousValue}${operator}${input}`;
-          const expression = sanitizeExpression(rawExpr); // 불필요한 0 제거
+          const expression = sanitizeExpression(rawExpr);
           const result = eval(expression.replace(/÷/g, '/').replace(/×/g, '*'));
           const cleaned = result.toString().includes('.') ? parseFloat(result.toString()) : result;
           setHistory((prev) => [...prev, `${previousValue}${operator}${input}=${cleaned}`]);
@@ -147,7 +142,7 @@ const NormalCalculator = ({ onClose }) => {
       }
       try {
         const rawExpr = `${previousValue}${operator}${input}`;
-        const expression = sanitizeExpression(rawExpr); // ✅ 여기서도 0 제거
+        const expression = sanitizeExpression(rawExpr);
         const result = eval(expression.replace(/÷/g, '/').replace(/×/g, '*'));
         const cleaned = result.toString().includes('.') ? parseFloat(result.toString()) : result;
         setHistory((prev) => [...prev, `${previousValue}${operator}${input}=${cleaned}`]);
@@ -167,15 +162,18 @@ const NormalCalculator = ({ onClose }) => {
 
   return (
     <div
-      ref={calculatorRef} //  ref 적용
+      ref={calculatorRef}
       className="calculator-container"
       style={{ left: position.x, top: position.y, position: 'absolute' }}
     >
+      {/* 헤더 - 드래그 이동 및 닫기 버튼 */}
       <div className="calculator-header" onMouseDown={handleMouseDown}>
         <span>일반 계산기</span>
         <X onClick={onClose} className="close-btn" />
       </div>
+
       <div className="calculator-body">
+        {/* 현재 계산 식 및 결과 */}
         <div className="input-display-wrapper">
           {operator && (
             <span className="operator-hint">{previousValue} {operator}</span>
@@ -187,6 +185,8 @@ const NormalCalculator = ({ onClose }) => {
             readOnly
           />
         </div>
+
+        {/* 버튼 영역 */}
         <div className="calculator-buttons">
           {["C", "DEL", "%", "÷"].map((op) => (
             <button
@@ -199,6 +199,7 @@ const NormalCalculator = ({ onClose }) => {
               {op}
             </button>
           ))}
+
           {[7, 8, 9, "×", 4, 5, 6, "-", 1, 2, 3, "+"].map((btn) => (
             <button
               key={btn}
@@ -208,6 +209,7 @@ const NormalCalculator = ({ onClose }) => {
               {btn}
             </button>
           ))}
+
           <button
             className="calculator-button"
             onClick={() => handleButtonClick(0)}
@@ -227,7 +229,9 @@ const NormalCalculator = ({ onClose }) => {
             =
           </button>
         </div>
-        <ScrollText/>
+
+        {/* 계산 기록 */}
+        <ScrollText /> {'기록'}
         {history.length > 0 && (
           <div className="history-wrapper" ref={historyRef}>
             {history.map((entry, idx) => (
