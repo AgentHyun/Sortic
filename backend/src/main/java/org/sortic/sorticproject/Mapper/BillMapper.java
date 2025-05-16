@@ -11,11 +11,15 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
 
+
     @Insert("insert into bill (user_id,bill_name,wholesale_Link_Id) values (#{userId},#{billName},#{wholesaleLinkId})")
+
+
     void insertBill(Bill bill);
 
     @Delete("DELETE FROM bill WHERE bill_id = #{billId}")
     void deleteBillById(int billId);
+
 
     @Select("Select * from Bill Where user_id = #{userId} AND wholesale_Link_Id = #{wholesaleLinkId}")
     @Results(id = "BillMap", value = {
@@ -44,14 +48,13 @@ public interface BillMapper {
     List<BillElementDetail> findElementsByBillId(@Param("billId") int billId);
 
 
-
-
     @Select("""
         SELECT bill_commission_id AS billCommissionId , commission_name AS commissionName, commission
         FROM Bill_Commission
         WHERE Bill_id = #{billId}
     """)
     List<BillCommissionDetail> findCommissionsByBillId(@Param("billId") int billId);
+
 
     @Update("UPDATE Bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
     void updateBillName(@Param("billId")int billId,@Param("billName") String billName);
@@ -98,4 +101,8 @@ public interface BillMapper {
         "</script>"
     })
     void deleteSelectedCommissions(@Param("billId") int billId, @Param("commissionIds") List<Integer> commissionIds);
+
+    @Update("UPDATE bill SET bill_name = #{billName} WHERE bill_id = ${billId}")
+    void updateBillName(@Param("billId") int billId, @Param("billName") String billName);
+
 }

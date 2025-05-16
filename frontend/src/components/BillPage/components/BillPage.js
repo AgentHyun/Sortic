@@ -14,12 +14,17 @@ import {
 import '../css/billPage.css';
 import DroppableBillBox from './DroppableBillBox';  // DroppableBillBox import
 import { jwtDecode } from 'jwt-decode';
+
 import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
 import { X, Plus, Minus } from "lucide-react";
 import {userIdAtom} from "../../../Atoms/userAtom";
 import {authUserAtom} from "../../../auth/authAtoms";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 import {fetchBillsAction} from "../actions/billActions";
+
+import {selectedUserIdAtom} from "../../SorterPage/atoms/atoms";
+import {PlusOutlined} from "@ant-design/icons"; // ✅ JWT 디코딩을 위해 추가 설치 필요 (npm install jwt-decode)
+
 
 const BillPage = () => {
   const [bills, setBills] = useAtom(billsAtom);
@@ -110,11 +115,14 @@ const BillPage = () => {
       <div className="bill-add">
         <Button
           type="primary"
+
           className="add-bill-btn"
           onClick={() => setIsModalVisible(true)}
         >
           + Bill
+
         </Button>
+
       </div>
 
       <SortableContext

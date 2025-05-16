@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/authAtoms';
 import { authService } from '../../auth/authService';
 import styles from './css/Login.module.css';
+import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
 
 const Login = () => {
   const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
@@ -16,7 +17,7 @@ const Login = () => {
   const [form] = Form.useForm();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
-
+  const [, fetchCategoryCount] = useAtom(fetchCategoryCountAction);
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로

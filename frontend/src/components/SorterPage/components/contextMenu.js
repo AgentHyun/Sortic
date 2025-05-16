@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { contextMenuAtom} from "../atoms/atoms"
+import { contextMenuAtom, isExternalUserAtom} from "../atoms/atoms"
 import {closeContextMenuAction} from "../actions/elementAction"
 import { useEffect } from "react";
 import { Trash2, Inspect } from 'lucide-react';
@@ -11,7 +11,7 @@ const ContextMenu = () => {
     const [, closeContextMenu] = useAtom(closeContextMenuAction);
     const [, deleteElement] = useAtom(handleDeleteElementAction);
     const [, openModal] = useAtom(openElementDetailAction);
-
+    const [isExternalUser] = useAtom(isExternalUserAtom);
     useEffect(() => {
         const handleClickOutside = () => {
             closeContextMenu();
@@ -57,6 +57,7 @@ const ContextMenu = () => {
             >
                 상세 정보 <Inspect size={15} color="black" />
             </div>
+          {!isExternalUser && (
             <div className = 'context-delete'
                 onClick={() => {
                     deleteElement();
@@ -66,6 +67,7 @@ const ContextMenu = () => {
             >
                 삭제  <Trash2 size={15} color="red" />
             </div>
+            )}
         </div>
     );
 };

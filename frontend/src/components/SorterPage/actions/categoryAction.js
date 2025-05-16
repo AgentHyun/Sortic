@@ -27,9 +27,10 @@ export const fetchAndNumberCategoriesAction = atom(
       set(currentIndexAtom, -1);
 
       const userId = get(selectedUserIdAtom);
+
       if (!userId) {
-        console.warn("유저 ID 없음: 카테고리 조회 생략");
-        return [];
+        const authUser = get(authUserAtom);
+        const userId = authUser?.userId;
       }
 
       const response = await axios.get('http://localhost:8080/api/categories/get_category', {
@@ -40,7 +41,6 @@ export const fetchAndNumberCategoriesAction = atom(
 
       // ✅ 카테고리가 아예 없으면 조기 종료 (이후 로직 실행 X)
       if (!categories || categories.length === 0) {
-        console.log('📭 카테고리 없음 → 상태 초기화 유지');
         return [];
       }
 
@@ -102,7 +102,7 @@ export const fetchCategoryByIdAction = atom(
     async (get, set, categoryId) => {
       const userId = get(selectedUserIdAtom);
         if (userId) {
-            message.error('로그인이 필요합니다.');
+
             return;
         }
         try {

@@ -19,6 +19,7 @@ export const addBillElementAction = atom(
       return;
     }
 
+
     const bills = get(billsAtom); // 모든 bill
     const targetBill = bills.find((bill) => bill.billId === billElementData.billId);
 
@@ -34,6 +35,7 @@ export const addBillElementAction = atom(
     const isDuplicate = targetBill.elements?.some(
       (element) => element.elementsNameId === billElementData.elementsNameId
     );
+
 
     if (isDuplicate) {
       set(messageAtom, {

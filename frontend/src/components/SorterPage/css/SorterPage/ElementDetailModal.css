@@ -1,6 +1,6 @@
 /* 모달 배경 */
 .detail-modal .ant-modal-content {
-    background-color: #555555;
+    background-color: #929e6e;
     color: #303945;
     padding : 10px;
 
@@ -8,11 +8,12 @@
 }
 .detail-modal .ant-modal-close-x {
     transition: color 0.3s; /* 원하는 포인트 컬러 넣어줘 */
-    margin-left : 70px;
+    margin-left : 65px;
     margin-bottom : 120px;
     margin-top:-15px;
     font-size : 35px;
     display: flex;
+    background-color: transparent!important;
 
 
 
@@ -32,19 +33,32 @@
 
 
 
-}
-
-/* 헤더 (이미지 + 정보) */
-.detail-header-section {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-
-    justify-content: space-between;
-    margin-top : -127px;
-
 
 }
+
+
+
+.detail-header.internal-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap : 0;
+  margin : 0;
+  background-color: transparent;
+}
+
+.detail-header.external-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top : -100px;
+  flex-direction: row;
+  gap : 0;
+
+  background-color: transparent;
+}
+
 
 .detail-img {
     width: 80px;
@@ -62,9 +76,7 @@
     border-radius: 10px;
     margin-left : 10px;
     background-color: white;
-    box-shadow:
-            0 4px 8px rgba(0, 0, 0, 0.12),
-            0 8px 24px rgba(0, 0, 0, 0.15);
+
 }
 
 .detail-title {
@@ -161,12 +173,13 @@
 
 /* value 부분에만 hover 효과 */
 .attribute-value:hover {
-    background-color:   #4C585B;
+    background-color:   #929e6e;
     color : white;
     cursor: pointer;
 }
 .attribute-key:hover {
-    background-color:   #4C585B;
+    background-color:   #929e6e
+;
     color : white;
     cursor: pointer;
 }
@@ -184,7 +197,7 @@
 }
 .element-detail-complete-btn {
     background-color: white;
-    color: #303945;
+    color: #929e6e;
     border: none;
     height: 48px;
     font-size: 16px;
@@ -197,7 +210,7 @@
 }
 
 .element-detail-complete-btn:hover {
-    background-color: #303945!important;
+    background-color: #cadf99 !important;
     color : white!important;
     transform: scale(1.05)!important;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15)!important;
@@ -244,12 +257,12 @@
     padding: 2px 8px;
     height: 28px;
     line-height: 1.4;
-    width: 94.5%;
+
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-
+    width:100%;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     font-size: 14px;
     transition: all 0.2s ease;
@@ -260,7 +273,7 @@
     padding: 2px 8px;
     height: 28px;
     line-height: 1.4;
-    width: 94.5%;
+
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-bottom-left-radius: 10px;
@@ -269,7 +282,7 @@
     font-size: 14px;
     transition: all 0.2s ease;
     outline: none;
-
+    width:100%;
 }
 /* Placeholder 스타일 */
 .custom-input::placeholder {
@@ -282,6 +295,8 @@
     justify-content: flex-end;
     flex-direction: column;
     margin-left : 487px;
+
+
 }
 
 .Element-Detail-Modal-edit-btn{
@@ -299,15 +314,15 @@
 }
 
 .Element-Detail-Modal-add-btn:hover {
-    color: #4C585B;
+    color:  #929e6e;
 
     transform-origin: center center; /* 여기서도 한 번 더 명시 */
-    text-shadow: 0 0 8px rgba(76, 88, 91, 0.8);
+    text-shadow: 0 0 8px rgba(76, 91, 77, 0.8);
     cursor: pointer;
 }
 
 .Element-Detail-Modal-edit-btn:hover {
-    color: #4C585B;
+    color:  #929e6e;
 
     text-shadow: 0 0 8px rgba(76, 88, 91, 0.8);
     cursor: pointer;
@@ -327,23 +342,38 @@
     transform: scale(1.02);
     transition: all 0.3s ease;
     cursor: text;
+
 }
 
 .detail-title:hover {
-    background-color:    #4C585B;
+    background-color: #cbd3b9;
     color: white;
     cursor: pointer;
 }
 
 .detail-price:hover{
 
-    background-color:    #4C585B;
+    background-color:     #cbd3b9;
     color: white;
     cursor: pointer;
 }
 
 
 .attribute-ok-button{
-  background-color:  #4C585B!important;
+  background-color:  #929e6e!important;
   border : none;
 }
+.attribute-ok-button:hover {
+  background-color: #c4d592 !important; /* hover 시 다른 색으로 변경 */
+  cursor: pointer; /* 마우스 커서 모양을 pointer로 변경 */
+}
+.custom-cancel-button:hover{
+  background-color: #e6e4e4 !important;
+  color : white!important;
+}
+
+.ant-modal-close:hover {
+  background-color: transparent !important;
+  color :  #929e6e!important;
+}
+

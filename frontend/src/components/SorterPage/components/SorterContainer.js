@@ -60,7 +60,7 @@ const SorterContainer = ({
   const [selectedSorterIds, setSelectedSorterIds] = useAtom(selectedSorterIdsAtom);
   const [activeElement, setActiveElement] = useState(null);
   const isFirstRender = useRef(true);
-
+  const [isEditingElement,setIsEditingElement] = useAtom(isEditingElementAtom);
 
   useEffect(() => {
     const selectedSorterIds = Object.keys(selectedElementIdsBySorter).filter(
@@ -148,6 +148,7 @@ const SorterContainer = ({
   const handleContextMenu = async (event, elementId, name) => {
     event.preventDefault();
     setNewElementName(name);
+
     const fetchedPrice = await setFetchElementPriceById(elementId);
     setContextMenu({
       x: event.clientX,
@@ -156,9 +157,9 @@ const SorterContainer = ({
       elementId,
       target: { name, price: fetchedPrice },
     });
-    setSelectedElementIds([elementId]);
+
     setHandleElementDoubleClick(elementId);
-    setSelectedElementId(elementId);
+    setIsEditingElement(false);
     setSetSelectedElement(elementId);
   };
 

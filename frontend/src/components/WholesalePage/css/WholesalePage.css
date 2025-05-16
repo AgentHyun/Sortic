@@ -5,7 +5,7 @@
   align-items: flex-start;
   gap: 4rem;
   padding: 2rem 2rem;
-  background-color:#f9e050;
+  background-color: #F1F3C2;
   flex-wrap: wrap;
   padding-bottom: 15rem;
   font-family: 'Orbit', sans-serif;
@@ -14,30 +14,34 @@
 }
 
 .info-section {
-  background-color:  #f9e050; /* 살짝 투명한 흰색 */
+  background-color: transparent; /* 살짝 투명한 흰색 */
   padding: 3rem;
   border-radius: 16px;
-  text-align: center;
-  max-width: 500px;
-  flex-shrink: 0;
-  margin-top: 10rem;
 
+  text-align: center;
+
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+  width : 45vw;
   backdrop-filter: blur(10px); /* 배경을 부드럽게 번지게 */
   -webkit-backdrop-filter: blur(10px); /* Safari 지원 */
-
-
   transition: all 0.3s ease;
 }
 
 
 .info-section h2 {
   font-size: 40px;
-  color:   #9a7064 ;
+  color: #4E3629; /* 더 따뜻한 톤의 진한 갈색 */
   margin-bottom: 1rem;
 }
-.domae{
- color: #6c4941;
+
+.domae {
+  color: #f1c40f;  /* 눈에 잘 띄는 진한 노랑 */
+  font-weight: 800;
 }
+
 
 .info-section p {
   font-size: 30px;
@@ -63,27 +67,64 @@
 
 }
 
-/* 버튼 스타일 */
 .add-button-wholesale {
-  margin-top: 0.6rem;
-  margin-bottom : 0.5rem;
-  width: 100%;
-  background-color:  #1c283c !important;
-  color:  white !important;
-  border-color: white!important;
-  font-size: 17px;
-  font-weight: 500;
-  padding: 14px 24px;
-  height : 5vh;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  --color: #6dba1f !important;
+  background: #8dbc60 !important;
+  border-radius: 12px;
+  padding: 0.8em 1.7em;
   font-family: "Orbit", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white !important;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  border: none;
+  width: 10vw;
+  min-width: 180px;
+  height: 45px;
+  z-index: 1;
+  box-shadow: 0 6px 14px rgba(110, 160, 60, 0.25);
+  transition: background 0.4s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.add-button-wholesale::before,
+.add-button-wholesale::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: var(--color);
+  transition: 1s ease;
+}
+
+.add-button-wholesale::before {
+  top: -1em;
+  left: -1em;
+}
+
+.add-button-wholesale::after {
+  left: calc(100% + 1em);
+  top: calc(100% + 1em);
+}
+
+.add-button-wholesale:hover::before,
+.add-button-wholesale:hover::after {
+  height: 410px;
+  width: 530px;
 }
 
 .add-button-wholesale:hover {
-  background-color: #6a6969 !important;
-  transform: scale(1.03);
+  color: #fff;
+}
+
+.add-button-wholesale:active {
+  filter: brightness(.8);
 }
 
 /* 버튼 영역 정리 */
@@ -104,15 +145,15 @@
 
 /* 등록 버튼 */
 .modal-container .ant-btn-primary {
-  background-color: #9a7064;
-  border-color: #9a7064;
+  background-color: #8dbc60;
+  border-color: #8dbc60;
   color: white;
   transition: all 0.3s ease;
 }
 
 .modal-container .ant-btn-primary:hover {
-  background-color: #a67c52 !important;
-  border-color: #a67c52 !important;
+  background-color: #9ed36d !important;
+  border-color: #a0d56e !important;
   transform: translateY(-1px) scale(1.02);
 }
 
@@ -159,11 +200,16 @@
   background-color: #ffffff;
 }
 .wholesale-links-list {
-  margin-top: 2rem;
-
+  padding: 50px;
+  max-height: 500px;
+  min-height: 500px;
+  margin-top: 2.5rem;
+  border : 2px solid #fde894;
   display: grid;
-  gap :1.5rem;
+  border-radius: 10px;
+
   overflow-y: auto;
+
   grid-template-columns: 1fr; /* ✅ 한 줄에 하나만 배치 */
 
 }
@@ -174,7 +220,6 @@
   align-items: center;
   padding: 2rem 4rem; /* ✅ 상하 1.5rem, 좌우 3rem */
   border-radius: 12px;
-
   font-size: 1.1rem;
   font-weight: 700;
   text-align: left;
@@ -182,6 +227,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: 1rem;
+
 
 }
 
@@ -248,8 +294,11 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  min-width: 360px;
+  min-width: 345px;
   max-width: 420px;
+  max-height: 110px;
+  margin-bottom: 1.5vh;
+
 
 }
 .wholesale-ticket.selected {
@@ -257,9 +306,7 @@
   border: 5px solid #fff78d;
   border-radius: 12px;
   transition: all 0.1s ease-in-out;
-
   position: relative;
-
   /* 더 깊고 또렷한 입체감 */
   box-shadow:
     0 4px 6px rgba(0, 0, 0, 0.06),
@@ -274,13 +321,21 @@
 
 
 .add-button-wholesale.delete-mode {
-  background-color: #ff4d4f!important;
+  --color: #cf2222!important;
+  background: linear-gradient(135deg, #f87171, #dc2626) !important;
+
   color: white;
-  border: 1px solid #ff7875!important;
+  border: 1px solid #ff7875 !important;
   font-size: 17px;
   font-weight: 500;
   font-family: "Orbit", sans-serif;
 }
+.add-button-wholesale.delete-mode:hover {
+  background-color: #e04a4b !important;
+  color: white !important;
+}
+
+
 .wholesale-preview-item {
   background-color: #f5f5f5; /* 연한 회색 */
   padding: 12px 16px;
@@ -308,7 +363,7 @@
   font-weight: 600;
   font-size: 1.15rem;
   padding: 1rem 2rem;                    /* 내부 공간 확보 */
-  border-left: 4px solid #f9e050;
+  border-left: 4px solid #edea82;
   /* 왼쪽 컬러 바 강조 */
   border-radius: 8px;                      /* 부드러운 모서리 */
   box-shadow:
@@ -469,28 +524,523 @@
 .wholesale-link-header:hover{
   cursor:pointer;
 }
+
 .register-code-button {
+  padding: 17px 40px;
+  cursor: pointer;
+  background: linear-gradient(147deg, #fdb42b 0%, #fdb42b 74%);
+  box-shadow: 0 6px 14px rgba(241, 196, 15, 0.35);
+  border-radius: 12px;
+  border: none;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Orbit', sans-serif;
+  color: white !important;
+  transition: all 0.3s ease;
   position: absolute;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+
+
   width: 90%;
   max-width: 480px;
-  background-color: #1c283c !important;
-  color: white !important;
-  border: none;
-  font-size: 17px;
-  font-weight: 500;
-  padding: 14px 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
 
 .register-code-button:hover {
-  background-color: #6a6969 !important;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-  transform: scale(1.03);
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #f8c454, #f6b956) !important;
+  color: #ffffff !important;
+  box-shadow: rgba(236, 174, 61, 0.5) 0px 7px 29px 0px;
+}
+
+.register-code-button:active {
+  letter-spacing: 3px;
+  background-color: #d29b36 !important ;
+  color: #ffffff !important;
+  box-shadow: rgba(236, 174, 61, 0.5) 0px 7px 29px 0px;
+
+  transition: 100ms;
+}
+
+/* From Uiverse.io by Nawsome */
+.typewriter {
+  --blue: #5C86FF;
+  --blue-dark: #275EFE;
+  --key: #fff;
+  --paper: #EEF0FD;
+  --text: #D3D4EC;
+  --tool: #FBC56C;
+  --duration: 3s;
+  position: relative;
+  -webkit-animation: bounce05 var(--duration) linear infinite;
+  animation: bounce05 var(--duration) linear infinite;
+  margin-left : 17vw;
+  margin-bottom : 3vh;
+  margin-top : 19vh;
+
+}
+
+.typewriter .slide {
+  width: 92px;
+  height: 20px;
+  border-radius: 3px;
+  margin-left: 14px;
+  transform: translateX(14px);
+  background: linear-gradient(var(--blue), var(--blue-dark));
+  -webkit-animation: slide05 var(--duration) ease infinite;
+  animation: slide05 var(--duration) ease infinite;
+}
+
+.typewriter .slide:before, .typewriter .slide:after,
+.typewriter .slide i:before {
+  content: "";
+  position: absolute;
+  background: var(--tool);
+}
+
+.typewriter .slide:before {
+  width: 2px;
+  height: 8px;
+  top: 6px;
+  left: 100%;
+}
+
+.typewriter .slide:after {
+  left: 94px;
+  top: 3px;
+  height: 14px;
+  width: 6px;
+  border-radius: 3px;
+}
+
+.typewriter .slide i {
+  display: block;
+  position: absolute;
+  right: 100%;
+  width: 6px;
+  height: 4px;
+  top: 4px;
+  background: var(--tool);
+}
+
+.typewriter .slide i:before {
+  right: 100%;
+  top: -2px;
+  width: 4px;
+  border-radius: 2px;
+  height: 14px;
+}
+
+.typewriter .paper {
+  position: absolute;
+  left: 24px;
+  top: -26px;
+  width: 40px;
+  height: 46px;
+  border-radius: 5px;
+  background: var(--paper);
+  transform: translateY(46px);
+  -webkit-animation: paper05 var(--duration) linear infinite;
+  animation: paper05 var(--duration) linear infinite;
+}
+
+.typewriter .paper:before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 7px;
+  border-radius: 2px;
+  height: 4px;
+  transform: scaleY(0.8);
+  background: var(--text);
+  box-shadow: 0 12px 0 var(--text), 0 24px 0 var(--text), 0 36px 0 var(--text);
+}
+
+.typewriter .keyboard {
+  width: 120px;
+  height: 56px;
+  margin-top: -10px;
+  z-index: 1;
+  position: relative;
+}
+
+.typewriter .keyboard:before, .typewriter .keyboard:after {
+  content: "";
+  position: absolute;
+}
+
+.typewriter .keyboard:before {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+  transform: perspective(10px) rotateX(2deg);
+  transform-origin: 50% 100%;
+}
+
+.typewriter .keyboard:after {
+  left: 2px;
+  top: 25px;
+  width: 11px;
+  height: 4px;
+  border-radius: 2px;
+  box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  -webkit-animation: keyboard05 var(--duration) linear infinite;
+  animation: keyboard05 var(--duration) linear infinite;
+}
+
+@keyframes bounce05 {
+  85%, 92%, 100% {
+    transform: translateY(0);
+  }
+
+  89% {
+    transform: translateY(-4px);
+  }
+
+  95% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes slide05 {
+  5% {
+    transform: translateX(14px);
+  }
+
+  15%, 30% {
+    transform: translateX(6px);
+  }
+
+  40%, 55% {
+    transform: translateX(0);
+  }
+
+  65%, 70% {
+    transform: translateX(-4px);
+  }
+
+  80%, 89% {
+    transform: translateX(-12px);
+  }
+
+  100% {
+    transform: translateX(14px);
+  }
+}
+
+@keyframes paper05 {
+  5% {
+    transform: translateY(46px);
+  }
+
+  20%, 30% {
+    transform: translateY(34px);
+  }
+
+  40%, 55% {
+    transform: translateY(22px);
+  }
+
+  65%, 70% {
+    transform: translateY(10px);
+  }
+
+  80%, 85% {
+    transform: translateY(0);
+  }
+
+  92%, 100% {
+    transform: translateY(46px);
+  }
+}
+
+@keyframes keyboard05 {
+  5%, 12%, 21%, 30%, 39%, 48%, 57%, 66%, 75%, 84% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  9% {
+    box-shadow: 15px 2px 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  18% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 2px 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  27% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 12px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  36% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 12px 0 var(--key), 60px 12px 0 var(--key), 68px 12px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  45% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 2px 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  54% {
+    box-shadow: 15px 0 0 var(--key), 30px 2px 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  63% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 12px 0 var(--key);
+  }
+
+  72% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 2px 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 10px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+
+  81% {
+    box-shadow: 15px 0 0 var(--key), 30px 0 0 var(--key), 45px 0 0 var(--key), 60px 0 0 var(--key), 75px 0 0 var(--key), 90px 0 0 var(--key), 22px 10px 0 var(--key), 37px 12px 0 var(--key), 52px 10px 0 var(--key), 60px 10px 0 var(--key), 68px 10px 0 var(--key), 83px 10px 0 var(--key);
+  }
+}
+
+.faq-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ffe53b;
+  background-image: linear-gradient(147deg, #e6af1e 0%, #e9ef2b 74%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.151);
+  position: relative;
+  margin-left: 40vw;
+  margin-top :30vh;
+}
+.faq-button svg {
+  height: 1.5em;
+  fill: white;
+}
+.faq-button:hover svg {
+  animation: jello-vertical 0.7s both;
+}
+@keyframes jello-vertical {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.tooltip {
+  position: absolute;
+  top: -20px;
+  opacity: 0;
+  background-color: #ffe53b;
+  background-image: linear-gradient(147deg, #e6af1e 0%, #e9ef2b 74%);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: 0.2s;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.tooltip::before {
+  position: absolute;
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-image: linear-gradient(147deg, #e6af1e 0%, #e9ef2b 74%);
+
+  background-size: 1000%;
+  background-position: center;
+  transform: rotate(45deg);
+  bottom: -15%;
+  transition-duration: 0.3s;
+}
+
+.faq-button:hover .tooltip {
+  top: -40px;
+  opacity: 1;
+  transition-duration: 0.3s;
+}
+/* From Uiverse.io by JaydipPrajapati1910 */
+
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  margin-top : 30vh;
+
+}
+
+.cards .first {
+  background-color: white; /* 코랄핑크 계열 */
+  border-left: 6px solid #8dbc60;;
+}
+
+.cards .second {
+  background-color: white;
+  border-left: 6px solid #edea82;
+}
+
+.cards .third {
+  background-color: white;
+  border-left: 6px solid #fdb42b;
+  /* 밝은 민트 그린 */
+}
+
+
+
+.cards .card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  height: 200px;
+  width: 500px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: 400ms;
+}
+
+.cards .card p.first-tip {
+  font-size: 2.5em;
+  font-weight: 700;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+.cards .card p.first-second-text {
+  font-size: 1.2em;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+
+.cards .card p.second-tip {
+  font-size: 2.5em;
+  font-weight: 700;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+.cards .card p.second-second-text {
+  font-size: 1.2em;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+.cards .card p.third-tip {
+  font-size: 2.5em;
+  font-weight: 700;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+.cards .card p.third-second-text {
+  font-size: 1.2em;
+  color : black;
+  font-family: 'Arial', sans-serif;
+}
+
+.cards .card:hover {
+  transform: scale(1.1, 1.1);
+}
+
+.cards:hover > .card:not(:hover) {
+  filter: blur(10px);
+  transform: scale(0.9, 0.9);
+}
+.custom-hint-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  border-radius: 20px;
+
+}
+
+
+
+.hint-close-button {
+  margin-top: 15rem;
+  font-size: 60px;
+  font-weight: bold;
+  color: #fffbfb;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: center;
+  margin-left: 47.5vw;
+
+}
+
+.hint-close-button:hover {
+  color: #e3e2e2;
+  transform: scale(1.2);
+}
+
+.green-color{
+  color : #8dbc60;
+  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+}
+.orange-color{
+  font-weight: 900;
+  color: #fdb42b;
+  font-family: 'Inter', sans-serif;
+
+}
+.yellow-color{
+  font-weight: 900;
+  color : #edea82;
+  font-family: 'Inter', sans-serif;
+}
+
+.link-title{
+
+  margin-bottom : -55px;
+  margin-top : 10px;
+  margin-right : 320px;
+  color : white;
+  background-color: #ede985;
+  border-radius: 10px;
+  padding : 5px;
+  font-weight: 700;
+  position: relative;  /* 또는 absolute/fixed, 상황에 따라 다름 */
+  z-index: 999;
 }

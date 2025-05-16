@@ -9,7 +9,9 @@ import java.util.List;
 public interface BillElementMapper {
 
     // BillElement 추가
-    @Insert("INSERT INTO Bill_Element (Bill_id, Elements_name_id,Element_count\t) VALUES (#{billId}, #{elementsNameId},1)")
+
+
+    @Insert("INSERT INTO Bill_Element (Bill_id, Elements_name_id,  Element_count ) VALUES (#{billId}, #{elementsNameId}),1")
     void insertBillElement(BillElement billElement);
 
     // BillElement 삭제

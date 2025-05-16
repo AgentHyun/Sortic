@@ -55,31 +55,35 @@ public class WholesaleService {
         return username;
     }
 
-    public void addWholesaleLinkByCode(int wholesaleCode, String currentUserId) {
-        // 1. 도매 코드 존재 여부 확인
-        try{WholesaleCode codeEntity = wholesaleMapper.findWholesaleCodeByCode(wholesaleCode);
-        if (codeEntity == null) {
-            throw new IllegalArgumentException("해당 도매 코드는 존재하지 않습니다.");
-        }
+    public void addWholesaleLinkByCode(String wholesaleCode, String currentUserId) {
+        try {
+            // 1. 도매 코드 존재 여부 확인
+            WholesaleCode codeEntity = wholesaleMapper.findWholesaleCodeByCode(wholesaleCode);
+            if (codeEntity == null) {
+                throw new IllegalArgumentException("해당 도매 코드는 존재하지 않습니다.");
+            }
 
-        // 2. 코드 소유자의 유저 이름 조회
-        String codeOwnerId = codeEntity.getUserId();
-        String username = wholesaleMapper.findUsernameByUserId(codeOwnerId);
-        if (username == null) {
-            throw new IllegalArgumentException("해당 유저의 이름을 찾을 수 없습니다.");
-        }
+            // 2. 코드 소유자의 유저 이름 조회
+            String codeOwnerId = codeEntity.getUserId();
+            String username = wholesaleMapper.findUsernameByUserId(codeOwnerId);
+            if (username == null) {
+                throw new IllegalArgumentException("해당 유저의 이름을 찾을 수 없습니다.");
+            }
 
-        // 3. WholesaleLink 객체 생성 (현재 로그인한 유저가 등록자)
-        WholesaleLink link = new WholesaleLink();
-        link.setUserId(currentUserId); // 등록하는 사용자 ID
-        link.setWholesaleCodeId(codeEntity.getWholesaleCodeId());
-        link.setWholesaleName(username); // 코드 소유자의 닉네임
+            // 3. WholesaleLink 객체 생성 (현재 로그인한 유저가 등록자)
+            WholesaleLink link = new WholesaleLink();
+            link.setUserId(currentUserId); // 등록하는 사용자 ID
+            link.setWholesaleCodeId(codeEntity.getWholesaleCodeId()); // FK ID 사용
+            link.setWholesaleName(username); // 코드 소유자의 닉네임
 
-        wholesaleMapper.insertWholesaleLink(link);}
-        catch (DuplicateKeyException e) {
+            wholesaleMapper.insertWholesaleLink(link);
+
+        } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("이미 등록된 도매 코드입니다.");
         }
     }
+
+
     public List<WholesaleCode> searchWholesaleCodesByKeyword(String keyword) {
         return wholesaleMapper.searchWholesaleCodesByKeyword(keyword);
     }
@@ -110,6 +114,23 @@ public class WholesaleService {
         return wholesaleMapper.findUserIdByWholesaleName(wholesaleName);
     }
 
+    public List<UserWholesaleCode> getUserWholesaleCodesByUserId(String userId) {
+        return wholesaleMapper.getUserWholesaleCodesByUserId(userId);
+    }
+    public String getUserIdByWholesaleCodeId(int wholesaleCodeId) {
+        String userId = wholesaleMapper.findUserIdByWholesaleCodeId(wholesaleCodeId);
+        if (userId == null) {
+            throw new IllegalArgumentException("해당 ID의 도매 코드가 존재하지 않습니다.");
+        }
+        return userId;
+    }
+    public String findUserIdByUsername(String username) {
+        return wholesaleMapper.findUserIdByUsername(username);
+    }
+
+    public void deleteUserWholesaleCode(int userWholesaleCode) {
+        wholesaleMapper.deleteUserWholesaleCode(userWholesaleCode);
+    }
 
 
 

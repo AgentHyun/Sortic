@@ -44,14 +44,35 @@ import {
   cardsAtom,
   sortersAtom,
   selectedElementIdAtom,
-  originalElementNameAtom, currentIndexAtom,
-  attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom,
-  selectedElementIdsAtom, animationClassAtom,
-  fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-  editedSorterNameAtom, edtingSorterIdAtom,
-  selectedSortersAtom, elementsRefreshTriggerAtom,
-  oldSorterNameAtom, activeCardAtom, selectedElementNamesBySorterAtom, elementNamesBySorterAtom,
-  isDraggingElementsAtom, sorterNameByIdAtom, elementsIdListAtom, selectedUserIdAtom, selectedUserNameAtom
+  originalElementNameAtom,
+  currentIndexAtom,
+  attributeModalVisibleAtom,
+  keyValuePairsAtom,
+  addedElementIdAtom,
+  selectedElementIdsAtom,
+  animationClassAtom,
+  fadeInOutAtom,
+  newElementPriceAtom,
+  popoverVisibleAtom,
+  costErrorAtom,
+  editedSorterNameAtom,
+  edtingSorterIdAtom,
+  selectedSortersAtom,
+  elementsRefreshTriggerAtom,
+  oldSorterNameAtom,
+  activeCardAtom,
+  selectedElementNamesBySorterAtom,
+  elementNamesBySorterAtom,
+  isDraggingElementsAtom,
+  sorterNameByIdAtom,
+  elementsIdListAtom,
+  selectedUserIdAtom,
+  selectedUserNameAtom,
+  defaultAttributesAtom,
+  isExternalUserAtom,
+  currentUserIdAtom,
+  currentUserNameAtom,
+  usernamesByCodeIdAtom
 
 } from '../atoms/atoms';
 
@@ -94,7 +115,14 @@ import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import WholeSale from "../../WholesalePage/WholesalePage";
-import {fetchWholesaleLinksAction, getUserIdByLinkNameAction} from "../../WholesalePage/action/wholesaleAction";
+import {
+  fetchUserWholesaleCodesAction,
+  fetchWholesaleLinksAction,
+  getUserIdByLinkNameAction,
+  getUsernameByUserIdAction,
+  fetchUserIdByWholesaleCodeIdAction, getUserIdByUsernameAction, deleteUserWholesaleCodeAction,
+
+} from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 
 
@@ -131,6 +159,7 @@ const SorterPage = () => {
   const [, openContextMenu] = useAtom(openContextMenuAction);
   const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
   const [, setIsDraggingElements] = useAtom(isDraggingElementsAtom);
+  const [defaultAttributes, setDefaultAttributes] = useAtom(defaultAttributesAtom);
 
 
   const[, setAddElement] = useAtom(addElementAction);
@@ -150,7 +179,7 @@ const SorterPage = () => {
   const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
   const [costError, setCostError] = useAtom(costErrorAtom);
   const [elementsRefreshTrigger, setElementsRefreshTrigger] = useAtom(elementsRefreshTriggerAtom);
-  const [fetchElementNamById, setFetchElementNamById] = useAtom(fetchElementNameByIdAction);
+  const [fetchElementNameById, setFetchElementNameById] = useAtom(fetchElementNameByIdAction);
   const [activeCard, setActiveCard] = useAtom(activeCardAtom);
   const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
@@ -186,7 +215,7 @@ const SorterPage = () => {
   const [authUser, setAuthUser] = useAtom(authUserAtom);
   //sorter-element
   const [getElementsIdBySorterId, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
-  const [elementsIdList, setElemensIdList] = useAtom(elementsIdListAtom);
+  const [elementsIdList, setElementsIdList] = useAtom(elementsIdListAtom);
   //bill
   const [addBillElements, setAddBillElementsAction] = useAtom(addBillElementsAction);
   const [fetchBills, setFetchBills]= useAtom(fetchBillsAction);
@@ -194,27 +223,36 @@ const SorterPage = () => {
   // 도매
 
   const [, fetchLinks] = useAtom(fetchWholesaleLinksAction);
+  const [, setFetchUserWholesaleCodes] = useAtom(fetchUserWholesaleCodesAction);
   const [links] = useAtom(wholesaleLinksAtom);
   const [, getUserIdByLinkName] = useAtom(getUserIdByLinkNameAction);
-
+  const [, deleteUserCode] = useAtom(deleteUserWholesaleCodeAction);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
+  const [,setFetchUserIdByWholesaleCodeId] = useAtom(fetchUserIdByWholesaleCodeIdAction);
+  // 유저 아이디
+  const [ isExternalUser, setIsExternalUser] = useAtom(isExternalUserAtom);
+  const [currentUserId, setCurrentUserId] = useAtom(currentUserIdAtom);
+  const [,setGetUserNameByUserId] = useAtom(getUsernameByUserIdAction);
+  const [currentUserName, setCurrentUserName] = useAtom(currentUserNameAtom);
+  const [usernamesByCodeId, setUsernamesByCodeId] = useAtom(usernamesByCodeIdAtom);
+  const [, getUserIdByUsername] = useAtom(getUserIdByUsernameAction);
+  const [showHintSorter, setShowHintSorter] = useState(null);
   useEffect(() => {
     if (currentCategory !== null) {
-      console.log("🚀 currentCategory가 변경됨ㅋㅋ, 새로운 요소 가져오기:", currentCategory);
       fetchElementsByCategory(currentCategory);
     }
-  }, [currentCategory]);
+  }, [currentCategory], );
 
 
   useEffect(() => {
     // 초기 데이터 로딩
     setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
-
     // 화살표 높이 설정
-
     setFetchSortersByUser();
+
+
 
   }, [selectedUserId]);
   useEffect(() => {
@@ -222,7 +260,7 @@ const SorterPage = () => {
       if (activeId) {
         try {
           // DB에서 activeId에 해당하는 카드 이름을 조회하는 함수
-          const response = await setFetchElementNamById(activeId);
+          const response = await setFetchElementNameById(activeId);
         } catch (error) {
           console.error('Error fetching active card:', error);
         }
@@ -230,7 +268,7 @@ const SorterPage = () => {
     };
 
     fetchData();
-  }, [activeId, fetchElementNamById]);// activeId가 변경될 때마다 호출
+  }, [activeId, setFetchElementNameById]);
   useEffect(() => {
     console.log('Active Card:', activeCard);
   }, [activeCard]);
@@ -490,12 +528,10 @@ const SorterPage = () => {
       // }
     };
 
+    const currentUserName = setGetUserNameByUserId(currentUserId);
+    setCurrentUserName(currentUserName);
     checkCategoryCount();
   }, []);
-// 상태 변경 후 콘솔 출력
-  useEffect(() => {
-    console.log("📤 상태 변경 후 updated[sorterId]:", elementNamesBySorter);
-  }, [elementNamesBySorter]); // elementNamesBySorter가 변경될 때마다 실행
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -513,7 +549,6 @@ const SorterPage = () => {
       if (sectionRef.current) observer.unobserve(sectionRef.current);
     };
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
-
   useEffect(() => {
     if (typeof activeCard === 'string' && activeCard.startsWith('sorter-')) {
       const sorterId = activeCard.replace('sorter-', '');
@@ -522,6 +557,7 @@ const SorterPage = () => {
       }
     }
   }, [activeCard, setGetSorterNameByIdAction]);
+
 
 
   const sectionRef = useRef(null);
@@ -635,72 +671,19 @@ const SorterPage = () => {
   };
 
 
-
   const [,setAddBillElement] = useAtom(addBillElementAction);
-
   const handleDragEnd = async (event) => {
     const { active, over } = event;
-    setActiveId(null);
-    const billId = over.id.replace('bill-', '');
-    console.log("액티브 id " + active.id);
-    console.log("오버 id " + (over?.id || "null"));
-
     if (!over || active.id === over.id) return;
 
+    const activeIdStr = String(active.id);
+    const overIdStr = String(over.id);
 
-    if (typeof active.id === 'string' && active.id.startsWith('sorter-')) {
-      const sorterId = active.id.replace('sorter-', '');
-      console.log(`📦 Bill(${billId})에 Sorter(${sorterId})의 모든 요소 추가 시도`);
+    setActiveId(null);
+    setActiveId(activeIdStr);
 
-      try {
-
-        const elementIds = await setGetElementsIdBySorterId(sorterId);
-
-
-
-        if (Array.isArray(elementIds) && elementIds.length > 0) {
-          const payload = elementIds.map((elementId) => ({
-            billId: Number(billId),
-            elementsNameId: Number(elementId),
-          }));
-
-          await setAddBillElementsAction(payload);
-          const userId =   selectedUserId;
-          await setFetchBills(selectedUserId);
-
-          console.log("✅ 요소들 일괄 추가 완료");
-        } else {
-          console.warn(`⚠️ Sorter(${sorterId})에 요소가 없거나 데이터가 비정상적입니다.`);
-        }
-      } catch (error) {
-        console.error("🔥 요소 일괄 추가 실패", error);
-      }
-
-      return;
-    }
-    // ✅ Bill에 드롭된 경우
-    if (typeof over.id === 'string' && over.id.startsWith('bill-')) {
-      const billId = over.id.replace('bill-', '');
-      const elementId = String(active.id).includes("-")
-        ? String(active.id).split("-").pop()
-        : String(active.id);
-
-      console.log(`📦 Bill(${billId})에 요소(${elementId}) 추가 시도`);
-
-      try {
-        await setAddBillElement({
-          billId: Number(billId),
-          elementsNameId: Number(elementId),
-        });
-        const userId = selectedUserId;
-        await setFetchBills(userId);
-      } catch (error) {
-        console.error("🔥 BillElement 추가 실패", error);
-      }
-      return; // 다른 로직 중복 방지
-    }
-
-    // ✅ 카드 간 재정렬
+    console.log("액티브 id:", activeIdStr);
+    console.log("오버 id:", overIdStr);
     if (
       !(typeof active.id === "string" &&
         typeof over.id === "string" &&
@@ -716,22 +699,121 @@ const SorterPage = () => {
     const overId = String(over.id);
     let elementId;
 
-    const activeIdStr = String(active.id);
+
     if (activeIdStr.includes("-")) {
       elementId = activeIdStr.split("-").pop();
     } else {
       elementId = activeIdStr;
     }
+    // ✅ sorter → bill : 모든 요소 추가
+    if (activeIdStr.startsWith("sorter-") && overIdStr.startsWith("bill-")) {
+      const sorterId = activeIdStr.replace("sorter-", "");
+      const billId = Number(overIdStr.replace("bill-", ""));
 
-    // ✅ sorter에 드롭된 경우
-    if (overId.startsWith("sorter-") || Number(overId)) {
-      const sorterId = overId.replace("sorter-", "");
-      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+      console.log(`📦 Bill(${billId})에 Sorter(${sorterId})의 모든 요소 추가 시도`);
+
+      try {
+        const elementIds = await setGetElementsIdBySorterId(sorterId);
+
+        if (Array.isArray(elementIds) && elementIds.length > 0) {
+          const payload = elementIds.map((elementId) => ({
+            billId,
+            elementsNameId: Number(elementId),
+          }));
+
+          await setAddBillElementsAction(payload);
+          await setFetchBills(selectedUserId);
+          console.log("✅ 요소들 일괄 추가 완료");
+        } else {
+          console.warn(`⚠️ Sorter(${sorterId})에 요소가 없거나 비정상입니다.`);
+        }
+      } catch (error) {
+        console.error("🔥 요소 일괄 추가 실패", error);
+      }
+      return;
+    }
+
+    // ✅ 요소 → bill : 단일 요소 추가
+    if (overIdStr.startsWith("bill-")) {
+      const billId = Number(overIdStr.replace("bill-", ""));
+      const elementId = activeIdStr.includes("-")
+        ? activeIdStr.split("-").pop()
+        : activeIdStr;
+
+      console.log(`📦 Bill(${billId})에 요소(${elementId}) 추가 시도`);
+
+      try {
+        await setAddBillElement({
+          billId,
+          elementsNameId: Number(elementId),
+        });
+        await setFetchBills(selectedUserId);
+      } catch (error) {
+        console.error("🔥 BillElement 추가 실패", error);
+      }
+      return;
+    }
+
+    // ✅ sorter → sorter : 모든 요소 이동
+    if (activeIdStr.startsWith("sorter-") && overIdStr.startsWith("sorter-")) {
+      const sourceSorterId = activeIdStr.replace("sorter-", "");
+      const targetSorterId = overIdStr.replace("sorter-", "");
+
+      const elementIds = await setGetElementsIdBySorterId(sourceSorterId);
+      const targetSorter = sorters.find(
+        (s) => String(s.sorter_id) === targetSorterId
+      );
 
       if (!targetSorter) {
-        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
+        console.log(`⚠️ 정렬자 ID ${targetSorterId}에 해당하는 정렬자 없음`);
         return;
       }
+
+      console.log(`📦 Sorter(${targetSorterId})에 Sorter(${sourceSorterId})의 요소들 추가 시도`);
+
+      try {
+        await Promise.all(
+          elementIds.map((elementId) =>
+            setMoveElementToSorter({
+              elementsId: elementId,
+              sorterId: targetSorter.sorter_id,
+            })
+          )
+        );
+
+        setSorters((prev) =>
+          prev.map((s) =>
+            s.sorter_id === targetSorter.sorter_id
+              ? {
+                ...s,
+                elements_id: [...(s.elements_id || []), ...elementIds.map(String)],
+              }
+              : s
+          )
+        );
+      } catch (error) {
+        console.error("🔥 정렬자 간 요소 이동 실패", error);
+      }
+      return;
+    }
+
+    // ✅ 요소 → sorter : 단일 요소 추가
+    if (overIdStr.startsWith("sorter-") && !activeIdStr.startsWith("sorter-")) {
+      const sorterId = overIdStr.replace("sorter-", "");
+      const elementId = activeIdStr.includes("-")
+        ? activeIdStr.split("-").pop()
+        : activeIdStr;
+
+      const targetSorter = sorters.find(
+        (s) => String(s.sorter_id) === sorterId
+      );
+
+      if (!targetSorter) {
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자 없음`);
+        return;
+      }
+
+      console.log("📥 요소를 정렬자에 추가");
 
       try {
         await setMoveElementToSorter({
@@ -752,107 +834,219 @@ const SorterPage = () => {
       } catch (error) {
         console.error("🔥 요소 이동 실패", error);
       }
+      return;
     }
 
-    // ✅ sorter 내에서 순서 변경
+    // ✅ sorter 내부 순서 변경
     if (
-      typeof active.id === "string" &&
-      typeof over.id === "string" &&
-      active.id.includes("-") &&
-      over.id.includes("-")
+      activeIdStr.includes("-") &&
+      overIdStr.includes("-")
     ) {
-      const [activeSorterId, activeElementId] = active.id.split("-");
-      const [overSorterId, overElementId] = over.id.split("-");
+      const activeElementId = activeIdStr.split("-").pop();
+      const overElementId = overIdStr.split("-").pop();
+      const sorterId = overIdStr.split("-")[0];
+
+      const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
+      if (!targetSorter) {
+        console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자 없음`);
+        return;
+      }
 
       setIsDraggingElements(true);
 
-      if (overSorterId && overElementId) {
-        const sorterId = overSorterId;
-        const elementId = overElementId;
+      try {
+        await setMoveElementToSorter({
+          elementsId: overElementId,
+          sorterId: targetSorter.sorter_id,
+        });
 
-        const targetSorter = sorters.find((s) => String(s.sorter_id) === sorterId);
-        if (!targetSorter) {
-          console.log(`⚠️ 정렬자 ID ${sorterId}에 해당하는 정렬자를 찾을 수 없음`);
-          return;
-        }
+        setElementNamesBySorter((prev) => {
+          const updated = { ...prev };
 
-        try {
-          await setMoveElementToSorter({
-            elementsId: elementId,
-            sorterId: targetSorter.sorter_id,
-          });
+          if (updated[sorterId]) {
+            const elementIds = [...(updated[sorterId].ids || [])];
+            const elementNames = [...(updated[sorterId].names || [])];
 
-          setElementNamesBySorter((prev) => {
-            const updated = { ...prev };
+            const oldIndex = elementIds.indexOf(Number(activeElementId));
+            const newIndex = elementIds.indexOf(Number(overElementId));
 
-            if (updated[sorterId]) {
-              const elementIds = [...(updated[sorterId].ids || [])];
-              const elementNames = [...(updated[sorterId].names || [])];
+            if (oldIndex !== -1 && newIndex !== -1) {
+              [elementIds[oldIndex], elementIds[newIndex]] = [
+                elementIds[newIndex],
+                elementIds[oldIndex],
+              ];
+              [elementNames[oldIndex], elementNames[newIndex]] = [
+                elementNames[newIndex],
+                elementNames[oldIndex],
+              ];
 
-              const oldIndex = elementIds.indexOf(Number(activeElementId));
-              const newIndex = elementIds.indexOf(Number(overElementId));
-
-              if (oldIndex !== -1 && newIndex !== -1) {
-                const movedId = elementIds[oldIndex];
-                const movedName = elementNames[oldIndex];
-
-                elementIds[oldIndex] = elementIds[newIndex];
-                elementNames[oldIndex] = elementNames[newIndex];
-                elementIds[newIndex] = movedId;
-                elementNames[newIndex] = movedName;
-
-                updated[sorterId] = {
-                  ids: elementIds,
-                  names: elementNames,
-                };
-              } else {
-                console.log("🚨 잘못된 인덱스 - 순서 변경 안됨");
-              }
+              updated[sorterId] = {
+                ids: elementIds,
+                names: elementNames,
+              };
+            } else {
+              console.log("🚨 잘못된 인덱스 - 순서 변경 실패");
             }
+          }
 
-            return updated;
-          });
-        } catch (error) {
-          console.error("🔥 요소 이동 실패", error);
-        } finally {
-          setIsDraggingElements(false);
-        }
+          return updated;
+        });
+      } catch (error) {
+        console.error("🔥 정렬자 내 순서 변경 실패", error);
+      } finally {
+        setIsDraggingElements(false);
       }
     }
   };
 
   const handleLinkClick = async () => {
-    await fetchLinks(); // 링크 조회
-    setDropdownVisible(true); // 드롭다운 열기
+    setDefaultAttributes([]);
+
+    const result = await setFetchUserWholesaleCodes(); // 도매 코드 목록
+    console.log("🔁 fetchUserWholesaleCodesAction 결과:", result);
+
+    if (Array.isArray(result)) {
+      const newMap = { ...usernamesByCodeId };
+
+      for (const item of result) {
+        const rawCodeId = item.userWholesaleCode;
+        const codeId = Number(rawCodeId);
+
+        if (!isNaN(codeId)) {
+          const userId = await setFetchUserIdByWholesaleCodeId(codeId);
+          if (userId && !newMap[codeId]) {
+            const username = await setGetUserNameByUserId(userId);
+
+            if (username) {
+              newMap[codeId] = username;
+            }
+          }
+        }
+      }
+
+      setUsernamesByCodeId(newMap); // Atom에 저장
+    }
+
+    setDropdownVisible(true);
   };
   const handleMenuClick = async (linkName) => {
-
-
-    const userId = await getUserIdByLinkName(linkName);
+    const userId = await getUserIdByUsername(linkName);
     setSelectedUserName(linkName);
-
     if (userId) {
-      setSelectedUserId(userId); // ✅ authUser.userId 대신 사용 가능
-
+      setSelectedUserId(userId);
     }
+    setCards([]);
+    setfetchAndNumberCategories();
+    if (userId !== authUser?.userId) {
+      setIsExternalUser(true);
+    } else {
+      setIsExternalUser(false);
+    }
+
+    const count = await fetchCategoryCount(userId);
+    if (count === 0) {
+      navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
+    }
+
+
+  };
+
+  const handleLinkDeleteClick = (id) => {
+    Modal.confirm({
+      title: '도매 코드 삭제',
+      content: '도매처 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?',
+      okText: '삭제',
+      cancelText: '취소',
+      okButtonProps: {
+        className: 'custom-delete-ok',
+      },
+
+        cancelButtonProps: {
+          className: 'custom-cancel-detail-button', // ✅ 정확한 클래스명
+        },
+      onOk: async () => {
+        await deleteUserCode(id); // 실제 삭제
+        const result = await setFetchUserWholesaleCodes(); // 최신 리스트 받아옴
+
+        if (Array.isArray(result)) {
+          const updatedMap = {};
+
+          for (const item of result) {
+            const codeId = Number(item.userWholesaleCode);
+            if (!isNaN(codeId)) {
+              const userId = await setFetchUserIdByWholesaleCodeId(codeId);
+              if (userId) {
+                const username = await setGetUserNameByUserId(userId);
+                if (username) {
+                  updatedMap[codeId] = username;
+                }
+              }
+            }
+          }
+
+          setUsernamesByCodeId(updatedMap); // ✅ 업데이트된 맵 저장
+        }
+      },
+    }
+
     setfetchAndNumberCategories();
     setFetchBills();
+
   };
 
 
   const menu = (
     <Menu>
-      {links.length > 0 ? (
-        links.map((link, index) => (
-          <Menu.Item key={index} onClick={() => handleMenuClick(link.wholesaleName)}>
-            {link.wholesaleName || '이름 없음'}
+      {Object.entries(usernamesByCodeId).length > 0 ? (
+        Object.entries(usernamesByCodeId).map(([codeId, username], index) => (
+          <Menu.Item key={index} onClick={() => handleMenuClick(username)}>
+            <div className="menu-section">
+              {username}
+              <div
+                className="menu-delete-btn"
+                onClick={(e) => {
+                  console.log("코드 아이디" + codeId);
+                  e.stopPropagation(); // 메뉴 항목 전체 클릭 방지
+                  handleLinkDeleteClick(Number(codeId));
+                }}
+              >
+                <Trash className="menu-trash" size={20} />
+              </div>
+            </div>
           </Menu.Item>
         ))
       ) : (
-        <Menu.Item disabled>도매 링크가 없습니다</Menu.Item>
+        <Menu.Item disabled>등록된 도매처가 없습니다</Menu.Item>
       )}
     </Menu>
+
   );
+
+  const features = [
+    {
+      title: '카테고리',
+      subtitle: '요소를 담는 카테고리',
+      icon: <img src="/SorterPage-img/Category.png" alt="카테고리 아이콘" className="feature-img" />
+      ,
+    },
+    {
+      title: '요소',
+      subtitle: '재고의 이름과 가격',
+      icon: <img src="/SorterPage-img/Element.png" alt="카테고리 아이콘" className="feature-img-element" />,
+    },
+    {
+      title: '속성',
+      subtitle: '재고의 특징',
+      icon: <img src="/SorterPage-img/Attribute.png" alt="카테고리 아이콘" className="feature-img-attribute" />,
+    },
+    {
+      title: 'GMP 생산',
+      subtitle: '주요 생산처와 협업',
+      icon: '✅',
+    },
+  ];
+
+
   return (
     <div>
 
@@ -878,7 +1072,7 @@ const SorterPage = () => {
             overlayClassName="modern-dropdown"
             placement="bottomCenter"           >
             <Button className="cta" onClick={handleLinkClick}>
-              {selectedUserName ? selectedUserName : 'Link'}
+              {selectedUserName ? selectedUserName : currentUserName}
             </Button>
           </Dropdown>
 
@@ -905,7 +1099,7 @@ const SorterPage = () => {
                     style={{
                       width: '40px',
                       height: '180px',
-                      color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                      color: isLeftRed ? '#f5222d' : '#635C3B ',
                       strokeWidth: 2,
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
@@ -916,7 +1110,7 @@ const SorterPage = () => {
                     style={{
                       fontSize: '32px',
                       fontWeight: 'bold',
-                      color: isLeftRed ? '#f5222d' : '#2E3A59 ',
+                      color: isLeftRed ? '#f5222d' : '#635C3B ',
                     }}
                     className= 'left-arrow-text'
                   >
@@ -932,12 +1126,13 @@ const SorterPage = () => {
               <div className='sorter-header'>
 
 
-                {/* - 삭제 버튼 */}
-                <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
-                  <button className="category-btn-delete" onClick={handleDeleteCategory}>-</button>
-                </Tooltip>
+                {!isExternalUser && (
+                  <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
+                    <button className="category-btn-delete" onClick={handleDeleteCategory}>-</button>
+                  </Tooltip>
+                )}
 
-                {/* 카테고리 제목 */}
+
                 <Popover
                   content={<span>카테고리 <b>#{currentCategoryIndex + 1}</b></span>}
                   trigger="hover"
@@ -963,12 +1158,14 @@ const SorterPage = () => {
                   </div>
                 </Popover>
                 {/* + 추가 버튼 */}
+
+                {!isExternalUser && (
                 <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
                   <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
                     +
                   </button>
                 </Tooltip>
-
+                  )}
 
 
               </div>
@@ -1012,7 +1209,6 @@ const SorterPage = () => {
 
                 </div>
               </div>
-
               <DragOverlay>
                 {activeCard ? (
                   typeof activeCard === 'string' && activeCard.startsWith('sorter-') ? (
@@ -1030,6 +1226,8 @@ const SorterPage = () => {
 
 
 
+
+
               <ContextMenu />
 
 
@@ -1038,8 +1236,31 @@ const SorterPage = () => {
                 open={addCategoryModalVisible}
                 onOk={handleAddCategory}
                 onCancel={() => setAddCategoryModalVisible(false)}
+                okButtonProps={{
+                  className: "category-ok-button",
+                  style: {
+                    backgroundColor: '#929e6e', // 원하는 색상으로 변경
+                    border : 'none',
+                  }
+                }}
+                cancelButtonProps={{
+                    className: "custom-cancel-button", // ✅ 클래스 이름 부여
+                    style: {
+                      backgroundColor: '#ffffff',         // ✅ 예시 색상
+                      color: '#333',
+                      border: '1px solid #ccc',
+                    }}}
+
               >
-                <Input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+
+                <input
+                  className="custom-input"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder="카테고리명을 작성해주세요"
+                />
+
+
               </Modal>
 
               <Modal
@@ -1051,16 +1272,24 @@ const SorterPage = () => {
                 okButtonProps={{
                   className: 'custom-ok-button',
                   style: {
-                    backgroundColor: '#3b4a4d', // 원하는 색상으로 변경
+                    backgroundColor: '#929e6e', // 원하는 색상으로 변경
                     border : 'none',
                   }
+                }}
+                cancelButtonProps={{
+                  className: "custom-cancel-button", // ✅ 클래스 이름 부여
+                  style: {
+                    backgroundColor: '#ffffff',         // ✅ 예시 색상
+                    color: '#333',
+                    border: '1px solid #ccc',
+                  },
                 }}
               >
                 <div className="element-name-section">
                   <div className="element-name-title">상품 이름</div>
                   <input
-                    className= "element-name-input"
-                    placeholder="상품명을 입력하세요"
+                    className= "custom-input"
+                    placeholder="상품명을 작성해주세요"
                     value={addElementName}
                     onChange={(e) => setAddElementName(e.target.value)}
                     autoFocus
@@ -1069,14 +1298,13 @@ const SorterPage = () => {
                 <div className="element-name-section">
                   <div className="element-name-title">상품 가격</div>
                   <input
-                    className= "element-name-input"
-                    placeholder="가격을 입력하세요"
+                    className= "custom-input"
+                    placeholder="가격을 작성해주세요"
                     value={addElementCost}
                     onChange={handleCostChange}
 
                   />
                 </div>
-
               </Modal>
 
               <Modal
@@ -1087,19 +1315,33 @@ const SorterPage = () => {
                 okText="확인"
                 cancelText="취소"
                 okButtonProps={{
-                  className: "attribute-ok-button"
+                  className: "attribute-ok-button",
+                  style: {
+                    backgroundColor: '#929e6e', // 원하는 색상으로 변경
+                    border : 'none',
+                  }
+                }}
+                cancelButtonProps={{
+                  className: "custom-cancel-button",
+                  style: {
+                    backgroundColor: '#ffffff',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                  },
                 }}
               >
                 {keyValuePairs.map((pair, index) => (
                   <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
                     <Input
                       placeholder="속성 입력"
+                      className = "custom-input"
                       value={pair.key}
                       onChange={(e) => handleInputChange(index, "key", e.target.value)}
                       style={{ width: 150, marginRight: 10 }}
                     />
                     <Input
                       placeholder="값 입력"
+                      className = "custom-input"
                       value={pair.value}
                       onChange={(e) => handleInputChange(index, "value", e.target.value)}
                       style={{ width: 150, marginRight: 10 }}
@@ -1109,6 +1351,7 @@ const SorterPage = () => {
                       icon={<DeleteOutlined />}
                       danger
                       onClick={() => removeKeyValuePair(index)}
+                      style={{marginTop : 9 }}
                     />
                   </div>
                 ))}
@@ -1143,7 +1386,7 @@ const SorterPage = () => {
                     style={{
                       fontSize: '32px',
                       fontWeight: 'bold',
-                      color: isRightRed ? '#f5222d' : '#2E3A59 ',
+                      color: isRightRed ? '#f5222d' : '#635C3B ',
 
                     }}
                     className = 'right-arrow-text'
@@ -1155,7 +1398,7 @@ const SorterPage = () => {
                     style={{
                       width: '40px',
                       height: '180px',
-                      color: isRightRed ? '#f5222d' : '#2E3A59 ',
+                      color: isRightRed ? '#f5222d' : '#635C3B ',
                       strokeWidth: 2,
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
@@ -1168,64 +1411,83 @@ const SorterPage = () => {
 
           </div>
 
-          <div className = "element-btn-section">
-            <Tooltip title="카테고리 요소 삭제"
-                     overlayClassName="custom-tooltip"
-                     placement="top"
-                     arrow={true}>
-              <button
-                type="text"
-                className="element-btn-delete"
-                onClick={handleDeleteSelectedElements}
+          {!isExternalUser && (
+            <div className="element-btn-section">
+              <Tooltip
+                title="카테고리 요소 삭제"
+                overlayClassName="custom-tooltip-red"
+                placement="top"
+                arrow={true}
               >
-                <Trash className = "trash" size={20} />
-              </button>
-            </Tooltip>
-            <SwitchTransition mode="out-in">
-              <CSSTransition
-                key={selectedSorters.length > 0 ? "delete" : "add"}
-                timeout={300}
-                classNames="fade"
+                <button
+                  type="text"
+                  className="element-btn-delete"
+                  onClick={handleDeleteSelectedElements}
+                >
+                  <Trash className="trash" size={20} />
+                </button>
+              </Tooltip>
+
+              <Tooltip
+                title="카테고리 요소 추가"
+                overlayClassName="custom-tooltip"
+                placement="top"
+                arrow={true}
               >
-                {selectedSorters.length > 0 ? (
-                  <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
+                <button
+                  type="text"
+                  className="element-btn"
+                  onClick={showAddElmementModal}
+                >
+                  +
+                </button>
+              </Tooltip>
+            </div>
+          )}
+
+          {isExternalUser && (
+<div className= "sorter-btn-section">
+          <SwitchTransition mode="out-in">
+            <CSSTransition
+              key={selectedSorters.length > 0 ? "delete" : "add"}
+              timeout={300}
+              classNames="fade"
+            >
+              {selectedSorters.length > 0 ? (
+                <Tooltip title="선택한 정렬자 삭제" overlayClassName="custom-tooltip-red">
 
 
-                    <button
-                      className="delete-selected-btn show-delete-btn"
-                      onClick={multiDeleteSorters}
-                    >
-                      Delete
-                    </button>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Sorter 추가"
-                           overlayClassName="custom-tooltip"
-                           placement="top"
-                           arrow={true}>
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      onClick={addSorter}
-                      className="sorter-btn"
-                    >
-                      Sorter
-                    </Button>
-                  </Tooltip>
-                )}
-              </CSSTransition>
-            </SwitchTransition>
-            <Tooltip title="카테고리 요소 추가"
-                     overlayClassName="custom-tooltip-red"
-                     placement="top"
-                     arrow={true}>
+                  <button
+                    className="delete-selected-btn show-delete-btn"
+                    onClick={multiDeleteSorters}
+                  >
+                    Delete
+                  </button>
+                </Tooltip>
+              ) : (
+                <Tooltip title="Sorter 추가"
+                         overlayClassName="custom-tooltip"
+                         placement="top"
+                         arrow={true}>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={addSorter}
+                    className="sorter-effect-btn"
+                  >
+                    Sorter
+                  </Button>
+                </Tooltip>
+              )}
+            </CSSTransition>
+          </SwitchTransition>
 
-              <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
-
-            </Tooltip>
-          </div>
+</div>
+)}
 
 
+
+          {isExternalUser && (
           <div className="sorter-sort-section" id="sorter-sort-section" >
 
               <SorterContainer
@@ -1242,13 +1504,53 @@ const SorterPage = () => {
                 handleSorterNameDoubleClick={handleSorterNameDoubleClick}
               />
           </div>
+            )}
+          {isExternalUser && (
           <BillPage/>
-
+            )}
         </div>
+          {!isExternalUser && showHintSorter && (
+            <>
+            <div className="info-wrapper">
+              <h2 className="info-title">재고를 <span className="gold"> 카테고리</span>에 담아 전해요</h2>
+              <div className="info-features">
+                <div className="feature-item">
+                  <img src="/SorterPage-img/Category.png" alt="원산지" className="feature-img"/>
+                  <div className="feature-title">카테고리</div>
+                  <div className="feature-subtitle">요소를 담는 카테고리</div>
+                </div>
+
+                <div className="feature-item2">
+                  <img src="/SorterPage-img/Element.png" alt="요소" className="feature-img-element"/>
+                  <div className="feature-title">요소</div>
+                  <div className="feature-subtitle">재고의 이름과 가격</div>
+                </div>
+
+                <div className="feature-item3">
+                  <img src="/SorterPage-img/Attribute.png" alt="속성" className="feature-img-attribute"/>
+                  <div className="feature-title">속성</div>
+                  <div className="feature-subtitle">재고의 특징</div>
+                </div>
 
 
 
-      </SortableContext>
+              </div>
+
+
+            </div>
+
+            </>
+          )}
+
+          {!isExternalUser && (
+          <button className="faq-button-sorter" onClick={() => setShowHintSorter(!showHintSorter)}> {/* ✅ 클릭 시 모달 */}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
+            </svg>
+            <span className="tooltip">HINT</span>
+          </button>
+            )}
+        </SortableContext>
       </DndContext>
     </div>
   );

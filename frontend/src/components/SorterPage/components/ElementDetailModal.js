@@ -16,7 +16,8 @@ import {
     editingElementIndexAtom,
     tempValueAtom,
     editingElementIdAtom,
-    elementsDataAtom
+    elementsDataAtom,
+  isExternalUserAtom,
 } from "../atoms/atoms";
 import {handleElementNameSaveAction, handleElementPriceSaveAction} from "../actions/elementAction";
 import { closeElementDetailAction, handleKeyNameSaveAction, handleValueNameSaveAction } from "../actions/elementsDataAction";
@@ -42,6 +43,7 @@ const ElementDetailModal = () => {
     const [elementsData, setElementsData] = useAtom(elementsDataAtom);
     const [, setHandleKeyNameSave] = useAtom(handleKeyNameSaveAction);
     const [, setHandleValueNameSave] = useAtom(handleValueNameSaveAction);
+    const [isExternalUser] = useAtom(isExternalUserAtom);
 
     const handleSaveField = () => {
         if (editingField === "name") {
@@ -103,36 +105,48 @@ const ElementDetailModal = () => {
             footer={null}
             centered
             className="detail-modal"
+            cancelButtonProps={{
+              className: "custom-cancel-datail-button", // ✅ 클래스 이름 부여
+              style: {
+                backgroundColor: '#ffffff',         // ✅ 예시 색상
+                color: '#333',
+                border: '1px solid #ccc',
+              }}}
         >
             {data ? (
                 <div className="detail-container">
 
                    <div className="detail-btn-section">
                     {/* 편집 모드 토글 버튼 */}
-                    <button
-                        onClick={() => setIsEditing(!isEditing)}
-                        style={{ background: "none", border: "none", cursor: "pointer" }}
-                        className="Element-Detail-Modal-edit-btn"
-                    >
-                        {isEditing ? <RotateCcw size={35} color="#f5222d" /> : <SquarePen size={35} />}
-                    </button>
+                     {!isExternalUser && (
+                       <>
+                         <button
+                           onClick={() => setIsEditing(!isEditing)}
+                           style={{ background: "none", border: "none", cursor: "pointer" }}
+                           className="Element-Detail-Modal-edit-btn"
+                         >
+                           {isEditing ? <RotateCcw size={35} color="#f5222d" /> : <SquarePen size={35} />}
+                         </button>
 
-                    <button
-                        onClick={() => {
-                            setAttributeModalVisible(true);
-                            setOpen(false); // 모달 닫기
-                        }}
-                            style={{ background: "none", border: "none", cursor: "pointer" }}
-                            className="Element-Detail-Modal-add-btn"
-                        >
-                            <Plus size={45} />
-                    </button>
+                         <button
+                           onClick={() => {
+                             setAttributeModalVisible(true);
+                             setOpen(false); // 모달 닫기
+                           }}
+                           style={{ background: "none", border: "none", cursor: "pointer" }}
+                           className="Element-Detail-Modal-add-btn"
+                         >
+                           <Plus size={45} />
+                         </button>
+                       </>
+                     )}
+
 
                    </div>
 
-                    <div className="detail-header-section">
+                  <div className={`detail-header ${!isExternalUser ? 'external-user' : 'internal-user'}`}>
                         <img
-                            src={data?.elements_img_url || process.env.PUBLIC_URL + "/default-img.png"}
+                            src={process.env.PUBLIC_URL + "/favicon.ico"}
                             alt="element"
                             className="detail-img"
                         />
@@ -141,7 +155,6 @@ const ElementDetailModal = () => {
                             <div className="detail-top">
                                 {editingField === "name" ? (
                                     <input
-
                                         size="small"
                                         value={newElementName}
                                         onChange={(e) => setNewElementName(e.target.value)}

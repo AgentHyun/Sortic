@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import {authUserAtom} from "../../../auth/authAtoms";
 
 // 메시지 API 관련 상태
 
@@ -48,6 +49,8 @@ export const contextMenuAtom = atom({
 export const costErrorAtom = atom('');
 export const elementsIdListAtom = atom([]);
 export const elementsRefreshTriggerAtom = atom(0);
+//처음 속성값 저장하는 Atom
+export const defaultAttributesAtom = atom([]);
 // element name을 저장할 atom
 export const elementNameAtom = atom(null);
 export const elementDetailDataAtom = atom(null);
@@ -91,8 +94,9 @@ export const selectedElementIdSorterAtom = atom(0);
 export const isDraggingElementsAtom = atom(false);
 
 
+// 도매
 
-
+export const usernamesByCodeIdAtom = atom({});
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -101,7 +105,30 @@ export const userAtom = atom({
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
-export const selectedUserIdAtom = atom (null);
+const selectedUserIdInternalAtom = atom(null);
+
+// 외부에서 읽고 쓸 수 있는 atom (로그인 유저 ID를 기본값으로 제공)
+export const selectedUserIdAtom = atom(
+  (get) => {
+    const internalValue = get(selectedUserIdInternalAtom);
+    if (internalValue !== null) return internalValue;
+
+    const authUser = get(authUserAtom);
+    return authUser?.userId || null;
+  },
+  (get, set, newUserId) => {
+    set(selectedUserIdInternalAtom, newUserId);
+  }
+);
+export const currentUserIdAtom = atom((get) => {
+  const authUser = get(authUserAtom);
+  return authUser?.userId || null;
+});
+export const currentUserNameAtom = atom (null);
+export const isExternalUserAtom = atom(false);
 export const selectedUserNameAtom = atom(null);
+
+
+
 //
 

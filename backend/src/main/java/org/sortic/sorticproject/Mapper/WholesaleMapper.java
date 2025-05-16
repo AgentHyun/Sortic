@@ -58,7 +58,7 @@ public interface WholesaleMapper {
         @Result(column = "wholesale_code", property = "wholesaleCode"),
         @Result(column = "user_id", property = "userId")
     })
-    WholesaleCode findWholesaleCodeByCode(int wholesaleCode);
+    WholesaleCode findWholesaleCodeByCode(@Param("wholesaleCode") String wholesaleCode);
 
     @Select("SELECT wholesale_code FROM Wholesale_Code WHERE wholesale_code_id = #{id}")
     Integer findWholesaleCodeById(@Param("id") int wholesaleCodeId);
@@ -87,8 +87,7 @@ public interface WholesaleMapper {
     void updateMemo(WholesaleLink link);
     // 중복 체크용 쿼리
     @Select("SELECT COUNT(*) FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
-    int isUserWholesaleCodeExists(int code);
-
+    int isUserWholesaleCodeExists(@Param("code") String code);
     // 등록 쿼리
     @Insert("""
     INSERT INTO User_Wholesale_Code (user_wholesale_code, user_id)
@@ -103,5 +102,28 @@ public interface WholesaleMapper {
     WHERE wl.wholesale_name = #{wholesaleName}
 """)
     String findUserIdByWholesaleName(@Param("wholesaleName") String wholesaleName);
+
+
+    @Select("""
+    SELECT *
+    FROM User_Wholesale_Code
+    WHERE user_id = #{userId}
+""")
+    @Results({
+        @Result(column = "user_wholesale_code_id", property = "userWholesaleCodeId"),
+        @Result(column = "user_wholesale_code", property = "userWholesaleCode"),
+        @Result(column = "user_id", property = "userId")
+    })
+    List<UserWholesaleCode> getUserWholesaleCodesByUserId(@Param("userId") String userId);
+
+    @Delete("DELETE FROM User_Wholesale_Code WHERE user_wholesale_code = #{userWholesaleCode}")
+    void deleteUserWholesaleCode(@Param("userWholesaleCode") int userWholesaleCode);
+
+
+    @Select("SELECT user_id FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
+    String findUserIdByWholesaleCodeId(@Param("wholesaleCodeId") int wholesaleCodeId);
+    @Select("SELECT user_id FROM Users WHERE username = #{username}")
+    String findUserIdByUsername(@Param("username") String username);
+
 
 }

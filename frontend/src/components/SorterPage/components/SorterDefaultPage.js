@@ -82,17 +82,27 @@ const SorterDefaultPage = () => {
           setAddCategoryModalVisible(false);
           setNewCategory('');
         }}
-
-
-
-
+        okButtonProps={{
+          className: "category-ok-button",
+          style: {
+            backgroundColor: '#929e6e', // 원하는 색상으로 변경
+            border : 'none',
+          }
+        }}
+        cancelButtonProps={{
+          className: "custom-cancel-button", // ✅ 클래스 이름 부여
+          style: {
+            backgroundColor: '#ffffff',         // ✅ 예시 색상
+            color: '#333',
+            border: '1px solid #ccc',
+          }}}
 
       >
-        <Input
+        <input
+          className="custom-input"
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
-          placeholder="카테고리 이름을 입력하세요"
-          onPressEnter={handleAddCategory}
+          placeholder="카테고리명을 작성해주세요"
         />
       </Modal>
       <div className="sorter-guide-section">
