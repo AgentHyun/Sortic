@@ -1,14 +1,14 @@
+
 package org.sortic.sorticproject.Controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.sortic.sorticproject.Entity.Users;
+import org.sortic.sorticproject.Dto.request.SignupRequest;
 import org.sortic.sorticproject.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.sortic.sorticproject.security.token.JwtTokenProvider;
 
-import java.util.Collections;
+    import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -17,52 +17,32 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    /** ✅ 아이디 중복 확인 (비인증) */
+    /**
+     * ✅ 아이디 중복 확인 (비인증)
+     */
     @GetMapping("/check-userid")
     public ResponseEntity<?> checkUserId(@RequestParam("userId") String userId) {
-        boolean available = userService.checkUserId(userId);
-        return ResponseEntity.ok(available);
+        return ResponseEntity.ok(userService.checkUserId(userId));
     }
 
-    /** ✅ 상호명 중복 확인 (비인증) */
+    /**
+     * ✅ 상호명 중복 확인 (비인증)
+     */
     @GetMapping("/check-store")
     public ResponseEntity<?> checkStoreName(@RequestParam("storeName") String storeName) {
-        boolean available = userService.checkStoreName(storeName);
-        return ResponseEntity.ok(available);
+        return ResponseEntity.ok(userService.checkStoreName(storeName));
     }
 
-    /** ✅ 회원가입 시 상호 이미지 업로드 (비인증) */
-    @PostMapping("/store-image")
-    public ResponseEntity<?> uploadStoreImage(
-        @RequestHeader("Authorization") String token,
-        @RequestParam("image") MultipartFile file) {
-        try {
-            String userId = jwtTokenProvider.getUserId(token);
-            String imageUrl = userService.uploadStoreImage(userId, file);
-            return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
-        }
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequest request) {
+        userService.signup(request);
+        return ResponseEntity.ok("회원가입 완료");
     }
 
-    /** ✅ 회원가입 시 주소 등록 (비인증) */
-    @PostMapping("/register-address")
-    public ResponseEntity<?> registerSignupAddress(@RequestBody Map<String, String> request) {
-        try {
-            String userId = request.get("userId");
-            String zipcode = request.get("zipcode");
-            String roadAddress = request.get("roadAddress");
-            String detailAddress = request.get("detailAddress");
-            userService.saveUserAddress(userId, zipcode, roadAddress, detailAddress);
-            return ResponseEntity.ok(Collections.singletonMap("message", "주소가 등록되었습니다."));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "주소 등록에 실패했습니다."));
-        }
-    }
-
-    /** ✅ 아이디 찾기 (비인증) */
+    /**
+     * ✅ 아이디 찾기 (비인증)
+     */
     @PostMapping("/find-id")
     public ResponseEntity<?> findUserId(@RequestBody Map<String, String> request) {
         try {
@@ -75,7 +55,9 @@ public class UserController {
         }
     }
 
-    /** ✅ 임시 비밀번호 발급 (비인증) */
+    /**
+     * ✅ 임시 비밀번호 발급 (비인증)
+     */
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
         try {
