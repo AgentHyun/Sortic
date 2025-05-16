@@ -71,7 +71,8 @@ import {
   defaultAttributesAtom,
   isExternalUserAtom,
   currentUserIdAtom,
-  currentUserNameAtom
+  currentUserNameAtom,
+  usernamesByCodeIdAtom
 
 } from '../atoms/atoms';
 
@@ -114,7 +115,14 @@ import {closestCenter} from "@dnd-kit/core";
 import {rectSortingStrategy} from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import WholeSale from "../../WholesalePage/WholesalePage";
-import {fetchWholesaleLinksAction, getUserIdByLinkNameAction, getUsernameByUserIdAction} from "../../WholesalePage/action/wholesaleAction";
+import {
+  fetchUserWholesaleCodesAction,
+  fetchWholesaleLinksAction,
+  getUserIdByLinkNameAction,
+  getUsernameByUserIdAction,
+  fetchUserIdByWholesaleCodeIdAction, getUserIdByUsernameAction, deleteUserWholesaleCodeAction,
+
+} from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 
 
@@ -215,18 +223,22 @@ const SorterPage = () => {
   // 도매
 
   const [, fetchLinks] = useAtom(fetchWholesaleLinksAction);
+  const [, setFetchUserWholesaleCodes] = useAtom(fetchUserWholesaleCodesAction);
   const [links] = useAtom(wholesaleLinksAtom);
   const [, getUserIdByLinkName] = useAtom(getUserIdByLinkNameAction);
-
+  const [, deleteUserCode] = useAtom(deleteUserWholesaleCodeAction);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
-
+  const [,setFetchUserIdByWholesaleCodeId] = useAtom(fetchUserIdByWholesaleCodeIdAction);
   // 유저 아이디
   const [ isExternalUser, setIsExternalUser] = useAtom(isExternalUserAtom);
   const [currentUserId, setCurrentUserId] = useAtom(currentUserIdAtom);
   const [,setGetUserNameByUserId] = useAtom(getUsernameByUserIdAction);
   const [currentUserName, setCurrentUserName] = useAtom(currentUserNameAtom);
+  const [usernamesByCodeId, setUsernamesByCodeId] = useAtom(usernamesByCodeIdAtom);
+  const [, getUserIdByUsername] = useAtom(getUserIdByUsernameAction);
+  const [showHintSorter, setShowHintSorter] = useState(null);
   useEffect(() => {
     if (currentCategory !== null) {
       fetchElementsByCategory(currentCategory);
@@ -888,13 +900,37 @@ const SorterPage = () => {
   };
 
   const handleLinkClick = async () => {
-    setDefaultAttributes([]);  // 빈 배열로 초기화
+    setDefaultAttributes([]);
 
-    await fetchLinks(); // 링크 조회
-    setDropdownVisible(true); // 드롭다운 열기
+    const result = await setFetchUserWholesaleCodes(); // 도매 코드 목록
+    console.log("🔁 fetchUserWholesaleCodesAction 결과:", result);
+
+    if (Array.isArray(result)) {
+      const newMap = { ...usernamesByCodeId };
+
+      for (const item of result) {
+        const rawCodeId = item.userWholesaleCode;
+        const codeId = Number(rawCodeId);
+
+        if (!isNaN(codeId)) {
+          const userId = await setFetchUserIdByWholesaleCodeId(codeId);
+          if (userId && !newMap[codeId]) {
+            const username = await setGetUserNameByUserId(userId);
+
+            if (username) {
+              newMap[codeId] = username;
+            }
+          }
+        }
+      }
+
+      setUsernamesByCodeId(newMap); // Atom에 저장
+    }
+
+    setDropdownVisible(true);
   };
   const handleMenuClick = async (linkName) => {
-    const userId = await getUserIdByLinkName(linkName);
+    const userId = await getUserIdByUsername(linkName);
     setSelectedUserName(linkName);
     if (userId) {
       setSelectedUserId(userId);
@@ -906,7 +942,7 @@ const SorterPage = () => {
     } else {
       setIsExternalUser(false);
     }
-    console.log("소매냐도매냐" + isExternalUser);
+
     const count = await fetchCategoryCount(userId);
     if (count === 0) {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
@@ -915,20 +951,100 @@ const SorterPage = () => {
 
   };
 
+  const handleLinkDeleteClick = (id) => {
+    Modal.confirm({
+      title: '도매 코드 삭제',
+      content: '도매처 정보가 모두 삭제됩니다. 정말 삭제하시겠습니까?',
+      okText: '삭제',
+      cancelText: '취소',
+      okButtonProps: {
+        className: 'custom-delete-ok',
+      },
+
+        cancelButtonProps: {
+          className: 'custom-cancel-detail-button', // ✅ 정확한 클래스명
+        },
+      onOk: async () => {
+        await deleteUserCode(id); // 실제 삭제
+        const result = await setFetchUserWholesaleCodes(); // 최신 리스트 받아옴
+
+        if (Array.isArray(result)) {
+          const updatedMap = {};
+
+          for (const item of result) {
+            const codeId = Number(item.userWholesaleCode);
+            if (!isNaN(codeId)) {
+              const userId = await setFetchUserIdByWholesaleCodeId(codeId);
+              if (userId) {
+                const username = await setGetUserNameByUserId(userId);
+                if (username) {
+                  updatedMap[codeId] = username;
+                }
+              }
+            }
+          }
+
+          setUsernamesByCodeId(updatedMap); // ✅ 업데이트된 맵 저장
+        }
+      },
+    }
+
+    );
+  };
+
 
   const menu = (
     <Menu>
-      {links.length > 0 ? (
-        links.map((link, index) => (
-          <Menu.Item key={index} onClick={() => handleMenuClick(link.wholesaleName)}>
-            {link.wholesaleName || '이름 없음'}
+      {Object.entries(usernamesByCodeId).length > 0 ? (
+        Object.entries(usernamesByCodeId).map(([codeId, username], index) => (
+          <Menu.Item key={index} onClick={() => handleMenuClick(username)}>
+            <div className="menu-section">
+              {username}
+              <div
+                className="menu-delete-btn"
+                onClick={(e) => {
+                  console.log("코드 아이디" + codeId);
+                  e.stopPropagation(); // 메뉴 항목 전체 클릭 방지
+                  handleLinkDeleteClick(Number(codeId));
+                }}
+              >
+                <Trash className="menu-trash" size={20} />
+              </div>
+            </div>
           </Menu.Item>
         ))
       ) : (
-        <Menu.Item disabled>도매 링크가 없습니다</Menu.Item>
+        <Menu.Item disabled>등록된 도매처가 없습니다</Menu.Item>
       )}
     </Menu>
+
   );
+
+  const features = [
+    {
+      title: '카테고리',
+      subtitle: '요소를 담는 카테고리',
+      icon: <img src="/SorterPage-img/Category.png" alt="카테고리 아이콘" className="feature-img" />
+      ,
+    },
+    {
+      title: '요소',
+      subtitle: '재고의 이름과 가격',
+      icon: <img src="/SorterPage-img/Element.png" alt="카테고리 아이콘" className="feature-img-element" />,
+    },
+    {
+      title: '속성',
+      subtitle: '재고의 특징',
+      icon: <img src="/SorterPage-img/Attribute.png" alt="카테고리 아이콘" className="feature-img-attribute" />,
+    },
+    {
+      title: 'GMP 생산',
+      subtitle: '주요 생산처와 협업',
+      icon: '✅',
+    },
+  ];
+
+
   return (
     <div>
 
@@ -1327,7 +1443,7 @@ const SorterPage = () => {
             </div>
           )}
 
-          {!isExternalUser && (
+          {isExternalUser && (
 <div className= "sorter-btn-section">
           <SwitchTransition mode="out-in">
             <CSSTransition
@@ -1369,7 +1485,7 @@ const SorterPage = () => {
 
 
 
-          {!isExternalUser && (
+          {isExternalUser && (
           <div className="sorter-sort-section" id="sorter-sort-section" >
 
               <SorterContainer
@@ -1387,14 +1503,52 @@ const SorterPage = () => {
               />
           </div>
             )}
-          {!isExternalUser && (
+          {isExternalUser && (
           <BillPage/>
             )}
         </div>
+          {!isExternalUser && showHintSorter && (
+            <>
+            <div className="info-wrapper">
+              <h2 className="info-title">재고를 <span className="gold"> 카테고리</span>에 담아 전해요</h2>
+              <div className="info-features">
+                <div className="feature-item">
+                  <img src="/SorterPage-img/Category.png" alt="원산지" className="feature-img"/>
+                  <div className="feature-title">카테고리</div>
+                  <div className="feature-subtitle">요소를 담는 카테고리</div>
+                </div>
+
+                <div className="feature-item2">
+                  <img src="/SorterPage-img/Element.png" alt="요소" className="feature-img-element"/>
+                  <div className="feature-title">요소</div>
+                  <div className="feature-subtitle">재고의 이름과 가격</div>
+                </div>
+
+                <div className="feature-item3">
+                  <img src="/SorterPage-img/Attribute.png" alt="속성" className="feature-img-attribute"/>
+                  <div className="feature-title">속성</div>
+                  <div className="feature-subtitle">재고의 특징</div>
+                </div>
 
 
 
-      </SortableContext>
+              </div>
+
+
+            </div>
+
+            </>
+          )}
+
+          {!isExternalUser && (
+          <button className="faq-button-sorter" onClick={() => setShowHintSorter(!showHintSorter)}> {/* ✅ 클릭 시 모달 */}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />
+            </svg>
+            <span className="tooltip">HINT</span>
+          </button>
+            )}
+        </SortableContext>
       </DndContext>
     </div>
   );

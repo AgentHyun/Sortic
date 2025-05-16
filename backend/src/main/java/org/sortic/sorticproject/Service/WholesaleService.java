@@ -114,6 +114,23 @@ public class WholesaleService {
         return wholesaleMapper.findUserIdByWholesaleName(wholesaleName);
     }
 
+    public List<UserWholesaleCode> getUserWholesaleCodesByUserId(String userId) {
+        return wholesaleMapper.getUserWholesaleCodesByUserId(userId);
+    }
+    public String getUserIdByWholesaleCodeId(int wholesaleCodeId) {
+        String userId = wholesaleMapper.findUserIdByWholesaleCodeId(wholesaleCodeId);
+        if (userId == null) {
+            throw new IllegalArgumentException("해당 ID의 도매 코드가 존재하지 않습니다.");
+        }
+        return userId;
+    }
+    public String findUserIdByUsername(String username) {
+        return wholesaleMapper.findUserIdByUsername(username);
+    }
+
+    public void deleteUserWholesaleCode(int userWholesaleCode) {
+        wholesaleMapper.deleteUserWholesaleCode(userWholesaleCode);
+    }
 
 
 

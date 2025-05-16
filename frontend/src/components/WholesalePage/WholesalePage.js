@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { Button, Input, Modal, message } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useAtom } from 'jotai';
+import axios from 'axios';
 import { wholesaleLinksAtom } from '../WholesalePage/atoms/atoms';
 import {
   createWholesaleLinkAction,
@@ -85,6 +87,7 @@ const WholesalePage = () => {
     if (links.length > 0) fetchCodes();
   }, [links]);
 
+
   useEffect(() => {
     const fetchAllMemos = async () => {
       const newMemos = {};
@@ -140,6 +143,7 @@ const WholesalePage = () => {
       title: '도매 링크 삭제',
       content: '정말 이 도매 링크를 삭제하시겠습니까?',
       onOk: () => {
+
         setDeleteLink(id);
         setSelectedLinkId(null);
       },

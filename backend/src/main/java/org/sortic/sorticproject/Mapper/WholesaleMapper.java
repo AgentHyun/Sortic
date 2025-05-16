@@ -103,4 +103,27 @@ public interface WholesaleMapper {
 """)
     String findUserIdByWholesaleName(@Param("wholesaleName") String wholesaleName);
 
+
+    @Select("""
+    SELECT *
+    FROM User_Wholesale_Code
+    WHERE user_id = #{userId}
+""")
+    @Results({
+        @Result(column = "user_wholesale_code_id", property = "userWholesaleCodeId"),
+        @Result(column = "user_wholesale_code", property = "userWholesaleCode"),
+        @Result(column = "user_id", property = "userId")
+    })
+    List<UserWholesaleCode> getUserWholesaleCodesByUserId(@Param("userId") String userId);
+
+    @Delete("DELETE FROM User_Wholesale_Code WHERE user_wholesale_code = #{userWholesaleCode}")
+    void deleteUserWholesaleCode(@Param("userWholesaleCode") int userWholesaleCode);
+
+
+    @Select("SELECT user_id FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
+    String findUserIdByWholesaleCodeId(@Param("wholesaleCodeId") int wholesaleCodeId);
+    @Select("SELECT user_id FROM Users WHERE username = #{username}")
+    String findUserIdByUsername(@Param("username") String username);
+
+
 }

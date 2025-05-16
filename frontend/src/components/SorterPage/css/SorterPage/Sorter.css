@@ -374,7 +374,7 @@
 
 .delete-selected-btn {
   --color: rgb(183, 28, 28); /* 진한 빨간색 퍼짐 효과 */
-  background-color: #b14f47 !important;
+  background-color: #f36363 !important;
   color: white;
   font-size: 18px;
   font-family: "Orbit", sans-serif;

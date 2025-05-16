@@ -369,6 +369,7 @@
 }
 .custom-cancel-button:hover{
   background-color: #e6e4e4 !important;
+  color : white!important;
 }
 
 .ant-modal-close:hover {

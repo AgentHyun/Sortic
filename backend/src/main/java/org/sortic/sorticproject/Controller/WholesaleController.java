@@ -159,11 +159,51 @@ public class WholesaleController {
             }
             return ResponseEntity.ok(Collections.singletonMap("userId", userId));
         } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
+
+        }
+    }
+
+    @GetMapping("wholesale-user-code")
+    public ResponseEntity<List<UserWholesaleCode>> getUserWholesaleCodes(@RequestParam String userId) {
+        List<UserWholesaleCode> codes = wholesaleService.getUserWholesaleCodesByUserId(userId);
+        return ResponseEntity.ok(codes);
+    }
+
+
+    @GetMapping("/user-id-by-code-id")
+    public ResponseEntity<String> getUserIdByCodeId(@RequestParam int wholesaleCodeId) {
+        String userId = wholesaleService.getUserIdByWholesaleCodeId(wholesaleCodeId);
+        return ResponseEntity.ok(userId);
+    }
+
+    @GetMapping("/user-id/by-username")
+    public ResponseEntity<?> getUserIdByUsername(@RequestParam String username) {
+        try {
+            String userId = wholesaleService.findUserIdByUsername(username);
+            if (userId == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "해당 닉네임의 유저를 찾을 수 없습니다."));
+            }
+            return ResponseEntity.ok(Collections.singletonMap("userId", userId));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }
     }
 
-
+    @DeleteMapping("/delete/user-code/{userWholesaleCode}")
+    public ResponseEntity<?> deleteUserWholesaleCode(@PathVariable int userWholesaleCode) {
+        try {
+            wholesaleService.deleteUserWholesaleCode(userWholesaleCode);
+            return ResponseEntity.ok("유저 도매 코드가 삭제되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("유저 도매 코드 삭제 중 오류 발생");
+        }
+    }
 
 }

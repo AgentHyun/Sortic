@@ -17,6 +17,7 @@
     gap: 6px;
 
 }
+
 .detail-section:hover {
     background-color: #929e6e; /* 배경만 빨강 느낌 */
     color : white;

@@ -94,8 +94,9 @@ export const selectedElementIdSorterAtom = atom(0);
 export const isDraggingElementsAtom = atom(false);
 
 
+// 도매
 
-
+export const usernamesByCodeIdAtom = atom({});
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -126,5 +127,8 @@ export const currentUserIdAtom = atom((get) => {
 export const currentUserNameAtom = atom (null);
 export const isExternalUserAtom = atom(false);
 export const selectedUserNameAtom = atom(null);
+
+
+
 //
 

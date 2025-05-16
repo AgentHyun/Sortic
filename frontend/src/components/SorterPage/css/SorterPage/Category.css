@@ -10,9 +10,11 @@
 .category-btn {
     border: none;
     border-radius: 8px;
-    margin-left: 25vw;
+
+
     cursor: pointer;
-    margin-right : 1.3vw;
+
+    font-size : 40px;
     background-color: transparent;
     color: #929e6e !important;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
@@ -28,30 +30,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width : 10vw;
   font-size: 60px;
   padding-bottom: 10px;
   height : 8vh;
-  min-width : 60px;
-  margin-right : 25vw;
   border : none;
   color :#929e6e;
-
   background-color: transparent;
-  margin-left: 1vw;
-}
-.category-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width : 10vw;
-    font-size: 40px;
-    height : 8vh;
-
-    min-width : 60px;
 
 
 }
+
 
 
 
@@ -72,8 +60,6 @@
     font-size: 24px;
     font-weight: 600;
     color: #635C3B;
-
-
 }
 
 /* Category Name */
