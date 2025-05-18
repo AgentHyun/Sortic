@@ -53,7 +53,6 @@ export function useLogout() {
       setIsAuthenticated(false); // ✅ 로그아웃 상태 전역 설정
     }
   };
-
   return logout;
 }
 

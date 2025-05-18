@@ -48,7 +48,6 @@ export const isOpenWholesaleAtom = atom(false);
 
 
 
-
 // // 로그인한 유저 정보
 // export const authUserAtom = atom(null);
 //
