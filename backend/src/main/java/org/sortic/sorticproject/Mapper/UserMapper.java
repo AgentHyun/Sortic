@@ -37,7 +37,7 @@ public interface UserMapper {
     Users findByUserId(@Param("userId") String userId);
 
     /** ✅ 사용자 삽입 (회원가입) */
-    @Insert("INSERT INTO Users (user_id, password, store_name, phone, email) " +
-        "VALUES (#{userId}, #{password}, #{store_name}, #{phone}, #{email})")
+    @Insert("INSERT INTO Users (user_id, password, store_name, email, phone, grade, region, profile_image) " +
+        "VALUES (#{userId}, #{password}, #{store_name}, #{email}, #{phone}, #{grade}, #{region}, #{profile_image})")
     void insertUser(Users user);
 }

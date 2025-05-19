@@ -44,16 +44,6 @@ public class AuthController {
         }
     }
 
-    /** ✅ 회원가입 */
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody Users user) {
-        try {
-            authService.signup(user);
-            return ResponseEntity.ok(Map.of("message", "회원가입이 완료되었습니다."));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
-    }
 
     /** ✅ 로그아웃 */
     @PostMapping("/logout")

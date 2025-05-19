@@ -38,17 +38,6 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    /** ✅ 회원가입 처리 */
-    public void signup(Users user) {
-        if (userMapper.findByUserId(user.getUserId()) != null) {
-            throw new RuntimeException("이미 존재하는 아이디입니다.");
-        }
-
-        String hashed = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashed);
-        userMapper.insertUser(user);
-    }
-
     /** ✅ 로그아웃 처리 */
     public void logout(String userId) {
         refreshTokenService.delete(userId);

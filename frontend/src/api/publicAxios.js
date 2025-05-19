@@ -7,7 +7,7 @@ const publicAxios = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json'
   },
-  withCredentials: false
+  withCredentials: true
 });
 
 // ❌ 요청 인터셉터 없음 (토큰 불필요)

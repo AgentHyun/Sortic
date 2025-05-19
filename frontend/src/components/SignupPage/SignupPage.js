@@ -4,10 +4,10 @@ import { Form, Input, Button, Typography, message, Checkbox } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignupPage.module.css';
 import publicAxios from '../../api/publicAxios';
-import authAxios from '../../api/authAxios';
 import { sendEmailCode, verifyEmailCode } from '../service/emailService';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
+import axios from "axios";
 
 const { Title } = Typography;
 
@@ -45,7 +45,12 @@ function SignupPage() {
     }
     setIsSubmitting(true);
     try {
-      await publicAxios.post('/users/signup', signupData);
+      console.log("회원가입 요청 데이터:", signupData);
+
+      await axios.post('http://localhost:8080/api/users/signup', signupData, {
+        withCredentials: true, // ✅ 옵션을 요청 config 객체 안에 넣어야 함
+      });
+
       message.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (err) {
