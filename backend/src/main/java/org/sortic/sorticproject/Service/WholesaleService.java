@@ -133,5 +133,13 @@ public class WholesaleService {
     }
 
 
+    public Integer getUserWholesaleCodeIdByCode(String userWholesaleCode) {
+        Integer id = wholesaleMapper.findUserWholesaleCodeIdByCode(userWholesaleCode);
+        if (id == null) {
+            throw new IllegalArgumentException("해당 도매 코드를 찾을 수 없습니다.");
+        }
+        return id;
+    }
+
 
 }

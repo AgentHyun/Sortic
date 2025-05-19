@@ -49,7 +49,7 @@ const BillPage = () => {
   const handleAddBill = async () => {
     try {
       for (const link of wholesaleLink) {
-        console.log(link.wholesaleLinkId)
+        console.log("빌추가" + link.wholesaleLinkId);
         await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
           billName : newBillName,
           userId  : userId,
@@ -111,7 +111,7 @@ const BillPage = () => {
         <Button
           type="primary"
 
-          className="add-bill-btn"
+          className="sorter-effect-btn"
           onClick={() => setIsModalVisible(true)}
         >
           + Bill
@@ -140,6 +140,20 @@ const BillPage = () => {
         okText="추가"
         cancelText="취소"
         closable={false}
+        okButtonProps={{
+          className: "category-ok-button",
+          style: {
+            backgroundColor: '#929e6e', // 원하는 색상으로 변경
+            border : 'none',
+          }
+        }}
+        cancelButtonProps={{
+          className: "custom-cancel-button", // ✅ 클래스 이름 부여
+          style: {
+            backgroundColor: '#ffffff',         // ✅ 예시 색상
+            color: '#333',
+            border: '1px solid #ccc',
+          }}}
       >
         <Input
           placeholder="Bill 이름을 입력하세요"
@@ -187,6 +201,7 @@ const BillPage = () => {
         {selectedCommissionIds.length > 0 && (
           <Button
             danger
+
             onClick={handleDeleteSelectedCommissions}
             style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}
           >

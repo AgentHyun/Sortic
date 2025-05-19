@@ -97,6 +97,7 @@ export const isDraggingElementsAtom = atom(false);
 // 도매
 
 export const usernamesByCodeIdAtom = atom({});
+export const selectedUserWholesaleLinkIdAtom = atom(0);
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

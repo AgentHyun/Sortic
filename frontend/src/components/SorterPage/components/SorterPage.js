@@ -72,7 +72,8 @@ import {
   isExternalUserAtom,
   currentUserIdAtom,
   currentUserNameAtom,
-  usernamesByCodeIdAtom
+  usernamesByCodeIdAtom,
+  selectedUserWholesaleLinkIdAtom
 
 } from '../atoms/atoms';
 
@@ -120,7 +121,10 @@ import {
   fetchWholesaleLinksAction,
   getUserIdByLinkNameAction,
   getUsernameByUserIdAction,
-  fetchUserIdByWholesaleCodeIdAction, getUserIdByUsernameAction, deleteUserWholesaleCodeAction,
+  fetchUserIdByWholesaleCodeIdAction,
+  getUserIdByUsernameAction,
+  deleteUserWholesaleCodeAction,
+  getUserWholesaleCodeIdByCodeAction,
 
 } from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
@@ -231,6 +235,8 @@ const SorterPage = () => {
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
   const [,setFetchUserIdByWholesaleCodeId] = useAtom(fetchUserIdByWholesaleCodeIdAction);
+  const [, getUserCodeId] = useAtom(getUserWholesaleCodeIdByCodeAction);
+  const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
   // 유저 아이디
   const [ isExternalUser, setIsExternalUser] = useAtom(isExternalUserAtom);
   const [currentUserId, setCurrentUserId] = useAtom(currentUserIdAtom);
@@ -929,9 +935,14 @@ const SorterPage = () => {
 
     setDropdownVisible(true);
   };
-  const handleMenuClick = async (linkName) => {
+  const handleMenuClick = async (linkName, codeId) => {
     const userId = await getUserIdByUsername(linkName);
     setSelectedUserName(linkName);
+    const id = await getUserCodeId(codeId);
+    setSelectedUserWholesaleLinkId(id);
+    console.log("선택된 홀세일 아이디" + selectedUserWholesaleLinkId);
+
+
     if (userId) {
       setSelectedUserId(userId);
     }
@@ -999,7 +1010,7 @@ const SorterPage = () => {
     <Menu>
       {Object.entries(usernamesByCodeId).length > 0 ? (
         Object.entries(usernamesByCodeId).map(([codeId, username], index) => (
-          <Menu.Item key={index} onClick={() => handleMenuClick(username)}>
+          <Menu.Item key={index} onClick={() => handleMenuClick(username,codeId)}>
             <div className="menu-section">
               {username}
               <div
