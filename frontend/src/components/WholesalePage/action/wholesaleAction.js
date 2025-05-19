@@ -291,3 +291,34 @@ export const deleteUserWholesaleCodeAction = atom(null, async (get, set, userWho
     message.error("유저 도매 코드 삭제 중 오류가 발생했습니다.");
   }
 });
+export const getUserWholesaleCodeIdByCodeAction = atom(null, async (get, set, userWholesaleCode) => {
+  if (!userWholesaleCode || userWholesaleCode.trim() === "") {
+    message.warning("도매 코드가 비어 있습니다.");
+    return null;
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:8080/api/wholesale/user-code-id/by-code`, {
+      params: { userWholesaleCode }
+    });
+
+    const id = response.data?.userWholesaleCodeId;
+
+    if (id == null) {
+      message.warning("도매 코드 ID를 찾을 수 없습니다.");
+      return null;
+    }
+
+    return id;
+  } catch (error) {
+    console.error("🚨 도매 코드 ID 조회 실패:", error);
+
+    if (error.response?.status === 404) {
+      message.warning("해당 도매 코드를 찾을 수 없습니다.");
+    } else {
+      message.error("도매 코드 ID 조회 중 오류가 발생했습니다.");
+    }
+
+    return null;
+  }
+});

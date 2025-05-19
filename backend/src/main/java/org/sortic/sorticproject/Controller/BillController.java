@@ -25,8 +25,16 @@ public class BillController {
 
     @PostMapping("/addBill")
     public void addBill(@RequestBody Bill bill) {
+        if (bill == null) {
+            System.out.println("❌ bill is NULL");
+        } else {
+            System.out.println("✅ bill 도착!");
+            System.out.println("userId: " + bill.getUserId());
+            System.out.println("billName: " + bill.getBillName());
+            System.out.println("wholesaleLinkId: " + bill.getWholesaleLinkId());
+        }
+
         billService.addBill(bill);
-        System.out.println("dd"+bill);
     }
 
     @DeleteMapping("/deleteBill")

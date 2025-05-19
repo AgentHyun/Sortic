@@ -95,6 +95,7 @@ export const isDraggingElementsAtom = atom(false);
 
 
 // 도매
+export const selectedUserWholesaleLinkIdAtom = atom(0);
 
 export const usernamesByCodeIdAtom = atom({});
 // 성민

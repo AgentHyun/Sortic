@@ -18,6 +18,8 @@ import { X, Plus, Minus } from "lucide-react";
 import {authUserAtom} from "../../../auth/authAtoms";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 import {fetchBillsAction} from "../actions/billActions";
+import {fetchWholesaleLinksAction} from "../../WholesalePage/action/wholesaleAction";
+import {selectedUserWholesaleLinkIdAtom} from "../../SorterPage/atoms/atoms";
 
 
 
@@ -38,9 +40,8 @@ const BillPage = () => {
   const [selectedBillId, setSelectedBillId] = useAtom(selectedBillIdAtom);
   const [selectedBillForCommission, setSelectedBillForCommission] = useAtom(selectedBillForCommissionAtom);
   const [selectedCommissionIds, setSelectedCommissionIds] = useAtom(selectedCommissionIdsAtom);
-  const [wholesaleLink] = useAtom(wholesaleLinksAtom);
+  const [wholesaleLink] = useAtom(selectedUserWholesaleLinkIdAtom);
   const [,fetchBills] = useAtom(fetchBillsAction);
-
   useEffect(() => {
     fetchBills();
   }, []);
@@ -48,14 +49,16 @@ const BillPage = () => {
   /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-      for (const link of wholesaleLink) {
-        console.log(link.wholesaleLinkId)
+      console.log("🔥 wholesaleLink 상태:", wholesaleLink);
+
+        console.log(wholesaleLink)
+
         await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
           billName : newBillName,
           userId  : userId,
-          wholesaleLinkId : link.wholesaleLinkId
+          wholesaleLinkId : wholesaleLink
         });
-      }
+
       console.log('bill추가')
       // 전체 Bill 다시 불러오기
 

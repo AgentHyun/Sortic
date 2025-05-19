@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/BillController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/BillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/BillMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/BillService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/BillService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/BillController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/BillController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/SorticProjectApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/SorticProjectApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,36 +51,39 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2xAfgnUGoJdJm0SuhAoDklAtEdU" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Sortic 빌드.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feature/k/real",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Sortic 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.소스 다운로드.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SorticProjectApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/k/real&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="SorticProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -101,11 +109,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747385914004</updated>
-      <workItem from="1747385916329" duration="1409000" />
+      <workItem from="1747385916329" duration="4551000" />
+      <workItem from="1747616452090" duration="4406000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

@@ -208,4 +208,25 @@ public class WholesaleController {
         }
     }
 
+    @GetMapping("/user-code-id/by-code")
+    public ResponseEntity<?> getUserWholesaleCodeIdByCode(@RequestParam String userWholesaleCode) {
+        try {
+            Integer id = wholesaleService.getUserWholesaleCodeIdByCode(userWholesaleCode);
+
+            // Java 1.7 호환 방식의 Map 생성
+            java.util.Map<String, Object> result = new java.util.HashMap<String, Object>();
+            result.put("userWholesaleCodeId", id);
+
+            return new ResponseEntity<java.util.Map<String, Object>>(result, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            java.util.Map<String, String> error = new java.util.HashMap<String, String>();
+            error.put("message", e.getMessage());
+            return new ResponseEntity<java.util.Map<String, String>>(error, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            java.util.Map<String, String> error = new java.util.HashMap<String, String>();
+            error.put("message", "유저 도매 코드 ID 조회 중 오류 발생");
+            return new ResponseEntity<java.util.Map<String, String>>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

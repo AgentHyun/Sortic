@@ -125,5 +125,7 @@ public interface WholesaleMapper {
     @Select("SELECT user_id FROM Users WHERE username = #{username}")
     String findUserIdByUsername(@Param("username") String username);
 
+    @Select("SELECT user_wholesale_code_id FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
+    Integer findUserWholesaleCodeIdByCode(@Param("code") String userWholesaleCode);
 
 }
