@@ -98,6 +98,7 @@ export const isDraggingElementsAtom = atom(false);
 export const selectedUserWholesaleLinkIdAtom = atom(0);
 
 export const usernamesByCodeIdAtom = atom({});
+export const selectedUserWholesaleLinkIdAtom = atom(0);
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

@@ -104,6 +104,8 @@ export const fetchUserWholesaleCodesAction = atom(null, async (get, set) => {
 
 
     console.table(response.data); // 확인용
+
+
     return response.data;
   } catch (error) {
     console.error("🚨 유저 도매 코드 조회 실패:", error);
