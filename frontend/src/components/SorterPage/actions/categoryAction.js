@@ -11,7 +11,7 @@ import {
   addCategoryModalVisibleAtom,
   cardsAtom,
   messageAtom,
-  currentIndexAtom, selectedUserIdAtom, selectedUserWholesaleLinkIdAtom
+  currentIndexAtom, selectedUserIdAtom, selectedUserWholesaleLinkIdAtom, sorterModeAtom, wholesalerIdAtom
 } from '../atoms/atoms';
 import { userIdAtom, userAtom  } from '../../../Atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
@@ -84,21 +84,19 @@ export const fetchAndNumberCategoriesByUserIdAction = atom(
 
 export const fetchAndNumberCategoriesAction = atom(
   null,
-  async (get, set, ) => {
+  async (get, set) => {
     try {
       // ✅ 초기화
       set(categoriesAtom, []);
       set(currentCategoryAtom, null);
       set(currentCategoryNameAtom, '');
       set(currentIndexAtom, -1);
-      let wholesaleLinkId = get(selectedUserWholesaleLinkIdAtom);
-      if (!wholesaleLinkId) {
 
-        return [];
-      }
 
-      const response = await axios.get('http://localhost:8080/api/categories/get_by_wholesale_link', {
-        params: { wholesale_link_id : wholesaleLinkId }
+      let userId = get(selectedUserIdAtom);
+
+      const response = await axios.get('http://localhost:8080/api/categories/get_category', {
+        params: { user_id: userId }
       });
 
       const categories = response.data;
@@ -132,13 +130,12 @@ export const fetchAndNumberCategoriesAction = atom(
 
       return numberedCategories;
     } catch (error) {
-      console.error('🚨 도매 링크 기반 카테고리 조회 실패:', error);
-      message.error('도매 링크 카테고리 조회 실패');
+      console.error('🚨 유저 기반 카테고리 조회 실패:', error);
+      message.error('카테고리 조회에 실패했습니다.');
       return [];
     }
   }
 );
-
 
 export const fetchCategoriesAction = atom(
     null,
@@ -270,7 +267,6 @@ export const handleCategoryOkAction = atom(
       const response = await axios.post('http://localhost:8080/api/categories/add_category', {
         user_id: userId,
         category_name: newCategory,
-        // ✅ 필요 시 이 필드를 함께 넘겨주세요 (null 또는 특정 링크 ID)
         wholesale_link_id: get(selectedUserWholesaleLinkIdAtom)
       });
 

@@ -6,8 +6,13 @@ import {useAtom, useSetAtom} from 'jotai';
 import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
-import { sorterModeAtom } from '../SorterPage/atoms/atoms';
-import {generateWholesalerCodeAction} from "../WholesalePage/action/wholesaleAction";
+import {selectedUserIdAtom, sorterModeAtom, wholesalerIdAtom} from '../SorterPage/atoms/atoms';
+import {
+  cloneUserWithWholesalerCodeAction,
+  createWholesaleCodeAction,
+  generateWholesalerCodeAction,
+  fetchWholesalerCodeByUserIdAction, fetchClonedUserIdsAction, fetchClonedUserIdAction
+} from "../WholesalePage/action/wholesaleAction";
 const { Header } = Layout;
 
 const SorticHeader = () => {
@@ -16,6 +21,13 @@ const SorticHeader = () => {
   const navigate = useNavigate();
   const setSorterMode = useSetAtom(sorterModeAtom);
   const [, generateWholesalerCode] = useAtom(generateWholesalerCodeAction);
+  const cloneUserWithWholesalerCode = useSetAtom(cloneUserWithWholesalerCodeAction);
+  const [selectedUserId,setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const [wholesalerId,setWholeSalerId] = useAtom(wholesalerIdAtom);
+  const [authUser] = useAtom(authUserAtom);
+  const [,createWholesaleCode] = useAtom(createWholesaleCodeAction);
+  const [,fetchWholesalerCodeByUserId] = useAtom(fetchWholesalerCodeByUserIdAction);
+  const [, fetchClonedUsers] = useAtom(fetchClonedUserIdAction);
   // 로그아웃 처리 함수
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -52,17 +64,26 @@ const SorticHeader = () => {
       onClick: () => {
         setSorterMode(0);
         navigate('/sorter');
+        const userId = authUser?.userId;
+        setSelectedUserId(userId);
       },
     },
     {
       key: 'wholesale',
       label: '도매',
-      onClick: () => {
+      onClick: async () => {
         setSorterMode(1);
         navigate('/sorter');
-        generateWholesalerCode();
+        const code = await generateWholesalerCode();
+        const userId = authUser?.userId;
+        await cloneUserWithWholesalerCode(code);
+        await createWholesaleCode(code);
+        const clonedId = await fetchClonedUsers(userId); // ✅ 반드시 await
+        console.log("선택된 유저 아이디", clonedId);
 
-        },
+
+
+      },
     },
     {
       key: 'retail',
@@ -70,6 +91,8 @@ const SorticHeader = () => {
       onClick: () => {
         setSorterMode(2);
         navigate('/sorter');
+        const userId = authUser?.userId;
+        setSelectedUserId(userId);
       },
     },
   ];

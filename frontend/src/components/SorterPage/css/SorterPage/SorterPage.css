@@ -1,6 +1,13 @@
 /* Global Styles */
+
+
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
 body {
-    font-family: 'Arial', sans-serif;
+  font-family: 'NanumSquareNeoLight';
     background-color: #F1F3C2; /* White background */
     color: #333; /* Dark text for readability */
     margin: 0;
@@ -324,7 +331,7 @@ body {
   font-weight: 600;
   margin-bottom: 30px;
   color : #424141;
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-family: 'NanumSquareNeoLight';
 }
 
 

@@ -5,6 +5,14 @@
     font-style: normal;
 }
 
+
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
+
+
 /* Category Buttons */
 .category-btn-box,
 .category-btn {
@@ -65,7 +73,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-family: "Orbit", sans-serif;
+  font-family: 'NanumSquareNeoLight';
     font-size: 1.6rem;
     font-weight: bold;
     color: black;

@@ -690,7 +690,7 @@ const SorterPage = () => {
     const checkLinkCountAndRedirect = async () => {
       if (sorterMode === 2 && authUser?.userId) {
         const count = await getLinkCount(authUser.userId);
-        if (count === 0) {
+        if (count === 0 && sorterMode === 2) {
           navigate('/wholesale');
         }
       }
@@ -969,17 +969,11 @@ const SorterPage = () => {
     if (!id) {
       await setFetchCategoriesByUserId();
     } else {
-      await setfetchAndNumberCategories(id); // ID 직접 전달
-    }
-
-    if (userId !== authUser?.userId) {
-      setIsExternalUser(true);
-    } else {
-      setIsExternalUser(false);
+      await setfetchAndNumberCategories(userId); // ID 직접 전달
     }
 
     const count = await fetchCategoryCount(userId);
-    if (count === 0) {
+    if (count === 0 && sorterMode === 1) {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
     }
 
@@ -1273,6 +1267,7 @@ const SorterPage = () => {
                 okButtonProps={{
                   className: "category-ok-button",
                   style: {
+                    fontFamily: 'NanumSquareNeoLight',
                     backgroundColor: '#929e6e', // 원하는 색상으로 변경
                     border : 'none',
                   }
@@ -1283,6 +1278,7 @@ const SorterPage = () => {
                       backgroundColor: '#ffffff',         // ✅ 예시 색상
                       color: '#333',
                       border: '1px solid #ccc',
+                      fontFamily: 'NanumSquareNeoLight',
                     }}}
 
               >

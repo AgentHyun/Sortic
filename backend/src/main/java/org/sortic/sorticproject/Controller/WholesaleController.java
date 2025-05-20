@@ -254,6 +254,52 @@ public class WholesaleController {
     }
 
 
+    @PostMapping("/clone-user-with-code")
+    public ResponseEntity<?> cloneUserWithWholesalerCode(
+        @RequestParam String userId,
+        @RequestParam String wholesalerCode) {
+
+        try {
+            wholesaleService.cloneUserWithWholesalerCode(userId, wholesalerCode);
+            String newUserId = userId + "_" + wholesalerCode;
+            return ResponseEntity.ok(Collections.singletonMap("newUserId", newUserId));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 복제 중 오류 발생"));
+        }
+    }
+
+    @GetMapping("/wholesaler-code")
+    public ResponseEntity<?> getWholesalerCodeByUserId(@RequestParam String userId) {
+        try {
+            String code = wholesaleService.getWholesalerCodeByUserId(userId);
+            return ResponseEntity.ok(Collections.singletonMap("wholesalerCode", code));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "조회 중 오류 발생"));
+        }
+    }
+    // WholesaleController.java
+    @GetMapping("/is-cloned")
+    public ResponseEntity<?> isCloned(@RequestParam String userId) {
+        boolean result = wholesaleService.isCloned(userId);
+        return ResponseEntity.ok().body(Collections.singletonMap("isCloned", result));
+    }
+    @GetMapping("/cloned")
+    public ResponseEntity<?> getClonedUserId(@RequestParam String userId) {
+        String clonedUserId = wholesaleService.getClonedUserId(userId); // 단일값
+        if (clonedUserId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", "복제된 유저가 없습니다."));
+        }
+        return ResponseEntity.ok(Collections.singletonMap("userId", clonedUserId)); // ✅ 키 포함
+    }
 
 
 }

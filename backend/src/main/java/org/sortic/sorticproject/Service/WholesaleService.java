@@ -22,11 +22,16 @@ public class WholesaleService {
 
     private final WholesaleMapper wholesaleMapper;
     private final UserMapper userMapper;
-
-    // 도매 코드
     public void addWholesaleCode(WholesaleCode code) {
+        int exists = wholesaleMapper.countWholesaleCodeByUser(code.getUserId());
+        if (exists > 0) {
+            throw new IllegalArgumentException("해당 유저는 이미 도매 코드를 등록했습니다.");
+        }
+
         wholesaleMapper.insertWholesaleCode(code);
     }
+
+
 
     public List<WholesaleCode> getCodesByUser(String userId) {
         return wholesaleMapper.getWholesaleCodesByUserId(userId);
@@ -169,7 +174,7 @@ public class WholesaleService {
         }
 
         String code = generateRandomCode(6);
-        wholesaleMapper.updateWholesalerCode(userId, code);
+
 
         result.put("wholesalerCode", code);
         result.put("status", "CREATED");  // 새로 생성됨
@@ -178,7 +183,7 @@ public class WholesaleService {
 
 
 
-    private String generateRandomCode(int length) {
+    public String generateRandomCode(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -190,4 +195,62 @@ public class WholesaleService {
         return sb.toString();
     }
 
+
+    public void cloneUserWithWholesalerCode(String originalUserId, String wholesalerCode) {
+        // ✅ 항상 원본 유저로 검사
+        Users original = userMapper.findByUserId(originalUserId);
+
+        if (original == null) {
+            throw new IllegalArgumentException("기존 유저를 찾을 수 없습니다.");
+        }
+
+        // ✅ 한 번이라도 복제됐다면 막기
+        if (Boolean.TRUE.equals(original.getIsCloned())) {
+            throw new IllegalStateException("이미 복제된 유저입니다.");
+        }
+
+        String newUserId = originalUserId + "_" + wholesalerCode;
+
+        // ✅ 복제 대상 userId 중복 체크
+        if (userMapper.findByUserId(newUserId) != null) {
+            throw new IllegalStateException("이미 해당 도매 코드로 복제된 유저가 존재합니다.");
+        }
+
+        // ✅ 복제 유저 생성
+        Users copy = Users.builder()
+            .userId(newUserId)
+            .password(original.getPassword())
+            .username(original.getUsername())
+            .phone(original.getPhone())
+            .wholesaler_code(wholesalerCode)
+            .email(original.getEmail())
+            .region(original.getRegion())
+            .grade(original.getGrade())
+            .profile_image(original.getProfile_image())
+            .build();
+
+        wholesaleMapper.insertUser(copy); // insert 시 is_cloned = true로 저장됨
+        wholesaleMapper.updateClonedFlag(originalUserId, true);    }
+
+
+
+    public String getWholesalerCodeByUserId(String userId) {
+        String code = wholesaleMapper.getWholesalerCodeByUserId(userId);
+        if (code == null || code.trim().isEmpty()) {
+            throw new IllegalArgumentException("해당 유저의 도매 코드가 존재하지 않습니다.");
+        }
+        return code;
+    }
+
+    // WholesaleService.java
+    public boolean isCloned(String userId) {
+        return wholesaleMapper.countClonedUsers(userId) > 0;
+    }
+    public String getClonedUserId(String originalUserId) {
+        return wholesaleMapper.findClonedUserId(originalUserId);
+    }
+
 }
+
+
+

@@ -2,9 +2,15 @@ import { atom } from 'jotai';
 import axios from 'axios';
 import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
-import { wholesaleCodesAtom, wholesaleLinksAtom } from '../atoms/atoms';
+import { wholesaleCodesAtom, wholesaleLinksAtom} from '../atoms/atoms';
 import {isOpenWholesaleAtom} from "../../../Atoms/userAtom";
-import {cardsAtom, currentCategoryAtom} from "../../SorterPage/atoms/atoms";
+import {
+  cardsAtom,
+  currentCategoryAtom,
+  currentUserIdAtom,
+  selectedUserIdAtom,
+  wholesalerIdAtom
+} from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 // 도매 코드 생성
 
@@ -21,6 +27,25 @@ export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
   }
 });
 
+export const createWholesaleCodeAction = atom(
+  null,
+  async (get, set, wholesaleCode) => {
+    const userId = get(authUserAtom)?.userId;
+
+    try {
+      const payload = {
+        wholesaleCode,
+        userId,
+      };
+
+      await axios.post('http://localhost:8080/api/wholesale/code', payload);
+      message.success(`도매 코드가 생성되었습니다: ${wholesaleCode}`);
+
+    } catch (error) {
+      console.error('🚨 도매 코드 생성 실패:', error);
+    }
+  }
+);
 
 
 export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLinkId) => {
@@ -379,9 +404,9 @@ export const generateWholesalerCodeAction = atom(null, async (get, set) => {
     }
 
     if (status === "CREATED") {
-      message.success(`✅ 도매 코드가 새로 생성되었습니다: ${wholesalerCode}`);
+
     } else if (status === "EXISTING") {
-      message.info(`이미 존재하는 도매 코드입니다: ${wholesalerCode}`);
+
     } else {
       message.info(`도매 코드: ${wholesalerCode}`);
     }
@@ -397,3 +422,125 @@ export const generateWholesalerCodeAction = atom(null, async (get, set) => {
     return null;
   }
 });
+
+export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, wholesalerCode) => {
+  const fullUserId = get(authUserAtom)?.userId;
+  if (!fullUserId) {
+    message.warning("로그인 정보가 없습니다.");
+    return null;
+  }
+
+  const originalUserId = fullUserId.split('_')[0];
+
+  // ✅ 이미 복제된 유저라면 중단
+  if (fullUserId !== originalUserId) {
+    message.warning("복제된 유저는 다시 복제할 수 없습니다.");
+    return null;
+  }
+
+  if (!wholesalerCode) {
+    message.warning("도매 코드가 비어 있습니다.");
+    return null;
+  }
+
+  try {
+    const checkRes = await axios.get(`http://localhost:8080/api/wholesale/is-cloned`, {
+      params: { userId: originalUserId }
+    });
+
+    if (checkRes.data?.isCloned) {
+
+      return null;
+    }
+  } catch (checkError) {
+    console.error("🚨 isCloned 상태 확인 실패:", checkError);
+    message.error("유저 상태 확인 중 오류가 발생했습니다.");
+    return null;
+  }
+
+  try {
+    const res = await axios.post(`http://localhost:8080/api/wholesale/clone-user-with-code`, null, {
+      params: {
+        userId: originalUserId,
+        wholesalerCode
+      }
+    });
+
+    const newUserId = res.data?.newUserId;
+    set(wholesalerIdAtom, newUserId);
+    set(currentUserIdAtom, newUserId);
+
+    if (newUserId) {
+      return newUserId;
+    } else {
+      message.warning("응답이 올바르지 않습니다.");
+      return null;
+    }
+
+  } catch (err) {
+    console.error("🚨 유저 복제 실패:", err);
+
+    return null;
+  }
+});
+
+
+export const fetchWholesalerCodeByUserIdAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId) {
+      message.warning("유저 ID가 필요합니다.");
+      return null;
+    }
+
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/wholesale/wholesaler-code',
+        { params: { userId } }
+      );
+
+      const code = response.data?.wholesalerCode;
+      if (code) {
+        message.success(`도매 코드: ${code}`);
+        return code;
+      } else {
+        message.warning("도매 코드를 찾을 수 없습니다.");
+        return null;
+      }
+    } catch (error) {
+      console.error("🚨 도매 코드 조회 실패:", error);
+      message.error(
+        error.response?.data?.message || "도매 코드 조회 중 오류가 발생했습니다."
+      );
+      return null;
+    }
+  }
+);
+export const fetchClonedUserIdAction = atom(
+  null,
+  async (get, set, originalUserId) => {
+    try {
+      const res = await axios.get('http://localhost:8080/api/wholesale/cloned', {
+        params: { userId: originalUserId },
+      });
+
+      const clonedUserId = res.data?.userId; // ✅ 이제 정확하게 동작해야 함
+
+      console.log("📦 복제된 유저 ID:", clonedUserId);
+
+      if (clonedUserId) {
+        set(selectedUserIdAtom, clonedUserId); // ✅ 상태 반영
+        message.success(`복제 유저 ID 조회 성공: ${clonedUserId}`);
+        return clonedUserId;
+      } else {
+        message.info("복제된 유저가 없습니다.");
+        return null;
+      }
+
+    } catch (error) {
+      console.error("🚨 복제 유저 조회 실패:", error);
+      message.error("복제 유저 조회 중 오류가 발생했습니다.");
+      return null;
+    }
+  }
+);

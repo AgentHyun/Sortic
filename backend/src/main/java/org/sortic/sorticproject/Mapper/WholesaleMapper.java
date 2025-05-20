@@ -152,4 +152,43 @@ public interface WholesaleMapper {
     // wholesaler_code만 업데이트
     @Update("UPDATE Users SET wholesaler_code = #{wholesalerCode} WHERE user_id = #{userId}")
     void updateWholesalerCode(@Param("userId") String userId, @Param("wholesalerCode") String wholesalerCode);
+    @Insert("""
+    INSERT INTO Users (
+        user_id, password, username, phone, wholesaler_code,
+        email, region, grade, profile_image, is_cloned
+    )
+    VALUES (
+        #{userId}, #{password}, #{username}, #{phone}, #{wholesaler_code},
+        #{email}, #{region}, #{grade}, #{profile_image}, true
+    )
+""")
+
+    void insertUser(Users user);
+
+    @Select("SELECT COUNT(*) FROM Wholesale_Code WHERE user_id = #{userId}")
+    int countWholesaleCodeByUser(@Param("userId") String userId);
+
+
+    @Select("SELECT wholesaler_code FROM Users WHERE user_id = #{userId}")
+    String getWholesalerCodeByUserId(@Param("userId") String userId);
+
+
+    // mapper interface
+    @Update("UPDATE Users SET is_cloned = #{isCloned} WHERE user_id = #{userId}")
+    int updateClonedFlag(@Param("userId") String userId, @Param("isCloned") boolean isCloned);
+
+    // WholesaleMapper.java
+    @Select("SELECT COUNT(*) FROM users WHERE user_id LIKE CONCAT(#{userId}, '_%')")
+    int countClonedUsers(String userId);
+
+    @Select("""
+    SELECT user_id
+    FROM Users
+    WHERE user_id LIKE CONCAT(#{originalUserId}, '\\\\_%') ESCAPE '\\\\'
+      AND is_cloned = TRUE
+    LIMIT 1
+""")
+    String findClonedUserId(@Param("originalUserId") String originalUserId);
+
+
 }

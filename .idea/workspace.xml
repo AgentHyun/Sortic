@@ -6,31 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Category.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Users.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Users.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/CategoryMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/CategoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/mapper/UserMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/BillPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/OrderPage/OrderPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/StatisticsPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/OrderPage/css/OrderPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/css/StatisticsPage.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterContainer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Category.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Category.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ContextMenu.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ContextMenu.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Element.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Element.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ElementDetailModal.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ElementDetailModal.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterDefaultPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterDefaultPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterPage.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +83,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "lastbackup",
+    "git-widget-placeholder": "0520wholesaler",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -108,6 +100,10 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\public" />
+      <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\src\components\SorterPage\css\font" />
+      <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\src\components\SorterPage\css" />
+      <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\public\font" />
       <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\src\components\StatisticsPage" />
     </key>
   </component>
@@ -139,7 +135,7 @@
       <workItem from="1747385916329" duration="4551000" />
       <workItem from="1747616452090" duration="4406000" />
       <workItem from="1747621456117" duration="13028000" />
-      <workItem from="1747697415332" duration="10267000" />
+      <workItem from="1747697415332" duration="26774000" />
     </task>
     <servers />
   </component>
