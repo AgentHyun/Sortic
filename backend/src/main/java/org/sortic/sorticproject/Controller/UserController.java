@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.sortic.sorticproject.Dto.request.SignupRequest;
 import org.sortic.sorticproject.Service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
     import java.util.Collections;
@@ -17,6 +18,11 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 
     /**
      * ✅ 아이디 중복 확인 (비인증)
@@ -35,10 +41,25 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequest request) {
+    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            System.out.println("❌ [유효성 검증 실패]");
+            result.getFieldErrors().forEach(error -> {
+                System.out.printf("필드: %s, 메시지: %s%n", error.getField(), error.getDefaultMessage());
+            });
+            return ResponseEntity.badRequest().body("유효성 검사 실패");
+        }
+
+        System.out.println("✅ [UserController] 회원가입 요청 도달: " + request.getUserId());
         userService.signup(request);
         return ResponseEntity.ok("회원가입 완료");
     }
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequest request) {
+//        System.out.println("✅ [UserController] 회원가입 요청 도달: " + request.getUserId());
+//        userService.signup(request);
+//        return ResponseEntity.ok("회원가입 완료");
+//    }
 
     /**
      * ✅ 아이디 찾기 (비인증)

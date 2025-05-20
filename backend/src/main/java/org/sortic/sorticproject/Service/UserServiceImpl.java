@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     /** ✅ 회원가입 처리 (이메일 인증 검증 포함) */
     @Override
     public void signup(SignupRequest request) {
+        log.info("[DEBUG] SignupRequest = {}", request);
         log.info("[회원가입 요청] userId={}, email={}, storeName={}", request.getUserId(), request.getEmail(), request.getStoreName());
 
         if (!checkUserId(request.getUserId())) {
@@ -46,16 +47,16 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("이미 사용 중인 상호명입니다.");
         }
 
-        // ✅ 이메일 인증 여부 확인
+        // ✅ 이메일 인증 여부 확인 (verified 키 사용)
         String email = request.getEmail();
-        String code = redisTemplate.opsForValue().get(email);
-        if (code == null) {
+        String verified = redisTemplate.opsForValue().get(email + ":verified");
+
+        if (!"true".equals(verified)) {
             log.warn("이메일 인증 실패: {}", email);
             throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
         }
 
-        log.info("이메일 인증 성공: {}", email);
-        redisTemplate.delete(email); // 인증 정보 제거 (1회용)
+        redisTemplate.delete(email + ":verified"); // 인증 확인 후 삭제
 
         String userId = request.getUserId();
         String password = request.getPassword();
@@ -68,12 +69,12 @@ public class UserServiceImpl implements UserService {
         Users user = new Users();
         user.setUserId(userId);
         user.setPassword(passwordEncoder.encode(password));
-        user.setStore_name(request.getStoreName());
+        user.setStoreName(request.getStoreName());
         user.setEmail(email);
         user.setPhone(request.getPhone());
 
         userMapper.insertUser(user);
-        log.info("회원가입 성공: userId={}", userId);
+        log.info("✅ [UserServiceImpl] DB 삽입 완료: {}", user.getUserId());
     }
 
     /** ✅ 이메일 + 상호명으로 사용자 아이디 찾기 */

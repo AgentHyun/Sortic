@@ -7,7 +7,6 @@ import publicAxios from '../../api/publicAxios';
 import { sendEmailCode, verifyEmailCode } from '../service/emailService';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
-import axios from "axios";
 
 const { Title } = Typography;
 
@@ -31,29 +30,37 @@ function SignupPage() {
 
   useEffect(() => {
     let timer;
-    if (emailSent && countdown > 0) {
+    if (emailSent && countdown > 0 && !isEmailVerified) {
       timer = setInterval(() => setCountdown((prev) => prev - 1), 1000);
     }
     return () => clearInterval(timer);
-  }, [emailSent, countdown]);
+  }, [emailSent, countdown, isEmailVerified]);
+
+  const allChecksPassed = isIdChecked && isStoreChecked && isEmailVerified;
 
   const handleSubmit = async (values) => {
     const { checkpassword, verificationCode, ...signupData } = values;
+
     if (!isEmailVerified) {
       message.warning('이메일 인증을 완료해주세요.');
       return;
     }
+
     setIsSubmitting(true);
     try {
       console.log("회원가입 요청 데이터:", signupData);
-
-      await axios.post('http://localhost:8080/api/users/signup', signupData, {
-        withCredentials: true, // ✅ 옵션을 요청 config 객체 안에 넣어야 함
+      console.log("최종 요청 전 headers:", publicAxios.defaults.headers);
+      await publicAxios.post('/users/signup', signupData, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true,
       });
 
       message.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (err) {
+      console.error('회원가입 실패:', err);
       message.error(err.response?.data || '서버 오류가 발생했습니다.');
     } finally {
       setIsSubmitting(false);
@@ -82,9 +89,9 @@ function SignupPage() {
   };
 
   const handleCheckStore = async () => {
-    const store = form.getFieldValue('store_name');
+    const store = form.getFieldValue('storeName');
     if (!store) {
-      form.validateFields(['store_name']);
+      form.validateFields(['storeName']);
       return;
     }
     try {
@@ -153,13 +160,13 @@ function SignupPage() {
           className={styles.form}
           onValuesChange={(changed) => {
             if ('userId' in changed) setIsIdChecked(false);
-            if ('store_name' in changed) setIsStoreChecked(false);
+            if ('storeName' in changed) setIsStoreChecked(false);
           }}
         >
           <Form.Item label="아이디" name="userId" rules={[{ required: true, message: '아이디를 입력하세요.' }, { pattern: /^[a-zA-Z0-9@._-]{4,20}$/, message: '아이디는 4~20자, 영어/숫자/@._-만 허용됩니다.' }]}>
             <Input className={styles.inputShort} placeholder="아이디" />
           </Form.Item>
-          <Button onClick={handleCheckId} disabled={isIdChecked}>{isIdChecked ? '사용 가능' : '중복확인'}</Button>
+          <Button onClick={handleCheckId} disabled={isIdChecked}> {isIdChecked ? '사용 가능' : '중복확인'} </Button>
 
           <Form.Item label="비밀번호" name="password" dependencies={['userId']} rules={[{ required: true, message: '비밀번호는 필수입니다.' }, { min: 8, message: '비밀번호는 최소 8자 이상 입력해 주세요.' }, ({ getFieldValue }) => ({ validator(_, value) {
               const userId = getFieldValue('userId');
@@ -181,7 +188,7 @@ function SignupPage() {
             <Input.Password className={styles.input} placeholder="비밀번호 확인" />
           </Form.Item>
 
-          <Form.Item label="상호명" name="store_name" rules={[{ required: true, message: '상호명을 입력하세요.' }, { min: 2, max: 10, message: '상호명은 2~10글자 내로 입력해주세요.' }]}>
+          <Form.Item label="상호명" name="storeName" rules={[{ required: true, message: '상호명을 입력하세요.' }, { min: 2, max: 10, message: '상호명은 2~10글자 내로 입력해주세요.' }]}>
             <Input className={styles.input} placeholder="상호명" />
           </Form.Item>
           <Button onClick={handleCheckStore} disabled={isStoreChecked}>{isStoreChecked ? '사용 가능' : '중복확인'}</Button>
@@ -197,7 +204,9 @@ function SignupPage() {
                 <Input className={styles.inputShort} placeholder="인증번호" />
               </Form.Item>
               <Button onClick={handleVerifyCode} disabled={isEmailVerified}>인증확인</Button>
+              {!isEmailVerified && (
                 <div className={styles.timer}>남은 시간: {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, '0')} 내에 입력해주세요</div>
+              )}
             </>
           )}
 
@@ -210,7 +219,7 @@ function SignupPage() {
           </Form.Item>
 
           <div className={styles.buttonContainer}>
-            <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+            <button type="submit" className={styles.submitButton} disabled={isSubmitting || !allChecksPassed}>
               {isSubmitting ? '처리 중...' : '회원가입'}
             </button>
           </div>

@@ -27,11 +27,11 @@ import java.sql.Timestamp;
 public class Users {
     private String userId;                  // 아이디(기본키)
     private String password;                // 암호화된 비밀번호 (BCrypt)
-    private String store_name;              // 닉네임
+    private String storeName;              // 닉네임
     private String email;                   // 이메일
     private String phone;                   // 전화번호
     private int grade;                     // 구독 등급
     private String region;                  // 거주지역
-    private String profile_image;           // 프로필 이미지 URL
+    private String profileImage;           // 프로필 이미지 URL
     private Timestamp created_signup_time;  // 회원가입 시간
 }

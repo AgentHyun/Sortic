@@ -31,7 +31,20 @@ public class EmailService {
     public boolean verifyCode(String email, String code) {
         String stored = redisTemplate.opsForValue().get(email);
         boolean match = stored != null && stored.equals(code);
-        if (match) redisTemplate.delete(email); // ✅ 인증 후 삭제
+
+        if (match) {
+            // ✅ 인증 성공 → 인증 상태 플래그 저장 (10분 유효)
+            redisTemplate.opsForValue().set(email + ":verified", "true", Duration.ofMinutes(10));
+            redisTemplate.delete(email); // 인증번호 삭제
+            log.info("[Redis 인증 성공] {} → verified 저장", email);
+        }
+
         return match;
     }
+//    public boolean verifyCode(String email, String code) {
+//        String stored = redisTemplate.opsForValue().get(email);
+//        boolean match = stored != null && stored.equals(code);
+//        if (match) redisTemplate.delete(email); // ✅ 인증 후 삭제
+//        return match;
+//    }
 }

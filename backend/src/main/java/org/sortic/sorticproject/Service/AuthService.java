@@ -1,3 +1,4 @@
+// ✅ AuthService.java - 최종 리팩토링
 package org.sortic.sorticproject.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class AuthService {
     private final UserMapper userMapper;
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider; // ✅ 인스턴스 주입
+    private final JwtTokenProvider jwtTokenProvider;
 
     /** ✅ 로그인 처리 */
     public TokenResponse login(LoginRequest request) {
@@ -29,13 +30,13 @@ public class AuthService {
             throw new RuntimeException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(found.getUserId(), 15);      // ✅ 변경
-        String refreshToken = jwtTokenProvider.createToken(found.getUserId(), 10080);  // ✅ 변경
+        String accessToken = jwtTokenProvider.createToken(found.getUserId(), 15); // 15분
+        String refreshToken = jwtTokenProvider.createToken(found.getUserId(), 10080); // 7일
 
         long expiryMillis = System.currentTimeMillis() + Duration.ofDays(7).toMillis();
         refreshTokenService.save(found.getUserId(), refreshToken, expiryMillis);
 
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, found);
     }
 
     /** ✅ 로그아웃 처리 */
@@ -46,12 +47,12 @@ public class AuthService {
     /** ✅ AccessToken 재발급 */
     public TokenResponse reissue(String refreshToken) {
         try {
-            jwtTokenProvider.validate(refreshToken); // ✅ 변경
+            jwtTokenProvider.validate(refreshToken);
         } catch (InvalidJwtException e) {
             throw new RuntimeException("Refresh 토큰이 만료되었습니다.");
         }
 
-        String userId = jwtTokenProvider.getUserId(refreshToken); // ✅ 변경
+        String userId = jwtTokenProvider.getUserId(refreshToken);
         String stored = refreshTokenService.find(userId);
 
         if (!refreshToken.equals(stored)) {
@@ -64,11 +65,12 @@ public class AuthService {
         long expiryMillis = System.currentTimeMillis() + Duration.ofDays(7).toMillis();
         refreshTokenService.save(userId, newRefresh, expiryMillis);
 
-        return new TokenResponse(newAccess, newRefresh);
+        Users user = userMapper.findByUserId(userId);
+        return new TokenResponse(newAccess, newRefresh, user);
     }
 
-    /** ✅ 액세스 토큰 수동 발급 (테스트/내부용) */
+    /** ✅ AccessToken 발급 (내부용) */
     public String generateJwtToken(Users user) {
-        return jwtTokenProvider.createToken(user.getUserId(), 15); // ✅ 변경
+        return jwtTokenProvider.createToken(user.getUserId(), 15);
     }
 }

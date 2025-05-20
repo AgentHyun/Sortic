@@ -29,13 +29,18 @@ public class MailUtil {
             helper.setSubject("[Sortic] 이메일 인증번호 안내");
 
             String content = """
-                    <div style='font-family:Arial,sans-serif; padding:24px;'>
-                        <h2>🔐 이메일 인증 요청</h2>
-                        <p>아래 인증번호를 입력해주세요:</p>
-                        <div style='margin-top:16px; font-size:24px; font-weight:bold; color:#2b6cb0;'>
+                    <div style="max-width:480px; margin:0 auto; padding:32px 24px; background:#ffffff; border:1px solid #e0e0e0; border-radius:12px; font-family:Segoe UI, sans-serif; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                        <h2 style="margin:0 0 16px; font-size:20px; color:#333;">🔐 이메일 인증 요청</h2>
+                        <p style="margin:0 0 16px; font-size:14px; color:#555;">
+                            아래 인증번호를 입력해주세요.
+                        </p>
+                        <div style="margin:24px 0; padding:16px; background:#f0f4ff; border-radius:8px; text-align:center; font-size:28px; font-weight:600; color:#1a73e8; letter-spacing:2px;">
                             %s
                         </div>
-                        <p style='margin-top:24px; font-size:12px; color:#999;'>본 인증번호는 5분간 유효합니다.</p>
+                        <p style="margin-top:24px; font-size:12px; color:#888; text-align:center;">
+                            인증번호는 <strong>5분간</strong> 유효합니다.<br/>
+                            잘못된 요청이라면 이 메일은 무시해주세요.
+                        </p>
                     </div>
                     """.formatted(code);
 
