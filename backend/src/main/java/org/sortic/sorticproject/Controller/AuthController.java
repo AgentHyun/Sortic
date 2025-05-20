@@ -30,15 +30,18 @@ public class AuthController {
             // ✅ refreshToken은 HttpOnly 쿠키로 저장
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
-                .path("/api")
+                .secure(false)
+                .path("/")
                 .maxAge(Duration.ofDays(7))
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .build();
 
             return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(Map.of("accessToken", token.getAccessToken()));
+                .body(Map.of(
+                    "accessToken", token.getAccessToken(),
+                    "user", token.getUser()
+                ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
         }
@@ -67,20 +70,23 @@ public class AuthController {
         try {
             TokenResponse newTokens = authService.reissue(refreshToken);
 
-            // ✅ 새로운 refreshToken 쿠키 다시 설정
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", newTokens.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
-                .path("/api")
+                .secure(false)
+                .path("/")
                 .maxAge(Duration.ofDays(7))
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .build();
 
             return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(Map.of("accessToken", newTokens.getAccessToken()));
+                .body(Map.of(
+                    "accessToken", newTokens.getAccessToken(),
+                    "user", newTokens.getUser()
+                ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
         }
     }
+
 }

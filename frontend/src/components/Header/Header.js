@@ -71,7 +71,7 @@ const SorticHeader = () => {
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <div className={styles['user-info']}>
                 <Avatar icon={<UserOutlined />} className={styles.avatar} />
-                <span className={styles.store_name}>{user?.store_name}</span>
+                <span className={styles.store_name}>{user?.storeName}</span>
               </div>
             </Dropdown>
           </>

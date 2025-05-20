@@ -9,6 +9,7 @@ module.exports = function(app) {
             target: 'http://localhost:8080',
             changeOrigin: true,
             secure: false,
+            cookieDomainRewrite: 'localhost',
             onProxyReq: (proxyReq, req) => {
                 console.log('Proxy Request:', {
                     method: req.method,

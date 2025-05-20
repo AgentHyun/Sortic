@@ -44,7 +44,7 @@ const Login = () => {
     const result = await login({ userId, password });
     if (result.success) {
       setUser(result.user);
-      message.success(`${result.user.store_name}님 환영합니다!`);
+      message.success(`${result.user.storeName}님 환영합니다!`);
       const targetPath = location.state?.from?.pathname || '/';
       navigate(targetPath, { replace: true });
     } else {

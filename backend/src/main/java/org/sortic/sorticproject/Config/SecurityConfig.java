@@ -61,14 +61,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // ✅ 인증 없이 허용해야 하는 경로
                 .requestMatchers(
-                    "/api/users/login",
-                    "/api/users/signup",
-                    "/api/auth/reissue",
                     "/api/users/check-userid",
                     "/api/users/check-store",
                     "/api/email/send-code",
+                    "/api/users/signup",
                     "/api/email/verify-code",
-                    "/api/users/register-address",
+                    "/api/auth/login",
+                    "/api/auth/reissue",
                     "/api/users/store-image",
                     "/api/users/find-id",
                     "/api/users/reset-password"

@@ -61,7 +61,6 @@ public class AuthService {
 
         String newAccess = jwtTokenProvider.createToken(userId, 15);
         String newRefresh = jwtTokenProvider.createToken(userId, 10080);
-
         long expiryMillis = System.currentTimeMillis() + Duration.ofDays(7).toMillis();
         refreshTokenService.save(userId, newRefresh, expiryMillis);
 
