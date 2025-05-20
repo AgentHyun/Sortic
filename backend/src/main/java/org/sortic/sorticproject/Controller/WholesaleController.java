@@ -6,6 +6,7 @@ import org.sortic.sorticproject.Entity.UserWholesaleCode;
 import org.sortic.sorticproject.Entity.Users;
 import org.sortic.sorticproject.Entity.WholesaleCode;
 import org.sortic.sorticproject.Entity.WholesaleLink;
+import org.sortic.sorticproject.Mapper.WholesaleMapper;
 import org.sortic.sorticproject.Service.UserService;
 import org.sortic.sorticproject.Service.WholesaleService;
 import org.sortic.sorticproject.security.CustomUserDetailsService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class WholesaleController {
 
     private final WholesaleService wholesaleService;
     private final UserService userService;
+    private final WholesaleMapper wholesaleMapper;
 
     // 도매 코드
     @PostMapping("/code")
@@ -85,6 +89,13 @@ public class WholesaleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
         }
     }
+
+    @GetMapping("/link/count")
+    public ResponseEntity<Integer> countLinksByUser(@RequestParam String userId) {
+        int count = wholesaleService.countLinksByUser(userId);
+        return ResponseEntity.ok(count);
+    }
+
 
 
 
@@ -229,6 +240,22 @@ public class WholesaleController {
             return new ResponseEntity<java.util.Map<String, String>>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/generate-code")
+    public ResponseEntity<?> generateWholesalerCode(@RequestParam String userId) {
+        try {
+            Map<String, Object> result = wholesaleService.generateWholesalerCodeIfAbsent(userId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "도매 코드 생성 중 오류 발생"));
+        }
+    }
+
+
+
+
 }
 
 

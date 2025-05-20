@@ -493,7 +493,7 @@ export const fetchElementNameByIdAction = atom(
       if (response.status === 200) {
         const elementName = response.data;
         console.log("요소 이름 " + elementName);
-        set(activeCardAtom, elementName);
+
         set(currentElementNameAtom, elementName);
         return elementName;
       } else {

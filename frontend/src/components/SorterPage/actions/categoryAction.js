@@ -11,12 +11,15 @@ import {
   addCategoryModalVisibleAtom,
   cardsAtom,
   messageAtom,
-  currentIndexAtom, selectedUserIdAtom
+  currentIndexAtom, selectedUserIdAtom, selectedUserWholesaleLinkIdAtom
 } from '../atoms/atoms';
 import { userIdAtom, userAtom  } from '../../../Atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
 import { authUserAtom } from '../../../auth/authAtoms';
-export const fetchAndNumberCategoriesAction = atom(
+
+
+
+export const fetchAndNumberCategoriesByUserIdAction = atom(
   null,
   async (get, set) => {
     try {
@@ -76,6 +79,66 @@ export const fetchAndNumberCategoriesAction = atom(
     }
   }
 );
+
+
+
+export const fetchAndNumberCategoriesAction = atom(
+  null,
+  async (get, set, ) => {
+    try {
+      // ✅ 초기화
+      set(categoriesAtom, []);
+      set(currentCategoryAtom, null);
+      set(currentCategoryNameAtom, '');
+      set(currentIndexAtom, -1);
+      let wholesaleLinkId = get(selectedUserWholesaleLinkIdAtom);
+      if (!wholesaleLinkId) {
+
+        return [];
+      }
+
+      const response = await axios.get('http://localhost:8080/api/categories/get_by_wholesale_link', {
+        params: { wholesale_link_id : wholesaleLinkId }
+      });
+
+      const categories = response.data;
+
+      if (!categories || categories.length === 0) {
+        return [];
+      }
+
+      const numberedCategories = categories.map((category, index) => ({
+        ...category,
+        number: index + 1,
+      }));
+
+      set(categoriesAtom, numberedCategories);
+
+      const currentCategoryId = get(currentCategoryAtom);
+
+      if (!currentCategoryId && numberedCategories.length > 0) {
+        const firstCategory = numberedCategories[0];
+        set(currentCategoryAtom, firstCategory.category_id);
+        set(currentCategoryNameAtom, firstCategory.category_name);
+        set(currentIndexAtom, 0);
+        await set(fetchElementsByCategoryAction, firstCategory.category_id);
+      } else if (currentCategoryId) {
+        const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
+        if (currentIndex !== -1) {
+          set(currentIndexAtom, currentIndex);
+          set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
+        }
+      }
+
+      return numberedCategories;
+    } catch (error) {
+      console.error('🚨 도매 링크 기반 카테고리 조회 실패:', error);
+      message.error('도매 링크 카테고리 조회 실패');
+      return [];
+    }
+  }
+);
+
 
 export const fetchCategoriesAction = atom(
     null,
@@ -188,56 +251,52 @@ export const fetchFirstCategoryAction = atom(
 );
 // 카테고리 추가
 export const handleCategoryOkAction = atom(
-    null,
-    async (get, set) => {
-        const newCategory = get(newCategoryAtom);
-      const userId = get(selectedUserIdAtom);
+  null,
+  async (get, set) => {
+    const newCategory = get(newCategoryAtom);
+    const userId = get(selectedUserIdAtom);
 
-
-        if (!newCategory) {
-            message.warning('카테고리 이름을 입력하세요.');
-            return;
-        }
-
-
-        if (!userId) {
-            message.error('로그인이 필요합니다.');
-            return;
-        }
-
-        try {
-            const response = await axios.post('http://localhost:8080/api/categories/add_category', {
-              user_id: userId,
-                category_name: newCategory,
-            });
-
-            if (!response.data) {
-                throw new Error('서버에서 응답을 받지 못했습니다.');
-            }
-
-            const addedCategory = response.data;
-
-            // 현재 카테고리 목록 가져오기
-            const currentCategories = get(categoriesAtom);
-
-            // 새 카테고리를 목록에 추가
-            const updatedCategories = [...currentCategories, addedCategory];
-
-            // 상태 업데이트
-            set(categoriesAtom, updatedCategories);
-            set(currentCategoryAtom, addedCategory.category_id);
-            set(currentCategoryNameAtom, addedCategory.category_name);
-
-            message.success('카테고리가 추가되었습니다!');
-
-            return addedCategory;
-        } catch (error) {
-            console.error('카테고리 추가 실패:', error);
-            message.error('카테고리 추가에 실패했습니다.');
-            throw error;
-        }
+    if (!newCategory) {
+      message.warning('카테고리 이름을 입력하세요.');
+      return;
     }
+
+    if (!userId) {
+      message.error('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/categories/add_category', {
+        user_id: userId,
+        category_name: newCategory,
+        // ✅ 필요 시 이 필드를 함께 넘겨주세요 (null 또는 특정 링크 ID)
+        wholesale_link_id: get(selectedUserWholesaleLinkIdAtom)
+      });
+
+      if (!response.data) {
+        throw new Error('서버에서 응답을 받지 못했습니다.');
+      }
+
+      const addedCategory = response.data;
+
+      const currentCategories = get(categoriesAtom);
+      const updatedCategories = [...currentCategories, addedCategory];
+
+      set(categoriesAtom, updatedCategories);
+      set(currentCategoryAtom, addedCategory.category_id);
+      set(currentCategoryNameAtom, addedCategory.category_name);
+
+      message.success('카테고리가 추가되었습니다!');
+      return addedCategory;
+    } catch (error) {
+      console.error('카테고리 추가 실패:', error);
+      message.error('카테고리 추가에 실패했습니다.');
+      throw error;
+    }
+  }
 );
+
 
 
 export const deleteCategoryAction = atom(

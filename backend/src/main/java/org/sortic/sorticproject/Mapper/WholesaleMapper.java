@@ -3,6 +3,7 @@ package org.sortic.sorticproject.Mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.sortic.sorticproject.Entity.UserWholesaleCode;
+import org.sortic.sorticproject.Entity.Users;
 import org.sortic.sorticproject.Entity.WholesaleCode;
 import org.sortic.sorticproject.Entity.WholesaleLink;
 
@@ -87,7 +88,7 @@ public interface WholesaleMapper {
     void updateMemo(WholesaleLink link);
     // 중복 체크용 쿼리
     @Select("SELECT COUNT(*) FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
-    int isUserWholesaleCodeExists(@Param("code") String code);
+    int getUserWholesaleCodeExists(@Param("code") String code);
     // 등록 쿼리
     @Insert("""
     INSERT INTO User_Wholesale_Code (user_wholesale_code, user_id)
@@ -127,5 +128,28 @@ public interface WholesaleMapper {
 
     @Select("SELECT user_wholesale_code_id FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
     Integer findUserWholesaleCodeIdByCode(@Param("code") String userWholesaleCode);
+    @Select("""
+    SELECT COUNT(*)
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = #{userWholesaleCode} AND user_id = #{userId}
+""")
+    int isUserWholesaleCodeExists(@Param("userWholesaleCode") String userWholesaleCode,
+                                  @Param("userId") String userId);
 
+
+    @Select("""
+    SELECT COUNT(*)
+    FROM Wholesale_Link
+    WHERE wholesale_code_id = #{wholesaleCodeId} AND user_id = #{userId}
+""")
+    int countWholesaleLinks(@Param("wholesaleCodeId") int wholesaleCodeId, @Param("userId") String userId);
+    @Select("SELECT COUNT(*) FROM Wholesale_Link WHERE user_id = #{userId}")
+    int countLinksByUserId(@Param("userId") String userId);
+    // userId로 사용자 조회
+    @Select("SELECT * FROM Users WHERE user_id = #{userId}")
+    Users findByUserId(@Param("userId") String userId);
+
+    // wholesaler_code만 업데이트
+    @Update("UPDATE Users SET wholesaler_code = #{wholesalerCode} WHERE user_id = #{userId}")
+    void updateWholesalerCode(@Param("userId") String userId, @Param("wholesalerCode") String wholesalerCode);
 }

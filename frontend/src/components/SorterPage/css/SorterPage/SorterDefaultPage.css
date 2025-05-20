@@ -130,7 +130,7 @@
     display: flex;
     align-items: center;
     background: #edc540; /* 어두운 그레이네이비 */
-    color: #6e5047;
+    color: white;
     transition: 0.5s;
     transform-origin: bottom;
     transform: translateY(-100%) rotateX(90deg);
@@ -149,7 +149,7 @@
     width: 100%;
     height: 100%;
     text-align: center;
-    background: #f6b44f; /* 베이스보다 살짝 밝은 딥그레이 */
+    background: #929e6e; /* 베이스보다 살짝 밝은 딥그레이 */
     color: #ffffff;
     transition: 0.5s;
     transform-origin: top;

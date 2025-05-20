@@ -72,7 +72,8 @@ import {
   isExternalUserAtom,
   currentUserIdAtom,
   currentUserNameAtom,
-  usernamesByCodeIdAtom, selectedUserWholesaleLinkIdAtom
+  usernamesByCodeIdAtom, selectedUserWholesaleLinkIdAtom,
+  sorterModeAtom
 
 
 } from '../atoms/atoms';
@@ -86,7 +87,7 @@ import {
   handleCategoryNameDoubleClickAction,
   changeCategoryAction,
   fetchFirstCategoryAction, fetchAndNumberCategoriesAction, fetchCategoryByIdAction,
-  fetchCategoryCountAction
+  fetchCategoryCountAction, fetchAndNumberCategoriesByUserIdAction
 } from '../actions/categoryAction';
 
 import {
@@ -124,7 +125,7 @@ import {
   fetchUserIdByWholesaleCodeIdAction,
   getUserIdByUsernameAction,
   deleteUserWholesaleCodeAction,
-  getUserWholesaleCodeIdByCodeAction,
+  getUserWholesaleCodeIdByCodeAction, getWholesaleLinkCountByUserAction,
 
 } from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
@@ -145,7 +146,7 @@ const SorterPage = () => {
   const [newElementName, setNewElementName] = useAtom(newElementNameAtom);
   const [currentElementName, setCurrentElementName] = useAtom(currentElementNameAtom);
   const [fetchCategories, setFetchCategories] = useAtom(fetchCategoriesAction);
-
+  const [fetchCategoriesByUserId, setFetchCategoriesByUserId] = useAtom(fetchAndNumberCategoriesByUserIdAction);
   const [, setHandleCategoryOk] = useAtom(handleCategoryOkAction);
   const [, setDeleteCategory] = useAtom(deleteCategoryAction);
   const [, setHandleCategoryNameSave] = useAtom(handleCategoryNameSaveAction);
@@ -217,6 +218,7 @@ const SorterPage = () => {
   const [activeId, setActiveId] = useState(null);
 
   const [authUser, setAuthUser] = useAtom(authUserAtom);
+  const [sorterMode, setSorterMode] = useAtom(sorterModeAtom);
   //sorter-element
   const [getElementsIdBySorterId, setGetElementsIdBySorterId] = useAtom(getElementsIdBySorterIdAction);
   const [elementsIdList, setElementsIdList] = useAtom(elementsIdListAtom);
@@ -236,8 +238,8 @@ const SorterPage = () => {
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
   const [,setFetchUserIdByWholesaleCodeId] = useAtom(fetchUserIdByWholesaleCodeIdAction);
-  const [, getUserCodeId] = useAtom(getUserWholesaleCodeIdByCodeAction);
-  const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
+
+
   // 유저 아이디
   const [ isExternalUser, setIsExternalUser] = useAtom(isExternalUserAtom);
   const [currentUserId, setCurrentUserId] = useAtom(currentUserIdAtom);
@@ -246,6 +248,8 @@ const SorterPage = () => {
   const [usernamesByCodeId, setUsernamesByCodeId] = useAtom(usernamesByCodeIdAtom);
   const [, getUserIdByUsername] = useAtom(getUserIdByUsernameAction);
   const [showHintSorter, setShowHintSorter] = useState(null);
+  const getLinkCount = useSetAtom(getWholesaleLinkCountByUserAction);
+
   useEffect(() => {
     if (currentCategory !== null) {
       fetchElementsByCategory(currentCategory);
@@ -255,6 +259,9 @@ const SorterPage = () => {
 
   useEffect(() => {
     // 초기 데이터 로딩
+    if(!selectedUserWholesaleLinkId){
+      setFetchCategoriesByUserId();
+    }
     setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
     // 화살표 높이 설정
     setFetchSortersByUser();
@@ -293,7 +300,10 @@ const SorterPage = () => {
     try {
       await setHandleCategoryOk(); // 카테고리 추가 실행
       setTimeout(() => {
-        setfetchAndNumberCategories(); // 최신 카테고리 목록 불러오기
+        if(!selectedUserWholesaleLinkId){
+          setFetchCategoriesByUserId();
+        }
+        setfetchAndNumberCategories();  // 최신 카테고리 목록 불러오기
       }, 100);
 
       console.log("📌 카테고리 목록 갱신 요청 완료");
@@ -676,7 +686,18 @@ const SorterPage = () => {
 
 
   };
+  useEffect(() => {
+    const checkLinkCountAndRedirect = async () => {
+      if (sorterMode === 2 && authUser?.userId) {
+        const count = await getLinkCount(authUser.userId);
+        if (count === 0) {
+          navigate('/wholesale');
+        }
+      }
+    };
 
+    checkLinkCountAndRedirect();
+  }, [sorterMode, authUser?.userId, getLinkCount, navigate]);
 
   const [,setAddBillElement] = useAtom(addBillElementAction);
   const handleDragEnd = async (event) => {
@@ -941,14 +962,16 @@ const SorterPage = () => {
     setSelectedUserName(linkName);
     const id = await getUserCodeId(codeId);
     setSelectedUserWholesaleLinkId(id);
-    console.log("선택된 홀세일 아이디" + selectedUserWholesaleLinkId);
-
-
     if (userId) {
       setSelectedUserId(userId);
     }
     setCards([]);
-    setfetchAndNumberCategories();
+    if (!id) {
+      await setFetchCategoriesByUserId();
+    } else {
+      await setfetchAndNumberCategories(id); // ID 직접 전달
+    }
+
     if (userId !== authUser?.userId) {
       setIsExternalUser(true);
     } else {
@@ -959,7 +982,7 @@ const SorterPage = () => {
     if (count === 0) {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
     }
-    setfetchAndNumberCategories();
+
     setFetchBills();
 
   };
@@ -1074,7 +1097,7 @@ const SorterPage = () => {
           strategy={rectSortingStrategy}
         >
         <div className="sorter-page-section">
-
+          {(sorterMode == 2) && (
           <Dropdown
             overlay={menu}
             trigger={['click']}
@@ -1086,7 +1109,7 @@ const SorterPage = () => {
               {selectedUserName ? selectedUserName : currentUserName}
             </Button>
           </Dropdown>
-
+            )}
           <div className={"sorter-header-section"}>
 
 
@@ -1137,7 +1160,7 @@ const SorterPage = () => {
               <div className='sorter-header'>
 
 
-                {!isExternalUser && (
+                {(sorterMode == 1 || sorterMode === 0) && (
                   <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip-red" placement="top" arrow={true}>
                     <button className="category-btn-delete" onClick={handleDeleteCategory}>-</button>
                   </Tooltip>
@@ -1170,7 +1193,7 @@ const SorterPage = () => {
                 </Popover>
                 {/* + 추가 버튼 */}
 
-                {!isExternalUser && (
+                {(sorterMode == 1 || sorterMode === 0) && (
                 <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
                   <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
                     +
@@ -1422,8 +1445,9 @@ const SorterPage = () => {
 
           </div>
 
-          {!isExternalUser && (
+
             <div className="element-btn-section">
+
               <Tooltip
                 title="카테고리 요소 삭제"
                 overlayClassName="custom-tooltip-red"
@@ -1438,7 +1462,7 @@ const SorterPage = () => {
                   <Trash className="trash" size={20} />
                 </button>
               </Tooltip>
-
+              {(sorterMode == 1 || sorterMode === 0) && (
               <Tooltip
                 title="카테고리 요소 추가"
                 overlayClassName="custom-tooltip"
@@ -1453,10 +1477,13 @@ const SorterPage = () => {
                   +
                 </button>
               </Tooltip>
+              )}
             </div>
-          )}
 
-          {isExternalUser && (
+
+          {(sorterMode === 2 || sorterMode === 0) && (
+
+
 <div className= "sorter-btn-section">
           <SwitchTransition mode="out-in">
             <CSSTransition
@@ -1498,7 +1525,7 @@ const SorterPage = () => {
 
 
 
-          {isExternalUser && (
+          {(sorterMode === 2 || sorterMode === 0) && (
           <div className="sorter-sort-section" id="sorter-sort-section" >
 
               <SorterContainer
@@ -1516,11 +1543,11 @@ const SorterPage = () => {
               />
           </div>
             )}
-          {isExternalUser && (
+          {(sorterMode === 2 || sorterMode === 0)&& (
           <BillPage/>
             )}
         </div>
-          {!isExternalUser && showHintSorter && (
+          {(sorterMode==1 || sorterMode === 0) && showHintSorter && (
             <>
             <div className="info-wrapper">
               <h2 className="info-title">재고를 <span className="gold"> 카테고리</span>에 담아 전해요</h2>
@@ -1553,7 +1580,7 @@ const SorterPage = () => {
             </>
           )}
 
-          {!isExternalUser && (
+          {(sorterMode==1 || sorterMode === 0) && (
           <button className="faq-button-sorter" onClick={() => setShowHintSorter(!showHintSorter)}> {/* ✅ 클릭 시 모달 */}
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
               <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z" />

@@ -47,4 +47,8 @@ public class CategoryService {
     public void updateCategoryName(int category_id, String category_name) {
         categoryMapper.updateCategoryName(category_id, category_name);
     }
+    public List<Category> getCategoriesByWholesalerCode(int wholesaler_code) {
+        return categoryMapper.getCategoriesByWholesalerCode(wholesaler_code);
+    }
+
 }

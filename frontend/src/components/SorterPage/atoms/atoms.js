@@ -81,7 +81,7 @@ export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
 export const sorterNameByIdAtom = atom('');
-
+export const sorterModeAtom = atom(0);
 export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");
@@ -98,7 +98,7 @@ export const isDraggingElementsAtom = atom(false);
 export const selectedUserWholesaleLinkIdAtom = atom(0);
 
 export const usernamesByCodeIdAtom = atom({});
-export const selectedUserWholesaleLinkIdAtom = atom(0);
+
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

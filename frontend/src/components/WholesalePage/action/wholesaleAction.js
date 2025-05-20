@@ -40,6 +40,31 @@ export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLi
   }
 });
 
+export const getWholesaleLinkCountByUserAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId || userId.trim() === "") {
+      message.warning("사용자 ID가 누락되었습니다.");
+      return 0;
+    }
+
+    try {
+      const res = await axios.get(`http://localhost:8080/api/wholesale/link/count`, {
+        params: { userId },
+      });
+
+      const count = res.data;
+      console.log("✅ 해당 유저의 도매 링크 개수:", count);
+      return count;
+    } catch (error) {
+      console.error("🚨 유저 도매 링크 개수 조회 실패:", error);
+      message.error("도매 링크 개수 조회에 실패했습니다.");
+      return 0;
+    }
+  }
+);
+
+
 
 export const createWholesaleLinkAction = atom(null, async (get, set, { wholesaleCode }) => {
   try {
@@ -203,8 +228,15 @@ export const registerToUserWholesaleCodeAction = atom(null, async (get, set, who
     });
     message.success("도매 코드가 유저에게 등록되었습니다.");
   } catch (err) {
-    console.error("🚨 유저 도매 코드 등록 실패:", err);
-    message.error("유저 도매 코드 등록 중 오류가 발생했습니다.");
+    console.error("🚨 등록 실패:", err);
+    console.log("❗ err.response:", err.response);
+    const errorMsg =
+      err.response?.data?.message || // JSON 형태일 경우
+      err.response?.data ||          // 문자열일 경우
+      "등록 중 오류가 발생했습니다.";
+
+    message.error(errorMsg);
+
   }
 });
 export const getUserIdByLinkNameAction = atom(null, async (get, set, wholesaleName) => {
@@ -321,6 +353,47 @@ export const getUserWholesaleCodeIdByCodeAction = atom(null, async (get, set, us
       message.error("도매 코드 ID 조회 중 오류가 발생했습니다.");
     }
 
+    return null;
+  }
+});
+export const generateWholesalerCodeAction = atom(null, async (get, set) => {
+  const userId = get(authUserAtom)?.userId;
+
+  if (!userId) {
+    message.warning("로그인 정보가 없습니다.");
+    return null;
+  }
+
+  try {
+    const response = await axios.post(
+      `http://localhost:8080/api/wholesale/generate-code`,
+      null,
+      { params: { userId } }
+    );
+
+    const { wholesalerCode, status } = response.data;
+
+    if (!wholesalerCode) {
+      message.warning("도매 코드 생성 응답이 올바르지 않습니다.");
+      return null;
+    }
+
+    if (status === "CREATED") {
+      message.success(`✅ 도매 코드가 새로 생성되었습니다: ${wholesalerCode}`);
+    } else if (status === "EXISTING") {
+      message.info(`이미 존재하는 도매 코드입니다: ${wholesalerCode}`);
+    } else {
+      message.info(`도매 코드: ${wholesalerCode}`);
+    }
+
+    return wholesalerCode;
+  } catch (error) {
+    console.error("🚨 도매 코드 생성 실패:", error);
+    if (error.response?.status === 400) {
+      message.error(error.response.data.message || "잘못된 요청입니다.");
+    } else {
+      message.error("도매 코드 생성 중 오류가 발생했습니다.");
+    }
     return null;
   }
 });
