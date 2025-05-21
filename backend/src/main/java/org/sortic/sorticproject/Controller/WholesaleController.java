@@ -303,6 +303,19 @@ public class WholesaleController {
         }
         return ResponseEntity.ok(Collections.singletonMap("userId", clonedUserId)); // ✅ 키 포함
     }
+    @PutMapping("/user-code")
+    public ResponseEntity<?> updateUserWholesaleCode(@RequestBody UserWholesaleCode userCode) {
+        try {
+            wholesaleService.updateUserWholesaleCodeByUserId(userCode);
+            return ResponseEntity.ok("유저 도매 코드가 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 도매 코드 수정 중 오류 발생"));
+        }
+    }
 
 
 }

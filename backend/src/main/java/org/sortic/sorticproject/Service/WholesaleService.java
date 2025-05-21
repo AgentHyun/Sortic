@@ -250,6 +250,15 @@ public class WholesaleService {
         return wholesaleMapper.findClonedUserId(originalUserId);
     }
 
+    public void updateUserWholesaleCodeByUserId(UserWholesaleCode userCode) {
+        if (userCode.getUserId() == null || userCode.getUserWholesaleCode() == null) {
+            throw new IllegalArgumentException("유저 ID 또는 도매 코드가 비어 있습니다.");
+        }
+        wholesaleMapper.updateWholesaleCodeByUserId(userCode);
+    }
+
+
+
 }
 
 

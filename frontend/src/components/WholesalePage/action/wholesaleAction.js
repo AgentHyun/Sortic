@@ -551,3 +551,28 @@ export const fetchClonedUserIdAction = atom(
     }
   }
 );
+export const updateWholesaleCodeByUserIdAction = atom(
+  null,
+  async (get, set, updatedCode) => {
+    const userId = get(authUserAtom)?.userId;
+
+    if (!userId || !updatedCode || updatedCode.trim() === "") {
+      message.warning("수정할 도매 코드가 비어 있거나 로그인 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      await axios.put("http://localhost:8080/api/wholesale/user-code", {
+        userId: userId,
+        userWholesaleCode: updatedCode
+      });
+
+      message.success("도매 코드가 성공적으로 수정되었습니다.");
+      // 필요 시 리스트 갱신
+      await set(fetchUserWholesaleCodesAction);
+    } catch (error) {
+      console.error("🚨 도매 코드 수정 실패:", error);
+      message.error("도매 코드 수정 중 오류가 발생했습니다.");
+    }
+  }
+);

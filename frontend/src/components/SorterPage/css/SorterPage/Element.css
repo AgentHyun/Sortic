@@ -250,7 +250,7 @@
     width: 64vw;
     text-align: center;
     justify-content: center;
-    height: 19vh; /* 부모 높이에 맞게 채움 */
+    height: 18vh; /* 부모 높이에 맞게 채움 */
     transition: transform 0.3s ease, opacity 0.3s ease;
     will-change: transform, opacity;
 }

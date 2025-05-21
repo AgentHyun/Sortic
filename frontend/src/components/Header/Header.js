@@ -6,12 +6,20 @@ import {useAtom, useSetAtom} from 'jotai';
 import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
-import {selectedUserIdAtom, sorterModeAtom, wholesalerIdAtom} from '../SorterPage/atoms/atoms';
+import {
+  selectedUserIdAtom,
+  selectedUserWholesaleLinkIdAtom,
+  sorterModeAtom,
+  wholesalerIdAtom
+} from '../SorterPage/atoms/atoms';
 import {
   cloneUserWithWholesalerCodeAction,
   createWholesaleCodeAction,
   generateWholesalerCodeAction,
-  fetchWholesalerCodeByUserIdAction, fetchClonedUserIdsAction, fetchClonedUserIdAction
+  fetchWholesalerCodeByUserIdAction,
+  fetchClonedUserIdsAction,
+  fetchClonedUserIdAction,
+  getWholesaleLinkCountByUserAction
 } from "../WholesalePage/action/wholesaleAction";
 import {fetchAndNumberCategoriesAction} from "../SorterPage/actions/categoryAction";
 const { Header } = Layout;
@@ -30,6 +38,8 @@ const SorticHeader = () => {
   const [,fetchWholesalerCodeByUserId] = useAtom(fetchWholesalerCodeByUserIdAction);
   const [, fetchClonedUsers] = useAtom(fetchClonedUserIdAction);
   const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
+  const getLinkCount = useSetAtom(getWholesaleLinkCountByUserAction);
+  const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
   // 로그아웃 처리 함수
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -68,6 +78,7 @@ const SorticHeader = () => {
         navigate('/sorter');
         const userId = authUser?.userId;
         setSelectedUserId(userId);
+        setSelectedUserWholesaleLinkId(0);
       },
     },
     {
@@ -91,11 +102,15 @@ const SorticHeader = () => {
     {
       key: 'retail',
       label: '소매',
-      onClick: () => {
+      onClick: async () => {
         setSorterMode(2);
         navigate('/sorter');
         const userId = authUser?.userId;
         setSelectedUserId(userId);
+        const count = await getLinkCount(userId);
+        if (count === 0) {
+          navigate('/wholesale');
+        }
       },
     },
   ];
@@ -129,7 +144,7 @@ const SorticHeader = () => {
           </div>
         </Dropdown>
 
-        <div className={styles['menu-item']}><Link to="/wholesale">Code</Link></div>
+
         <div className={styles['menu-item']}><Link to="/statistics">Statistics</Link></div>
       </div>
 

@@ -144,7 +144,7 @@ public interface WholesaleMapper {
     WHERE wholesale_code_id = #{wholesaleCodeId} AND user_id = #{userId}
 """)
     int countWholesaleLinks(@Param("wholesaleCodeId") int wholesaleCodeId, @Param("userId") String userId);
-    @Select("SELECT COUNT(*) FROM Wholesale_Link WHERE user_id = #{userId}")
+    @Select("SELECT COUNT(*) FROM user_wholesale_code WHERE user_id = #{userId}")
     int countLinksByUserId(@Param("userId") String userId);
     // userId로 사용자 조회
     @Select("SELECT * FROM Users WHERE user_id = #{userId}")
@@ -191,6 +191,12 @@ public interface WholesaleMapper {
 """)
     String findClonedUserId(@Param("originalUserId") String originalUserId);
 
+    @Update("""
+    UPDATE Wholesale_Code
+    SET wholesale_code = #{userWholesaleCode}
+    WHERE user_id = #{userId}
+""")
+    void updateWholesaleCodeByUserId(UserWholesaleCode userCode);
 
 
 }

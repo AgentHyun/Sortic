@@ -676,18 +676,7 @@ const SorterPage = () => {
     setActiveId(idStr);
   };
 
-  useEffect(() => {
-    const checkLinkCountAndRedirect = async () => {
-      if (sorterMode === 2 && authUser?.userId) {
-        const count = await getLinkCount(authUser.userId);
-        if (count === 0 && sorterMode === 2) {
-          navigate('/wholesale');
-        }
-      }
-    };
 
-    checkLinkCountAndRedirect();
-  }, [sorterMode, authUser?.userId, getLinkCount, navigate]);
 
   const [,setAddBillElement] = useAtom(addBillElementAction);
   const handleDragEnd = async (event) => {
@@ -1540,38 +1529,35 @@ const SorterPage = () => {
           <BillPage/>
             )}
         </div>
-          {(sorterMode==1 || sorterMode === 0) && showHintSorter && (
-            <>
-            <div className="info-wrapper">
-              <h2 className="info-title">재고를 <span className="gold"> 카테고리</span>에 담아 전해요</h2>
-              <div className="info-features">
-                <div className="feature-item">
-                  <img src="/SorterPage-img/Category.png" alt="원산지" className="feature-img"/>
-                  <div className="feature-title">카테고리</div>
-                  <div className="feature-subtitle">요소를 담는 카테고리</div>
+          {(sorterMode === 0 || sorterMode === 1) && showHintSorter && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2 className="info-title">
+                  재고를 <span className="gold">카테고리</span>에 담아 전해요
+                </h2>
+                <div className="info-features">
+                  <div className="feature-item">
+                    <img src="/SorterPage-img/Category.png" alt="카테고리" className="feature-img" />
+                    <div className="feature-title">카테고리</div>
+                    <div className="feature-subtitle">요소를 담는 <br/>카테고리를 만드세요</div>
+                  </div>
+
+                  <div className="feature-item2">
+                    <img src="/SorterPage-img/Element.png" alt="요소" className="feature-img-element" />
+                    <div className="feature-title">요소</div>
+                    <div className="feature-subtitle">재고의 이름과<br/> 가격을 입력하세요</div>
+                  </div>
+
+                  <div className="feature-item3">
+                    <img src="/SorterPage-img/Attribute.png" alt="속성" className="feature-img-attribute" />
+                    <div className="feature-title">속성</div>
+                    <div className="feature-subtitle">재고의 특징이<br/> 있다면 추가해보세요</div>
+                  </div>
                 </div>
-
-                <div className="feature-item2">
-                  <img src="/SorterPage-img/Element.png" alt="요소" className="feature-img-element"/>
-                  <div className="feature-title">요소</div>
-                  <div className="feature-subtitle">재고의 이름과 가격</div>
-                </div>
-
-                <div className="feature-item3">
-                  <img src="/SorterPage-img/Attribute.png" alt="속성" className="feature-img-attribute"/>
-                  <div className="feature-title">속성</div>
-                  <div className="feature-subtitle">재고의 특징</div>
-                </div>
-
-
-
               </div>
-
-
             </div>
-
-            </>
           )}
+
 
           {(sorterMode==1 || sorterMode === 0) && (
           <button className="faq-button-sorter" onClick={() => setShowHintSorter(!showHintSorter)}> {/* ✅ 클릭 시 모달 */}
