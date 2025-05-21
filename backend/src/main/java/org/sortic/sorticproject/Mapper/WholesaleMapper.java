@@ -3,6 +3,7 @@ package org.sortic.sorticproject.Mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.sortic.sorticproject.Entity.UserWholesaleCode;
+import org.sortic.sorticproject.Entity.Users;
 import org.sortic.sorticproject.Entity.WholesaleCode;
 import org.sortic.sorticproject.Entity.WholesaleLink;
 
@@ -88,7 +89,7 @@ public interface WholesaleMapper {
     void updateMemo(WholesaleLink link);
     // 중복 체크용 쿼리
     @Select("SELECT COUNT(*) FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
-    int isUserWholesaleCodeExists(@Param("code") String code);
+    int getUserWholesaleCodeExists(@Param("code") String code);
     // 등록 쿼리
     @Insert("""
     INSERT INTO User_Wholesale_Code (user_wholesale_code, user_id)
@@ -123,11 +124,81 @@ public interface WholesaleMapper {
 
     @Select("SELECT user_id FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
     String findUserIdByWholesaleCodeId(@Param("wholesaleCodeId") int wholesaleCodeId);
-    @Select("SELECT user_id FROM Users WHERE username = #{username}")
+    @Select("SELECT user_id FROM Users WHERE username = #{username} AND user_id NOT LIKE '%!_%' ESCAPE '!' LIMIT 1")
     String findUserIdByUsername(@Param("username") String username);
+
 
     @Select("SELECT user_wholesale_code_id FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
     Integer findUserWholesaleCodeIdByCode(@Param("code") String userWholesaleCode);
+    @Select("""
+    SELECT COUNT(*)
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = #{userWholesaleCode} AND user_id = #{userId}
+""")
+    int isUserWholesaleCodeExists(@Param("userWholesaleCode") String userWholesaleCode,
+                                  @Param("userId") String userId);
+
+
+    @Select("""
+    SELECT COUNT(*)
+    FROM Wholesale_Link
+    WHERE wholesale_code_id = #{wholesaleCodeId} AND user_id = #{userId}
+""")
+    int countWholesaleLinks(@Param("wholesaleCodeId") int wholesaleCodeId, @Param("userId") String userId);
+    @Select("SELECT COUNT(*) FROM user_wholesale_code WHERE user_id = #{userId}")
+    int countLinksByUserId(@Param("userId") String userId);
+    // userId로 사용자 조회
+    @Select("SELECT * FROM Users WHERE user_id = #{userId}")
+    Users findByUserId(@Param("userId") String userId);
+
+    // wholesaler_code만 업데이트
+    @Update("UPDATE Users SET wholesaler_code = #{wholesalerCode} WHERE user_id = #{userId}")
+    void updateWholesalerCode(@Param("userId") String userId, @Param("wholesalerCode") String wholesalerCode);
+    @Insert("""
+    INSERT INTO Users (
+        user_id, password, username, phone, wholesaler_code,
+        email, region, grade, profile_image, is_cloned
+    )
+    VALUES (
+        #{userId}, #{password}, #{username}, #{phone}, #{wholesaler_code},
+        #{email}, #{region}, #{grade}, #{profile_image}, true
+    )
+""")
+
+    void insertUser(Users user);
+
+    @Select("SELECT COUNT(*) FROM Wholesale_Code WHERE user_id = #{userId}")
+    int countWholesaleCodeByUser(@Param("userId") String userId);
+
+
+    @Select("SELECT wholesaler_code FROM Users WHERE user_id = #{userId}")
+    String getWholesalerCodeByUserId(@Param("userId") String userId);
+
+
+    // mapper interface
+    @Update("UPDATE Users SET is_cloned = #{isCloned} WHERE user_id = #{userId}")
+    int updateClonedFlag(@Param("userId") String userId, @Param("isCloned") boolean isCloned);
+
+    // WholesaleMapper.java
+    @Select("SELECT COUNT(*) FROM users WHERE user_id LIKE CONCAT(#{userId}, '_%')")
+    int countClonedUsers(String userId);
+
+    @Select("""
+    SELECT user_id
+    FROM Users
+    WHERE user_id LIKE CONCAT(#{originalUserId}, '!_%') ESCAPE '!'
+      AND is_cloned = TRUE
+    LIMIT 1
+""")
+    String findClonedUserId(@Param("originalUserId") String originalUserId);
+
+    @Update("""
+    UPDATE Wholesale_Code
+    SET wholesale_code = #{userWholesaleCode}
+    WHERE user_id = #{userId}
+""")
+    void updateWholesaleCodeByUserId(UserWholesaleCode userCode);
+
 
     @Select("select wholesale_name , wholesale_commission from wholesale_link where wholesale_link_id = #{wholesaleLinkId}")
     Map<String, Object> findUserIdAndWholesaleCommissionByWholesaleLinkId(@Param("wholesaleLinkId") int wholesaleLinkId);

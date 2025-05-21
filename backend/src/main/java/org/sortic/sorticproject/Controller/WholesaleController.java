@@ -6,6 +6,7 @@ import org.sortic.sorticproject.Entity.UserWholesaleCode;
 import org.sortic.sorticproject.Entity.Users;
 import org.sortic.sorticproject.Entity.WholesaleCode;
 import org.sortic.sorticproject.Entity.WholesaleLink;
+import org.sortic.sorticproject.Mapper.WholesaleMapper;
 import org.sortic.sorticproject.Service.UserService;
 import org.sortic.sorticproject.Service.WholesaleService;
 import org.sortic.sorticproject.security.CustomUserDetailsService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class WholesaleController {
 
     private final WholesaleService wholesaleService;
     private final UserService userService;
+    private final WholesaleMapper wholesaleMapper;
 
     // 도매 코드
     @PostMapping("/code")
@@ -85,6 +89,13 @@ public class WholesaleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
         }
     }
+
+    @GetMapping("/link/count")
+    public ResponseEntity<Integer> countLinksByUser(@RequestParam String userId) {
+        int count = wholesaleService.countLinksByUser(userId);
+        return ResponseEntity.ok(count);
+    }
+
 
 
 
@@ -183,6 +194,8 @@ public class WholesaleController {
 
     @GetMapping("/user-id/by-username")
     public ResponseEntity<?> getUserIdByUsername(@RequestParam String username) {
+        System.out.println("요청 받은 username: " + username); // 디버깅용 로그
+
         try {
             String userId = wholesaleService.findUserIdByUsername(username);
             if (userId == null) {
@@ -191,6 +204,7 @@ public class WholesaleController {
             }
             return ResponseEntity.ok(Collections.singletonMap("userId", userId));
         } catch (Exception e) {
+            e.printStackTrace(); // 꼭 콘솔에서 전체 에러 로그 확인하세요
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }
@@ -229,6 +243,81 @@ public class WholesaleController {
             return new ResponseEntity<java.util.Map<String, String>>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/generate-code")
+    public ResponseEntity<?> generateWholesalerCode(@RequestParam String userId) {
+        try {
+            Map<String, Object> result = wholesaleService.generateWholesalerCodeIfAbsent(userId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "도매 코드 생성 중 오류 발생"));
+        }
+    }
+
+
+    @PostMapping("/clone-user-with-code")
+    public ResponseEntity<?> cloneUserWithWholesalerCode(
+        @RequestParam String userId,
+        @RequestParam String wholesalerCode) {
+
+        try {
+            wholesaleService.cloneUserWithWholesalerCode(userId, wholesalerCode);
+            String newUserId = userId + "_" + wholesalerCode;
+            return ResponseEntity.ok(Collections.singletonMap("newUserId", newUserId));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 복제 중 오류 발생"));
+        }
+    }
+
+    @GetMapping("/wholesaler-code")
+    public ResponseEntity<?> getWholesalerCodeByUserId(@RequestParam String userId) {
+        try {
+            String code = wholesaleService.getWholesalerCodeByUserId(userId);
+            return ResponseEntity.ok(Collections.singletonMap("wholesalerCode", code));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "조회 중 오류 발생"));
+        }
+    }
+    // WholesaleController.java
+    @GetMapping("/is-cloned")
+    public ResponseEntity<?> isCloned(@RequestParam String userId) {
+        boolean result = wholesaleService.isCloned(userId);
+        return ResponseEntity.ok().body(Collections.singletonMap("isCloned", result));
+    }
+    @GetMapping("/cloned")
+    public ResponseEntity<?> getClonedUserId(@RequestParam String userId) {
+        String clonedUserId = wholesaleService.getClonedUserId(userId); // 단일값
+        if (clonedUserId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", "복제된 유저가 없습니다."));
+        }
+        return ResponseEntity.ok(Collections.singletonMap("userId", clonedUserId)); // ✅ 키 포함
+    }
+    @PutMapping("/user-code")
+    public ResponseEntity<?> updateUserWholesaleCode(@RequestBody UserWholesaleCode userCode) {
+        try {
+            wholesaleService.updateUserWholesaleCodeByUserId(userCode);
+            return ResponseEntity.ok("유저 도매 코드가 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 도매 코드 수정 중 오류 발생"));
+        }
+    }
+
+
 }
 
 

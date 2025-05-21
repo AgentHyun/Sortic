@@ -5,6 +5,14 @@
     font-style: normal;
 }
 
+
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
+
+
 /* Category Buttons */
 .category-btn-box,
 .category-btn {
@@ -15,12 +23,7 @@
     background-color: transparent;
     color: #929e6e !important;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
 
-.category-btn-box {
-    font-size: 18px;
-    padding: 8px 22px;
-    height: 130px;
 }
 
 .category-btn-delete {
@@ -65,7 +68,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-family: "Orbit", sans-serif;
+    font-family: 'NanumSquareNeoLight';
     font-size: 1.6rem;
     font-weight: bold;
     color: black;
@@ -90,7 +93,7 @@
     font-size: 16px;
     font-weight: 500;
     color: #333;
-  height : 5vh;
+    height : 5vh;
     background-color: transparent;
     padding: 6px 12px;
     border: none;

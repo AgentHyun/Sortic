@@ -46,11 +46,10 @@ const BillPage = () => {
     fetchBills();
   }, []);
 
-  /** ✅ Bill 추가 처리 */
   const handleAddBill = async () => {
     try {
-
       console.log("🔥 wholesaleLink 상태:", wholesaleLink);
+
 
         console.log(wholesaleLink)
 
@@ -64,217 +63,216 @@ const BillPage = () => {
         });
 
       console.log('bill추가')
-      // 전체 Bill 다시 불러오기
+    
 
       fetchBills();
-      console.log(bills)
       setNewBillName('');
       setIsModalVisible(false);
       message.success("Bill이 추가되었습니다!");
     } catch (error) {
-      console.error("Bill 추가 실패");
-    }
-
-  };
-
-  const handleAddCommission = async () => {
-    try {
-      await axios.post(`/api/bills/addCommission`, {
-        billId: selectedBillId, // 해당 bill의 ID
-        commissionName: commissionName,
-        commission: Number(commissionValue)
-      });
-      message.success('수수료 추가 완료!');
-      setSelectedBillId('')
-      setCommissionAddModalVisible(false);
-      setCommissionName('');
-      setCommissionValue('');
-      fetchBills(); // 최신화
-    } catch (err) {
-      console.error('수수료 추가 실패', err);
-      message.error('수수료 추가 실패');
-    }
-  };
-  const handleDeleteSelectedCommissions = async () => {
-    try {
-      await axios.delete('/api/bills/deleteSelectedCommissions', {
-        data: {
-          billId: selectedBillId,
-          commissionIds: selectedCommissionIds,
-        },
-      });
-      message.success("선택 수수료 삭제 완료!");
-      setCommissionModalVisible(false);
-      setSelectedCommissionIds([]);
-      fetchBills();
-    } catch (err) {
-      console.error("수수료 삭제 실패", err);
-      message.error("삭제 실패");
+      console.error("Bill 추가 실패", error);
     }
   };
 
-  return (
 
-    <div className="bill-container">
-      <div className="bill-add">
-        <Button
-          type="primary"
+    const handleAddCommission = async () => {
+      try {
+        await axios.post(`/api/bills/addCommission`, {
+          billId: selectedBillId, // 해당 bill의 ID
+          commissionName: commissionName,
+          commission: Number(commissionValue)
+        });
+        message.success('수수료 추가 완료!');
+        setSelectedBillId('')
+        setCommissionAddModalVisible(false);
+        setCommissionName('');
+        setCommissionValue('');
+        fetchBills(); // 최신화
+      } catch (err) {
+        console.error('수수료 추가 실패', err);
+        message.error('수수료 추가 실패');
+      }
+    };
+    const handleDeleteSelectedCommissions = async () => {
+      try {
+        await axios.delete('/api/bills/deleteSelectedCommissions', {
+          data: {
+            billId: selectedBillId,
+            commissionIds: selectedCommissionIds,
+          },
+        });
+        message.success("선택 수수료 삭제 완료!");
+        setCommissionModalVisible(false);
+        setSelectedCommissionIds([]);
+        fetchBills();
+      } catch (err) {
+        console.error("수수료 삭제 실패", err);
+        message.error("삭제 실패");
+      }
+    };
 
-          className="sorter-effect-btn"
-          onClick={() => setIsModalVisible(true)}
-        >
-          + Bill
+    return (
 
-        </Button>
-
-      </div>
-
-      <SortableContext
-        items={bills.map(bill => bill.billId)} // bills의 ID로 SortableContext 구성
-        strategy={rectSortingStrategy}
-      >
-        {bills.map((bill) => (
-          <DroppableBillBox
-            key={bill.billId}
-            bill={bill}
-          />
-        ))}
-      </SortableContext>
-
-      <Modal
-        title="새로운 Bill 추가"
-        open={isModalVisible}
-        onOk={handleAddBill}
-        onCancel={() => setIsModalVisible(false)}
-        okText="추가"
-        cancelText="취소"
-        closable={false}
-        okButtonProps={{
-          className: "category-ok-button",
-          style: {
-            backgroundColor: '#929e6e', // 원하는 색상으로 변경
-            border : 'none',
-          }
-        }}
-        cancelButtonProps={{
-          className: "custom-cancel-button", // ✅ 클래스 이름 부여
-          style: {
-            backgroundColor: '#ffffff',         // ✅ 예시 색상
-            color: '#333',
-            border: '1px solid #ccc',
-          }}}
-      >
-        <Input
-          placeholder="Bill 이름을 입력하세요"
-          value={newBillName}
-          onChange={(e) => setNewBillName(e.target.value)}
-        />
-      </Modal>
-      <Modal
-        title={`${selectedBillTitle}의 세부 정보`}
-        open={detailModalVisible}
-        onCancel={() => setDetailModalVisible(false)}
-        footer={null}
-        closable={false}
-        className="custom-detail-modal"
-      >
-        {selectedBillDetails.map((el, idx) => (
-          <div key={idx} className="element-detail-box">
-            <strong>{el.elementsName}</strong>
-            <ul>
-              {Array.isArray(el.details) && el.details.length > 0 ? (
-                el.details.map((d, i) => (
-                  <li key={i}>
-                    {d?.keyName || "(키 없음)"} : {d?.valueName || "(값 없음)"}
-                  </li>
-                ))
-              ) : (
-                <li>자세한 정보가 없습니다</li>
-              )}
-            </ul>
-          </div>
-        ))}
-      </Modal>
-      <Modal
-        title="수수료"
-        open={commissionModalVisible}
-        onCancel={() => {
-          setCommissionModalVisible(false);
-          setSelectedCommissionIds([]);
-          setSelectedBillForCommission(null);
-        }}
-        closable={false}
-        footer={null}
-        className="commission-modal"
-      >
-        {selectedCommissionIds.length > 0 && (
+      <div className="bill-container">
+        <div className="bill-add">
           <Button
-            danger
+            type="primary"
 
-            onClick={handleDeleteSelectedCommissions}
-            style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}
+            className="sorter-effect-btn"
+            onClick={() => setIsModalVisible(true)}
           >
-            선택 삭제
+            + Bill
+
           </Button>
-        )}
 
-        <div className="commission-card-container">
-          {selectedBillForCommission?.commissions?.map((c) => {
-            const id = c.billCommissionId; // 진짜 DB에 있는 고유 ID
-
-            return (
-              <div
-                key={id}
-                className={`commission-card ${selectedCommissionIds.includes(id) ? "selected" : ""}`}
-                onClick={() => {
-                  setSelectedCommissionIds((prev) =>
-                    prev.includes(id)
-                      ? prev.filter((v) => v !== id) // 선택 해제
-                      : [...prev, id]               // 선택 추가
-                  );
-                }}
-              >
-                <strong>{c.commissionName}</strong>
-                <br />
-                {c.commission}원
-              </div>
-            );
-          })}
         </div>
 
-
-        {/* 추가 버튼 */}
-        <Button
-          className="commission-modal-add-btn"
-          onClick={() => {
-            setCommissionModalVisible(false);
-            setCommissionAddModalVisible(true);
-          }}
-          style={{ marginTop: "16px" }}
+        <SortableContext
+          items={bills.map(bill => bill.billId)} // bills의 ID로 SortableContext 구성
+          strategy={rectSortingStrategy}
         >
-          <Plus /> 수수료 추가
-        </Button>
-      </Modal>
+          {bills.map((bill) => (
+            <DroppableBillBox
+              key={bill.billId}
+              bill={bill}
+            />
+          ))}
+        </SortableContext>
 
-      <Modal
-        title="수수료 추가"
-        open={commissionAddModalVisible}
-        onCancel={()=>setCommissionAddModalVisible(false)}
-        onOk={() => {
-          if (!commissionName || commissionValue === "") {
-            message.warning("수수료 이름과 값을 입력해주세요");
-            return;
-          }
-          handleAddCommission();
-        }}
-        okText="추가"
-        closable={false}
-      >
-        <Input placeholder="수수료 이름" value={commissionName}  onChange={(e)=>setCommissionName(e.target.value)}></Input>
-        <Input type="number" placeholder="값" value={commissionValue} onChange={(e)=>setCommissionValue(e.target.value)}></Input>
-      </Modal>
-    </div>
-  );
-};
+        <Modal
+          title="새로운 Bill 추가"
+          open={isModalVisible}
+          onOk={handleAddBill}
+          onCancel={() => setIsModalVisible(false)}
+          okText="추가"
+          cancelText="취소"
+          closable={false}
+          okButtonProps={{
+            className: "category-ok-button",
+            style: {
+              backgroundColor: '#929e6e', // 원하는 색상으로 변경
+              border : 'none',
+            }
+          }}
+          cancelButtonProps={{
+            className: "custom-cancel-button", // ✅ 클래스 이름 부여
+            style: {
+              backgroundColor: '#ffffff',         // ✅ 예시 색상
+              color: '#333',
+              border: '1px solid #ccc',
+            }}}
+        >
+          <Input
+            placeholder="Bill 이름을 입력하세요"
+            value={newBillName}
+            onChange={(e) => setNewBillName(e.target.value)}
+          />
+        </Modal>
+        <Modal
+          title={`${selectedBillTitle}의 세부 정보`}
+          open={detailModalVisible}
+          onCancel={() => setDetailModalVisible(false)}
+          footer={null}
+          closable={false}
+          className="custom-detail-modal"
+        >
+          {selectedBillDetails.map((el, idx) => (
+            <div key={idx} className="element-detail-box">
+              <strong>{el.elementsName}</strong>
+              <ul>
+                {Array.isArray(el.details) && el.details.length > 0 ? (
+                  el.details.map((d, i) => (
+                    <li key={i}>
+                      {d?.keyName || "(키 없음)"} : {d?.valueName || "(값 없음)"}
+                    </li>
+                  ))
+                ) : (
+                  <li>자세한 정보가 없습니다</li>
+                )}
+              </ul>
+            </div>
+          ))}
+        </Modal>
+        <Modal
+          title="수수료"
+          open={commissionModalVisible}
+          onCancel={() => {
+            setCommissionModalVisible(false);
+            setSelectedCommissionIds([]);
+            setSelectedBillForCommission(null);
+          }}
+          closable={false}
+          footer={null}
+          className="commission-modal"
+        >
+          {selectedCommissionIds.length > 0 && (
+            <Button
+              danger
 
-export default BillPage;
+              onClick={handleDeleteSelectedCommissions}
+              style={{ position: "absolute", top: 10, right: 10, zIndex: 1 }}
+            >
+              선택 삭제
+            </Button>
+          )}
+
+          <div className="commission-card-container">
+            {selectedBillForCommission?.commissions?.map((c) => {
+              const id = c.billCommissionId; // 진짜 DB에 있는 고유 ID
+
+              return (
+                <div
+                  key={id}
+                  className={`commission-card ${selectedCommissionIds.includes(id) ? "selected" : ""}`}
+                  onClick={() => {
+                    setSelectedCommissionIds((prev) =>
+                      prev.includes(id)
+                        ? prev.filter((v) => v !== id) // 선택 해제
+                        : [...prev, id]               // 선택 추가
+                    );
+                  }}
+                >
+                  <strong>{c.commissionName}</strong>
+                  <br />
+                  {c.commission}원
+                </div>
+              );
+            })}
+          </div>
+
+
+          {/* 추가 버튼 */}
+          <Button
+            className="commission-modal-add-btn"
+            onClick={() => {
+              setCommissionModalVisible(false);
+              setCommissionAddModalVisible(true);
+            }}
+            style={{ marginTop: "16px" }}
+          >
+            <Plus /> 수수료 추가
+          </Button>
+        </Modal>
+
+        <Modal
+          title="수수료 추가"
+          open={commissionAddModalVisible}
+          onCancel={()=>setCommissionAddModalVisible(false)}
+          onOk={() => {
+            if (!commissionName || commissionValue === "") {
+              message.warning("수수료 이름과 값을 입력해주세요");
+              return;
+            }
+            handleAddCommission();
+          }}
+          okText="추가"
+          closable={false}
+        >
+          <Input placeholder="수수료 이름" value={commissionName}  onChange={(e)=>setCommissionName(e.target.value)}></Input>
+          <Input type="number" placeholder="값" value={commissionValue} onChange={(e)=>setCommissionValue(e.target.value)}></Input>
+        </Modal>
+      </div>
+    );
+  };
+
+  export default BillPage;

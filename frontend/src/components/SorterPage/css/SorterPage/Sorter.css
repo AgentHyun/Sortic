@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
 
 /* 전체 영역 */
 .sorter-sort-section {
@@ -27,9 +32,9 @@
   font-weight: 700;
   text-align: center;
   color: #635C3B;
-  font-family: "Orbit", sans-serif;
-  padding : 5px;
-  margin-bottom: -5px;
+  font-family: 'NanumSquareNeoLight';
+  padding : 10px;
+  margin-bottom: -10px;
   align-items: center;
   justify-content: center;
 
@@ -318,7 +323,7 @@
   border-radius: 0.3em;
   position: relative;
   overflow: hidden;
-  font-family: "Orbit", sans-serif;
+  font-family: 'NanumSquareNeoLight';
   cursor: pointer;
   transition: 0.5s;
   font-weight: 400;
@@ -377,7 +382,7 @@
   background-color: #f36363 !important;
   color: white;
   font-size: 18px;
-  font-family: "Orbit", sans-serif;
+  font-family: 'NanumSquareNeoLight';
   padding: 12px 24px;
   border-radius: 8px;
   border: none;

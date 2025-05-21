@@ -1,15 +1,14 @@
 package org.sortic.sorticproject.Entity;
 
-
-
 import java.sql.Timestamp;
 
 public class Category {
 
-    private int category_id;  // categoryId -> category_id로 변경
-    private String user_id;   // userId -> user_id로 변경
-    private String category_name; // categoryName -> category_name으로 변경
-    private Timestamp created_category_time; // createdCategoryTime -> created_category_time으로 변경
+    private int category_id;  // 카테고리 ID
+    private Integer wholesaler_code;  // 도매 링크 ID (nullable이므로 Integer로)
+    private String user_id;  // 사용자 ID
+    private String category_name;  // 카테고리 이름
+    private Timestamp created_category_time;  // 생성 시간
 
     // Getters and Setters
     public int getCategory_id() {
@@ -18,6 +17,14 @@ public class Category {
 
     public void setCategory_id(int category_id) {
         this.category_id = category_id;
+    }
+
+    public Integer getWholesale_link_id() {
+        return wholesaler_code;
+    }
+
+    public void setWholesale_link_id(Integer wholesale_link_id) {
+        this.wholesaler_code = wholesale_link_id;
     }
 
     public String getUser_id() {

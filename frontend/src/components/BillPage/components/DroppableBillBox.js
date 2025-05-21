@@ -269,6 +269,10 @@ const DroppableBillBox = ({
           setNodeRef(node);
           boxRef.current = node; // 캡쳐용 ref
         }}
+        style={{
+          backgroundColor: isOver ? '#edfbe7' : 'white', // 드래그 중일 때 연한 크림색
+          transition: 'background-color 0.3s ease',
+        }}
       >
         <ScanText
           size={24}

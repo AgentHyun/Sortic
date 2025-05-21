@@ -70,11 +70,6 @@ const SorterContainer = ({
   }, [selectedElementIdsBySorter]);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return; // 첫 렌더링에는 useEffect가 동작하지 않도록 방지
-    }
-
     const fetchAllElementNames = async () => {
       const result = {};
       for (const sorter of sorters) {
@@ -87,7 +82,6 @@ const SorterContainer = ({
               return name;
             })
           );
-
           result[sorter.sorter_id] = { ids: idList, names };
         } catch (err) {
           result[sorter.sorter_id] = { ids: [], names: [] };

@@ -1,12 +1,11 @@
-// src/components/OrderPage/OrderPage.js
 
 import React from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../OrderPage/css/OrderPage.css";
+import "./css/StatisticsPage.css";
 
-const OrderPage = () => {
+const StatisticsPage = () => {
   const settings = {
     dots: true,
     infinite: true,
@@ -59,4 +58,4 @@ const OrderPage = () => {
   );
 };
 
-export default OrderPage;
+export default StatisticsPage;

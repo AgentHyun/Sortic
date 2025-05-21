@@ -6,10 +6,11 @@ import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authL
 import { authService } from '../../auth/authService';
 import styles from './css/Login.module.css';
 import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
+import {selectedUserIdAtom} from "../SorterPage/atoms/atoms";
 
 const Login = () => {
   const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [, setAuthUser] = useAtom(authUserAtom);
+  const [authUser , setAuthUser] = useAtom(authUserAtom);
   const [formData, setFormData] = useAtom(loginFormAtom);
   const [formErrors, setFormErrors] = useAtom(loginErrorAtom);
   const navigate = useNavigate();
@@ -17,7 +18,8 @@ const Login = () => {
   const [form] = Form.useForm();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
-  const [, fetchCategoryCount] = useAtom(fetchCategoryCountAction);
+  const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
+
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
@@ -62,7 +64,7 @@ const Login = () => {
         setIsAuthenticated(true);
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
-
+        setSelectedUserId(response.user.userId);
         // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
         if (!location.state?.from) {
           navigate('/', { replace: true });

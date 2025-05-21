@@ -81,7 +81,7 @@ export const fadeInOutAtom = atom(false);
 
 // Sorter 관련 상태
 export const sorterNameByIdAtom = atom('');
-
+export const sorterModeAtom = atom(0);
 export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");
@@ -96,7 +96,7 @@ export const isDraggingElementsAtom = atom(false);
 
 // 도매
 export const usernamesByCodeIdAtom = atom({});
-export const selectedUserWholesaleLinkIdAtom = atom(0);
+
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',
@@ -106,7 +106,7 @@ export const userAtom = atom({
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
 const selectedUserIdInternalAtom = atom(null);
-
+export const wholesalerIdAtom = atom(null);
 // 외부에서 읽고 쓸 수 있는 atom (로그인 유저 ID를 기본값으로 제공)
 export const selectedUserIdAtom = atom(
   (get) => {

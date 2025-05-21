@@ -17,10 +17,10 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private AuthService authService;
-    
+
     // 프로필 정보 조회
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@RequestParam("userId") String userId) {
@@ -31,7 +31,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     // 프로필 이미지 업로드
     @PostMapping("/profile-image")
     public ResponseEntity<?> uploadProfileImage(
@@ -44,7 +44,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     // 기본 프로필 이미지로 설정
     @PostMapping("/profile-image/default")
     public ResponseEntity<?> setDefaultProfileImage(@RequestHeader("Authorization") String token) {
@@ -56,7 +56,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     // 프로필 정보 업데이트
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(
@@ -70,7 +70,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     // 토큰에서 사용자 ID 추출 (임시 구현)
     private String extractUserIdFromToken(String token) {
         // 실제 구현에서는 JWT 토큰 파싱 필요
@@ -127,4 +127,7 @@ public class UserController {
                 .body(Collections.singletonMap("message", e.getMessage()));
         }
     }
-} 
+
+
+
+}

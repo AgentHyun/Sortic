@@ -1,6 +1,13 @@
 /* Global Styles */
+
+
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
 body {
-    font-family: 'Arial', sans-serif;
+  font-family: 'NanumSquareNeoLight';
     background-color: #F1F3C2; /* White background */
     color: #333; /* Dark text for readability */
     margin: 0;
@@ -324,7 +331,7 @@ body {
   font-weight: 600;
   margin-bottom: 30px;
   color : #424141;
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-family: 'NanumSquareNeoLight';
 }
 
 
@@ -341,8 +348,8 @@ body {
   flex-direction: column;
   align-items: center;
   width: 140px;
-  margin-right : 20vh;
-  margin-left : 9vh;
+
+
   text-align: center;
 }
 
@@ -353,17 +360,18 @@ body {
   width: 140px;
   text-align: center;
   margin-top : 1vh;
-  margin-right : 25vh;
-  margin-left : 10vh;
+
+  margin-left : 4vh;
+
 }
 
 .feature-item3{
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 140px;
+  width: 100%;
   text-align: center;
-  margin-left : 8vw;
+
 
 }
 
@@ -386,18 +394,25 @@ body {
   margin-bottom: 12px;
 }
 
-/* 공통 텍스트 스타일 */
+/* 타이틀 - 강조된 글씨 */
 .feature-title {
-  font-weight: 600;
-  margin-bottom: 6px;
-  font-size: 15px;
+  font-weight: 700;           /* 더 굵게 */
+  margin-bottom: 4px;
+  font-size: 16px;            /* 조금 더 키움 */
+  color: #222;
+
+  padding-bottom: 2px
 }
 
+/* 서브타이틀 - 설명용 */
 .feature-subtitle {
   font-size: 13px;
-  color: #666;
+  color: #888;                /* 더 연한 회색 */
+  font-weight: 500;           /* 조금 얇게 */
   margin: 0;
+  line-height: 1.4;
 }
+
 .feature-img{
   width : 70px;
   height : 70px;
@@ -476,3 +491,39 @@ body {
   transition-duration: 0.3s;
 }
 /* From Uiverse.io by JaydipPrajapati1910 */
+/* 전체 배경 오버레이 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 최상위에 위치 */
+}
+
+/* 가운데 내용 박스 */
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+/* 간단한 등장 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

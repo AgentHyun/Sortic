@@ -9,22 +9,24 @@
     </insert>
 
     <!-- 사용자 정보 조회 -->
-    <select id="findByUserId" resultType="Users">
-        SELECT
-            user_id AS userId,
-            password,
-            username,
-            phone,
-            email,
-            region,
-            profile_image,
-            grade,
-            created_signup_time
-        FROM Users
-        WHERE user_id = #{userId}
-    </select>
+  <select id="findByUserId" resultType="Users">
+    SELECT
+    user_id AS userId,
+    password,
+    username,
+    phone,
+    wholesaler_code,  <!-- ✅ 콤마 추가 -->
+    email,
+    region,
+    profile_image,
+    grade,
+    created_signup_time
+    FROM Users
+    WHERE user_id = #{userId}
+  </select>
 
-    <!-- 사용자 ID 존재 여부 확인 -->
+
+  <!-- 사용자 ID 존재 여부 확인 -->
     <select id="existsByUserId" parameterType="string" resultType="boolean">
         SELECT COUNT(*) > 0 FROM Users WHERE user_id = #{userId}
     </select>
