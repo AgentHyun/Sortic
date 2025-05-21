@@ -5,8 +5,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/authAtoms';
 import { authService } from '../../auth/authService';
 import styles from './css/Login.module.css';
-import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
-import {selectedUserIdAtom} from "../SorterPage/atoms/atoms";
+import {fetchAndNumberCategoriesAction, fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
+import {currentCategoryAtom, selectedUserIdAtom} from "../SorterPage/atoms/atoms";
+import {fetchElementsByCategoryAction} from "../SorterPage/actions/elementAction";
 
 const Login = () => {
   const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
@@ -19,7 +20,8 @@ const Login = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
   const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
-
+  const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
+  const[currentCategory] = useAtom(currentCategoryAtom);
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
@@ -65,6 +67,7 @@ const Login = () => {
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
         setSelectedUserId(response.user.userId);
+
         // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
         if (!location.state?.from) {
           navigate('/', { replace: true });

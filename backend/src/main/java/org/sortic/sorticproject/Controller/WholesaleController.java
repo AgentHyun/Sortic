@@ -316,6 +316,17 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", "유저 도매 코드 수정 중 오류 발생"));
         }
     }
+    @GetMapping("/wholesale-code/by-user-id")
+    public ResponseEntity<?> getWholesaleCodesByUserId(@RequestParam String userId) {
+        try {
+            List<WholesaleCode> codes = wholesaleService.getCodesByUser(userId);
+            return ResponseEntity.ok(codes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 ID로 도매 코드 조회 중 오류 발생"));
+        }
+    }
 
 
 }

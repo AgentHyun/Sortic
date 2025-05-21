@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'NanumSquareNeoLight';
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot?#iefix) format("embedded-opentype"),
+  url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.woff) format("woff"),
+  url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
+}
+
+.wholesale-container {
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 30px 40px;
+  width: 400px;
+  margin: 10vh auto;
+  font-family: 'NanumSquareNeoLight', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wholesale-label {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.generate-btn, .edit-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #929e6e;
+  color: white;
+}
+
+.generate-btn:hover, .edit-btn:hover {
+  background-color: #4f5a26;
+  color: #fff;
+}
+
+.code-edit-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.wholesale-code-number {
+  font-size: 28px;
+  font-weight: 800;
+  background-color: #f9f9f9;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  color: #222;
+}
+
+.wholesale-input {
+  font-size: 18px;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 200px;
+}

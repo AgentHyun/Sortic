@@ -17,8 +17,14 @@ public interface WholesaleMapper {
     @Options(useGeneratedKeys = true, keyProperty = "wholesaleCodeId")
     void insertWholesaleCode(WholesaleCode code);
 
-    @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
+    @Select("SELECT wholesale_code_id, user_id, wholesale_code FROM Wholesale_Code WHERE user_id = #{userId}")
+    @Results({
+        @Result(property = "wholesaleCodeId", column = "wholesale_code_id"),
+        @Result(property = "userId", column = "user_id"),
+        @Result(property = "wholesaleCode", column = "wholesale_code")
+    })
     List<WholesaleCode> getWholesaleCodesByUserId(String userId);
+
 
     @Delete("DELETE FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
     void deleteWholesaleCode(int wholesaleCodeId);
@@ -198,5 +204,7 @@ public interface WholesaleMapper {
 """)
     void updateWholesaleCodeByUserId(UserWholesaleCode userCode);
 
+    @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
+    List<WholesaleCode> getCodesByUser(String userId);
 
 }

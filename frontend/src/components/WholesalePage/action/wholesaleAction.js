@@ -9,7 +9,8 @@ import {
   currentCategoryAtom,
   currentUserIdAtom,
   selectedUserIdAtom,
-  wholesalerIdAtom
+  wholesalerIdAtom,
+  isClonedAtom
 } from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 import {useNavigate} from "react-router-dom";
@@ -410,7 +411,7 @@ export const generateWholesalerCodeAction = atom(null, async (get, set) => {
     }
 
     if (status === "CREATED") {
-
+         set(isClonedAtom,true);
     } else if (status === "EXISTING") {
 
     } else {
@@ -553,22 +554,19 @@ export const fetchClonedUserIdAction = atom(
 );
 export const updateWholesaleCodeByUserIdAction = atom(
   null,
-  async (get, set, updatedCode) => {
-    const userId = get(authUserAtom)?.userId;
-
-    if (!userId || !updatedCode || updatedCode.trim() === "") {
+  async (get, set, { userId, userWholesaleCode }) => {
+    if (!userId || !userWholesaleCode) {
       message.warning("수정할 도매 코드가 비어 있거나 로그인 정보가 없습니다.");
       return;
     }
 
     try {
       await axios.put("http://localhost:8080/api/wholesale/user-code", {
-        userId: userId,
-        userWholesaleCode: updatedCode
+        userId,
+        userWholesaleCode,
       });
 
       message.success("도매 코드가 성공적으로 수정되었습니다.");
-      // 필요 시 리스트 갱신
       await set(fetchUserWholesaleCodesAction);
     } catch (error) {
       console.error("🚨 도매 코드 수정 실패:", error);
@@ -576,3 +574,29 @@ export const updateWholesaleCodeByUserIdAction = atom(
     }
   }
 );
+
+// action
+export const getWholesaleCodesByUserIdAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId) {
+      console.warn("⛔ userId 파라미터가 없습니다.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/wholesale/wholesale-code/by-user-id`, {
+        params: { userId },
+      });
+      console.log("✅ 도매 코드 조회 결과:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ 도매 코드 조회 실패:", error);
+      return [];
+    }
+  }
+);
+
+
+
+

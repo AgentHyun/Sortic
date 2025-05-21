@@ -89,8 +89,6 @@ const SorticHeader = () => {
         navigate('/sorter');
         const code = await generateWholesalerCode();
         const userId = authUser?.userId;
-        await cloneUserWithWholesalerCode(code);
-        await createWholesaleCode(code);
         const clonedId = await fetchClonedUsers(userId);
         setSelectedUserId(clonedId);
         console.log("선택된 유저" + clonedId);
@@ -144,7 +142,7 @@ const SorticHeader = () => {
           </div>
         </Dropdown>
 
-
+        <div className={styles['menu-item']}><Link to="/wholesale">Code</Link></div>
         <div className={styles['menu-item']}><Link to="/statistics">Statistics</Link></div>
       </div>
 

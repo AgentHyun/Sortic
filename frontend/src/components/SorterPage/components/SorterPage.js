@@ -125,10 +125,11 @@ import {
   fetchUserIdByWholesaleCodeIdAction,
   getUserIdByUsernameAction,
   deleteUserWholesaleCodeAction,
-  getUserWholesaleCodeIdByCodeAction, getWholesaleLinkCountByUserAction,
+  getUserWholesaleCodeIdByCodeAction, getWholesaleLinkCountByUserAction, fetchClonedUserIdAction,
 
 } from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import WholesalerCodeBox from "./WholesalerCodeBox";
 
 
 const { Title } = Typography;
@@ -165,7 +166,7 @@ const SorterPage = () => {
   const [newElementPrice, setNewElementPrice] = useAtom(newElementPriceAtom);
   const [, setIsDraggingElements] = useAtom(isDraggingElementsAtom);
   const [defaultAttributes, setDefaultAttributes] = useAtom(defaultAttributesAtom);
-
+  const [,fetchClonedUsers] = useAtom(fetchClonedUserIdAction);
 
   const[, setAddElement] = useAtom(addElementAction);
   const [addElementName, setAddElementName] = useAtom(addElementNameAtom);
@@ -254,7 +255,10 @@ const SorterPage = () => {
     if (currentCategory !== null) {
       fetchElementsByCategory(currentCategory);
     }
-  }, [currentCategory], );
+
+
+  }, [currentCategory, selectedUserId]);  // ← 두 개를 배열로 묶어서 전달
+
 
 
   useEffect(() => {
@@ -265,9 +269,7 @@ const SorterPage = () => {
     setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
     // 화살표 높이 설정
     setFetchSortersByUser();
-
-
-
+    fetchElementsByCategory(currentCategory);
   }, [selectedUserId]);
   useEffect(() => {
     const fetchData = async () => {
@@ -544,8 +546,8 @@ const SorterPage = () => {
       //   navigate('/sorterDefaultPage');
       // }
     };
-
     const currentUserName = setGetUserNameByUserId(currentUserId);
+    setSelectedUserName(currentUserName);
     setCurrentUserName(currentUserName);
     checkCategoryCount();
   }, []);
@@ -557,15 +559,13 @@ const SorterPage = () => {
 
       }
     });
-
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-
     return () => {
       if (sectionRef.current) observer.unobserve(sectionRef.current);
     };
-  }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
+  }, [currentCategory]);
 
 
 
@@ -941,6 +941,8 @@ const SorterPage = () => {
     setSelectedUserName(linkName);
     const id = await getUserCodeId(codeId);
     setSelectedUserWholesaleLinkId(id);
+    const clonedId = await fetchClonedUsers(userId);
+
     if (userId) {
       setSelectedUserId(userId);
     }
@@ -948,9 +950,11 @@ const SorterPage = () => {
     if (!id) {
       await setFetchCategoriesByUserId();
     } else {
-      await setfetchAndNumberCategories(userId); // ID 직접 전달
+      await setfetchAndNumberCategories(clonedId); // ID 직접 전달
     }
 
+    setSelectedUserId(clonedId);
+    setfetchAndNumberCategories(clonedId);
     const count = await fetchCategoryCount(userId);
     if (count === 0 && sorterMode === 1) {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
@@ -1567,6 +1571,13 @@ const SorterPage = () => {
             <span className="tooltip">HINT</span>
           </button>
             )}
+
+          {(sorterMode==1) && (
+
+            <WholesalerCodeBox/>
+          )
+
+          }
         </SortableContext>
       </DndContext>
     </div>

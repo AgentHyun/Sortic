@@ -34,7 +34,8 @@ public class WholesaleService {
 
 
     public List<WholesaleCode> getCodesByUser(String userId) {
-        return wholesaleMapper.getWholesaleCodesByUserId(userId);
+        List<WholesaleCode> result = wholesaleMapper.getWholesaleCodesByUserId(userId);
+        return result;
     }
 
     public void deleteWholesaleCode(int codeId) {
