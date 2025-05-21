@@ -8,6 +8,7 @@ import org.sortic.sorticproject.Entity.WholesaleCode;
 import org.sortic.sorticproject.Entity.WholesaleLink;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface WholesaleMapper {
@@ -199,4 +200,6 @@ public interface WholesaleMapper {
     void updateWholesaleCodeByUserId(UserWholesaleCode userCode);
 
 
+    @Select("select wholesale_name , wholesale_commission from wholesale_link where wholesale_link_id = #{wholesaleLinkId}")
+    Map<String, Object> findUserIdAndWholesaleCommissionByWholesaleLinkId(@Param("wholesaleLinkId") int wholesaleLinkId);
 }

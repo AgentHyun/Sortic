@@ -49,11 +49,21 @@ const BillPage = () => {
   const handleAddBill = async () => {
     try {
       console.log("🔥 wholesaleLink 상태:", wholesaleLink);
-      await axios.post(`/api/bills/addBill`, {
-        billName: newBillName,
-        userId: userId,
-        wholesaleLinkId: wholesaleLink,
-      });
+
+
+        console.log(wholesaleLink)
+
+
+
+
+        await axios.post(`/api/bills/addBill`, { // ✅ 주소 수정
+          billName: newBillName,
+          userId: userId,
+          wholesaleLinkId: wholesaleLink
+        });
+
+      console.log('bill추가')
+    
 
       fetchBills();
       setNewBillName('');

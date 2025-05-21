@@ -109,7 +109,7 @@ import {
   , moveElementToSorterAction, getSorterNameByIdAction, getElementsIdBySorterIdAction
 } from '../actions/sorterAction';
 
-import {addBillElementAction, addBillElementsAction, fetchBillsAction} from "../../BillPage/actions/billElementAction";
+import {addBillElementAction, addBillElementsAction} from "../../BillPage/actions/billElementAction";
 import { authUserAtom } from '../../../auth/authAtoms';
 import BillPage from "../../BillPage/components/BillPage";
 
@@ -129,6 +129,7 @@ import {
 
 } from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {fetchBillsAction} from "../../BillPage/actions/billActions";
 
 
 const { Title } = Typography;
@@ -227,8 +228,6 @@ const SorterPage = () => {
   const [fetchBills, setFetchBills]= useAtom(fetchBillsAction);
 
   // 도매
-  const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
-  const [, getUserCodeId] = useAtom(getUserWholesaleCodeIdByCodeAction);
   const [, fetchLinks] = useAtom(fetchWholesaleLinksAction);
   const [, setFetchUserWholesaleCodes] = useAtom(fetchUserWholesaleCodesAction);
   const [links] = useAtom(wholesaleLinksAtom);

@@ -160,10 +160,9 @@ export const fetchBillsAction = atom(null,async (get,set)=>{
   const wholesaleLink = get(wholesaleLinksAtom);
   const user = get(authUserAtom);
   const userId = user.userId;
-  for (const link of wholesaleLink) {
-    console.log(link.wholesaleLinkId)
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${link.wholesaleLinkId}`) // ✅ 주소 수정
+    console.log(wholesaleLink.wholesaleLinkId)
+    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${wholesaleLink.wholesaleLinkId}`) // ✅ 주소 수정
       .then(res => set(billsAtom,res.data))
       .catch(err => console.error('Bill 불러오기 실패', err));
-  }
+
 });

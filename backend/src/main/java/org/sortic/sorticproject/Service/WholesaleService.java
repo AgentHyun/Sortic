@@ -125,6 +125,8 @@ public class WholesaleService {
         return id;
     }
 
+
+
     public void addWholesaleLinkByCode(String wholesaleCode, String userId) {
         WholesaleCode code = wholesaleMapper.findWholesaleCodeByCode(wholesaleCode);
         if (code == null) {
@@ -256,6 +258,7 @@ public class WholesaleService {
         }
         wholesaleMapper.updateWholesaleCodeByUserId(userCode);
     }
+
 
 
 
