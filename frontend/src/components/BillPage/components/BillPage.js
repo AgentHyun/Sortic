@@ -55,13 +55,13 @@ const BillPage = () => {
         console.log(wholesaleLink)
 
 
-    
 
-        await axios.post(`/api/bills/addBill`,{ // ✅ 주소 수정
-          billName : newBillName,
-          userId  : userId,
-          wholesaleLinkId : wholesaleLink
-        );
+
+        await axios.post(`/api/bills/addBill`, { // ✅ 주소 수정
+          billName: newBillName,
+          userId: userId,
+          wholesaleLinkId: wholesaleLink
+        });
 
       console.log('bill추가')
       // 전체 Bill 다시 불러오기

@@ -1,5 +1,5 @@
 // DroppableBillBox.js
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import {Button, Input, message, Select,} from 'antd';
 import {Trash, X, Plus, Minus, Copy ,ScanText} from 'lucide-react';
@@ -15,6 +15,7 @@ import {authUserAtom} from "../../../auth/authAtoms";
 import html2canvas from "html2canvas";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 import {fetchBillsAction} from "../actions/billActions";
+import {selectedUserWholesaleLinkIdAtom} from "../../SorterPage/atoms/atoms";
 const DroppableBillBox = ({
                             bill,
 
@@ -31,8 +32,12 @@ const DroppableBillBox = ({
   const boxRef = React.useRef(null);
   const { Option } = Select;
   const [,fetchBills] = useAtom(fetchBillsAction);
-
-
+  const [orderBlocked, setOrderBlocked] = useState(false);
+  const [user,] = useAtom(authUserAtom);
+  const [wholesaleLinkId,] = useAtom(selectedUserWholesaleLinkIdAtom);
+  const [sortedElements, setSortedElements] = useState(bill.elements);
+  const isOrderingRef = useRef(false);
+  const [isOrdering, setIsOrdering] = useState(false); // 버튼 비활성화에 사용
   /** ✅ Bill 추가 처리 */
 
   const handleDeleteBill = async (billId) => {
@@ -146,13 +151,12 @@ const DroppableBillBox = ({
           console.error(err);
           message.error("이미지 캡처 실패");
         });
-      }, 2000); // 0.3초 지연
+      }, 300); // 0.3초 지연
     } catch (err) {
       console.error(err);
       message.error("이미지 복사 중 오류 발생");
     }
   };
-  const [sortedElements, setSortedElements] = useState(bill.elements);
 
   useEffect(() => {
     setSortedElements(bill.elements);
@@ -194,6 +198,67 @@ const DroppableBillBox = ({
 
     setSortedElements(sorted);
   };
+
+  const handleOrderClick = async (bill) => {
+    if (isOrderingRef.current) return;
+
+    isOrderingRef.current = true;
+    setIsOrdering(true); // 버튼도 비활성화
+    try {
+      if (!bill.elements || bill.elements.length === 0) {
+        message.warning("상품을 한 개 이상 추가해주세요.");
+        return;
+      }
+
+      if (!user || !wholesaleLinkId) {
+        message.warning("로그인 또는 도매 링크 선택 확인");
+        return;
+      }
+      isOrderingRef.current = true;
+      const payload = {
+        orderUserId: user.userId,
+        billId : bill.billId,
+        wholesaleLinkId: wholesaleLinkId,
+        elements: bill.elements.map(el => ({
+          elementName: el.elementsName,
+          elementPrice: el.elementsPrice,
+          elementCount: el.elementCount
+        }))
+      };
+
+      await axios.post("/api/order/sendOrder", payload);
+      message.success("주문이 완료되었습니다");
+      await checkOrderStatus(); // 주문 완료 후 상태 갱신
+    } catch (err) {
+      console.error(err);
+      message.error("주문 실패");
+    }
+    finally {
+      isOrderingRef.current = false;
+      setIsOrdering(false); // 버튼 다시 활성화
+    }
+  };
+
+  const checkOrderStatus = async () => {
+    try {
+      const res = await axios.get(`/api/order/checkStatus`, {
+        params: { billId: bill.billId },
+      });
+
+      const status = res.data;
+      if (status === 'PENDING') {
+        setOrderBlocked(true); // 주문 막기
+      } else {
+        setOrderBlocked(false); // 주문 가능
+      }
+    } catch (err) {
+      console.error("주문 상태 확인 실패", err);
+      setOrderBlocked(false); // 에러 시에도 막지 않음
+    }
+  }
+  useEffect(() => {
+    checkOrderStatus();
+  }, []);
 
   return (
       <div
@@ -362,7 +427,11 @@ const DroppableBillBox = ({
         <div className="order-container">
           <Button className="order-btn"
                   onDoubleClick={(e) => e.stopPropagation()}
-            // onClick={}
+                  disabled={orderBlocked}
+                  onClick={(e)=>{
+                    handleOrderClick(bill);
+                    e.stopPropagation()
+                  }}
           >주문하기
           </Button>
         </div>

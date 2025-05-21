@@ -12,13 +12,14 @@ export const fetchBillsAction = atom(null,async (get,set)=>{
   const userId = user.userId;
   try{
     console.log('bill조회')
-      console.log(wholesaleLink)
-      axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${wholesaleLink}`) // ✅ 주소 수정
-        .then(res => set(billsAtom,res.data))
-        .catch(err => console.error('Bill 불러오기 실패', err));
+    console.log(wholesaleLink)
+    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${wholesaleLink}`) // ✅ 주소 수정
+      .then(res => set(billsAtom,res.data))
+      .catch(err => console.error('Bill 불러오기 실패', err));
   }
   catch (e) {
     console.log(e)
   }
-
 });
+
+
