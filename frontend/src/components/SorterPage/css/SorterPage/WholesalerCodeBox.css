@@ -7,12 +7,12 @@
 }
 
 .wholesale-container {
-  background-color: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
-  padding: 30px 40px;
-  width: 400px;
-  margin: 10vh auto;
+  background-color: #fefefe;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 40px 32px;
+  width: 420px;
+  margin-right : 25vh;
   font-family: 'NanumSquareNeoLight', sans-serif;
   display: flex;
   flex-direction: column;
@@ -20,51 +20,75 @@
 }
 
 .wholesale-label {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #222;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1e1e1e;
 }
 
 .generate-btn, .edit-btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #929e6e;
+  background: #8ca336;
   color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
 .generate-btn:hover, .edit-btn:hover {
-  background-color: #4f5a26;
-  color: #fff;
+  background: #567013;
+  transform: translateY(-2px);
 }
 
 .code-edit-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 14px;
+  margin-top: 24px;
 }
 
 .wholesale-code-number {
-  font-size: 28px;
-  font-weight: 800;
-  background-color: #f9f9f9;
-  padding: 12px 24px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  color: #222;
+  font-size: 24px;
+  font-weight: 700;
+  background-color: #f0f2f5;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  color: #333;
 }
 
 .wholesale-input {
   font-size: 18px;
   padding: 10px 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 200px;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.wholesale-input:focus {
+  border-color: #6e8844;
+  box-shadow: 0 0 0 2px rgba(158, 188, 108, 0.3);
+}
+.wholesaler-section-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  padding: 40px 20px;
+  width : 100%;
+  margin: 0 auto; /* 전체 가운데 정렬 */
+}
+
+.registered-stores-container,
+.wholesale-container {
+  flex: 1 1 360px; /* 최소 360px, 공간 충분하면 확장 */
+  max-width: 420px;
 }

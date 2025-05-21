@@ -258,6 +258,13 @@ public class WholesaleService {
         wholesaleMapper.updateWholesaleCodeByUserId(userCode);
     }
 
+    public List<String> findUserIdsByUserWholesaleCode(String userWholesaleCode) {
+        if (userWholesaleCode == null || userWholesaleCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("도매 코드가 비어 있습니다.");
+        }
+
+        return wholesaleMapper.findUserIdsByUserWholesaleCode(userWholesaleCode);
+    }
 
 
 }

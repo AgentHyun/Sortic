@@ -22,8 +22,12 @@ const WholesalerCodeBox = () => {
   const [, fetchClonedUsers] = useAtom(fetchClonedUserIdAction);
   const [, getWholesaleCodesByUserId] = useAtom(getWholesaleCodesByUserIdAction);
   const [authUser] = useAtom(authUserAtom);
-  const [isColoned, setIsColoned] = useAtom(isClonedAtom);
+  const [isCloned, setIsCloned] = useAtom(isClonedAtom);
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const [isClonedAtomValue] = useAtom(isClonedAtom);
+  const [isClonedLocal, setIsClonedLocal] = useState(isClonedAtomValue);
+
+
 
   const [code, setCode] = useState('');
   const [isGenerated, setIsGenerated] = useState(false);
@@ -32,6 +36,7 @@ const WholesalerCodeBox = () => {
   useEffect(() => {
     const fetchCode = async () => {
       const userId = authUser?.userId;
+      console.log("이즈 클론드", isCloned);
       if (!userId) return;
 
       try {
@@ -50,7 +55,6 @@ const WholesalerCodeBox = () => {
     try {
       const generatedCode = await generateWholesalerCode();
       if (!generatedCode) return;
-
       setCode(generatedCode);
       setIsGenerated(true);
       await cloneUserWithWholesalerCode(generatedCode);
@@ -75,20 +79,22 @@ const WholesalerCodeBox = () => {
     <div className="wholesale-container">
       <div className="wholesale-label">도매 코드</div>
 
-      {(!isGenerated && !isColoned) && (
+      {!code && (
         <button className="generate-btn" onClick={handleGenerate}>
           생성
         </button>
       )}
 
-      {!isEditing ? (
+      {code && !isEditing && (
         <div className="code-edit-row">
           <div className="wholesale-code-number">{code}</div>
           <button className="edit-btn" onClick={() => setIsEditing(true)}>
             수정
           </button>
         </div>
-      ) : (
+      )}
+
+      {code && isEditing && (
         <div className="code-edit-row">
           <input
             className="wholesale-input"
@@ -102,6 +108,7 @@ const WholesalerCodeBox = () => {
       )}
     </div>
   );
+
 };
 
 export default WholesalerCodeBox;

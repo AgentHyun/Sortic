@@ -51,7 +51,7 @@ const SorticHeader = () => {
     // jotai 상태 초기화
     setAuthUser(null);
     setIsAuthenticated(false);
-
+    setSelectedUserId(null);
     navigate('/');
   };
 

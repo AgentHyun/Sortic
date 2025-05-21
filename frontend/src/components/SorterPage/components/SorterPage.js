@@ -130,6 +130,7 @@ import {
 } from "../../WholesalePage/action/wholesaleAction";
 import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 import WholesalerCodeBox from "./WholesalerCodeBox";
+import RegisteredStoresBox from "./RegisteredStoreBox";
 
 
 const { Title } = Typography;
@@ -155,7 +156,7 @@ const SorterPage = () => {
   const [, setChangeCategory] = useAtom(changeCategoryAction);
   const [, setFetchFirstCategory] = useAtom(fetchFirstCategoryAction);
   const fetchCategoryCount = useSetAtom(fetchCategoryCountAction);
-
+  const [currentIndex,setCurrentIndex] = useAtom(currentIndexAtom);
 
   const [, setHandleElementNameSaveAction] = useAtom(handleElementNameSaveAction);
   const[originalElementName, setOriginalElementName] = useAtom(originalElementNameAtom);
@@ -255,22 +256,41 @@ const SorterPage = () => {
     if (currentCategory !== null) {
       fetchElementsByCategory(currentCategory);
     }
-
-
   }, [currentCategory, selectedUserId]);  // ← 두 개를 배열로 묶어서 전달
 
 
 
   useEffect(() => {
-    // 초기 데이터 로딩
-    if(!selectedUserWholesaleLinkId){
-      setFetchCategoriesByUserId();
+    const resetAndFetch = async () => {
+      // ✅ 상태 초기화
+      setCurrentCategory(null);
+      setElementsData([]);
+      setCurrentCategoryName('');
+      setCurrentIndex(-1);
+
+      // ✅ 새로운 유저의 카테고리 불러오기
+      const categories = await setfetchAndNumberCategories();
+
+      // ✅ 새 카테고리가 존재하면 설정 및 요소 조회
+      if (categories.length > 0) {
+        const firstCategory = categories[0];
+        setCurrentCategory(firstCategory.category_id);         // Atom 상태로 설정
+        setCurrentCategoryName(firstCategory.category_name);   // 이름도 함께
+        setCurrentIndex(0);
+
+
+      }
+    };
+
+    if (selectedUserId) {
+      resetAndFetch();
     }
-    setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
-    // 화살표 높이 설정
-    setFetchSortersByUser();
-    fetchElementsByCategory(currentCategory);
   }, [selectedUserId]);
+
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       if (activeId) {
@@ -285,9 +305,13 @@ const SorterPage = () => {
 
     fetchData();
   }, [activeId, setFetchElementNameById]);
+
+
   useEffect(() => {
     console.log('Active Card:', activeCard);
   }, [activeCard]);
+
+
   const fetchElementsByCategory = async() => {
 
     try {
@@ -1574,7 +1598,10 @@ const SorterPage = () => {
 
           {(sorterMode==1) && (
 
-            <WholesalerCodeBox/>
+            <div className="wholesaler-section-container">
+              <WholesalerCodeBox />
+              <RegisteredStoresBox />
+            </div>
           )
 
           }

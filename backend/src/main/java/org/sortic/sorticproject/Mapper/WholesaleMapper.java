@@ -207,4 +207,11 @@ public interface WholesaleMapper {
     @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
     List<WholesaleCode> getCodesByUser(String userId);
 
+    @Select("""
+    SELECT user_id
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = #{userWholesaleCode}
+""")
+    List<String> findUserIdsByUserWholesaleCode(@Param("userWholesaleCode") String userWholesaleCode);
+
 }

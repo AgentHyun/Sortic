@@ -476,7 +476,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
     const newUserId = res.data?.newUserId;
     set(wholesalerIdAtom, newUserId);
     set(currentUserIdAtom, newUserId);
-
+    set(isClonedAtom, true);
     if (newUserId) {
       return newUserId;
     } else {
@@ -600,3 +600,26 @@ export const getWholesaleCodesByUserIdAction = atom(
 
 
 
+export const getUserIdsByUserWholesaleCodeAction = atom(
+  null,
+  async (get, set, userWholesaleCode) => {
+    if (!userWholesaleCode) {
+      message.warning("도매 코드를 입력해주세요.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-user-code", {
+        params: { userWholesaleCode }
+      });
+
+      const userIds = response.data;
+      console.log("📋 유저 ID 목록:", userIds);
+      return userIds;
+    } catch (error) {
+      console.error("🚨 유저 ID 조회 실패:", error);
+      message.error("유저 ID 조회 중 오류가 발생했습니다.");
+      return [];
+    }
+  }
+);

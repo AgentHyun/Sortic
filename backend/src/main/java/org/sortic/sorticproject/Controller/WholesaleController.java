@@ -327,6 +327,19 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", "유저 ID로 도매 코드 조회 중 오류 발생"));
         }
     }
+    @GetMapping("/user-ids/by-user-code")
+    public ResponseEntity<?> getUserIdsByUserWholesaleCode(@RequestParam String userWholesaleCode) {
+        try {
+            List<String> userIds = wholesaleService.findUserIdsByUserWholesaleCode(userWholesaleCode);
+            return ResponseEntity.ok(userIds);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
+        }
+    }
 
 
 }

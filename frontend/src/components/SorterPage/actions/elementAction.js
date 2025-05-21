@@ -26,7 +26,7 @@ export const fetchElementsByCategoryAction = atom(
   null,
   async (get, set, categoryId) => {
     try {
-
+      console.log("카테고리 아이디!!!" + categoryId);
       const response = await axios.get('http://localhost:8080/api/elements/get_elements_by_category', {
         params: { category_id: categoryId },
       });

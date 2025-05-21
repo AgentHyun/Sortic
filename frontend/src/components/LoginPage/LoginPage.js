@@ -6,7 +6,7 @@ import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authL
 import { authService } from '../../auth/authService';
 import styles from './css/Login.module.css';
 import {fetchAndNumberCategoriesAction, fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
-import {currentCategoryAtom, selectedUserIdAtom} from "../SorterPage/atoms/atoms";
+import {currentCategoryAtom, selectedUserIdAtom, sorterModeAtom} from "../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../SorterPage/actions/elementAction";
 
 const Login = () => {
@@ -21,7 +21,8 @@ const Login = () => {
   const [authLoading] = useAtom(authLoadingAtom);
   const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
-  const[currentCategory] = useAtom(currentCategoryAtom);
+  const[currentCategory,setCurrentCategory] = useAtom(currentCategoryAtom);
+  const[sorterMode,setSorterMode] = useAtom(sorterModeAtom);
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
@@ -67,7 +68,8 @@ const Login = () => {
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
         setSelectedUserId(response.user.userId);
-
+        setCurrentCategory(0);
+        setSorterMode(0);
         // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
         if (!location.state?.from) {
           navigate('/', { replace: true });
