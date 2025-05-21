@@ -123,8 +123,9 @@ public interface WholesaleMapper {
 
     @Select("SELECT user_id FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
     String findUserIdByWholesaleCodeId(@Param("wholesaleCodeId") int wholesaleCodeId);
-    @Select("SELECT user_id FROM Users WHERE username = #{username}")
+    @Select("SELECT user_id FROM Users WHERE username = #{username} AND user_id NOT LIKE '%!_%' ESCAPE '!' LIMIT 1")
     String findUserIdByUsername(@Param("username") String username);
+
 
     @Select("SELECT user_wholesale_code_id FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
     Integer findUserWholesaleCodeIdByCode(@Param("code") String userWholesaleCode);
@@ -184,11 +185,12 @@ public interface WholesaleMapper {
     @Select("""
     SELECT user_id
     FROM Users
-    WHERE user_id LIKE CONCAT(#{originalUserId}, '\\\\_%') ESCAPE '\\\\'
+    WHERE user_id LIKE CONCAT(#{originalUserId}, '!_%') ESCAPE '!'
       AND is_cloned = TRUE
     LIMIT 1
 """)
     String findClonedUserId(@Param("originalUserId") String originalUserId);
+
 
 
 }

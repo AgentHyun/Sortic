@@ -61,7 +61,8 @@
   min-width: 320px;
   width: 100%;
   max-width: 540px;
-  height : 75vh;
+  height : 80vh;
+
   position: relative;
   margin-left : 10vw;
 
@@ -540,9 +541,7 @@
   color: white !important;
   transition: all 0.3s ease;
   position: absolute;
-  bottom : 7px;
-
-
+  margin-top : -10px;
   width: 90%;
   max-width: 480px;
   z-index: 10;

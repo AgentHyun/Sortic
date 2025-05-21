@@ -194,6 +194,8 @@ public class WholesaleController {
 
     @GetMapping("/user-id/by-username")
     public ResponseEntity<?> getUserIdByUsername(@RequestParam String username) {
+        System.out.println("요청 받은 username: " + username); // 디버깅용 로그
+
         try {
             String userId = wholesaleService.findUserIdByUsername(username);
             if (userId == null) {
@@ -202,6 +204,7 @@ public class WholesaleController {
             }
             return ResponseEntity.ok(Collections.singletonMap("userId", userId));
         } catch (Exception e) {
+            e.printStackTrace(); // 꼭 콘솔에서 전체 에러 로그 확인하세요
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }

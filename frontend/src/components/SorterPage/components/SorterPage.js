@@ -187,7 +187,7 @@ const SorterPage = () => {
   const [fetchElementNameById, setFetchElementNameById] = useAtom(fetchElementNameByIdAction);
   const [activeCard, setActiveCard] = useAtom(activeCardAtom);
   const [selectedElementIds] = useAtom(selectedElementIdsAtom);
-
+  const [activeType, setActiveType] = useState(null);
   const [, setToggleSelectElementAction] = useAtom(toggleSelectElementAction);
   const [, handleBulkDeleteElements] = useAtom(handleBulkDeleteElementsAction);
   const [animationClass, setAnimationClass] = useAtom(animationClassAtom);
@@ -566,14 +566,6 @@ const SorterPage = () => {
       if (sectionRef.current) observer.unobserve(sectionRef.current);
     };
   }, [currentCategory]); // <-- 여기 핵심! category 바뀌면 항상 다시 관찰
-  useEffect(() => {
-    if (typeof activeCard === 'string' && activeCard.startsWith('sorter-')) {
-      const sorterId = activeCard.replace('sorter-', '');
-      if (!isNaN(Number(sorterId))) {
-        setGetSorterNameByIdAction(Number(sorterId));
-      }
-    }
-  }, [activeCard, setGetSorterNameByIdAction]);
 
 
 
@@ -666,26 +658,24 @@ const SorterPage = () => {
     })
   );
 
-  const handleDragStart = (event) => {
+  const handleDragStart = async (event) => {
     const { active } = event;
+    const idStr = String(active.id);
 
-    // active.id를 문자열로 강제 변환
-    const activeIdStr = String(active.id);
-    setActiveCard(active.id);
-    let extractedId = activeIdStr;
-
-    // 문자열에 '-'가 포함된 경우 split하여 두 번째 값만 추출
-    if (activeIdStr.includes('-')) {
-      extractedId = activeIdStr.split('-')[1];
+    if (idStr.startsWith('sorter-')) {
+      setActiveType('sorter');
+      const sorterId = Number(idStr.replace('sorter-', ''));
+      setGetSorterNameByIdAction(sorterId);
+    } else {
+      setActiveType('element');
+      const elementId = idStr.includes('-') ? idStr.split('-')[1] : idStr;
+      const elementName = await setFetchElementNameById(elementId);
+      setActiveCard(elementName);
     }
 
-
-    // 추출된 ID를 activeId로 설정
-    setActiveId(extractedId);
-
-
-
+    setActiveId(idStr);
   };
+
   useEffect(() => {
     const checkLinkCountAndRedirect = async () => {
       if (sorterMode === 2 && authUser?.userId) {
@@ -995,6 +985,11 @@ const SorterPage = () => {
         },
       onOk: async () => {
         await deleteUserCode(id); // 실제 삭제
+        const count = await getLinkCount(id);
+        console.log("카운트" + count);
+        if (count === 0 && sorterMode === 2) {
+          navigate('/wholesale');
+        }
         const result = await setFetchUserWholesaleCodes(); // 최신 리스트 받아옴
 
         if (Array.isArray(result)) {
@@ -1013,7 +1008,7 @@ const SorterPage = () => {
             }
           }
 
-          setUsernamesByCodeId(updatedMap); // ✅ 업데이트된 맵 저장
+          setUsernamesByCodeId(updatedMap);
         }
       },
     })
@@ -1238,18 +1233,20 @@ const SorterPage = () => {
                 </div>
               </div>
               <DragOverlay>
-                {activeCard ? (
-                  typeof activeCard === 'string' && activeCard.startsWith('sorter-') ? (
+                {activeId ? (
+                  activeType === 'sorter' ? (
                     <div className="drag-overlay sorter-overlay">
-                      {sorterNameById|| '불러오는 중...'}
+                      {sorterNameById || '불러오는 중...'}
                     </div>
-                  ) : (
+                  ) : activeType === 'element' ? (
                     <div className="category-item dragging">
-                      {activeCard}
+                      {activeCard || '불러오는 중...'}
                     </div>
-                  )
+                  ) : null
                 ) : null}
               </DragOverlay>
+
+
 
 
 

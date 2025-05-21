@@ -13,6 +13,7 @@ import {
   generateWholesalerCodeAction,
   fetchWholesalerCodeByUserIdAction, fetchClonedUserIdsAction, fetchClonedUserIdAction
 } from "../WholesalePage/action/wholesaleAction";
+import {fetchAndNumberCategoriesAction} from "../SorterPage/actions/categoryAction";
 const { Header } = Layout;
 
 const SorticHeader = () => {
@@ -28,6 +29,7 @@ const SorticHeader = () => {
   const [,createWholesaleCode] = useAtom(createWholesaleCodeAction);
   const [,fetchWholesalerCodeByUserId] = useAtom(fetchWholesalerCodeByUserIdAction);
   const [, fetchClonedUsers] = useAtom(fetchClonedUserIdAction);
+  const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
   // 로그아웃 처리 함수
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -78,8 +80,9 @@ const SorticHeader = () => {
         const userId = authUser?.userId;
         await cloneUserWithWholesalerCode(code);
         await createWholesaleCode(code);
-        const clonedId = await fetchClonedUsers(userId); // ✅ 반드시 await
-        console.log("선택된 유저 아이디", clonedId);
+        const clonedId = await fetchClonedUsers(userId);
+        setSelectedUserId(clonedId);
+        console.log("선택된 유저" + clonedId);
 
 
 

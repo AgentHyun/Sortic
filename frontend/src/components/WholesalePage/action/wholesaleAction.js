@@ -12,6 +12,7 @@ import {
   wholesalerIdAtom
 } from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
+import {useNavigate} from "react-router-dom";
 // 도매 코드 생성
 
 
@@ -68,7 +69,7 @@ export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLi
 export const getWholesaleLinkCountByUserAction = atom(
   null,
   async (get, set, userId) => {
-    if (!userId || userId.trim() === "") {
+    if (!userId) {
       message.warning("사용자 ID가 누락되었습니다.");
       return 0;
     }
@@ -345,11 +346,16 @@ export const deleteUserWholesaleCodeAction = atom(null, async (get, set, userWho
 
     // 삭제 후 목록 갱신
     await set(fetchUserWholesaleCodesAction);
+
+
   } catch (error) {
     console.error("🚨 유저 도매 코드 삭제 실패:", error);
     message.error("유저 도매 코드 삭제 중 오류가 발생했습니다.");
   }
 });
+
+
+
 export const getUserWholesaleCodeIdByCodeAction = atom(null, async (get, set, userWholesaleCode) => {
   if (!userWholesaleCode || userWholesaleCode.trim() === "") {
     message.warning("도매 코드가 비어 있습니다.");
@@ -375,7 +381,7 @@ export const getUserWholesaleCodeIdByCodeAction = atom(null, async (get, set, us
     if (error.response?.status === 404) {
       message.warning("해당 도매 코드를 찾을 수 없습니다.");
     } else {
-      message.error("도매 코드 ID 조회 중 오류가 발생했습니다.");
+
     }
 
     return null;
@@ -525,12 +531,13 @@ export const fetchClonedUserIdAction = atom(
       });
 
       const clonedUserId = res.data?.userId; // ✅ 이제 정확하게 동작해야 함
+      console.log("⬅️ 요청한 userId:", originalUserId);
+      console.log("➡️ 서버 응답:", res.data);
 
-      console.log("📦 복제된 유저 ID:", clonedUserId);
 
       if (clonedUserId) {
         set(selectedUserIdAtom, clonedUserId); // ✅ 상태 반영
-        message.success(`복제 유저 ID 조회 성공: ${clonedUserId}`);
+
         return clonedUserId;
       } else {
         message.info("복제된 유저가 없습니다.");
@@ -539,7 +546,7 @@ export const fetchClonedUserIdAction = atom(
 
     } catch (error) {
       console.error("🚨 복제 유저 조회 실패:", error);
-      message.error("복제 유저 조회 중 오류가 발생했습니다.");
+
       return null;
     }
   }

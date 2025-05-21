@@ -7,22 +7,12 @@
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Users.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/Users.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Category.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Category.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ContextMenu.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ContextMenu.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Element.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Element.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ElementDetailModal.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/ElementDetailModal.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/Sorter.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterDefaultPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterDefaultPage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/SorterPage.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +73,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "0520wholesaler",
+    "git-widget-placeholder": "feature/l/cloning",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -136,6 +126,7 @@
       <workItem from="1747616452090" duration="4406000" />
       <workItem from="1747621456117" duration="13028000" />
       <workItem from="1747697415332" duration="26774000" />
+      <workItem from="1747783931437" duration="5265000" />
     </task>
     <servers />
   </component>
