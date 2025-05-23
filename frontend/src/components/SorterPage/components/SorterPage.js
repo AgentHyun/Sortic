@@ -267,7 +267,7 @@ const SorterPage = () => {
       setElementsData([]);
       setCurrentCategoryName('');
       setCurrentIndex(-1);
-
+      setFetchBills();
       // ✅ 새로운 유저의 카테고리 불러오기
       const categories = await setfetchAndNumberCategories();
 
@@ -566,10 +566,8 @@ const SorterPage = () => {
       const userId =  selectedUserId;// 실제 사용자 ID로 대체
       const count = await fetchCategoryCount(userId);
 
-      // if (count === 0) {
-      //   navigate('/sorterDefaultPage');
-      // }
     };
+    setSorterMode(0);
     const currentUserName = setGetUserNameByUserId(currentUserId);
     setSelectedUserName(currentUserName);
     setCurrentUserName(currentUserName);
@@ -932,7 +930,6 @@ const SorterPage = () => {
 
   const handleLinkClick = async () => {
     setDefaultAttributes([]);
-
     const result = await setFetchUserWholesaleCodes(); // 도매 코드 목록
     console.log("🔁 fetchUserWholesaleCodesAction 결과:", result);
 
@@ -984,7 +981,7 @@ const SorterPage = () => {
       navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
     }
 
-    setFetchBills();
+    setFetchBills(selectedUserId);
 
   };
   const handleLinkDeleteClick = (id) => {

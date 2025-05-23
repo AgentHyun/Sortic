@@ -7,7 +7,7 @@ import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 import {
-  selectedUserIdAtom,
+  selectedUserIdAtom, selectedUserNameAtom,
   selectedUserWholesaleLinkIdAtom,
   sorterModeAtom,
   wholesalerIdAtom
@@ -19,7 +19,10 @@ import {
   fetchWholesalerCodeByUserIdAction,
   fetchClonedUserIdsAction,
   fetchClonedUserIdAction,
-  getWholesaleLinkCountByUserAction
+  getWholesaleLinkCountByUserAction,
+  fetchUserWholesaleCodesAction,
+  getUserIdsByUserWholesaleCodeAction,
+  getUsernameByUserIdAction
 } from "../WholesalePage/action/wholesaleAction";
 import {fetchAndNumberCategoriesAction} from "../SorterPage/actions/categoryAction";
 const { Header } = Layout;
@@ -40,6 +43,10 @@ const SorticHeader = () => {
   const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
   const getLinkCount = useSetAtom(getWholesaleLinkCountByUserAction);
   const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
+  const [,fetchUserWholesaleCodes] = useAtom(fetchUserWholesaleCodesAction);
+  const [,getUserIdsByUserWholesaleCode] = useAtom(getUserIdsByUserWholesaleCodeAction);
+  const [, getUsernameByUserId] = useAtom(getUsernameByUserIdAction);
+  const [selectedUsername, setSelectedUserName ] = useAtom(selectedUserNameAtom);
   // 로그아웃 처리 함수
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -71,7 +78,7 @@ const SorticHeader = () => {
   ];
   const sorterMenuItems = [
     {
-      key: 'wholesale',
+      key: 'personal',
       label: '개인',
       onClick: () => {
         setSorterMode(0);
@@ -91,7 +98,7 @@ const SorticHeader = () => {
         const userId = authUser?.userId;
         const clonedId = await fetchClonedUsers(userId);
         setSelectedUserId(clonedId);
-        console.log("선택된 유저" + clonedId);
+
 
 
 
@@ -104,11 +111,25 @@ const SorticHeader = () => {
         setSorterMode(2);
         navigate('/sorter');
         const userId = authUser?.userId;
-        setSelectedUserId(userId);
+
         const count = await getLinkCount(userId);
         if (count === 0) {
           navigate('/wholesale');
         }
+        const result = await fetchUserWholesaleCodes();
+        const firstCode = result?.[0]?.userWholesaleCode;
+        setSelectedUserWholesaleLinkId(firstCode);
+        fetchAndNumberCategories(firstCode);
+        const userIds = await getUserIdsByUserWholesaleCode(firstCode);
+        const firstUserId = userIds?.[0];
+        const firstUserName = await getUsernameByUserId(firstUserId);
+        setSelectedUserName(firstUserName);
+        const clonedId = await fetchClonedUsers(firstUserId);
+
+        setSelectedUserId(clonedId);
+
+
+
       },
     },
   ];

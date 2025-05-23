@@ -20,7 +20,7 @@ const Login = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [authLoading] = useAtom(authLoadingAtom);
   const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
-  const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
+
   const[currentCategory,setCurrentCategory] = useAtom(currentCategoryAtom);
   const[sorterMode,setSorterMode] = useAtom(sorterModeAtom);
   useEffect(() => {
@@ -67,9 +67,7 @@ const Login = () => {
         setIsAuthenticated(true);
         setAuthUser(response.user);
         message.success(`${response.user.username}님 환영합니다!`);
-        setSelectedUserId(response.user.userId);
-        setCurrentCategory(0);
-        setSorterMode(0);
+
         // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
         if (!location.state?.from) {
           navigate('/', { replace: true });
