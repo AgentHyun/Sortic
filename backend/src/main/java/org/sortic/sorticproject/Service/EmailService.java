@@ -41,10 +41,4 @@ public class EmailService {
 
         return match;
     }
-//    public boolean verifyCode(String email, String code) {
-//        String stored = redisTemplate.opsForValue().get(email);
-//        boolean match = stored != null && stored.equals(code);
-//        if (match) redisTemplate.delete(email); // ✅ 인증 후 삭제
-//        return match;
-//    }
 }

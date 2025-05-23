@@ -16,6 +16,7 @@ const authAxios = axios.create({
 // ✅ 요청 인터셉터: accessToken 자동 첨부
 authAxios.interceptors.request.use((config) => {
   const token = store.get(accessTokenAtom) || localStorage.getItem('accessToken');
+  console.log('[authAxios] Using token:', token); // ✅ 디버깅 로그
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -8,6 +8,7 @@ import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import { useLogout } from '../../auth/authService';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
+import authAxios from "../../api/authAxios";
 
 const { Header } = Layout;
 
@@ -19,8 +20,16 @@ const SorticHeader = () => {
 
   // ✅ 로그아웃 처리
   const handleLogout = async () => {
+    const userId = user?.userId; // jotai 초기화 전에 userId 보존
+
+    try {
+      await authAxios.post('/auth/logout', { userId });
+    } catch (e) {
+      console.warn('백엔드 로그아웃 실패', e);
+    }
+
     await logout(); // jotai 상태 초기화 포함
-    navigate('/');  // 홈으로 이동
+    navigate('/');
   };
 
   // ✅ 유저 드롭다운 메뉴

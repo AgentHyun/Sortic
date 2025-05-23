@@ -15,16 +15,22 @@ export function useLogin() {
 
   const login = async ({ userId, password }) => {
     try {
-      const response = await publicAxios.post('/auth/login', { userId, password });
-      const { accessToken, user } = response.data;
+      localStorage.removeItem('accessToken'); // 기존 토큰 제거
+
+      const res = await publicAxios.post('/auth/login', { userId, password });
+      const { accessToken, user } = res.data;
 
       if (!accessToken || !user) {
         return { success: false, message: '로그인 응답이 올바르지 않습니다.' };
       }
 
+      // 상태 및 로컬 동기화
       setAccessToken(accessToken);
-      setUser(user); // ✅ 전체 유저 정보 저장
-      setIsAuthenticated(true); // ✅ 로그인 상태 전역 설정
+      setUser(user);
+      setIsAuthenticated(true);
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', user.userId);
 
       return { success: true, user };
     } catch (err) {
@@ -32,20 +38,36 @@ export function useLogin() {
       return { success: false, message: msg };
     }
   };
+
   return login;
 }
 
-export async function reissueToken() {
+/** ✅ 토큰 재발급 + 상태 동기화 (App, AuthProvider 등에서 호출용) */
+export async function reissueToken(setAccessToken, setUser, setIsAuthenticated) {
   try {
-    const response = await publicAxios.post('/auth/reissue');
-    const { accessToken, user } = response.data;
+    const res = await publicAxios.post('/auth/reissue');
+    const { accessToken, user } = res.data;
 
     if (accessToken && user) {
-      return { success: true, accessToken, user };
-    } else {
-      return { success: false };
+      setAccessToken(accessToken);
+      setUser(user);
+      setIsAuthenticated(true);
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', user.userId);
+
+      return { success: true };
     }
-  } catch (err) {
+
+    return { success: false };
+  } catch {
+    // 상태 초기화
+    setAccessToken('');
+    setUser(null);
+    setIsAuthenticated(false);
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
     return { success: false };
   }
 }
@@ -58,18 +80,17 @@ export function useLogout() {
 
   const logout = async () => {
     try {
-      await publicAxios.post('/auth/logout', {
-        userId: localStorage.getItem('userId'), // ✅ 백엔드 로그아웃용
-      });
-    } catch (_) {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        await publicAxios.post('/auth/logout', { userId });
+      }
+    } catch {
       // 실패 무시
     } finally {
-      // ✅ 상태 초기화
       setAccessToken('');
       setUser(null);
       setIsAuthenticated(false);
 
-      // ✅ localStorage 정리
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userId');
     }

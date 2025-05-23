@@ -1,6 +1,7 @@
+// src/pages/App.jsx
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Spin } from 'antd';
 
 import SorticHeader from '../components/Header/Header';
@@ -14,56 +15,15 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import WholesalePage from '../components/WholesalePage/WholesalePage';
 import Snb from '../components/Snb/components/Snb';
 
-import {
-  authLoadingAtom,
-  setAccessTokenAtom,
-  authUserAtom,
-  setIsAuthenticatedAtom,
-} from '../auth/authAtoms';
-import publicAxios from '../api/publicAxios';
+import { authLoadingAtom } from '../auth/authAtoms';
 
 const App = () => {
-  const setAccessToken = useSetAtom(setAccessTokenAtom);
-  const setUser = useSetAtom(authUserAtom);
-  const setIsAuthenticated = useSetAtom(setIsAuthenticatedAtom);
-  const authLoading = useAtomValue(authLoadingAtom); // 조회 전용
-  const setAuthLoading = useSetAtom(authLoadingAtom); // setter만 따로
+  const authLoading = useAtomValue(authLoadingAtom); // ✅ 인증 로딩 여부
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     document.documentElement.classList.toggle('dark', savedTheme === 'dark');
   }, []);
-
-  useEffect(() => {
-    const restoreLoginState = async () => {
-      try {
-        const response = await publicAxios.post('/auth/reissue');
-        const { accessToken, user } = response.data;
-
-        if (accessToken && user) {
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('userId', user.userId); // 선택적
-          setAccessToken(accessToken);
-          setUser(user);
-          setIsAuthenticated(true);
-        } else {
-          throw new Error('Invalid token response');
-        }
-      } catch (err) {
-        // ✅ 실패 시 강제 로그아웃 처리
-        setAccessToken('');
-        setUser(null);
-        setIsAuthenticated(false);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userId');
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-
-    restoreLoginState();
-  }, []);
-
 
   if (authLoading) {
     return (
@@ -90,7 +50,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/sorterDefaultPage"
           element={
@@ -99,7 +58,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
@@ -108,7 +66,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route path="/wholesale" element={<WholesalePage />} />
       </Routes>
     </>
