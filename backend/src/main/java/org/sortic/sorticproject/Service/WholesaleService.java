@@ -259,6 +259,9 @@ public class WholesaleService {
         wholesaleMapper.updateWholesaleCodeByUserId(userCode);
     }
 
+    public Integer getWholesaleCommissionById(int wholesaleLinkId) {
+        return wholesaleMapper.getWholesaleCommissionById(wholesaleLinkId);
+    }
 
 
 

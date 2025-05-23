@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {atom, useAtom} from 'jotai';
 import { message } from 'antd';
-import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {wholesaleCommissionAtom, wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
 import {billsAtom} from "../atom/atoms";
 import {authUserAtom} from "../../../auth/authAtoms";
 import {selectedUserWholesaleLinkIdAtom} from "../../SorterPage/atoms/atoms";
@@ -21,5 +21,14 @@ export const fetchBillsAction = atom(null,async (get,set)=>{
     console.log(e)
   }
 });
-
+export const fetchWholesaleCommissionAction = atom(null, async (get, set) => {
+  const wholesaleLinkId = get(selectedUserWholesaleLinkIdAtom);
+  if (!wholesaleLinkId) return; // 유효하지 않은 ID 처리
+  try {
+    const res = await axios.get(`/api/wholesale/getWholesaleCommission?wholesaleLinkId=${wholesaleLinkId}`);
+    set(wholesaleCommissionAtom, res.data);
+  } catch (err) {
+    console.log('commission 불러오기 실패', err);
+  }
+});
 

@@ -1,5 +1,7 @@
 package org.sortic.sorticproject.Service;
 
+import org.sortic.sorticproject.Entity.BillOrderElementDetail;
+import org.sortic.sorticproject.Entity.BillOrderGroupResponse;
 import org.sortic.sorticproject.Entity.OrderElement;
 import org.sortic.sorticproject.Entity.OrderSendRequest;
 import org.sortic.sorticproject.Mapper.OrderMapper;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -41,6 +44,25 @@ public class OrderService {
                 el.getElementCount()
             );
         }
+    }
+    public List<BillOrderGroupResponse> getGroupedOrdersByWholesaleUserId(String userId) {
+        List<BillOrderGroupResponse> orders = orderMapper.getOrdersByWholesaleUserId(userId);
+
+        for (BillOrderGroupResponse order : orders) {
+            if (order == null) {
+                System.out.println("⚠️ order is null");
+                continue;
+            }
+            System.out.println("👉 orderId: " + order.getOrderId()); // 디버깅용
+            List<BillOrderElementDetail> elements =
+                orderMapper.getElementsByOrderId(order.getOrderId());
+            order.setElements(elements);
+        }
+
+        return orders;
+    }
+    public boolean updateOrderStatus(int orderId, String status) {
+        return orderMapper.updateOrderStatus(orderId, status) > 0;
     }
 
 }

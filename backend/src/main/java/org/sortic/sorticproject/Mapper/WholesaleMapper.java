@@ -202,4 +202,8 @@ public interface WholesaleMapper {
 
     @Select("select wholesale_name , wholesale_commission from wholesale_link where wholesale_link_id = #{wholesaleLinkId}")
     Map<String, Object> findUserIdAndWholesaleCommissionByWholesaleLinkId(@Param("wholesaleLinkId") int wholesaleLinkId);
+
+    @Select("SELECT wholesale_commission FROM Wholesale_Link WHERE wholesale_link_id = #{wholesaleLinkId}")
+    Integer getWholesaleCommissionById(@Param("wholesaleLinkId") int wholesaleLinkId);
+
 }

@@ -317,7 +317,11 @@ public class WholesaleController {
         }
     }
 
-
+    @GetMapping("/getWholesaleCommission")
+    public ResponseEntity<Integer> getWholesaleCommission(@RequestParam int wholesaleLinkId) {
+        Integer commission = wholesaleService.getWholesaleCommissionById(wholesaleLinkId);
+        return ResponseEntity.ok(commission);
+    }
 }
 
 

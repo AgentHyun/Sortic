@@ -1,9 +1,10 @@
 package org.sortic.sorticproject.Mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.sortic.sorticproject.Entity.BillOrderElementDetail;
+import org.sortic.sorticproject.Entity.BillOrderGroupResponse;
+
+import java.util.List;
 
 @Mapper
 public interface OrderMapper {
@@ -38,4 +39,35 @@ public interface OrderMapper {
     String findLatestStatusByBillId(@Param("billId") int billId);
 
 
-}
+    @Select("""
+    SELECT
+      order_id AS orderId,
+      bill_id AS billId,
+      order_user_id AS orderUserId,
+      order_status AS orderStatus,
+      DATE_FORMAT(order_time, '%Y-%m-%d %H:%i:%s') AS orderTime,
+      wholesale_commission AS wholesaleCommission
+    FROM Bill_Order
+    WHERE wholesale_user_id = #{userId}
+    ORDER BY order_time DESC
+""")
+    List<BillOrderGroupResponse> getOrdersByWholesaleUserId(String userId);
+
+
+    @Select("""
+    SELECT
+      element_name AS elementName,
+      element_price AS elementPrice,
+      element_count AS elementCount
+    FROM Bill_Order_Element
+    WHERE order_id = #{orderId}
+""")
+    List<BillOrderElementDetail> getElementsByOrderId(int orderId);
+
+    @Update("""
+        UPDATE Bill_Order
+        SET order_status = #{status}
+        WHERE order_id = #{orderId}
+    """)
+    int updateOrderStatus(@Param("orderId") int orderId, @Param("status") String status);
+    }

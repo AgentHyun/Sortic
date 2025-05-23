@@ -237,8 +237,8 @@ const SorterPage = () => {
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const [selectedUserName, setSelectedUserName] = useAtom(selectedUserNameAtom);
   const [,setFetchUserIdByWholesaleCodeId] = useAtom(fetchUserIdByWholesaleCodeIdAction);
-
-
+  const [selectedUserWholesaleLinkId, setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
+  const [, getUserCodeId] = useAtom(getUserWholesaleCodeIdByCodeAction);
   // 유저 아이디
   const [ isExternalUser, setIsExternalUser] = useAtom(isExternalUserAtom);
   const [currentUserId, setCurrentUserId] = useAtom(currentUserIdAtom);

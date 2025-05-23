@@ -13,8 +13,8 @@ import {
 } from "../atom/atoms";
 import {authUserAtom} from "../../../auth/authAtoms";
 import html2canvas from "html2canvas";
-import {wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
-import {fetchBillsAction} from "../actions/billActions";
+import {wholesaleCommissionAtom, wholesaleLinksAtom} from "../../WholesalePage/atoms/atoms";
+import {fetchBillsAction, fetchWholesaleCommissionAction} from "../actions/billActions";
 import {selectedUserWholesaleLinkIdAtom} from "../../SorterPage/atoms/atoms";
 const DroppableBillBox = ({
                             bill,
@@ -32,12 +32,14 @@ const DroppableBillBox = ({
   const boxRef = React.useRef(null);
   const { Option } = Select;
   const [,fetchBills] = useAtom(fetchBillsAction);
+  const [,fetchCommission]=useAtom(fetchWholesaleCommissionAction);
   const [orderBlocked, setOrderBlocked] = useState(false);
   const [user,] = useAtom(authUserAtom);
   const [wholesaleLinkId,] = useAtom(selectedUserWholesaleLinkIdAtom);
   const [sortedElements, setSortedElements] = useState(bill.elements);
   const isOrderingRef = useRef(false);
   const [isOrdering, setIsOrdering] = useState(false); // 버튼 비활성화에 사용
+  const [wholesaleCommission , setWholesaleCommission] = useAtom(wholesaleCommissionAtom);
   /** ✅ Bill 추가 처리 */
 
   const handleDeleteBill = async (billId) => {
@@ -160,6 +162,7 @@ const DroppableBillBox = ({
 
   useEffect(() => {
     setSortedElements(bill.elements);
+    fetchCommission();
   }, [bill.elements]);
 
   const handleSortChange = (value) => {
@@ -399,29 +402,41 @@ const DroppableBillBox = ({
             <strong >상품 금액:</strong> {bill.totalElementPrice}원
           </p>
         </div>
-
         <div>
-          <div className="commission-header"
-               onDoubleClick={(e) => e.stopPropagation()}
-               onClick={(e) => {
-                 e.stopPropagation();
-                 setSelectedBillId(bill.billId);
-                 setSelectedBillForCommission(bill);
-                 setCommissionModalVisible(true);
-               }}
-          >🧾 수수료
-          </div>
-          <ul className="bill-commission-box">
-            {Array.isArray(bill.commissions) &&
-              bill.commissions.map((c, idx) => (
-                <li key={idx} className="bill-commission-map">
-                  {c.commissionName}
-                </li>
-              ))}
-          </ul>
-          <p className="total-commission">
-            <strong >수수료:</strong> {bill.totalCommission}원
-          </p>
+          {wholesaleLinkId === 0 ? (
+            <div>
+              <div
+                className="commission-header"
+                onDoubleClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedBillId(bill.billId);
+                  setSelectedBillForCommission(bill);
+                  setCommissionModalVisible(true);
+                }}
+              >
+                🧾 수수료
+              </div>
+              <ul className="bill-commission-box">
+                {Array.isArray(bill.commissions) &&
+                  bill.commissions.map((c, idx) => (
+                    <li key={idx} className="bill-commission-map">
+                      {c.commissionName}
+                    </li>
+                  ))}
+              </ul>
+              <p className="total-commission">
+                <strong>수수료:</strong> {bill.totalCommission}원
+              </p>
+            </div>
+          ) : (
+            <div>
+              <strong className="wholesale-mode-text">🧾 도매수수료</strong>
+              <div className="bill-commission-map">
+                {wholesaleCommission}원
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="total-section">
