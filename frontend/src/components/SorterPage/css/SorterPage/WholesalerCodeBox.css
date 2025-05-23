@@ -6,24 +6,52 @@
   url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.ttf) format("truetype");
 }
 
+.wholesaler-section-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 48px;
+  padding: 40px 20px;
+  width: 100%;
+
+}
+.wholesale-container-section{
+  width : 100vw;
+  margin-left : -50px;
+  height : 65vh;
+  margin-bottom : -50px;
+  background-color: #f9faeb;
+
+}
+.wholesale-container,
+.registered-stores-container {
+  flex: 1 1 360px;
+  max-width: 420px;
+}
+
 .wholesale-container {
   background-color: #fefefe;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
   border-radius: 20px;
   padding: 40px 32px;
-  width: 420px;
-  margin-right : 25vh;
   font-family: 'NanumSquareNeoLight', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height : 200px;
+  margin-left : auto;
+  margin-right : auto;
+  margin-top : 12vh;
+
 }
 
 .wholesale-label {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 24px;
   color: #1e1e1e;
+  font-family: 'NanumSquareNeoLight';
 }
 
 .generate-btn, .edit-btn {
@@ -35,6 +63,7 @@
   cursor: pointer;
   background: #8ca336;
   color: white;
+  font-family: 'NanumSquareNeoLight';
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, background 0.3s ease;
 }
@@ -76,19 +105,141 @@
   border-color: #6e8844;
   box-shadow: 0 0 0 2px rgba(158, 188, 108, 0.3);
 }
-.wholesaler-section-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 48px;
-  padding: 40px 20px;
-  width : 100%;
-  margin: 0 auto; /* 전체 가운데 정렬 */
+
+
+
+.registered-stores-section{
+  width : 100vw;
+  margin-left : -50px;
+  height : 90vh;
+  background-color: #ffffff;
+  margin-bottom : -50px;
+}
+.registered-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e1e1e;
+  margin-bottom: 12px;
 }
 
-.registered-stores-container,
-.wholesale-container {
-  flex: 1 1 360px; /* 최소 360px, 공간 충분하면 확장 */
-  max-width: 420px;
+.store-box {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  width : 100%;
+  flex-direction: row;
+  margin-top : 5vh;
+
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 340px;
+  height: 260px;
+  perspective: 1200px;
+  margin-top: 4vh;
+  margin : 50px;
+  font-family: 'NanumSquareNeoLight';
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  border-radius: 16px;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  backface-visibility: hidden;
+}
+
+/* 카드 앞면 */
+.flip-card-front {
+  background: linear-gradient(to top left, #E4F6CF, #D1EAC4);
+  border: 2px dashed #a4c87c;
+  color: #2f3e1d;
+}
+
+.flip-card-front .store-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.flip-card-front .order-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #3b4a1c;
+  margin-bottom: 6px;
+}
+
+/* 카드 뒷면 */
+.flip-card-back {
+  background: #fffef7;
+  border: 2px solid #e3eecf;
+  color: #1e1e1e;
+  transform: rotateY(180deg);
+  gap: 8px;
+}
+
+.flip-card-back .back-info {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.flip-card-back button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  background-color: #8ca336;
+  color: white;
+  cursor: pointer;
+  font-family: 'NanumSquareNeoLight';
+}
+
+.flip-card-back button:hover {
+  background-color: #6a8428;
+}
+
+
+.order-title {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'NanumSquareNeoLight';
+}
+
+.order-title-code {
+  font-size: 30px;
+  font-weight: 600;
+  margin-top : 8vh;
+  margin-left : 38vw;
+
+  font-family: 'NanumSquareNeoLight';
+}
+
+/* 안내 텍스트 */
+.order-title-store {
+  font-size: 30px;
+  font-weight: 600;
+  color: #424141;
+  font-family: 'NanumSquareNeoLight';
+  text-align: center;
 }

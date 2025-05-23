@@ -622,3 +622,26 @@ export const getUserIdsByUserWholesaleCodeAction = atom(
     }
   }
 );
+export const getUserIdsByOwnerUserIdAction = atom(
+  null,
+  async (get, set, ownerUserId) => {
+    if (!ownerUserId || ownerUserId.trim() === "") {
+      message.warning("ownerUserId가 비어 있습니다.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-owner-id", {
+        params: { ownerUserId }
+      });
+
+      const userIds = response.data;
+      console.log("📋 소유 유저 기준 유저 ID 목록:", userIds);
+      return userIds;
+    } catch (error) {
+      console.error("🚨 ownerUserId로 유저 목록 조회 실패:", error);
+      message.error("유저 ID 목록 조회에 실패했습니다.");
+      return [];
+    }
+  }
+);

@@ -1600,7 +1600,7 @@ const SorterPage = () => {
 
             <div className="wholesaler-section-container">
               <WholesalerCodeBox />
-              <RegisteredStoresBox />
+
             </div>
           )
 

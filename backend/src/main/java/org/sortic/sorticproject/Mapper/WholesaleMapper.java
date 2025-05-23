@@ -213,5 +213,19 @@ public interface WholesaleMapper {
     WHERE user_wholesale_code = #{userWholesaleCode}
 """)
     List<String> findUserIdsByUserWholesaleCode(@Param("userWholesaleCode") String userWholesaleCode);
+    // user_id로 해당 유저의 도매코드 ID 조회
+    @Select("SELECT wholesale_code_id FROM Wholesale_Code WHERE user_id = #{userId}")
+    Integer findWholesaleCodeIdByUserId(@Param("userId") String userId);
+
+    @Select("""
+    SELECT user_id
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = (
+        SELECT wholesale_code_id
+        FROM Wholesale_Code
+        WHERE user_id = #{userId}
+    )
+""")
+    List<String> findUserIdsByWholesaleCodeIdFromUserCode(@Param("userId") String userId);
 
 }

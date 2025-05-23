@@ -266,6 +266,10 @@ public class WholesaleService {
         return wholesaleMapper.findUserIdsByUserWholesaleCode(userWholesaleCode);
     }
 
+    public List<String> findUserIdsByOwnerUserId(String ownerUserId) {
+        return wholesaleMapper.findUserIdsByWholesaleCodeIdFromUserCode(ownerUserId);
+    }
+
 
 }
 

@@ -340,6 +340,21 @@ public class WholesaleController {
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }
     }
+    @GetMapping("/user-ids/by-owner-id")
+    public ResponseEntity<?> getUserIdsByOwnerUserId(@RequestParam String ownerUserId) {
+        try {
+            List<String> userIds = wholesaleService.findUserIdsByOwnerUserId(ownerUserId);
+            return ResponseEntity.ok(userIds);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "유저 ID 목록 조회 중 오류 발생"));
+        }
+    }
+
+
 
 
 }
