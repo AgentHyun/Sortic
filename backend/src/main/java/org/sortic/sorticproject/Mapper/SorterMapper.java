@@ -10,7 +10,7 @@ public interface SorterMapper {
 
     // 정렬자 추가
     @Insert("INSERT INTO Sorter (user_id, sorter_number, sorter_name) " +
-        "VALUES (#{user_id},  #{sorter_number}, #{sorter_name})")
+        "VALUES (#{userId}, #{sorterNumber}, #{sorterName})")
     @Options(useGeneratedKeys = true, keyProperty = "sorter_id")
     void insertSorter(Sorter sorter);
     @Update("UPDATE Sorter SET sorter_number = #{sorter_number}, sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
@@ -22,13 +22,13 @@ public interface SorterMapper {
 
     @Select("""
     -- 중복되지 않는 sorter_name을 가져옵니다.
-    SELECT sorter_id, sorter_name, user_id, sorter_number
+    SELECT sorter_id, sorter_name, user_id AS userId, sorter_number AS sorterNumber
     FROM Sorter
-    WHERE user_id = #{user_id}
+    WHERE user_id = #{userId}
     AND sorter_name NOT IN (
         SELECT sorter_name
         FROM Sorter
-        WHERE user_id = #{user_id}
+        WHERE user_id = #{userId}
         GROUP BY sorter_name
         HAVING COUNT(sorter_name) > 1
     )
@@ -36,20 +36,27 @@ public interface SorterMapper {
     UNION ALL
 
     -- 중복되는 sorter_name은 하나만 가져옵니다.
-    SELECT MIN(sorter_id) AS sorter_id, sorter_name, user_id, MIN(sorter_number) AS sorter_number
+    SELECT MIN(sorter_id) AS sorter_id, sorter_name, user_id AS userId, MIN(sorter_number) AS sorterNumber
     FROM Sorter
-    WHERE user_id = #{user_id}
+    WHERE user_id = #{userId}
     AND sorter_name IN (
         SELECT sorter_name
         FROM Sorter
-        WHERE user_id = #{user_id}
+        WHERE user_id = #{userId}
         GROUP BY sorter_name
         HAVING COUNT(sorter_name) > 1
     )
     GROUP BY sorter_name, user_id
-    ORDER BY sorter_number ASC
+    ORDER BY MIN(sorter_number)
     """)
-    List<Sorter> getSortersByUserId(String user_id);
+    List<Sorter> getSortersByUserId(String userId);
+
+    @Select("SELECT MIN(sorter_id) AS sorter_id, sorter_name, user_id AS userId, MIN(sorter_number) AS sorterNumber " +
+            "FROM Sorter " +
+            "WHERE user_id = #{userId} " +
+            "GROUP BY sorter_name, user_id " +
+            "ORDER BY MIN(sorter_number)")
+    List<Sorter> getUniqueSortersByUserId(String userId);
 
     // 정렬자 수정
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name}, elements_id = #{elements_id}, sorter_number = #{sorter_number} " +
@@ -77,8 +84,8 @@ public interface SorterMapper {
 
 
     // 사용자별 정렬자 전체 삭제
-    @Delete("DELETE FROM Sorter WHERE user_id = #{user_id}")
-    void deleteAllSortersForUser(String user_id);
+    @Delete("DELETE FROM Sorter WHERE user_id = #{userId}")
+    void deleteAllSortersForUser(String userId);
 
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_name = #{old_sorter_name}")
     int updateSorterName(@Param("old_sorter_name") String old_sorter_name, @Param("sorter_name") String sorter_name);
@@ -110,8 +117,8 @@ public interface SorterMapper {
     List<Integer> getElementsIdBySorterName(@Param("sorter_name") String sorterName);
 
     // 사용자별 최대 sorter_number 조회
-    @Select("SELECT MAX(sorter_number) FROM sorter WHERE user_id = #{user_id}")
-    int getMaxSorterNumberByUserId(String user_id);
+    @Select("SELECT MAX(sorter_number) FROM sorter WHERE user_id = #{userId}")
+    int getMaxSorterNumberByUserId(String userId);
 
     // 요소를 sorter에 추가하는 쿼리
     @Select("SELECT * FROM Sorter WHERE sorter_name = #{sorterName}")
@@ -125,7 +132,7 @@ public interface SorterMapper {
 
     // addElementToSorter 메서드에서 중복을 처리
     @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
-        "VALUES (#{user_id}, #{elements_id}, #{sorter_number}, #{sorter_name})")
+        "VALUES (#{userId}, #{elementsId}, #{sorterNumber}, #{sorterName})")
     void addElementToSorter(Sorter newSorter);
 
     @Select("SELECT COUNT(*) FROM sorter WHERE sorter_id = #{sorterId} AND elements_id = #{elementsId}")
@@ -133,4 +140,11 @@ public interface SorterMapper {
 
     @Select("SELECT DISTINCT sorter_id, sorter_name FROM Sorter WHERE user_id = #{userId}")
     List<Sorter> selectUniqueSortersByUserId(String userId);
+
+    @Insert("INSERT INTO Sorter (user_id, elements_id, sorter_number, sorter_name) " +
+            "VALUES (#{userId}, #{elementsId}, #{sorterNumber}, #{sorterName})")
+    void insertSorterWithElement(Sorter sorter);
+
+    @Select("SELECT DISTINCT sorter_id, sorter_name FROM Sorter WHERE user_id = #{userId}")
+    List<Sorter> getDistinctSortersByUserId(String userId);
 }

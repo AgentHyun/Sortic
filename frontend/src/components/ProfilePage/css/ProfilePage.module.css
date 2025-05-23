@@ -1,0 +1,171 @@
+.profileContainer {
+  max-width: 880px;
+  margin: 60px auto;
+  padding: 0 24px;
+}
+
+.profileCard {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  transition: background 0.3s ease;
+}
+
+.profileHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarWrapper {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 130px;
+  height: 130px;
+  transition: transform 0.3s ease;
+}
+
+.avatarWrapper:hover {
+  transform: scale(1.05);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #c0c0c0;
+}
+
+.avatarOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.avatarWrapper:hover .avatarOverlay {
+  opacity: 1;
+}
+
+.cameraIcon {
+  color: #fff;
+  font-size: 22px;
+}
+
+.nickname {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.nickname:hover {
+  background-color: #f1f1f1;
+}
+
+.profileInfo {
+  flex: 1;
+  min-width: 250px;
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.label {
+  width: 120px;
+  font-weight: 600;
+  color: #666;
+  font-size: 15px;
+}
+
+.value, .input {
+  flex: 1;
+  color: #111;
+  font-size: 15px;
+  padding: 6px 10px;
+}
+
+.input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.input:disabled {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.actionButtons {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.activitySection {
+  padding: 24px 0;
+}
+
+.activityList {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 다크모드 대응 */
+:global(.dark) .profileCard {
+  background-color: #1f1f1f;
+}
+
+:global(.dark) .label {
+  color: #aaa;
+}
+
+:global(.dark) .value {
+  color: #e6e6e6;
+}
+
+:global(.dark) .input {
+  background-color: #2d2d2d;
+  color: #eee;
+  border-color: #444;
+}
+
+:global(.dark) .input:disabled {
+  background-color: #2a2a2a;
+  color: #777;
+}
+
+:global(.dark) .infoItem {
+  border-color: #333;
+}

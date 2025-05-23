@@ -1,5 +1,5 @@
 import {atom, useAtom} from 'jotai';
-import axios from 'axios';
+import publicAxios from '../../../api/publicAxios';
 import { message } from 'antd';
 import {
     keyValuePairsAtom,
@@ -53,8 +53,8 @@ export const elementsDataAction = atom(
         };
 
         try {
-            const response = await axios.post(
-                'http://localhost:8080/api/elements_data/add_elements_data',
+            const response = await publicAxios.post(
+                '/elements_data/add_elements_data',
                 requestData,
                 {
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -83,7 +83,7 @@ export const openElementDetailAction = atom(null, async (get, set, data) => {
     set(elementDetailModalAtom, true);
     const elementId = get(selectedElementIdAtom);
     try {
-        const response = await axios.get(`http://localhost:8080/api/elements_data/get_elements_data`, {
+        const response = await publicAxios.get(`/elements_data/get_elements_data`, {
             params: { elements_name_id: elementId }
         });
         set(elementAttributesAtom, response.data);
@@ -111,7 +111,7 @@ export const handleKeyNameSaveAction = atom(
         }
 
         try {
-            await axios.put("http://localhost:8080/api/elements_data/update_key_name", null, {
+            await publicAxios.put("/elements_data/update_key_name", null, {
                 params: {
                     elements_id: editingElementId,
                     key_name: value
@@ -145,7 +145,7 @@ export const handleValueNameSaveAction = atom(
         }
 
         try {
-            await axios.put("http://localhost:8080/api/elements_data/update_value_name", null, {
+            await publicAxios.put("/elements_data/update_value_name", null, {
                 params: {
                     elements_id: editingElementId,
                     value_name: value

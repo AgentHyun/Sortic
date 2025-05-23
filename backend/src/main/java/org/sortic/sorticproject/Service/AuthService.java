@@ -1,52 +1,75 @@
+// ✅ AuthService.java - 최종 리팩토링
 package org.sortic.sorticproject.Service;
 
+import lombok.RequiredArgsConstructor;
+import org.sortic.sorticproject.Dto.request.LoginRequest;
+import org.sortic.sorticproject.Dto.response.TokenResponse;
 import org.sortic.sorticproject.Entity.Users;
-import org.springframework.http.ResponseEntity;
+import org.sortic.sorticproject.Mapper.UserMapper;
+import org.sortic.sorticproject.security.InvalidJwtException;
+import org.sortic.sorticproject.security.token.JwtTokenProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-/**
- * 인증 관련 비즈니스 로직을 정의하는 서비스 인터페이스
- * 로그인, 토큰 검증 등의 인증 관련 기능을 제공
- */
-public interface AuthService {
-    /**
-     * JWT 토큰 생성
-     * @param user 사용자 정보
-     * @return 생성된 JWT 토큰
-     */
-    String generateJwtToken(Users user);
+import java.time.Duration;
 
+@Service
+@RequiredArgsConstructor
+public class AuthService {
 
-    /**
-     * 로그아웃 처리
-     * @param user_id 사용자 아이디
-     */
-    void logout(String user_id);
+    private final UserMapper userMapper;
+    private final RefreshTokenService refreshTokenService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    /**
-     * 회원가입 처리
-     * @param user 회원가입 정보
-     * @return 회원가입 결과
-     */
-    ResponseEntity<?> signup(Users user);
+    /** ✅ 로그인 처리 */
+    public TokenResponse login(LoginRequest request) {
+        Users found = userMapper.findByUserId(request.getUserId());
 
-    /**
-     * 사용자 아이디 중복 확인
-     * @param user_id 확인할 사용자 아이디
-     * @return 사용 가능 여부
-     */
-    ResponseEntity<?> checkUserId(String user_id);
+        if (found == null || !passwordEncoder.matches(request.getPassword(), found.getPassword())) {
+            throw new RuntimeException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
 
-    /**
-     * 로그인 처리
-     * @param user 로그인 정보
-     * @return 로그인 결과 (토큰 포함)
-     */
-    ResponseEntity<?> login(Users user);
+        String accessToken = jwtTokenProvider.createToken(found.getUserId(), 15); // 15분
+        String refreshToken = jwtTokenProvider.createToken(found.getUserId(), 10080); // 7일
 
-    /**
-     +     * Refresh-Token 으로 새 Access-Token 발급
-     +     * @param refreshToken 쿠키로 전달된 Refresh-Token
-     +     * @return 새로운 Access-Token
-     +     */
-    ResponseEntity<?> refresh(String refreshToken);
+        long expiryMillis = System.currentTimeMillis() + Duration.ofDays(7).toMillis();
+        refreshTokenService.save(found.getUserId(), refreshToken, expiryMillis);
+
+        return new TokenResponse(accessToken, refreshToken, found);
+    }
+
+    /** ✅ 로그아웃 처리 */
+    public void logout(String userId) {
+        refreshTokenService.delete(userId);
+    }
+
+    /** ✅ AccessToken 재발급 */
+    public TokenResponse reissue(String refreshToken) {
+        try {
+            jwtTokenProvider.validate(refreshToken);
+        } catch (InvalidJwtException e) {
+            throw new RuntimeException("Refresh 토큰이 만료되었습니다.");
+        }
+
+        String userId = jwtTokenProvider.getUserId(refreshToken);
+        String stored = refreshTokenService.find(userId);
+
+        if (!refreshToken.equals(stored)) {
+            throw new RuntimeException("Refresh 토큰이 서버와 일치하지 않습니다.");
+        }
+
+        String newAccess = jwtTokenProvider.createToken(userId, 15);
+        String newRefresh = jwtTokenProvider.createToken(userId, 10080);
+        long expiryMillis = System.currentTimeMillis() + Duration.ofDays(7).toMillis();
+        refreshTokenService.save(userId, newRefresh, expiryMillis);
+
+        Users user = userMapper.findByUserId(userId);
+        return new TokenResponse(newAccess, newRefresh, user);
+    }
+
+    /** ✅ AccessToken 발급 (내부용) */
+    public String generateJwtToken(Users user) {
+        return jwtTokenProvider.createToken(user.getUserId(), 15);
+    }
 }

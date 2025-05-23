@@ -63,7 +63,7 @@ const BillPage = () => {
         });
 
       console.log('bill추가')
-    
+
 
       fetchBills();
       setNewBillName('');

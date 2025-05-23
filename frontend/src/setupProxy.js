@@ -2,12 +2,14 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function(app) {
+  console.log('[setupProxy.js] loaded');
     app.use(
         '/api',
         createProxyMiddleware({
             target: 'http://localhost:8080',
             changeOrigin: true,
             secure: false,
+            cookieDomainRewrite: 'localhost',
             onProxyReq: (proxyReq, req) => {
                 console.log('Proxy Request:', {
                     method: req.method,

@@ -1,14 +1,15 @@
-// frontend/src/auth/AuthProvider.js
-import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
+// ✅ src/auth/AuthProvider.js - 인증 상태 복원 전용 통합 Provider
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { message } from 'antd';
-import { authService } from './authService';
 import { useSetAtom } from 'jotai';
+import { message } from 'antd';
 import {
+  setAccessTokenAtom,
   authUserAtom,
-  isAuthenticatedAtom,
+  setIsAuthenticatedAtom,
   authLoadingAtom
 } from './authAtoms';
+import { reissueToken, useLogin, useLogout } from './authService';
 
 const AuthContext = createContext(null);
 
@@ -16,9 +17,13 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const setAuthUser = useSetAtom(authUserAtom);
-  const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
+  const setAccessToken = useSetAtom(setAccessTokenAtom);
+  const setUser = useSetAtom(authUserAtom);
+  const setIsAuthenticated = useSetAtom(setIsAuthenticatedAtom);
   const setAuthLoading = useSetAtom(authLoadingAtom);
+
+  const login = useLogin();
+  const logout = useLogout();
 
   const [localError, setLocalError] = useState(null);
   const initializedRef = useRef(false);
@@ -29,84 +34,30 @@ export const AuthProvider = ({ children }) => {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    const initializeAuth = async () => {
+    const initialize = async () => {
       setAuthLoading(true);
-      try {
-        const result = await authService.checkAuth();
+      const result = await reissueToken(setAccessToken, setUser, setIsAuthenticated);
+      if (!result.success) {
+        handleLogout('토큰 재발급 실패 또는 만료');
+      }
+      setAuthLoading(false);
+    };
 
-        if (result.success) {
-          setAuthUser(result.user);
-          setIsAuthenticated(true);
-        } else {
-          setAuthUser(null);
-          setIsAuthenticated(false);
+    const handleLogout = (msg) => {
+      setAccessToken('');
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+      setLocalError(msg);
 
-          if (!publicPaths.includes(location.pathname)) {
-            navigate('/login', {
-              replace: true,
-              state: { from: location }
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Auth initialization error:', err);
-        setLocalError(err.message || '인증 초기화 실패');
-        setAuthUser(null);
-        setIsAuthenticated(false);
-
-        if (!publicPaths.includes(location.pathname)) {
-          navigate('/login', {
-            replace: true,
-            state: { from: location }
-          });
-        }
-      } finally {
-        setAuthLoading(false);
+      if (!publicPaths.includes(location.pathname)) {
+        navigate('/login', { replace: true, state: { from: location } });
       }
     };
 
-    initializeAuth();
-  }, []);
-
-  /** 로그인 */
-  const login = async (userId, password, rememberMe) => {
-    try {
-      const result = await authService.login(userId, password, rememberMe);
-
-      if (result.success) {
-        setAuthUser(result.user);
-        setIsAuthenticated(true);
-        setLocalError(null);
-        navigate('/sorter', { replace: true });
-        return { success: true };
-      } else {
-        const errorMsg = result.error || '로그인 실패';
-        setLocalError(errorMsg);
-        message.error(errorMsg);
-        return { success: false, error: errorMsg };
-      }
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || '로그인 중 오류가 발생했습니다.';
-      setLocalError(errorMessage);
-      message.error(errorMessage);
-      return { success: false, error: errorMessage };
-    }
-  };
-
-  /** 로그아웃 */
-  const logout = async () => {
-    try {
-      await authService.logout();
-      setAuthUser(null);
-      setIsAuthenticated(false);
-      setLocalError(null);
-      navigate('/login', { replace: true });
-    } catch (err) {
-      const errorMsg = '로그아웃 중 오류가 발생했습니다.';
-      setLocalError(errorMsg);
-      message.error(errorMsg);
-    }
-  };
+    initialize();
+  }, [setAccessToken, setUser, setIsAuthenticated, setAuthLoading, location, navigate]);
 
   return (
     <AuthContext.Provider value={{ login, logout, error: localError }}>
@@ -117,9 +68,7 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 

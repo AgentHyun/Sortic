@@ -1,6 +1,7 @@
+// src/pages/App.jsx
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Spin } from 'antd';
 
 import SorticHeader from '../components/Header/Header';
@@ -9,7 +10,7 @@ import LoginPage from '../components/LoginPage/LoginPage';
 import SignupPage from '../components/SignupPage/SignupPage';
 import SorterPageComponent from '../components/SorterPage/components/SorterPage';
 import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
-import ProfilePage from '../components/ProfilePage/ProfilePage';
+import ProfilePage from '../components/ProfilePage/components/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import WholesalePage from '../components/WholesalePage/WholesalePage';
 import StatisticsPage from '../components/StatisticsPage/StatisticsPage';
@@ -17,9 +18,8 @@ import StatisticsPage from '../components/StatisticsPage/StatisticsPage';
 import { authLoadingAtom } from '../auth/authAtoms';
 import Snb from "../components/Snb/components/Snb";
 
-
 const App = () => {
-  const [authLoading] = useAtom(authLoadingAtom);
+  const authLoading = useAtomValue(authLoadingAtom); // ✅ 인증 로딩 여부
 
   // ✅ 다크 모드 초기화 (최초 1회만 실행)
   useEffect(() => {

@@ -130,5 +130,7 @@ export const selectedUserNameAtom = atom(null);
 
 
 
+export const selectedUserIdAtom = atom (null);
+export const selectedStoreNameAtom = atom(null);
 //
 

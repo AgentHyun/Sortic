@@ -1,11 +1,12 @@
 // frontend/src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as JotaiProvider } from 'jotai';
+import { ConfigProvider } from 'antd';
+
 import App from './pages/App';
-import AuthProvider from './auth/AuthProvider'; // ✅ 인증 전역 컨텍스트
+import AuthProvider from './auth/AuthProvider';
 
 import './index.css';
 import './styles/theme.css';
@@ -14,14 +15,14 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <JotaiProvider>
-      <ConfigProvider>
-        <BrowserRouter>
-          <AuthProvider> {/* ✅ App을 여기서 감싼다 */}
+    <BrowserRouter>
+      <JotaiProvider>
+        <ConfigProvider>
+          <AuthProvider>
             <App />
           </AuthProvider>
-        </BrowserRouter>
-      </ConfigProvider>
-    </JotaiProvider>
+        </ConfigProvider>
+      </JotaiProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

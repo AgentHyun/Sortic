@@ -77,6 +77,4 @@ public class BillController {
     public void deleteSelectedCommissions(@RequestBody BillDeleteRequest deleteRequest) {
         billService.deleteSelectedCommissions(deleteRequest.getBillId(),deleteRequest.getCommissionIds());
     }
-
-
 }

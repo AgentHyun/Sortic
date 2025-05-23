@@ -30,7 +30,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-validation")
-  implementation("org.springframework:spring-web:6.1.4")
 
   // ── JWT ───────────────────────────────────────────────────────────────
   api("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -56,6 +55,12 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+  // ── Mail ─────────────────────────────────────────────────────────────
+  implementation("org.springframework.boot:spring-boot-starter-mail")
+
+  // ── Redis ────────────────────────────────────────────────────────────
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
   // ── Test ─────────────────────────────────────────────────────────────
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -74,13 +79,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
-    }
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+

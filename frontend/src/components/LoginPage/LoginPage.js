@@ -1,109 +1,63 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { isAuthenticatedAtom, authUserAtom, loginFormAtom, loginErrorAtom, authLoadingAtom } from '../../auth/authAtoms';
-import { authService } from '../../auth/authService';
+import { isAuthenticatedAtom } from '../../auth/authAtoms';
+import { userAtom } from '../../user/userAtoms';
+import { useLogin } from '../../auth/authService';
 import styles from './css/Login.module.css';
-import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
-import {selectedUserIdAtom} from "../SorterPage/atoms/atoms";
 
 const Login = () => {
-  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [authUser , setAuthUser] = useAtom(authUserAtom);
-  const [formData, setFormData] = useAtom(loginFormAtom);
-  const [formErrors, setFormErrors] = useAtom(loginErrorAtom);
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const location = useLocation();
-  const [form] = Form.useForm();
+
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [authLoading] = useAtom(authLoadingAtom);
-  const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const [, setUser] = useAtom(userAtom);
+  const login = useLogin();
+
+  const [formErrors, setFormErrors] = useState({});
+  const [formData, setFormData] = useState({ userId: '', password: '' });
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
-      if (!location.state?.from) {
-        navigate('/sorter', { replace: true });
-        return;
-      }
-      // 보호된 페이지에서 로그인으로 온 경우 원래 페이지로
-      navigate(location.state.from.pathname, { replace: true });
+    if (isAuthenticated) {
+      const targetPath = location.state?.from?.pathname || '/';
+      navigate(targetPath, { replace: true });
     }
-  }, [authLoading, isAuthenticated, navigate, location]);
+  }, [isAuthenticated, navigate, location]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormErrors((prev) => ({ ...prev, [`${field}Error`]: '' }));
   };
 
-  const onFinish = async (values) => {
-    try {
-      const { userId, password } = formData;
+  const onFinish = async () => {
+    const { userId, password } = formData;
+    if (!userId || !password) {
+      setFormErrors({
+        userIdError: !userId ? '아이디를 입력해주세요.' : '',
+        passwordError: !password ? '비밀번호를 입력해주세요.' : '',
+      });
+      return;
+    }
 
-      if (!userId) {
-        setFormErrors((prev) => ({ ...prev, userIdError: '아이디를 입력해주세요.' }));
-        return;
-      }
-      if (!password) {
-        setFormErrors((prev) => ({ ...prev, passwordError: '비밀번호를 입력해주세요.' }));
-        return;
-      }
-
-      const loginData = {
-        userId,
-        password,
-        username: userId
-      };
-      console.log('로그인 요청 데이터:', loginData);
-
-      const response = await authService.login(loginData);
-      console.log('서버 응답:', response);
-
-      if (response.success && response.user) {
-        setIsAuthenticated(true);
-        setAuthUser(response.user);
-        message.success(`${response.user.username}님 환영합니다!`);
-        setSelectedUserId(response.user.userId);
-        // 로그아웃 후 로그인인 경우 (state가 없는 경우) 랜딩 페이지로
-        if (!location.state?.from) {
-          navigate('/', { replace: true });
-          return;
-        }
-        // 보호된 페이지에서 로그인으로 온 경우 원래 페이지로
-        navigate(location.state.from.pathname, { replace: true });
-      } else {
-        message.error('로그인에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      console.error('Error details:', error.response?.data);
-      const errorMsg =
-        typeof error.response?.data === 'string'
-          ? error.response.data
-          : error.response?.data?.message || '서버 오류가 발생했습니다.';
-      message.error(errorMsg);
+    const result = await login({ userId, password });
+    if (result.success) {
+      setUser(result.user);
+      message.success(`${result.user.storeName}님 환영합니다!`);
+      const targetPath = location.state?.from?.pathname || '/';
+      navigate(targetPath, { replace: true });
+    } else {
+      message.error(result.message || '로그인 실패');
     }
   };
-
-  if (authLoading) {
-    return null; // 또는 <Spinner />
-  }
 
   return (
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <h1 className={styles.title}>Sortic 로그인</h1>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          layout="vertical"
-          className={styles.form}
-        >
-          <Form.Item
-            validateStatus={formErrors.userIdError ? 'error' : ''}
-            help={formErrors.userIdError}
-          >
+        <Form form={form} onFinish={onFinish} layout="vertical" className={styles.form}>
+          <Form.Item validateStatus={formErrors.userIdError ? 'error' : ''} help={formErrors.userIdError}>
             <Input
               placeholder="아이디"
               value={formData.userId}
@@ -112,10 +66,7 @@ const Login = () => {
               autoComplete="username"
             />
           </Form.Item>
-          <Form.Item
-            validateStatus={formErrors.passwordError ? 'error' : ''}
-            help={formErrors.passwordError}
-          >
+          <Form.Item validateStatus={formErrors.passwordError ? 'error' : ''} help={formErrors.passwordError}>
             <Input.Password
               placeholder="비밀번호"
               value={formData.password}
@@ -124,25 +75,26 @@ const Login = () => {
               autoComplete="current-password"
             />
           </Form.Item>
+
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-            >
+            <Button type="primary" htmlType="submit" block className={styles.button}>
               로그인
             </Button>
           </Form.Item>
+
+          {/* ✅ 하단 버튼 그룹 */}
+          <div className={styles.buttonRow}>
+            <Link to="/forgot-password" className={styles.subButton}>
+              비밀번호 찾기
+            </Link>
+            <Link to="/signup" className={styles.subButton}>
+              회원가입
+            </Link>
+          </div>
         </Form>
-        <p className={styles.linkText}>
-          아직 계정이 없으신가요?{' '}
-          <Link to="/signup" className={styles.link}>
-            회원가입
-          </Link>
-        </p>
       </div>
     </div>
   );
 };
 
-export default Login; // Login 컴포넌트를 기본 내보내기로 설정하여 다른 파일에서 쉽게 임포트할 수 있도록 합니다.
+export default Login;

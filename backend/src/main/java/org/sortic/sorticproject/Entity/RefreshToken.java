@@ -1,14 +1,15 @@
 package org.sortic.sorticproject.Entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RefreshToken {
-    private String userId;
-    private String token;
-    private long   expiry;
+    private String userId;     // 유저 아이디 (Users.user_id 참조)
+    private String token;      // 리프레시 토큰 문자열
+    private long expiry;       // 만료 시간 (Unix Timestamp로 관리)
 }
+

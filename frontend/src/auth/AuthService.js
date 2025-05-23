@@ -1,92 +1,100 @@
-// src/auth/AuthService.js
-import authAxios from '../Api/authAxios';
+// src/auth/authService.js
+import publicAxios from '../api/publicAxios';
+import { useSetAtom } from 'jotai';
+import {
+  setAccessTokenAtom,
+  authUserAtom,
+  setIsAuthenticatedAtom
+} from './authAtoms';
 
-// 인증 관련 API 함수 그룹
-const authApi = {
-  login: async (credentials) => {
-    const response = await authAxios.post('/login', credentials);
-    return response.data;
-  },
-  validateToken: async () => {
-    const response = await authAxios.post('/validate-token');
-    return response.data;
-  },
-  logout: async () => {
-    await authAxios.post('/logout');
-  }
-};
+/** ✅ 로그인 훅 */
+export function useLogin() {
+  const setAccessToken = useSetAtom(setAccessTokenAtom);
+  const setUser = useSetAtom(authUserAtom);
+  const setIsAuthenticated = useSetAtom(setIsAuthenticatedAtom);
 
-class AuthService {
-  async login(credentials) {
+  const login = async ({ userId, password }) => {
     try {
-      console.log('AuthService login 요청:', credentials);
-      const response = await authAxios.post('/login', credentials);
-      console.log('AuthService 서버 응답:', response.data);
+      localStorage.removeItem('accessToken'); // 기존 토큰 제거
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        return {
-          success: true,
-          user: response.data.user
-        };
+      const res = await publicAxios.post('/auth/login', { userId, password });
+      const { accessToken, user } = res.data;
+
+      if (!accessToken || !user) {
+        return { success: false, message: '로그인 응답이 올바르지 않습니다.' };
       }
-      return {
-        success: false,
-        error: '로그인에 실패했습니다.'
-      };
-    } catch (error) {
-      console.error('AuthService 에러:', error.response || error);
-      throw error;
-    }
-  }
 
-  async logout() {
-    try {
-      await authAxios.post('/logout');
-      localStorage.removeItem('token');
+      // 상태 및 로컬 동기화
+      setAccessToken(accessToken);
+      setUser(user);
+      setIsAuthenticated(true);
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', user.userId);
+
+      return { success: true, user };
+    } catch (err) {
+      const msg = err.response?.data?.message || '로그인 중 오류 발생';
+      return { success: false, message: msg };
+    }
+  };
+
+  return login;
+}
+
+/** ✅ 토큰 재발급 + 상태 동기화 (App, AuthProvider 등에서 호출용) */
+export async function reissueToken(setAccessToken, setUser, setIsAuthenticated) {
+  try {
+    const res = await publicAxios.post('/auth/reissue');
+    const { accessToken, user } = res.data;
+
+    if (accessToken && user) {
+      setAccessToken(accessToken);
+      setUser(user);
+      setIsAuthenticated(true);
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('userId', user.userId);
+
       return { success: true };
-    } catch (error) {
-      throw error;
     }
-  }
 
-  async checkAuth() {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        return { success: false };
-      }
+    return { success: false };
+  } catch {
+    // 상태 초기화
+    setAccessToken('');
+    setUser(null);
+    setIsAuthenticated(false);
 
-      const response = await authAxios.post('/validate-token');
-      return {
-        success: true,
-        user: response.data.user
-      };
-    } catch (error) {
-      localStorage.removeItem('token');
-      return { success: false, error: error.message };
-    }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    return { success: false };
   }
 }
 
-export const authService = new AuthService();
+/** ✅ 로그아웃 훅 */
+export function useLogout() {
+  const setAccessToken = useSetAtom(setAccessTokenAtom);
+  const setUser = useSetAtom(authUserAtom);
+  const setIsAuthenticated = useSetAtom(setIsAuthenticatedAtom);
 
-// 공통 유틸 함수
-const clearAuthStorage = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  localStorage.removeItem('rememberMe');
-  localStorage.removeItem('sidebarCollapsed');
-  localStorage.removeItem('sortCategory');
-};
+  const logout = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        await publicAxios.post('/auth/logout', { userId });
+      }
+    } catch {
+      // 실패 무시
+    } finally {
+      setAccessToken('');
+      setUser(null);
+      setIsAuthenticated(false);
 
-const getCurrentUser = () => {
-  try {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  } catch {
-    localStorage.removeItem('user');
-    return null;
-  }
-};
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+    }
+  };
+
+  return logout;
+}
