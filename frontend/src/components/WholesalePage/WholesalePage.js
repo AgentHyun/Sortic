@@ -11,12 +11,12 @@ import {
   getWholesaleCodeValueByIdAction,
   searchWholesaleCodesAction,
   deleteWholesaleLinkAction,
-  getStoreNameByUserIdAction,
+  getUsernameByUserIdAction,
   updateWholesaleMemoAction,
   getWholesaleMemoAction,
   registerToUserWholesaleCodeAction
 } from '../WholesalePage/action/wholesaleAction';
-import { isOpenWholesaleAtom } from '../../auth/authAtoms';
+import { isOpenWholesaleAtom } from '../../Atoms/UserAtom';
 import './css/WholesalePage.css';
 
 const WholesalePage = () => {
@@ -33,8 +33,8 @@ const WholesalePage = () => {
   const [deleteLink, setDeleteLink] = useAtom(deleteWholesaleLinkAction);
   const [selectedLinkId, setSelectedLinkId] = useState(null);
   const [isOpenWholesale, setIsOpenWholesale] = useAtom(isOpenWholesaleAtom);
-  const [, getStoreNameByUserId] = useAtom(getStoreNameByUserIdAction);
-  const [storeNamesById, setStoreNamesById] = useState({});
+  const [, getUsernameByUserId] = useAtom(getUsernameByUserIdAction);
+  const [usernamesById, setUsernamesById] = useState({});
   const [, getMemo] = useAtom(getWholesaleMemoAction);
   const [, updateMemo] = useAtom(updateWholesaleMemoAction);
   const [, registerToUserCode] = useAtom(registerToUserWholesaleCodeAction);
@@ -47,15 +47,18 @@ const WholesalePage = () => {
   }, []);
 
   useEffect(() => {
-    const fetchStoreNames = async () => {
-      const newMap = { ...storeNamesById };
-      for (const item of previewList) {
-        const storeName = await getStoreNameByUserId(item.userId);
-        if (storeName) newMap[item.userId] = storeName;
-      }
-      setStoreNamesById(newMap);
+    const fetchUsernames = async () => {
+      const newMap = { ...usernamesById };
+      const fetchPromises = previewList.map(async (item) => {
+        if (item?.userId && !newMap[item.userId]) {
+          const username = await getUsernameByUserId(item.userId);
+          if (username) newMap[item.userId] = username;
+        }
+      });
+      await Promise.all(fetchPromises);
+      setUsernamesById(newMap);
     };
-    if (Array.isArray(previewList) && previewList.length > 0) fetchStoreNames();
+    if (Array.isArray(previewList) && previewList.length > 0) fetchUsernames();
   }, [previewList]);
 
   useEffect(() => {
@@ -212,9 +215,9 @@ const WholesalePage = () => {
           block
           className={`add-button-wholesale ${selectedLinkId ? 'delete-mode' : ''}`}
         >
-        {selectedLinkId ? 'Code' : 'Code'}
+          {selectedLinkId ? 'Code' : 'Code'}
         </Button>
-         <div className="link-title">Link</div>
+        <div className="link-title">Link</div>
         <div className="wholesale-links-list">
           {Array.isArray(links) && links.length > 0 ? (
             links.map((link) => (
@@ -287,7 +290,7 @@ const WholesalePage = () => {
                 }
               }}
             >
-            register
+              register
 
             </Button>
           </div>
@@ -323,7 +326,7 @@ const WholesalePage = () => {
                     className="wholesale-preview-item"
                     onClick={() => setDomainName(item.wholesaleCode.toString())}
                   >
-                    🔎 <span className="wholesale-store-name">{storeNamesById[item.userId] || '조회 중...'}</span>{' '}
+                    🔎 <span className="wholesale-username">{usernamesById[item.userId] || '조회 중...'}</span>{' '}
                     <span className="wholesale-code">({item.wholesaleCode})</span>
                   </div>
                 )
