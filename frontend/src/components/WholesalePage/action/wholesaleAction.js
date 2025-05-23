@@ -604,7 +604,6 @@ export const getUserIdsByUserWholesaleCodeAction = atom(
   null,
   async (get, set, userWholesaleCode) => {
     if (!userWholesaleCode) {
-      message.warning("도매 코드를 입력해주세요.");
       return [];
     }
 
