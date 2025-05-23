@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Input, Tabs, message, Spin } from 'antd';
 import { CameraOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
 import styles from '../css/ProfilePage.module.css';
-import authAxios from '../../../api/authAxios';
+import authAxios from '../../../axios/authAxios';
 import {
   validateUserId,
   validatePassword,

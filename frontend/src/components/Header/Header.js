@@ -8,7 +8,7 @@ import { authUserAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import { useLogout } from '../../auth/authService';
 import styles from './Header.module.css';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
-import authAxios from "../../api/authAxios";
+import authAxios from "../../axios/authAxios";
 
 import {
   selectedUserIdAtom,

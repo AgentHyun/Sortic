@@ -3,7 +3,6 @@ import axios from 'axios';
 import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
 import { wholesaleCodesAtom, wholesaleLinksAtom} from '../atoms/atoms';
-import {isOpenWholesaleAtom} from "../../../Atoms/userAtom";
 import {
   cardsAtom,
   currentCategoryAtom,

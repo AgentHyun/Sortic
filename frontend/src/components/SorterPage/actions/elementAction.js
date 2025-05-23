@@ -1,4 +1,4 @@
-import publicAxios from '../../../api/publicAxios';
+import publicAxios from '../../../axios/publicAxios';
 import axios from 'axios';
 import { atom, useSetAtom, useAtomValue , useAtom} from 'jotai';
 import { message } from 'antd';

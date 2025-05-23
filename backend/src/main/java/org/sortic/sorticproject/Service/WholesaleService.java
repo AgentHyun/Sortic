@@ -166,7 +166,7 @@ public class WholesaleService {
             throw new IllegalArgumentException("해당 유저가 존재하지 않습니다.");
         }
 
-        String existingCode = user.getWholesaler_code();
+        String existingCode = user.getWholesalerCode();
         Map<String, Object> result = new HashMap<>();
 
         if (existingCode != null && !existingCode.trim().isEmpty()) {
@@ -222,13 +222,13 @@ public class WholesaleService {
         Users copy = Users.builder()
             .userId(newUserId)
             .password(original.getPassword())
-            .username(original.getUsername())
+            .storeName(original.getStoreName())
             .phone(original.getPhone())
-            .wholesaler_code(wholesalerCode)
+            .wholesalerCode(wholesalerCode)
             .email(original.getEmail())
             .region(original.getRegion())
             .grade(original.getGrade())
-            .profile_image(original.getProfile_image())
+            .profileImage(original.getProfileImage())
             .build();
 
         wholesaleMapper.insertUser(copy); // insert 시 is_cloned = true로 저장됨

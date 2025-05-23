@@ -1,5 +1,5 @@
 // src/auth/authService.js
-import publicAxios from '../api/publicAxios';
+import publicAxios from '../axios/publicAxios';
 import { useSetAtom } from 'jotai';
 import {
   setAccessTokenAtom,

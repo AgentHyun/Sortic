@@ -1,4 +1,4 @@
-// ✅ src/auth/AuthProvider.js - 인증 상태 복원 전용 통합 Provider
+// ✅ src/auth/authProvider.js - 인증 상태 복원 전용 통합 Provider
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSetAtom } from 'jotai';

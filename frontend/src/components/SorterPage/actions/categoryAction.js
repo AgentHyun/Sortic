@@ -13,7 +13,6 @@ import {
   messageAtom,
   currentIndexAtom, selectedUserIdAtom, selectedUserWholesaleLinkIdAtom, sorterModeAtom, wholesalerIdAtom
 } from '../atoms/atoms';
-import { userIdAtom, userAtom  } from '../../../Atoms/userAtom';
 import { fetchElementsByCategoryAction } from './elementAction';
 import { authUserAtom } from '../../../auth/authAtoms';
 

@@ -34,5 +34,6 @@ public class Users {
     private String region;                  // 거주지역
     private String profileImage;           // 프로필 이미지 URL
     private Timestamp created_signup_time;  // 회원가입 시간
+    private String wholesalerCode;  // 회원가입 시간
     private Boolean isCloned;               // ✅ 복제 여부 (추가됨)
 }

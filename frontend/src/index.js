@@ -6,7 +6,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import { ConfigProvider } from 'antd';
 
 import App from './pages/App';
-import AuthProvider from './auth/AuthProvider';
+import AuthProvider from './auth/authProvider';
 
 import './index.css';
 import './styles/theme.css';

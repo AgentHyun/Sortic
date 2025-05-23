@@ -1,5 +1,5 @@
 // ✅ emailService.js
-import publicAxios from '../../api/publicAxios';
+import publicAxios from '../../axios/publicAxios';
 
 /**
  * 이메일 인증번호 전송 요청

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { Button, Input, message, Modal } from 'antd';
 import axios from 'axios'; // 임시 apiAxios로 변경해야함
-import apiAxios from '../../../Api/apiAxios'; // ✅ 주소 수정 axios -> authAxios
+import apiAxios from '../../../axios/apiAxios'; // ✅ 주소 수정 axios -> authAxios
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'; // useSortable import 제거
 import {
   billsAtom, commissionAddModalVisibleAtom, commissionModalVisibleAtom, commissionNameAtom, commissionValueAtom,

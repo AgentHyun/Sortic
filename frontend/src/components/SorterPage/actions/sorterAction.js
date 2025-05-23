@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import publicAxios from '../../../api/publicAxios';
+import publicAxios from '../../../axios/publicAxios';
 import {
   sortersAtom,
   messageAtom,
@@ -262,7 +262,7 @@ export const moveElementToSorterAction = atom(
       );
 
       set(sortersAtom, updatedSorters);
-    
+
     } catch (error) {
       if (error.response?.status === 409) {
 

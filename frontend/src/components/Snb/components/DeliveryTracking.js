@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X } from "lucide-react";
-import publicAxios from '../../../api/publicAxios';
+import publicAxios from '../../../axios/publicAxios';
 import '../css/delivery.css';
 import { message, Select } from "antd";
 import image1 from '../css/deliveryImage/delivery1.png';

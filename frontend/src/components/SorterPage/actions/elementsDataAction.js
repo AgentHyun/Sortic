@@ -1,5 +1,5 @@
 import {atom, useAtom} from 'jotai';
-import publicAxios from '../../../api/publicAxios';
+import publicAxios from '../../../axios/publicAxios';
 import { message } from 'antd';
 import {
     keyValuePairsAtom,

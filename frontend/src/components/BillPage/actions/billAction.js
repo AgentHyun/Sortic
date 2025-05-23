@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import publicAxios from '../../../api/publicAxios';
+import publicAxios from '../../../axios/publicAxios';
 import { message } from 'antd';
 
 // Bill 목록을 가져오는 액션

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { authLoadingAtom, isAuthenticatedAtom } from '../../auth/authAtoms';
 import { sendEmailCode, verifyEmailCode } from '../service/emailService';
-import publicAxios from '../../api/publicAxios';
+import publicAxios from '../../axios/publicAxios';
 import {
   validateUserId,
   validatePassword,
