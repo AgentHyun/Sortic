@@ -98,7 +98,7 @@ export const isDraggingElementsAtom = atom(false);
 export const selectedUserWholesaleLinkIdAtom = atom(0);
 export const isClonedAtom = atom(false);
 export const usernamesByCodeIdAtom = atom({});
-
+export const selectedLinkAtom = atom(null);
 // 성민
 export const userAtom = atom({
     nickname: 'Guest',

@@ -143,7 +143,7 @@ const SorticHeader = () => {
         </Dropdown>
 
         <div className={styles['menu-item']}><Link to="/wholesale">Code</Link></div>
-        <div className={styles['menu-item']}><Link to="/statistics">Statistics</Link></div>
+
       </div>
 
 

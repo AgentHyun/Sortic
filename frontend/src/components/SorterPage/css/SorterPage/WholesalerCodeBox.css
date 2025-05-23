@@ -130,6 +130,7 @@
   flex-direction: row;
   margin-top : 5vh;
 
+
 }
 
 .flip-card {
@@ -173,7 +174,7 @@
 /* 카드 앞면 */
 .flip-card-front {
   background: linear-gradient(to top left, #E4F6CF, #D1EAC4);
-  border: 2px dashed #a4c87c;
+
   color: #2f3e1d;
 }
 
@@ -183,46 +184,82 @@
 }
 
 .flip-card-front .order-title {
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 30px;
+  font-weight: 600;
   color: #3b4a1c;
   margin-bottom: 6px;
-}
-
-/* 카드 뒷면 */
-.flip-card-back {
-  background: #fffef7;
-  border: 2px solid #e3eecf;
-  color: #1e1e1e;
-  transform: rotateY(180deg);
-  gap: 8px;
-}
-
-.flip-card-back .back-info {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.flip-card-back button {
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: none;
-  background-color: #8ca336;
-  color: white;
-  cursor: pointer;
   font-family: 'NanumSquareNeoLight';
+
+}
+.flip-card-back {
+  background: linear-gradient(to bottom right, #fdfdfc, #f2f6ea);
+  border: 1px solid #dbe5c1;
+  color: #222;
+  transform: rotateY(180deg);
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+  gap: 12px;
+  font-family: 'NanumSquareNeoLight', sans-serif;
+}
+
+/* 타이틀 */
+.flip-card-back .order-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3b4a1c;
+  margin-bottom: 12px;
+  align-self: center;
+}
+
+/* 정보 항목 */
+.flip-card-back .back-info {
+  font-size: 15px;
+  color: #444;
+  padding: 10px 14px;
+  border-left: 4px solid #9dc57d;
+  background-color: #f8fbf3;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+/* 강조 아이콘 또는 구분자 추가 */
+.flip-card-back .back-info::before {
+
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+/* 버튼 스타일 */
+.flip-card-back button {
+  align-self: center;
+  margin-top: 16px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  background-color: #7aa93c;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .flip-card-back button:hover {
-  background-color: #6a8428;
+  background-color: #60872e;
 }
 
 
 .order-title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'NanumSquareNeoLight';
 }
 

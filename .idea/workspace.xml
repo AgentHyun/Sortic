@@ -10,15 +10,17 @@
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Atoms/UserAtom.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/RegisteredStoreBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/RegisteredStoreBox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/WholesalerCodeBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/WholesalerCodeBox.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/WholesalerCodeBox.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/WholesalerCodeBox.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/WholesalerSection.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/css/SorterPage/WholesalerSection.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/css/StatisticsPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/css/StatisticsPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/StatisticsPage.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsPage/css/StatisticsPage.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/css/WholesalePage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +143,7 @@
       <workItem from="1747621456117" duration="13028000" />
       <workItem from="1747697415332" duration="26774000" />
       <workItem from="1747783931437" duration="22609000" />
-      <workItem from="1747956246516" duration="8331000" />
+      <workItem from="1747956246516" duration="17106000" />
     </task>
     <servers />
   </component>

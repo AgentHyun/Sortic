@@ -270,6 +270,10 @@ public class WholesaleService {
         return wholesaleMapper.findUserIdsByWholesaleCodeIdFromUserCode(ownerUserId);
     }
 
+    public String findFirstUserWholesaleCodeByUserId(String userId) {
+        return wholesaleMapper.selectFirstUserWholesaleCodeByUserId(userId);
+    }
+
 
 }
 

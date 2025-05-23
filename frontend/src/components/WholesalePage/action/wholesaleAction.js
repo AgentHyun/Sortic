@@ -10,7 +10,7 @@ import {
   currentUserIdAtom,
   selectedUserIdAtom,
   wholesalerIdAtom,
-  isClonedAtom
+  isClonedAtom, selectedLinkAtom
 } from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 import {useNavigate} from "react-router-dom";
@@ -645,3 +645,65 @@ export const getUserIdsByOwnerUserIdAction = atom(
     }
   }
 );
+
+
+export const getUserProfileByUserIdAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId || userId.trim() === '') {
+      message.warning("유저 ID가 비어 있습니다.");
+      return null;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:8080/api/users/profile', {
+        params: { userId }
+      });
+
+      const user = response.data;
+
+      // ✅ 이 구조에서 원하는 속성들을 추출해 사용할 수 있음
+      console.log("📄 유저 정보:", user);
+
+      return {
+        phone: user.phone,
+        email: user.email,
+        region: user.region,
+        username: user.username,
+        profileImage: user.profile_image,
+        grade: user.grade
+      };
+    } catch (error) {
+      console.error("🚨 사용자 프로필 조회 실패:", error);
+      message.error("사용자 정보를 불러오는 데 실패했습니다.");
+      return null;
+    }
+  }
+);
+
+export const getUserWholesaleCodeByUserIdAction = atom(null, async (get, set) => {
+  const userId = get(selectedUserIdAtom);
+  if (!userId) {
+    message.warning("userId를 입력해주세요.");
+    return null;
+  }
+
+  try {
+    const response = await axios.get('http://localhost:8080/api/wholesale/first-user-code/by-user-id', {
+      params: { userId }
+    });
+
+    const userWholesaleCode = response.data.userWholesaleCode;
+    set(selectedLinkAtom, userWholesaleCode);
+    console.log("유저 링크 " + userWholesaleCode);
+    return userWholesaleCode;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      message.info("해당 유저의 도매 코드가 없습니다.");
+    } else {
+      console.error("🚨 도매 코드 조회 실패:", error);
+      message.error("도매 코드 조회 중 오류가 발생했습니다.");
+    }
+    return null;
+  }
+});

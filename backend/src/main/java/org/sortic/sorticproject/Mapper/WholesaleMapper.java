@@ -228,4 +228,8 @@ public interface WholesaleMapper {
 """)
     List<String> findUserIdsByWholesaleCodeIdFromUserCode(@Param("userId") String userId);
 
+
+    @Select("SELECT user_wholesale_code FROM User_Wholesale_Code WHERE user_id = #{userId} ORDER BY user_wholesale_code_id ASC LIMIT 1")
+    String selectFirstUserWholesaleCodeByUserId(@Param("userId") String userId);
+
 }

@@ -39,16 +39,49 @@
 .store-item {
   padding: 14px 16px;
   border-bottom: 1px solid #e0e0e0;
-  font-size: 15px;
+  font-size: 18px;
   color: #444;
   transition: background 0.2s ease;
+  margin-left : 26.5vw;
+  margin-top : 10vh;
+
 }
 
 .store-item:last-child {
   border-bottom: none;
 }
 
-.store-item:hover {
-  background-color: #f5f9f1;
-  cursor: pointer;
+
+.slick-prev::before {
+  color: #57803f;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+/* 슬라이더 화살표 - 오른쪽 */
+.slick-next {
+  right: -40px;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
+.slick-next::before {
+  color:#57803f;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+/* 슬라이더 내 dot(점) 커스터마이징 */
+.slick-dots li button:before {
+  color: transparent;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #CEDF9F;
+  opacity: 1;
+  margin-top: 1px;
 }

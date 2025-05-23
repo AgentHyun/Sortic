@@ -12,7 +12,7 @@ import SorterDefaultPage from '../components/SorterPage/components/SorterDefault
 import ProfilePage from '../components/ProfilePage/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import WholesalePage from '../components/WholesalePage/WholesalePage';
-import StatisticsPage from '../components/StatisticsPage/StatisticsPage';
+
 
 import { authLoadingAtom } from '../auth/authAtoms';
 import Snb from "../components/Snb/components/Snb";
@@ -75,7 +75,7 @@ const App = () => {
           }
         />
         <Route path="/wholesale" element={<WholesalePage />} />
-        <Route path="/statistics" element={<StatisticsPage />} />
+
       </Routes>
     </>
   );

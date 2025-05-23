@@ -355,6 +355,22 @@ public class WholesaleController {
     }
 
 
+    @GetMapping("/first-user-code/by-user-id")
+    public ResponseEntity<?> getFirstUserWholesaleCodeByUserId(@RequestParam String userId) {
+        try {
+            String code = wholesaleService.findFirstUserWholesaleCodeByUserId(userId);
+            if (code == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "해당 유저의 도매 코드가 없습니다."));
+            }
+            return ResponseEntity.ok(Collections.singletonMap("userWholesaleCode", code));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("message", "조회 중 오류 발생"));
+        }
+    }
+
 
 
 }

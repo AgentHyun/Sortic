@@ -1043,3 +1043,12 @@
   position: relative;  /* 또는 absolute/fixed, 상황에 따라 다름 */
   z-index: 999;
 }
+/* 슬라이더 화살표 - 왼쪽 */
+.slick-prev {
+  left: -40px; /* 좀 더 바깥으로 조정 */
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
