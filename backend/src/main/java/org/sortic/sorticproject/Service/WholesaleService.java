@@ -34,7 +34,8 @@ public class WholesaleService {
 
 
     public List<WholesaleCode> getCodesByUser(String userId) {
-        return wholesaleMapper.getWholesaleCodesByUserId(userId);
+        List<WholesaleCode> result = wholesaleMapper.getWholesaleCodesByUserId(userId);
+        return result;
     }
 
     public void deleteWholesaleCode(int codeId) {
@@ -124,8 +125,6 @@ public class WholesaleService {
         }
         return id;
     }
-
-
 
     public void addWholesaleLinkByCode(String wholesaleCode, String userId) {
         WholesaleCode code = wholesaleMapper.findWholesaleCodeByCode(wholesaleCode);
@@ -259,6 +258,21 @@ public class WholesaleService {
         wholesaleMapper.updateWholesaleCodeByUserId(userCode);
     }
 
+    public List<String> findUserIdsByUserWholesaleCode(String userWholesaleCode) {
+        if (userWholesaleCode == null || userWholesaleCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("도매 코드가 비어 있습니다.");
+        }
+
+        return wholesaleMapper.findUserIdsByUserWholesaleCode(userWholesaleCode);
+    }
+
+    public List<String> findUserIdsByOwnerUserId(String ownerUserId) {
+        return wholesaleMapper.findUserIdsByWholesaleCodeIdFromUserCode(ownerUserId);
+    }
+
+    public String findFirstUserWholesaleCodeByUserId(String userId) {
+        return wholesaleMapper.selectFirstUserWholesaleCodeByUserId(userId);
+    }
     public Integer getWholesaleCommissionById(int wholesaleLinkId) {
         return wholesaleMapper.getWholesaleCommissionById(wholesaleLinkId);
     }

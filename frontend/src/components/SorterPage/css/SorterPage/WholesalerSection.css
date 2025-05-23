@@ -1,0 +1,87 @@
+.wholesaler-section-container {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10vh;
+  padding: 0 24px;
+  flex-wrap: wrap;
+  width : 100%;
+}
+
+.registered-stores-container {
+  background-color: transparent;
+  border-radius: 16px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 1200px; /* 또는 1400px 등 원하는 최대 폭 */
+  margin-top : 10vh;
+  margin-left : auto;
+  margin-right : auto;
+
+  font-family: 'NanumSquareNeoLight', sans-serif;
+  border: none;
+
+}
+
+.registered-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #333;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+
+
+.store-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 18px;
+  color: #444;
+  transition: background 0.2s ease;
+  margin-left : 26.5vw;
+  margin-top : 10vh;
+
+}
+
+.store-item:last-child {
+  border-bottom: none;
+}
+
+
+.slick-prev::before {
+  color: #57803f;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+/* 슬라이더 화살표 - 오른쪽 */
+.slick-next {
+  right: -40px;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
+.slick-next::before {
+  color:#57803f;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+/* 슬라이더 내 dot(점) 커스터마이징 */
+.slick-dots li button:before {
+  color: transparent;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #CEDF9F;
+  opacity: 1;
+  margin-top: 1px;
+}

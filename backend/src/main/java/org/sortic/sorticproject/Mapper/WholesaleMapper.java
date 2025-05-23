@@ -18,8 +18,14 @@ public interface WholesaleMapper {
     @Options(useGeneratedKeys = true, keyProperty = "wholesaleCodeId")
     void insertWholesaleCode(WholesaleCode code);
 
-    @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
+    @Select("SELECT wholesale_code_id, user_id, wholesale_code FROM Wholesale_Code WHERE user_id = #{userId}")
+    @Results({
+        @Result(property = "wholesaleCodeId", column = "wholesale_code_id"),
+        @Result(property = "userId", column = "user_id"),
+        @Result(property = "wholesaleCode", column = "wholesale_code")
+    })
     List<WholesaleCode> getWholesaleCodesByUserId(String userId);
+
 
     @Delete("DELETE FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
     void deleteWholesaleCode(int wholesaleCodeId);
@@ -199,6 +205,33 @@ public interface WholesaleMapper {
 """)
     void updateWholesaleCodeByUserId(UserWholesaleCode userCode);
 
+    @Select("SELECT * FROM Wholesale_Code WHERE user_id = #{userId}")
+    List<WholesaleCode> getCodesByUser(String userId);
+
+    @Select("""
+    SELECT user_id
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = #{userWholesaleCode}
+""")
+    List<String> findUserIdsByUserWholesaleCode(@Param("userWholesaleCode") String userWholesaleCode);
+    // user_id로 해당 유저의 도매코드 ID 조회
+    @Select("SELECT wholesale_code_id FROM Wholesale_Code WHERE user_id = #{userId}")
+    Integer findWholesaleCodeIdByUserId(@Param("userId") String userId);
+
+    @Select("""
+    SELECT user_id
+    FROM User_Wholesale_Code
+    WHERE user_wholesale_code = (
+        SELECT wholesale_code_id
+        FROM Wholesale_Code
+        WHERE user_id = #{userId}
+    )
+""")
+    List<String> findUserIdsByWholesaleCodeIdFromUserCode(@Param("userId") String userId);
+
+
+    @Select("SELECT user_wholesale_code FROM User_Wholesale_Code WHERE user_id = #{userId} ORDER BY user_wholesale_code_id ASC LIMIT 1")
+    String selectFirstUserWholesaleCodeByUserId(@Param("userId") String userId);
 
     @Select("select wholesale_name , wholesale_commission from wholesale_link where wholesale_link_id = #{wholesaleLinkId}")
     Map<String, Object> findUserIdAndWholesaleCommissionByWholesaleLinkId(@Param("wholesaleLinkId") int wholesaleLinkId);

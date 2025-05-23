@@ -8,7 +8,8 @@ import {
   currentCategoryAtom,
   currentUserIdAtom,
   selectedUserIdAtom,
-  wholesalerIdAtom
+  wholesalerIdAtom,
+  isClonedAtom, selectedLinkAtom
 } from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 import {useNavigate} from "react-router-dom";
@@ -409,7 +410,7 @@ export const generateWholesalerCodeAction = atom(null, async (get, set) => {
     }
 
     if (status === "CREATED") {
-
+         set(isClonedAtom,true);
     } else if (status === "EXISTING") {
 
     } else {
@@ -474,7 +475,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
     const newUserId = res.data?.newUserId;
     set(wholesalerIdAtom, newUserId);
     set(currentUserIdAtom, newUserId);
-
+    set(isClonedAtom, true);
     if (newUserId) {
       return newUserId;
     } else {
@@ -552,22 +553,19 @@ export const fetchClonedUserIdAction = atom(
 );
 export const updateWholesaleCodeByUserIdAction = atom(
   null,
-  async (get, set, updatedCode) => {
-    const userId = get(authUserAtom)?.userId;
-
-    if (!userId || !updatedCode || updatedCode.trim() === "") {
+  async (get, set, { userId, userWholesaleCode }) => {
+    if (!userId || !userWholesaleCode) {
       message.warning("수정할 도매 코드가 비어 있거나 로그인 정보가 없습니다.");
       return;
     }
 
     try {
       await axios.put("http://localhost:8080/api/wholesale/user-code", {
-        userId: userId,
-        userWholesaleCode: updatedCode
+        userId,
+        userWholesaleCode,
       });
 
       message.success("도매 코드가 성공적으로 수정되었습니다.");
-      // 필요 시 리스트 갱신
       await set(fetchUserWholesaleCodesAction);
     } catch (error) {
       console.error("🚨 도매 코드 수정 실패:", error);
@@ -575,3 +573,136 @@ export const updateWholesaleCodeByUserIdAction = atom(
     }
   }
 );
+
+// action
+export const getWholesaleCodesByUserIdAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId) {
+      console.warn("⛔ userId 파라미터가 없습니다.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/wholesale/wholesale-code/by-user-id`, {
+        params: { userId },
+      });
+      console.log("✅ 도매 코드 조회 결과:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ 도매 코드 조회 실패:", error);
+      return [];
+    }
+  }
+);
+
+
+
+
+export const getUserIdsByUserWholesaleCodeAction = atom(
+  null,
+  async (get, set, userWholesaleCode) => {
+    if (!userWholesaleCode) {
+      return [];
+    }
+
+    try {
+      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-user-code", {
+        params: { userWholesaleCode }
+      });
+
+      const userIds = response.data;
+      console.log("📋 유저 ID 목록:", userIds);
+      return userIds;
+    } catch (error) {
+      console.error("🚨 유저 ID 조회 실패:", error);
+      message.error("유저 ID 조회 중 오류가 발생했습니다.");
+      return [];
+    }
+  }
+);
+export const getUserIdsByOwnerUserIdAction = atom(
+  null,
+  async (get, set, ownerUserId) => {
+    if (!ownerUserId || ownerUserId.trim() === "") {
+      message.warning("ownerUserId가 비어 있습니다.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-owner-id", {
+        params: { ownerUserId }
+      });
+
+      const userIds = response.data;
+      console.log("📋 소유 유저 기준 유저 ID 목록:", userIds);
+      return userIds;
+    } catch (error) {
+      console.error("🚨 ownerUserId로 유저 목록 조회 실패:", error);
+      message.error("유저 ID 목록 조회에 실패했습니다.");
+      return [];
+    }
+  }
+);
+
+
+export const getUserProfileByUserIdAction = atom(
+  null,
+  async (get, set, userId) => {
+    if (!userId || userId.trim() === '') {
+      message.warning("유저 ID가 비어 있습니다.");
+      return null;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:8080/api/users/profile', {
+        params: { userId }
+      });
+
+      const user = response.data;
+
+      // ✅ 이 구조에서 원하는 속성들을 추출해 사용할 수 있음
+      console.log("📄 유저 정보:", user);
+
+      return {
+        phone: user.phone,
+        email: user.email,
+        region: user.region,
+        username: user.username,
+        profileImage: user.profile_image,
+        grade: user.grade
+      };
+    } catch (error) {
+      console.error("🚨 사용자 프로필 조회 실패:", error);
+      message.error("사용자 정보를 불러오는 데 실패했습니다.");
+      return null;
+    }
+  }
+);
+
+export const getUserWholesaleCodeByUserIdAction = atom(null, async (get, set) => {
+  const userId = get(selectedUserIdAtom);
+  if (!userId) {
+    message.warning("userId를 입력해주세요.");
+    return null;
+  }
+
+  try {
+    const response = await axios.get('http://localhost:8080/api/wholesale/first-user-code/by-user-id', {
+      params: { userId }
+    });
+
+    const userWholesaleCode = response.data.userWholesaleCode;
+    set(selectedLinkAtom, userWholesaleCode);
+    console.log("유저 링크 " + userWholesaleCode);
+    return userWholesaleCode;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      message.info("해당 유저의 도매 코드가 없습니다.");
+    } else {
+      console.error("🚨 도매 코드 조회 실패:", error);
+      message.error("도매 코드 조회 중 오류가 발생했습니다.");
+    }
+    return null;
+  }
+});

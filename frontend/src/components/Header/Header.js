@@ -1,4 +1,3 @@
-// frontend/src/components/Header/SorticHeader.jsx
 import React, { useEffect } from 'react';
 import { Layout, Menu, Badge, Avatar, Dropdown } from 'antd';
 import { BellOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -11,7 +10,7 @@ import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 import authAxios from "../../axios/authAxios";
 
 import {
-  selectedUserIdAtom,
+  selectedUserIdAtom, selectedUserNameAtom,
   selectedUserWholesaleLinkIdAtom,
   sorterModeAtom,
   wholesalerIdAtom
@@ -23,7 +22,10 @@ import {
   fetchWholesalerCodeByUserIdAction,
   fetchClonedUserIdsAction,
   fetchClonedUserIdAction,
-  getWholesaleLinkCountByUserAction
+  getWholesaleLinkCountByUserAction,
+  fetchUserWholesaleCodesAction,
+  getUserIdsByUserWholesaleCodeAction,
+  getUsernameByUserIdAction
 } from "../WholesalePage/action/wholesaleAction";
 import {fetchAndNumberCategoriesAction} from "../SorterPage/actions/categoryAction";
 const { Header } = Layout;
@@ -45,6 +47,17 @@ const SorticHeader = () => {
   const [, fetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
   const getLinkCount = useSetAtom(getWholesaleLinkCountByUserAction);
   const [selectedUserWholesaleLinkId,setSelectedUserWholesaleLinkId] = useAtom(selectedUserWholesaleLinkIdAtom);
+  const [,fetchUserWholesaleCodes] = useAtom(fetchUserWholesaleCodesAction);
+  const [,getUserIdsByUserWholesaleCode] = useAtom(getUserIdsByUserWholesaleCodeAction);
+  const [, getUsernameByUserId] = useAtom(getUsernameByUserIdAction);
+  const [selectedUsername, setSelectedUserName ] = useAtom(selectedUserNameAtom);
+  // 로그아웃 처리 함수
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('sidebarCollapsed');
+    localStorage.removeItem('sortCategory');
 
   // ✅ 로그아웃 처리
   const handleLogout = async () => {
@@ -57,10 +70,13 @@ const SorticHeader = () => {
     }
 
     await logout(); // jotai 상태 초기화 포함
+    // jotai 상태 초기화
+    setAuthUser(null);
+    setIsAuthenticated(false);
+    setSelectedUserId(null);
     navigate('/');
   };
 
-  // ✅ 유저 드롭다운 메뉴
   const userMenuItems = [
     {
       key: 'profile',
@@ -77,7 +93,7 @@ const SorticHeader = () => {
   ];
   const sorterMenuItems = [
     {
-      key: 'wholesale',
+      key: 'personal',
       label: '개인',
       onClick: () => {
         setSorterMode(0);
@@ -95,8 +111,6 @@ const SorticHeader = () => {
         navigate('/sorter');
         const code = await generateWholesalerCode();
         const userId = authUser?.userId;
-        await cloneUserWithWholesalerCode(code);
-        await createWholesaleCode(code);
         const clonedId = await fetchClonedUsers(userId);
         setSelectedUserId(clonedId);
         console.log("선택된 유저" + clonedId);
@@ -112,16 +126,29 @@ const SorticHeader = () => {
         setSorterMode(2);
         navigate('/sorter');
         const userId = authUser?.userId;
-        setSelectedUserId(userId);
+
         const count = await getLinkCount(userId);
         if (count === 0) {
           navigate('/wholesale');
         }
+        const result = await fetchUserWholesaleCodes();
+        const firstCode = result?.[0]?.userWholesaleCode;
+        setSelectedUserWholesaleLinkId(firstCode);
+        fetchAndNumberCategories(firstCode);
+        const userIds = await getUserIdsByUserWholesaleCode(firstCode);
+        const firstUserId = userIds?.[0];
+        const firstUserName = await getUsernameByUserId(firstUserId);
+        setSelectedUserName(firstUserName);
+        const clonedId = await fetchClonedUsers(firstUserId);
+
+        setSelectedUserId(clonedId);
+
+
+
       },
     },
   ];
 
-  // ✅ 다크모드 테마 반영
   useEffect(() => {
     const saved = localStorage.getItem('theme');
     if (saved === 'dark') {
@@ -151,8 +178,8 @@ const SorticHeader = () => {
           </div>
         </Dropdown>
 
+        <div className={styles['menu-item']}><Link to="/wholesale">Code</Link></div>
 
-        <div className={styles['menu-item']}><Link to="/statistics">Statistics</Link></div>
       </div>
 
       <div className={styles['right-section']}>

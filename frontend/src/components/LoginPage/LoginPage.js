@@ -6,6 +6,8 @@ import { isAuthenticatedAtom } from '../../auth/authAtoms';
 import { userAtom } from '../../user/userAtoms';
 import { useLogin } from '../../auth/authService';
 import styles from './css/Login.module.css';
+import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
+import {selectedUserIdAtom} from "../SorterPage/atoms/atoms";
 
 const Login = () => {
   const [form] = Form.useForm();

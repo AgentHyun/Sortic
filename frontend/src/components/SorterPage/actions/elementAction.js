@@ -27,6 +27,7 @@ export const fetchElementsByCategoryAction = atom(
   null,
   async (get, set, categoryId) => {
     try {
+
       const response = await axios.get('http://localhost:8080/api/elements/get_elements_by_category', {
         params: { category_id: categoryId },
       });
@@ -474,7 +475,6 @@ export const fetchElementPriceByIdAction = atom(
   }
 
 );
-// 요소 ID로 이름을 불러오는 액션 함수
 export const fetchElementNameByIdAction = atom(
   null,
   async (get, set, elementId) => {

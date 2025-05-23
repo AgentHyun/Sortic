@@ -61,7 +61,7 @@ export const fetchAndNumberCategoriesByUserIdAction = atom(
         set(currentCategoryAtom, firstCategory.category_id);
         set(currentCategoryNameAtom, firstCategory.category_name);
         set(currentIndexAtom, 0);
-        await set(fetchElementsByCategoryAction, firstCategory.category_id);
+
       } else if (currentCategoryId) {
         const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
         if (currentIndex !== -1) {
@@ -94,6 +94,7 @@ export const fetchAndNumberCategoriesAction = atom(
 
       let userId = get(selectedUserIdAtom);
 
+
       const response = await axios.get('http://localhost:8080/api/categories/get_category', {
         params: { user_id: userId }
       });
@@ -118,7 +119,7 @@ export const fetchAndNumberCategoriesAction = atom(
         set(currentCategoryAtom, firstCategory.category_id);
         set(currentCategoryNameAtom, firstCategory.category_name);
         set(currentIndexAtom, 0);
-        await set(fetchElementsByCategoryAction, firstCategory.category_id);
+
       } else if (currentCategoryId) {
         const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
         if (currentIndex !== -1) {
@@ -232,8 +233,7 @@ export const fetchFirstCategoryAction = atom(
                     return prevCategories;
                 });
 
-                // 해당 카테고리의 요소를 불러오기
-                set(fetchElementsByCategoryAction, firstCategory.category_id); // 요소 불러오기 액션 호출
+
 
             } else {
                 console.error('첫 번째 카테고리를 찾을 수 없습니다.');
