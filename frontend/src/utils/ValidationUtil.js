@@ -34,7 +34,7 @@ export const validateEmail = (email) => {
 };
 
 export const validatePhone = (phone) => {
-  const pattern = /^\d{11}$/;
+  const pattern = /^01[016789][0-9]{7,8}$/;
   if (!phone || !pattern.test(phone)) {
     throw new Error('전화번호는 숫자만 11자리로 입력해주세요.');
   }

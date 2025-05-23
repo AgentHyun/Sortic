@@ -96,14 +96,13 @@
 
 .infoItem {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
   padding: 12px 0;
   border-bottom: 1px solid #eee;
 }
 
 .label {
-  width: 120px;
   font-weight: 600;
   color: #666;
   font-size: 15px;
@@ -126,6 +125,23 @@
   color: #999;
 }
 
+/* ✅ 입력 그룹 (input + error + extra 버튼용) */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.extra {
+  margin-top: 4px;
+}
+
 .actionButtons {
   margin-top: 24px;
   display: flex;
@@ -141,10 +157,18 @@
   font-size: 14px;
   color: #666;
 }
-
+.timer {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}
 /* 다크모드 대응 */
 :global(.dark) .profileCard {
   background-color: #1f1f1f;
+}
+
+:global(.dark) .timer {
+  color: #aaa;
 }
 
 :global(.dark) .label {
@@ -168,4 +192,8 @@
 
 :global(.dark) .infoItem {
   border-color: #333;
+}
+
+:global(.dark) .error {
+  color: #ff7675;
 }

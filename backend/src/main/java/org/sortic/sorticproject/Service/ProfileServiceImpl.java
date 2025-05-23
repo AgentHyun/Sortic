@@ -37,7 +37,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         Users updated = new Users();
         updated.setUserId(userId);
-        updated.setStoreName(request.getStoreName());
         updated.setEmail(request.getEmail());
         updated.setPhone(request.getPhone());
 
@@ -54,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
         String userId = jwtTokenProvider.getUserId(token.replace("Bearer ", ""));
 
         // 임시 저장 경로 설정 (운영 환경에서는 S3 또는 별도 디렉토리 사용 권장)
-        String uploadDir = "./uploads/";
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 

@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/WholesalePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/WholesalePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/EmailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/EmailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ProfilePage/components/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ProfilePage/components/ProfilePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ProfilePage/css/ProfilePage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ProfilePage/css/ProfilePage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/ValidationUtil.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/ValidationUtil.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +80,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feature/k/mergedbranch",
+    "git-widget-placeholder": "feature/s/merged",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/sdedu/Desktop/merged/backend",
     "list.type.of.created.stylesheet": "CSS",
@@ -134,7 +138,7 @@
       <workItem from="1747783931437" duration="22609000" />
       <workItem from="1747956246516" duration="20587000" />
       <workItem from="1747990161471" duration="77000" />
-      <workItem from="1747990286150" duration="730000" />
+      <workItem from="1747990286150" duration="11982000" />
     </task>
     <servers />
   </component>

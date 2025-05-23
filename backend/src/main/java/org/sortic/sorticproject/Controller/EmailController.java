@@ -32,6 +32,8 @@ public class EmailController {
         if (!isValid) {
             return ResponseEntity.badRequest().body(Map.of("message", "인증번호가 올바르지 않거나 만료되었습니다."));
         }
-        return ResponseEntity.ok(Map.of("message", "인증되었습니다."));
+        return ResponseEntity.ok(Map.of(
+            "message", "인증되었습니다.",
+            "verified", true));
     }
-}
+};
