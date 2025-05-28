@@ -54,6 +54,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         // 임시 저장 경로 설정 (운영 환경에서는 S3 또는 별도 디렉토리 사용 권장)
         String uploadDir = System.getProperty("user.dir") + "/uploads/";
+
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 

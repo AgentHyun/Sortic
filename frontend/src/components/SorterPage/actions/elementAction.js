@@ -1,5 +1,4 @@
-import publicAxios from '../../../axios/publicAxios';
-import axios from 'axios';
+import authAxios from "../../../axios/authAxios";
 import { atom, useSetAtom, useAtomValue , useAtom} from 'jotai';
 import { message } from 'antd';
 
@@ -28,7 +27,7 @@ export const fetchElementsByCategoryAction = atom(
   async (get, set, categoryId) => {
     try {
 
-      const response = await axios.get('http://localhost:8080/api/elements/get_elements_by_category', {
+      const response = await authAxios.get('/elements/get_elements_by_category', {
         params: { category_id: categoryId },
       });
 
@@ -92,7 +91,7 @@ export const handleBulkDeleteElementsAction = atom(
       // 전역 선택된 요소 삭제 요청
       if (hasGlobalSelection) {
         console.log("🚀 전역 삭제 요청 보냄:", selectedIds);
-        const response = await axios.delete(`http://localhost:8080/api/elements/delete_multiple_elements`, {
+        const response = await authAxios.delete(`/elements/delete_multiple_elements`, {
           data: { elements_name_ids: selectedIds },
           headers: { 'Content-Type': 'application/json' }
         });
@@ -127,8 +126,8 @@ export const handleBulkDeleteElementsAction = atom(
             for (const elementId of elementIds) {
               try {
                 // 서버로 삭제 요청 보내기 (DELETE 요청 사용)
-                const sorterDeleteResponse = await axios.delete(
-                  `http://localhost:8080/api/sorter-element/remove`,
+                const sorterDeleteResponse = await authAxios.delete(
+                  `/sorter-element/remove`,
                   {
                     params: { sorterId: sorterName, elementId: elementId }
                   }
@@ -183,7 +182,7 @@ export const addElementAction = atom(
 
     try {
       // ✅ 서버에 요소 추가 요청
-      const response = await axios.post('http://localhost:8080/api/elements/add_element', newElement);
+      const response = await authAxios.post('/elements/add_element', newElement);
       if (response.status === 200) {
         console.log("✅ 요소 추가 성공!", response.data);
         const newElementId = response.data.elements_name_id;
@@ -230,7 +229,7 @@ export const handleDeleteElementAction = atom(
     }
 
     try {
-      await axios.delete(`http://localhost:8080/api/elements/delete_element`, {
+      await authAxios.delete(`/elements/delete_element`, {
         params: { elements_name_id: selectedElementId }
       });
 
@@ -335,7 +334,7 @@ export const handleElementNameSaveAction = atom(
 
     try {
 
-      await axios.put('http://localhost:8080/api/elements/update_element', {
+      await authAxios.put('/elements/update_element', {
         elements_name_id: editingElementIndex,
         elements_name: newElementName  // ✅ 한글 그대로 전송
 
@@ -384,7 +383,7 @@ export const handleElementPriceSaveAction = atom(
     }
 
     try {
-      await axios.put('http://localhost:8080/api/elements/update_element_price', {
+      await authAxios.put('/elements/update_element_price', {
         elements_name_id: editingElementIndex,
         elements_price: newPrice
       }, {
@@ -448,7 +447,7 @@ export const fetchElementPriceByIdAction = atom(
   null,
   async (get, set, elementId) => {
     try {
-      const response = await axios.get('http://localhost:8080/api/elements/get_element_price', {
+      const response = await authAxios.get('/elements/get_element_price', {
         params: {elements_name_id: elementId}
       });
 
@@ -488,7 +487,7 @@ export const fetchElementNameByIdAction = atom(
 
       console.log("🛰️ 호출 URL →", `/api/elements/${id}`);
 
-      const response = await axios.get(`http://localhost:8080/api/elements/${id}`);
+      const response = await authAxios.get(`/elements/${id}`);
       console.log("✅ 응답:", response.data);
 
       if (response.status === 200) {

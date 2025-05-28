@@ -60,10 +60,12 @@ public class JwtTokenProvider {
     public void validate(String bearerToken) {
         try {
             String token = removeBearerPrefix(bearerToken);
+            log.info("✅ 유효성 검사 시작: {}", token); // ⬅️ 추가
             Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token);
+            log.info("✅ 유효성 검사 통과"); // ⬅️ 추가
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidJwtException("유효하지 않은 JWT 토큰입니다.", e);
         }

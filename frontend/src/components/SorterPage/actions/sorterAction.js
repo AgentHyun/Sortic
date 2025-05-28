@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import publicAxios from '../../../axios/publicAxios';
+import authAxios from '../../../axios/authAxios';
 import {
   sortersAtom,
   messageAtom,
@@ -33,10 +33,10 @@ export const addSorterAction = atom(null, async (get, set) => {
 
   try {
     // 정렬자 추가 요청
-    const response = await publicAxios.post('/sorter/add', newSorter);
+    const response = await authAxios.post('/sorter/add', newSorter);
 
     // 서버에서 최신 정렬자 목록을 가져와서 상태 업데이트
-    const updatedSortersResponse = await publicAxios.get(`/sorter/user/${userId}`);
+    const updatedSortersResponse = await authAxios.get(`/sorter/user/${userId}`);
     const updatedSorters = updatedSortersResponse.data;
 
     set(sortersAtom, updatedSorters);
@@ -66,7 +66,7 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
 
   try {
     // 정렬자 삭제
-    await publicAxios.post('/sorter/delete', {
+    await authAxios.post('/sorter/delete', {
       sorter_id: deletedSorter.sorter_id,
     });
 
@@ -76,7 +76,7 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
     message.success(deletedSorter.sorter_name + "(이)가 삭제되었습니다!");
 
     // 백엔드에 재정렬 요청
-    const reordered = await publicAxios.post('/sorter/reorder', renamed);
+    const reordered = await authAxios.post('/sorter/reorder', renamed);
 
     // 상태 업데이트
     set(sortersAtom, reordered.data);
@@ -93,7 +93,7 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
   const userId = get(selectedUserIdAtom);
 
   try {
-    const response = await publicAxios.get(`/sorter/user/${userId}`);
+    const response = await authAxios.get(`/sorter/user/${userId}`);
     set(sortersAtom, response.data);
   } catch (error) {
     console.error('🚨 사용자 정렬자 불러오기 실패:', error);
@@ -103,7 +103,7 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
 // 정렬자 이름 수정
 export const updateSorterNameAction = atom(null, async (get, set, { oldSorterName, newName }) => {
   try {
-    const response = await publicAxios.put('/sorter/update', {
+    const response = await authAxios.put('/sorter/update', {
       oldSorterName,
       sorterName: newName,
     }, {
@@ -141,7 +141,7 @@ export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIds
   }
 
   try {
-    await publicAxios.post('/sorter/delete/multiple', sorterIdsToDelete);
+    await authAxios.post('/sorter/delete/multiple', sorterIdsToDelete);
 
     const deletedNames = currentSorters
       .filter(s => sorterIdsToDelete.includes(s.sorter_id))
@@ -155,7 +155,7 @@ export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIds
       user_id: sorter.user_id || userId,
     }));
 
-    const reordered = await publicAxios.post('/sorter/reorder', renamedWithUserId);
+    const reordered = await authAxios.post('/sorter/reorder', renamedWithUserId);
 
     set(sortersAtom, reordered.data);
     message.success(`${deletedNames}(이)가 삭제되었습니다.`);
@@ -174,7 +174,7 @@ export const getElementNameByIdAction = atom(
   null,
   async (get, set, elementsId) => {
     try {
-      const response = await publicAxios.get(`/elements/${elementsId}`);
+      const response = await authAxios.get(`/elements/${elementsId}`);
       const elementName = response.data;  // 반환되는 데이터에서 `name`만 추출한다고 가정
 
       // element name을 atom에 설정합니다.
@@ -192,7 +192,7 @@ export const getSorterIdByNameAndElementIdAction = atom(
   null,
   async (get, set, { sorterName, elementsId }) => {
     try {
-      const response = await publicAxios.get('/sorter/get-sorter-id', {
+      const response = await authAxios.get('/sorter/get-sorter-id', {
         params: {
           sorterName,
           elementsId
@@ -248,7 +248,7 @@ export const moveElementToSorterAction = atom(
         return;
       }
 
-      await publicAxios.post(
+      await authAxios.post(
         `/sorter-element/add?sorterId=${sorterId}&elementId=${elementsId}`
       );
 
@@ -288,7 +288,7 @@ export const getElementsIdBySorterIdAction = atom(
   async (get, set, sorterId) => {
     try {
       // 수정된 API 경로 사용
-      const response = await publicAxios.get(`/sorter-element/sorter/${sorterId}`);
+      const response = await authAxios.get(`/sorter-element/sorter/${sorterId}`);
       const elementsIds = response.data;  // 요소 ID 배열
       // 요소 ID 리스트를 상태에 저장
       set(elementsIdListAtom, elementsIds);
@@ -307,7 +307,7 @@ export const getSorterNameByIdAction = atom(
   null,
   async (get, set, sorterId) => {
     try {
-      const response = await publicAxios.get(`/sorter/name/${sorterId}`);
+      const response = await authAxios.get(`/sorter/name/${sorterId}`);
       const sorterName = response.data; // 서버에서 반환된 sorter 이름
 
       // 가져온 sorter 이름을 상태에 설정

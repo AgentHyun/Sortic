@@ -1,5 +1,6 @@
 package org.sortic.sorticproject.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sortic.sorticproject.Entity.Category;
 import org.sortic.sorticproject.Service.CategoryService;
 import org.sortic.sorticproject.Service.ElementService;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
@@ -33,7 +35,8 @@ public class CategoryController {
 
     // ✅ user_id로 카테고리 목록 조회
     @GetMapping("/get_category")
-    public List<Category> getCategories(@RequestParam String userId) {
+    public List<Category> getCategories(@RequestParam("user_id") String userId) {
+        log.info("🔍 getCategories 접근됨: {}", userId);
         return categoryService.getCategoriesByUserId(userId);
     }
 

@@ -57,8 +57,8 @@ public interface WholesaleMapper {
     @Delete("DELETE FROM Wholesale_Link WHERE wholesale_link_id = #{wholesaleLinkId}")
     void deleteWholesaleLink(int wholesaleLinkId);
     //래현 추가 user_id로 username찾는 로직
-    @Select("SELECT username FROM Users WHERE user_id = #{userId}")
-    String findUsernameByUserId(@Param("userId") String userId);
+    @Select("SELECT store_name FROM Users WHERE user_id = #{userId}")
+    String findStorenameByUserId(@Param("userId") String userId);
 
     @Select("SELECT * FROM Wholesale_Code WHERE wholesale_code = #{wholesaleCode}")
     @Results({

@@ -69,7 +69,7 @@ public class WholesaleController {
     @GetMapping("/username/{userId}")
     public ResponseEntity<?> getUsernameByUserId(@PathVariable String userId) {
         try {
-            String username = wholesaleService.findUsernameByUserId(userId);
+            String username = wholesaleService.findStorenameByUserId(userId);
             return ResponseEntity.ok(Collections.singletonMap("username", username));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import axios from 'axios';
+import authAxios from '../../../axios/authAxios';
 import { message } from 'antd';
 import { authUserAtom } from '../../../auth/authAtoms';
 import { wholesaleCodesAtom, wholesaleLinksAtom} from '../atoms/atoms';
@@ -20,7 +20,7 @@ import {useNavigate} from "react-router-dom";
 export const fetchWholesaleCodesAction = atom(null, async (get, set) => {
   const userId = get(authUserAtom)?.userId;
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/codes/${userId}`);
+    const response = await authAxios.get(`/wholesale/codes/${userId}`);
     set(wholesaleCodesAtom, response.data);
   } catch (error) {
     console.error("🚨 도매 코드 조회 실패:", error);
@@ -39,7 +39,7 @@ export const createWholesaleCodeAction = atom(
         userId,
       };
 
-      await axios.post('http://localhost:8080/api/wholesale/code', payload);
+      await authAxios.post('/wholesale/code', payload);
       message.success(`도매 코드가 생성되었습니다: ${wholesaleCode}`);
 
     } catch (error) {
@@ -57,7 +57,7 @@ export const deleteWholesaleLinkAction = atom(null, async (get, set, wholesaleLi
 
   try {
     console.log("삭제 아이디" + wholesaleLinkId);
-    await axios.delete(`http://localhost:8080/api/wholesale/link/${wholesaleLinkId}`);
+    await authAxios.delete(`/wholesale/link/${wholesaleLinkId}`);
     message.success("도매 링크가 삭제되었습니다.");
     await set(fetchWholesaleLinksAction, null); // 리스트 새로고침
   } catch (error) {
@@ -75,7 +75,7 @@ export const getWholesaleLinkCountByUserAction = atom(
     }
 
     try {
-      const res = await axios.get(`http://localhost:8080/api/wholesale/link/count`, {
+      const res = await authAxios.get(`/wholesale/link/count`, {
         params: { userId },
       });
 
@@ -97,8 +97,8 @@ export const createWholesaleLinkAction = atom(null, async (get, set, { wholesale
 
     const authUser = get(authUserAtom);
     const userId = authUser?.userId;
-    await axios.post(
-      `http://localhost:8080/api/wholesale/link/by-code`,
+    await authAxios.post(
+      `/wholesale/link/by-code`,
       null,
       {
         params: {
@@ -128,7 +128,7 @@ export const createWholesaleLinkAction = atom(null, async (get, set, { wholesale
 export const fetchWholesaleLinksAction = atom(null, async (get, set) => {
   const userId = get(authUserAtom)?.userId;
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/links/${userId}`);
+    const response = await authAxios.get(`/wholesale/links/${userId}`);
     set(wholesaleLinksAtom, response.data);
 
     console.table(get(wholesaleLinksAtom));
@@ -148,7 +148,7 @@ export const fetchUserWholesaleCodesAction = atom(null, async (get, set) => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/wholesale-user-code`, {
+    const response = await authAxios.get(`/wholesale/wholesale-user-code`, {
       params: { userId }
     });
 
@@ -169,8 +169,8 @@ export const getWholesaleCodeValueByIdAction = atom(
   null,
   async (get, set, wholesaleCodeId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/wholesale/code/${wholesaleCodeId}`
+      const response = await authAxios.get(
+        `/wholesale/code/${wholesaleCodeId}`
       );
       await set(fetchElementsByCategoryAction, get(currentCategoryAtom)); // 필요한 경우
 
@@ -190,7 +190,7 @@ export const getWholesaleCodeValueByIdAction = atom(
 // 포함 검색용 도매 코드 리스트 가져오기
 export const searchWholesaleCodesAction = atom(null, async (get, set, keyword) => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/wholesale/code/search`, {
+    const res = await authAxios.get(`/wholesale/code/search`, {
       params: { keyword },
     });
     return res.data; // [{ wholesaleCodeId, wholesaleCode, userId }, ...]
@@ -206,7 +206,7 @@ export const getUsernameByUserIdAction = atom(null, async (get, set, userId) => 
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/username/${userId}`);
+    const response = await authAxios.get(`/wholesale/username/${userId}`);
     const username = response.data.username;
     return username;
   } catch (error) {
@@ -217,7 +217,7 @@ export const getUsernameByUserIdAction = atom(null, async (get, set, userId) => 
 });
 export const updateWholesaleMemoAction = atom(null, async (get, set, { wholesaleLinkId, wholesaleMemo }) => {
   try {
-    await axios.put(`http://localhost:8080/api/wholesale/link/memo`, {
+    await authAxios.put(`/wholesale/link/memo`, {
       wholesaleLinkId,
       wholesaleMemo,
     });
@@ -231,7 +231,7 @@ export const updateWholesaleMemoAction = atom(null, async (get, set, { wholesale
 });
 export const getWholesaleMemoAction = atom(null, async (get, set, wholesaleLinkId) => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/wholesale/link/memo/${wholesaleLinkId}`);
+    const res = await authAxios.get(`/wholesale/link/memo/${wholesaleLinkId}`);
     return res.data.memo; // { memo: "내용" } 형태에서 memo 추출
   } catch (error) {
     console.error("🚨 메모 조회 실패:", error);
@@ -248,7 +248,7 @@ export const registerToUserWholesaleCodeAction = atom(null, async (get, set, who
   }
 
   try {
-    await axios.post(`http://localhost:8080/api/wholesale/user-code`, {
+    await authAxios.post(`/wholesale/user-code`, {
       userWholesaleCode: wholesaleCodeId,
       userId : userId,
     });
@@ -272,7 +272,7 @@ export const getUserIdByLinkNameAction = atom(null, async (get, set, wholesaleNa
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/user-id/by-link-name`, {
+    const response = await authAxios.get(`/wholesale/user-id/by-link-name`, {
       params: { name: wholesaleName },
     });
 
@@ -294,8 +294,8 @@ export const fetchUserIdByWholesaleCodeIdAction = atom(
     try {
 
 
-      const res = await axios.get(
-        'http://localhost:8080/api/wholesale/user-id-by-code-id',
+      const res = await authAxios.get(
+        '/wholesale/user-id-by-code-id',
         {
           params: { wholesaleCodeId: codeId }
         }
@@ -317,7 +317,7 @@ export const getUserIdByUsernameAction = atom(null, async (get, set, username) =
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/user-id/by-username`, {
+    const response = await authAxios.get(`/wholesale/user-id/by-username`, {
       params: { username },
     });
 
@@ -341,7 +341,7 @@ export const deleteUserWholesaleCodeAction = atom(null, async (get, set, userWho
   }
 
   try {
-    await axios.delete(`http://localhost:8080/api/wholesale/delete/user-code/${userWholesaleCode}`);
+    await authAxios.delete(`/wholesale/delete/user-code/${userWholesaleCode}`);
     message.success("유저 도매 코드가 성공적으로 삭제되었습니다.");
 
     // 삭제 후 목록 갱신
@@ -363,7 +363,7 @@ export const getUserWholesaleCodeIdByCodeAction = atom(null, async (get, set, us
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/api/wholesale/user-code-id/by-code`, {
+    const response = await authAxios.get(`/wholesale/user-code-id/by-code`, {
       params: { userWholesaleCode }
     });
 
@@ -396,8 +396,8 @@ export const generateWholesalerCodeAction = atom(null, async (get, set) => {
   }
 
   try {
-    const response = await axios.post(
-      `http://localhost:8080/api/wholesale/generate-code`,
+    const response = await authAxios.post(
+      `/wholesale/generate-code`,
       null,
       { params: { userId } }
     );
@@ -450,7 +450,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
   }
 
   try {
-    const checkRes = await axios.get(`http://localhost:8080/api/wholesale/is-cloned`, {
+    const checkRes = await authAxios.get(`/wholesale/is-cloned`, {
       params: { userId: originalUserId }
     });
 
@@ -465,7 +465,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
   }
 
   try {
-    const res = await axios.post(`http://localhost:8080/api/wholesale/clone-user-with-code`, null, {
+    const res = await authAxios.post(`/wholesale/clone-user-with-code`, null, {
       params: {
         userId: originalUserId,
         wholesalerCode
@@ -500,8 +500,8 @@ export const fetchWholesalerCodeByUserIdAction = atom(
     }
 
     try {
-      const response = await axios.get(
-        'http://localhost:8080/api/wholesale/wholesaler-code',
+      const response = await authAxios.get(
+        '/wholesale/wholesaler-code',
         { params: { userId } }
       );
 
@@ -526,7 +526,7 @@ export const fetchClonedUserIdAction = atom(
   null,
   async (get, set, originalUserId) => {
     try {
-      const res = await axios.get('http://localhost:8080/api/wholesale/cloned', {
+      const res = await authAxios.get('/wholesale/cloned', {
         params: { userId: originalUserId },
       });
 
@@ -560,7 +560,7 @@ export const updateWholesaleCodeByUserIdAction = atom(
     }
 
     try {
-      await axios.put("http://localhost:8080/api/wholesale/user-code", {
+      await authAxios.put("/wholesale/user-code", {
         userId,
         userWholesaleCode,
       });
@@ -584,7 +584,7 @@ export const getWholesaleCodesByUserIdAction = atom(
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/wholesale/wholesale-code/by-user-id`, {
+      const response = await authAxios.get(`/wholesale/wholesale-code/by-user-id`, {
         params: { userId },
       });
       console.log("✅ 도매 코드 조회 결과:", response.data);
@@ -607,7 +607,7 @@ export const getUserIdsByUserWholesaleCodeAction = atom(
     }
 
     try {
-      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-user-code", {
+      const response = await authAxios.get("/wholesale/user-ids/by-user-code", {
         params: { userWholesaleCode }
       });
 
@@ -630,7 +630,7 @@ export const getUserIdsByOwnerUserIdAction = atom(
     }
 
     try {
-      const response = await axios.get("http://localhost:8080/api/wholesale/user-ids/by-owner-id", {
+      const response = await authAxios.get("/wholesale/user-ids/by-owner-id", {
         params: { ownerUserId }
       });
 
@@ -655,7 +655,7 @@ export const getUserProfileByUserIdAction = atom(
     }
 
     try {
-      const response = await axios.get('http://localhost:8080/api/users/profile', {
+      const response = await authAxios.get('/users/profile', {
         params: { userId }
       });
 
@@ -688,7 +688,7 @@ export const getUserWholesaleCodeByUserIdAction = atom(null, async (get, set) =>
   }
 
   try {
-    const response = await axios.get('http://localhost:8080/api/wholesale/first-user-code/by-user-id', {
+    const response = await authAxios.get('/wholesale/first-user-code/by-user-id', {
       params: { userId }
     });
 

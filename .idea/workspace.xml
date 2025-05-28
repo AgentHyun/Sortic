@@ -5,13 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/DeliveryAddressController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Dto/request/DeliveryAddressRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/DeliveryAddress.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/DeliveryAddressMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/DeliveryAddressService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/EmailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/EmailController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ProfilePage/components/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ProfilePage/components/ProfilePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ProfilePage/css/ProfilePage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ProfilePage/css/ProfilePage.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/ValidationUtil.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/ValidationUtil.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authAtoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/auth/authAtoms.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authInterceptor.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/axios/authAxios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/axios/authAxios.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,9 +61,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -62,6 +81,9 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2xAfgnUGoJdJm0SuhAoDklAtEdU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -93,7 +115,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
-    "ts.external.directory.path": "C:\\Users\\sdedu\\AppData\\Local\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -139,6 +161,7 @@
       <workItem from="1747956246516" duration="20587000" />
       <workItem from="1747990161471" duration="77000" />
       <workItem from="1747990286150" duration="11982000" />
+      <workItem from="1748317080271" duration="16349000" />
     </task>
     <servers />
   </component>

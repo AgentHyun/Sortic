@@ -59,8 +59,8 @@ public class WholesaleService {
         wholesaleMapper.deleteWholesaleLink(linkId);
     }
 
-    public String findUsernameByUserId(String userId) {
-        String username = wholesaleMapper.findUsernameByUserId(userId);
+    public String findStorenameByUserId(String userId) {
+        String username = wholesaleMapper.findStorenameByUserId(userId);
         if (username == null) {
             throw new RuntimeException("해당 유저를 찾을 수 없습니다.");
         }
@@ -141,7 +141,7 @@ public class WholesaleService {
         }
 
         // ✅ username 가져와서 도매 이름으로 설정
-        String username = wholesaleMapper.findUsernameByUserId(code.getUserId());
+        String username = wholesaleMapper.findStorenameByUserId(code.getUserId());
 
         WholesaleLink link = new WholesaleLink();
         link.setWholesaleCodeId(wholesaleCodeId);

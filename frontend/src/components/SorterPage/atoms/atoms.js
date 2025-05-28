@@ -99,11 +99,7 @@ export const selectedUserWholesaleLinkIdAtom = atom(0);
 export const isClonedAtom = atom(false);
 export const usernamesByCodeIdAtom = atom({});
 export const selectedLinkAtom = atom(null);
-// 성민
-export const userAtom = atom({
-    nickname: 'Guest',
-    loggedIn: false,
-});
+
 
 // 로그인 상태 관리
 export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import authAxios from '../../../axios/authAxios';
 import { atom } from 'jotai';
 import { message } from 'antd';
 import { billElementsAtom, messageAtom, billsAtom } from '../atom/atoms'
@@ -49,8 +49,8 @@ export const addBillElementAction = atom(
     try {
       console.log('보낼 데이터', JSON.stringify(billElementData, null, 2));
 
-      const response = await axios.post(
-        'http://localhost:8080/api/bill-elements/add',
+      const response = await authAxios.post(
+        '/bill-elements/add',
         billElementData,
         {
           headers: {
@@ -119,8 +119,8 @@ export const addBillElementsAction = atom(
     try {
       console.log("보낼 데이터", JSON.stringify(filtered, null, 2));
 
-      const response = await axios.post(
-        'http://localhost:8080/api/bill-elements/add-multiple',
+      const response = await authAxios.post(
+        '/bill-elements/add-multiple',
         filtered,
         {
           headers: {
@@ -163,7 +163,7 @@ export const fetchBillsAction = atom(null,async (get,set)=>{
   const user = get(authUserAtom);
   const userId = user.userId;
     console.log(wholesaleLink.wholesaleLinkId)
-    axios.get(`http://localhost:8080/api/bills/getAllBills?userId=${userId}&wholesaleLinkId=${wholesaleLink.wholesaleLinkId}`) // ✅ 주소 수정
+  authAxios.get(`/bills/getAllBills?userId=${userId}&wholesaleLinkId=${wholesaleLink.wholesaleLinkId}`) // ✅ 주소 수정
       .then(res => set(billsAtom,res.data))
       .catch(err => console.error('Bill 불러오기 실패', err));
 

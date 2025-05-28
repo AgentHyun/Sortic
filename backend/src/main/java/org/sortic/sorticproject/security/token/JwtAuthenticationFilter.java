@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * JWT 기반 인증 처리 필터 (모든 요청에서 실행됨)
@@ -35,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String bearerToken = request.getHeader("Authorization");
 
+            log.info("🧪 받은 Authorization 헤더: {}", bearerToken);
             if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
                 // 1. 토큰 유효성 검사
                 jwtTokenProvider.validate(bearerToken);
@@ -44,10 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // 3. 인증 객체 생성 후 SecurityContext에 등록
                 UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userId, null, null); // 권한 X
+                    new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList()); // 권한 X
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
+                log.info("🔐 인증된 요청 진입 - userId: {}", userId);
                 log.debug("✅ 인증 완료: {}", userId);
             }
         } catch (InvalidJwtException e) {
