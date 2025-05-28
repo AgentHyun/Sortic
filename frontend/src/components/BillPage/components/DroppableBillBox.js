@@ -4,7 +4,7 @@ import { useDroppable } from '@dnd-kit/core';
 import {Button, Input, message, Select,} from 'antd';
 import {Trash, X, Plus, Minus, Copy ,ScanText} from 'lucide-react';
 import {useAtom} from "jotai";
-import axios from "axios";
+import authAxios from "../../../axios/authAxios";
 import {
   billsAtom, commissionModalVisibleAtom,
   detailModalVisibleAtom,
@@ -44,7 +44,7 @@ const DroppableBillBox = ({
 
   const handleDeleteBill = async (billId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/bills/deleteBill`, { // ✅ 주소 수정
+      await authAxios.delete(`/bills/deleteBill`, { // ✅ 주소 수정
         params: {billId}
       });
       message.success("삭제 완료!");
@@ -56,7 +56,7 @@ const DroppableBillBox = ({
 
   const handleUpdateBillName = async (billId) => {
       try {
-        await axios.put(`/api/bills/updateBillName`, {
+        await authAxios.put(`/api/bills/updateBillName`, {
           billId: billId,
           billName: editedBillName,
         });
@@ -69,7 +69,7 @@ const DroppableBillBox = ({
     };
 
     const handleIncrease = async (billId, elementsNameId) => {
-      await axios.put(`/api/bills/increaseCount`, null, {
+      await authAxios.put(`/api/bills/increaseCount`, null, {
         params: {billId, elementsNameId},
       });
       fetchBills();
@@ -77,11 +77,11 @@ const DroppableBillBox = ({
 
     const handleDecrease = async (billId, elementsNameId, currentCount) => {
       if (currentCount <= 1) {
-        await axios.delete(`/api/bills/deleteElement`, {
+        await authAxios.delete(`/api/bills/deleteElement`, {
           params: {billId, elementsNameId},
         });
       } else {
-        await axios.put(`/api/bills/decreaseCount`, null, {
+        await authAxios.put(`/api/bills/decreaseCount`, null, {
           params: {billId, elementsNameId},
         });
       }
@@ -97,7 +97,7 @@ const DroppableBillBox = ({
               console.warn("⚠️ 요소 ID 없음:", el);
               return Promise.resolve({data: []});
             }
-            return axios.get(
+            return authAxios.get(
               `/api/bills/getElementsdata?elementsNameId=${id}`
             );
           })
@@ -229,7 +229,7 @@ const DroppableBillBox = ({
         }))
       };
 
-      await axios.post("/api/order/sendOrder", payload);
+      await authAxios.post("/api/order/sendOrder", payload);
       message.success("주문이 완료되었습니다");
       await checkOrderStatus(); // 주문 완료 후 상태 갱신
     } catch (err) {
@@ -244,7 +244,7 @@ const DroppableBillBox = ({
 
   const checkOrderStatus = async () => {
     try {
-      const res = await axios.get(`/api/order/checkStatus`, {
+      const res = await authAxios.get(`/api/order/checkStatus`, {
         params: { billId: bill.billId },
       });
 

@@ -5,31 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db6a2723-c524-400a-a432-84fe669e9dc3" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/DeliveryAddressController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Dto/request/DeliveryAddressRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Entity/DeliveryAddress.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/DeliveryAddressMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/DeliveryAddressService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Controller/WholesaleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/WholesaleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/ProfileServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Service/WholesaleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/Mapper/CategoryMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtAuthenticationFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/sortic/sorticproject/security/token/JwtTokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authAtoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/auth/authAtoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authInterceptor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/axios/authAxios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/axios/authAxios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/actions/billElementAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/auth/authProvider.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/auth/authService.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/auth/authService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BillPage/components/DroppableBillBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BillPage/components/DroppableBillBox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LoginPage/LoginPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/categoryAction.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/elementAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/actions/sorterAction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/atoms/atoms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WholesalePage/action/wholesaleAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterDefaultPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SorterPage/components/SorterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,37 +78,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Sortic 빌드.executor": "Run",
-    "Gradle.Sortic0519 빌드.executor": "Run",
-    "Gradle.backend 빌드.executor": "Run",
-    "Gradle.소스 다운로드.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.SorticProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feature/s/merged",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/sdedu/Desktop/merged/backend",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "모듈",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Sortic 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Sortic0519 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.소스 다운로드.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SorticProjectApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/s/merged&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sdedu/Desktop/merged/backend&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\sdedu\Desktop\Sortic0519\frontend\public" />
@@ -162,6 +152,7 @@
       <workItem from="1747990161471" duration="77000" />
       <workItem from="1747990286150" duration="11982000" />
       <workItem from="1748317080271" duration="16349000" />
+      <workItem from="1748415917634" duration="15735000" />
     </task>
     <servers />
   </component>

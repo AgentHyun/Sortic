@@ -1,8 +1,7 @@
-// ✅ src/auth/authProvider.js - 인증 상태 복원 전용 통합 Provider
+// ✅ src/auth/AuthProvider.js - 최종 리팩토링 버전
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
-import { message } from 'antd';
 import {
   setAccessTokenAtom,
   authUserAtom,
@@ -25,6 +24,7 @@ export const AuthProvider = ({ children }) => {
   const login = useLogin();
   const logout = useLogout();
 
+  const [initDone, setInitDone] = useState(false);
   const [localError, setLocalError] = useState(null);
   const initializedRef = useRef(false);
 
@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         handleLogout('토큰 재발급 실패 또는 만료');
       }
       setAuthLoading(false);
+      setInitDone(true);
     };
 
     const handleLogout = (msg) => {
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('userId');
       setLocalError(msg);
 
@@ -58,6 +60,8 @@ export const AuthProvider = ({ children }) => {
 
     initialize();
   }, [setAccessToken, setUser, setIsAuthenticated, setAuthLoading, location, navigate]);
+
+  if (!initDone) return null;
 
   return (
     <AuthContext.Provider value={{ login, logout, error: localError }}>

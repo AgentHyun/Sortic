@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useAtom } from 'jotai';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { isAuthenticatedAtom } from '../../auth/authAtoms';
+
+import { isAuthenticatedAtom, authUserAtom } from '../../auth/authAtoms';
 import { userAtom } from '../../user/userAtoms';
 import { useLogin } from '../../auth/authService';
 import styles from './css/Login.module.css';
-import {fetchCategoryCountAction} from '../SorterPage/actions/categoryAction'
-import {selectedUserIdAtom} from "../SorterPage/atoms/atoms";
 
 const Login = () => {
   const [form] = Form.useForm();
@@ -16,11 +15,14 @@ const Login = () => {
 
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, setUser] = useAtom(userAtom);
+  const [, setAuthUser] = useAtom(authUserAtom); // ✅ 전역 인증 상태 저장
+
   const login = useLogin();
 
   const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({ userId: '', password: '' });
 
+  // ✅ 이미 로그인 상태라면 리다이렉트
   useEffect(() => {
     if (isAuthenticated) {
       const targetPath = location.state?.from?.pathname || '/';
@@ -45,7 +47,8 @@ const Login = () => {
 
     const result = await login({ userId, password });
     if (result.success) {
-      setUser(result.user);
+      setUser(result.user);       // ✅ UI 전용 사용자 상태
+      setAuthUser(result.user);  // ✅ 전역 인증 상태 갱신
       message.success(`${result.user.storeName}님 환영합니다!`);
       const targetPath = location.state?.from?.pathname || '/';
       navigate(targetPath, { replace: true });

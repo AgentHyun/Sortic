@@ -268,24 +268,28 @@ const SorterPage = () => {
       setCurrentCategoryName('');
       setCurrentIndex(-1);
       setFetchBills();
+
       // ✅ 새로운 유저의 카테고리 불러오기
       const categories = await setfetchAndNumberCategories();
 
-      // ✅ 새 카테고리가 존재하면 설정 및 요소 조회
-      if (categories.length > 0) {
-        const firstCategory = categories[0];
-        setCurrentCategory(firstCategory.category_id);         // Atom 상태로 설정
-        setCurrentCategoryName(firstCategory.category_name);   // 이름도 함께
-        setCurrentIndex(0);
-
-
+      // ✅ 카테고리가 없으면 디폴트 페이지로 이동
+      if (!categories || categories.length === 0) {
+        navigate('/sorterDefaultPage');
+        return;
       }
+
+      // ✅ 새 카테고리가 존재하면 설정 및 요소 조회
+      const firstCategory = categories[0];
+      setCurrentCategory(firstCategory.category_id);
+      setCurrentCategoryName(firstCategory.category_name);
+      setCurrentIndex(0);
     };
 
     if (selectedUserId) {
       resetAndFetch();
     }
   }, [selectedUserId]);
+
 
 
 
@@ -312,15 +316,21 @@ const SorterPage = () => {
   }, [activeCard]);
 
 
-  const fetchElementsByCategory = async() => {
+  // ✅ 요소를 안전하게 조회하는 함수
+  const fetchElementsByCategory = async (categoryId) => {
+    if (!categoryId || isNaN(Number(categoryId))) {
+      console.warn("🚫 유효하지 않은 categoryId:", categoryId);
+      return;
+    }
 
     try {
-      await setfetchElementsByCategoryId(currentCategory);
+      console.log("📥 요소 요청 categoryId:", categoryId);
+      await setfetchElementsByCategoryId(categoryId);
     } catch (error) {
-      console.error('첫 번째 카테고리 조회 실패:', error);
-      message.error('첫 번째 카테고리 조회에 실패했습니다.');
+      console.error("❌ 요소 조회 실패:", error);
+      message.error("요소 조회에 실패했습니다.");
     }
-  }
+  };
 
   const handleAddCategory = async () => {
     try {
@@ -959,30 +969,27 @@ const SorterPage = () => {
   };
   const handleMenuClick = async (linkName, codeId) => {
     const userId = await getUserIdByUsername(linkName);
-    setSelectedUserName(linkName);
     const id = await getUserCodeId(codeId);
-    setSelectedUserWholesaleLinkId(id);
     const clonedId = await fetchClonedUsers(userId);
 
-    if (userId) {
-      setSelectedUserId(userId);
-    }
+    setSelectedUserName(linkName);
+    setSelectedUserWholesaleLinkId(id);
+    setSelectedUserId(clonedId);
     setCards([]);
+
     if (!id) {
       await setFetchCategoriesByUserId();
     } else {
-      await setfetchAndNumberCategories(clonedId); // ID 직접 전달
+      await setfetchAndNumberCategories(clonedId);
     }
 
-    setSelectedUserId(clonedId);
-    setfetchAndNumberCategories(clonedId);
     const count = await fetchCategoryCount(userId);
     if (count === 0 && sorterMode === 1) {
-      navigate('/sorterDefaultPage'); // ✅ 원하는 경로로 이동
+      navigate('/sorterDefaultPage');
+      return;
     }
 
-    setFetchBills(selectedUserId);
-
+    setFetchBills(clonedId);
   };
   const handleLinkDeleteClick = (id) => {
     Modal.confirm({

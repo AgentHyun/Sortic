@@ -26,6 +26,13 @@ export const fetchElementsByCategoryAction = atom(
   null,
   async (get, set, categoryId) => {
     try {
+      console.log("🧭 fetchElementsByCategoryAction 호출됨 - categoryId:", categoryId); // ✅ 여기에 추가
+
+      if (!categoryId || isNaN(categoryId)) {
+        console.warn("🚫 유효하지 않은 categoryId:", categoryId); // 경고 로그
+        set(messageAtom, { type: 'error', content: '카테고리를 먼저 선택하세요.' });
+        return; // ⛔ API 호출하지 않음
+      }
 
       const response = await authAxios.get('/elements/get_elements_by_category', {
         params: { category_id: categoryId },

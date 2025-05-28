@@ -30,15 +30,17 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    /** ✅ 비밀번호 암호화 방식 설정 */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /** ✅ CORS 정책 설정 */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 주소
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
@@ -49,12 +51,13 @@ public class SecurityConfig {
         return source;
     }
 
-    /** ✅ JwtAuthenticationFilter를 Bean으로 등록 */
+    /** ✅ JWT 인증 필터 등록 */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtTokenProvider);
     }
 
+    /** ✅ Spring Security 필터 체인 정의 */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -64,27 +67,35 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
 
             .authorizeHttpRequests(auth -> auth
+                // 인증이 필요 없는 공개 API
                 .requestMatchers(
                     "/api/users/check-userid",
                     "/api/users/check-store",
                     "/api/email/send-code",
-                    "/api/users/signup",
                     "/api/email/verify-code",
-                    "/api/auth/login",
-                    "/api/auth/reissue",
+                    "/api/users/signup",
                     "/api/users/store-image",
                     "/api/users/find-id",
-                    "/api/users/reset-password"
+                    "/api/users/reset-password",
+                    "/api/auth/login",
+                    "/api/auth/reissue"
                 ).permitAll()
+
+                // Swagger, H2 콘솔 등
                 .requestMatchers(
-                    "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**"
+                    "/h2-console/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
                 ).permitAll()
+
+                // 나머지 모든 요청은 인증 필요
                 .anyRequest().authenticated()
             )
 
-            // ✅ 여기를 수정
+            // JWT 인증 필터 등록 (UsernamePasswordAuthenticationFilter 전에 실행)
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-            log.info("🛡️ Security 필터 체인 구성 완료됨");
+
+        log.info("🛡️ Security 필터 체인 구성 완료됨");
         return http.build();
     }
 }

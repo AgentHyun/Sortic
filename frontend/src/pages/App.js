@@ -74,7 +74,15 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/wholesale" element={<WholesalePage />} />
+
+        <Route
+          path="/wholesale"
+          element={
+            <ProtectedRoute>
+              <WholesalePage />
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
     </>

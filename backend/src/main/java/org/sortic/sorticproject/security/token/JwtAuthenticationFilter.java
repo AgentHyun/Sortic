@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.sortic.sorticproject.security.InvalidJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * JWT 기반 인증 처리 필터 (모든 요청에서 실행됨)
@@ -46,7 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // 3. 인증 객체 생성 후 SecurityContext에 등록
                 UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList()); // 권한 X
+                    new UsernamePasswordAuthenticationToken(
+                        userId,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_USER")) // ✅ 권한 부여
+                    ); // 권한 X
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

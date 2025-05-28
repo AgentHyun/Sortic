@@ -21,10 +21,17 @@ public interface CategoryMapper {
 
     // 사용자 ID로 카테고리 목록 조회
     @Select("""
-        SELECT category_id, user_id, category_name, created_category_time, wholesaler_code
-        FROM Categories
-        WHERE user_id = #{user_id}
-    """)
+    SELECT category_id, user_id, category_name, created_category_time, wholesaler_code
+    FROM Categories
+    WHERE user_id = #{user_id}
+""")
+    @Results({
+        @Result(property = "category_id", column = "category_id"),
+        @Result(property = "user_id", column = "user_id"),
+        @Result(property = "category_name", column = "category_name"),
+        @Result(property = "created_category_time", column = "created_category_time"),
+        @Result(property = "wholesaler_code", column = "wholesaler_code")
+    })
     List<Category> getCategoriesByUserId(@Param("user_id") String user_id);
 
     // 사용자 ID와 카테고리 ID로 카테고리 조회

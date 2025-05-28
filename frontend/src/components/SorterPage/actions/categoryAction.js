@@ -28,25 +28,28 @@ export const fetchAndNumberCategoriesByUserIdAction = atom(
       set(currentCategoryNameAtom, '');
       set(currentIndexAtom, -1);
 
-      const userId = get(selectedUserIdAtom);
-
+      // ✅ userId 우선 selectedUserIdAtom → 없으면 authUserAtom에서 가져옴
+      let userId = get(selectedUserIdAtom);
       if (!userId) {
         const authUser = get(authUserAtom);
-        const userId = authUser?.userId;
+        userId = authUser?.userId;
+      }
+
+      if (!userId) {
+        console.warn("⛔ userId가 비어 있음. 요청 중단.");
+        return [];
       }
 
       const response = await authAxios.get('/categories/get_category', {
-        params: { user_id: userId }
+        params: { user_id: userId }  // ✅ 프론트-백 파라미터 명 일치시킴
       });
 
       const categories = response.data;
 
-      // ✅ 카테고리가 아예 없으면 조기 종료 (이후 로직 실행 X)
       if (!categories || categories.length === 0) {
         return [];
       }
 
-      // ✅ 번호 붙이기
       const numberedCategories = categories.map((category, index) => ({
         ...category,
         number: index + 1,
@@ -61,7 +64,6 @@ export const fetchAndNumberCategoriesByUserIdAction = atom(
         set(currentCategoryAtom, firstCategory.category_id);
         set(currentCategoryNameAtom, firstCategory.category_name);
         set(currentIndexAtom, 0);
-
       } else if (currentCategoryId) {
         const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
         if (currentIndex !== -1) {
@@ -78,6 +80,7 @@ export const fetchAndNumberCategoriesByUserIdAction = atom(
     }
   }
 );
+
 
 
 
@@ -450,7 +453,7 @@ export const fetchCategoryCountAction = atom(
         try {
           const userId = get(selectedUserIdAtom);
             const response = await authAxios.get('/categories/count_categories', {
-                params: { user_id: userId }
+                params: { userId: userId }
             });
 
             const count = response.data;

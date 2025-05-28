@@ -60,7 +60,7 @@ public class CategoryController {
 
     // ✅ 카테고리 개수 조회
     @GetMapping("/count_categories")
-    public int countCategories(@RequestParam String userId) {
+    public int countCategories(@RequestParam("userId") String userId) {
         return categoryService.countCategoriesByUserId(userId);
     }
 

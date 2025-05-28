@@ -29,11 +29,6 @@ public class JwtTokenProvider {
         signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /** 기본 설정된 만료시간 기반 토큰 생성 */
-    public String createToken(String userId) {
-        return createToken(userId, jwtExpiration / 1000 / 60); // 분 단위로 변환
-    }
-
     /** 분 단위 만료시간 설정 */
     public String createToken(String userId, long minutes) {
         Date now = new Date();

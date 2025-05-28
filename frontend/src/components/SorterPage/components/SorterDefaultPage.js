@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import "../css/SorterPage/SorterDefaultPage.css";
 import { useNavigate } from 'react-router-dom';
 import { message, Modal, Input } from 'antd';
+import { authUserAtom } from '../../../auth/authAtoms';
 
 import { addCategoryModalVisibleAtom, currentCategoryAtom,newCategoryAtom } from '../atoms/atoms';
 
@@ -30,7 +31,7 @@ const SorterDefaultPage = () => {
   const [newCategory, setNewCategory] = useAtom(newCategoryAtom);
   const navigate = useNavigate();
   const [isSelected, setIsSelected] = useState(false);
-
+  const [authUser] = useAtom(authUserAtom);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -45,28 +46,49 @@ const SorterDefaultPage = () => {
         return;
       }
 
-      await setHandleCategoryOk(newCategory); // 새 카테고리 이름 전달
+      await setHandleCategoryOk(newCategory); // 생성 요청
+
+      const userId = authUser?.userId;
+      if (!userId) {
+        message.error("유저 인증 정보가 없습니다.");
+        return;
+      }
+
+      // 상태 반영 함수 호출
       await setfetchAndNumberCategories();
 
-      const updatedCategories = await setFetchCategories('user123');
+      // ✅ 실제 카테고리 목록을 다시 조회
+      const updatedCategories = await setFetchCategories(userId);
+      console.log("📋 업데이트된 카테고리 목록:", updatedCategories);
 
+      if (!Array.isArray(updatedCategories) || updatedCategories.length === 0) {
+        message.error("카테고리 목록 조회 실패");
+        return;
+      }
 
       const newCat = updatedCategories[updatedCategories.length - 1];
-      if (!newCat?.category_id) return;
+      if (!newCat?.category_id) {
+        message.error("신규 카테고리 ID가 유효하지 않습니다.");
+        return;
+      }
 
+      // 상태 업데이트
       setCurrentCategory(newCat.category_id);
       await setFetchElementsByCategory(newCat.category_id);
       await setFetchCategoryById(newCat.category_id);
 
+      // 모달 닫고 입력 초기화
+      setAddCategoryModalVisible(false);
+      setNewCategory('');
 
-      setAddCategoryModalVisible(false);  // 모달 닫기
-      // 입력 초기화
       navigate('/sorter');
     } catch (error) {
-      console.error('🚨 카테고리 추가 중 오류 발생:', error);
-      message.error('카테고리 추가에 실패했습니다.');
+      console.error('🚨 카테고리 추가 실패:', error);
+      message.error('카테고리 추가 중 오류가 발생했습니다.');
     }
   };
+
+
 
   return (
     <>
