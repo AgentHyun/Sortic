@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../css/SorterPage/WholesalerCodeBox.css';
-import { useAtom } from 'jotai';
+import {useAtom, useSetAtom} from 'jotai';
 import {
   generateWholesalerCodeAction,
   cloneUserWithWholesalerCodeAction,
@@ -16,20 +16,23 @@ import {
   getUserProfileByUserIdAction
 } from '../../WholesalePage/action/wholesaleAction';
 import {
-  isClonedAtom, selectedUserIdAtom
+  currentUserIdAtom,
+  isClonedAtom, selectedUserIdAtom, wholesalerIdAtom
 } from '../atoms/atoms';
 import { authUserAtom } from '../../../auth/authAtoms';
 
 const WholesalerCodeBox = () => {
   const [, generateWholesalerCode] = useAtom(generateWholesalerCodeAction);
   const [, cloneUserWithWholesalerCode] = useAtom(cloneUserWithWholesalerCodeAction);
+
   const [, createWholesaleCode] = useAtom(createWholesaleCodeAction);
   const [, updateWholesaleCodeByUserId] = useAtom(updateWholesaleCodeByUserIdAction);
   const [, getWholesaleCodesByUserId] = useAtom(getWholesaleCodesByUserIdAction);
   const [, getUserIdsByOwner] = useAtom(getUserIdsByOwnerUserIdAction);
   const [, getUsernameById] = useAtom(getUsernameByUserIdAction);
   const [, getUserProfile] = useAtom(getUserProfileByUserIdAction);
-
+  const [, setCurrentUserId] =  useAtom(currentUserIdAtom);
+  const [wholesalerId] = useAtom(wholesalerIdAtom);
   const [authUser] = useAtom(authUserAtom);
   const [selectedUserId] = useAtom(selectedUserIdAtom);
   const [code, setCode] = useState('');
@@ -95,6 +98,7 @@ const WholesalerCodeBox = () => {
       setCode(generatedCode);
       await cloneUserWithWholesalerCode(generatedCode);
       await createWholesaleCode(generatedCode);
+      setCurrentUserId(wholesalerId);
     } catch (err) {
       console.error("도매 코드 생성 실패:", err);
     }

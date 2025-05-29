@@ -13,6 +13,7 @@ import {
 } from "../../SorterPage/atoms/atoms";
 import {fetchElementsByCategoryAction} from "../../SorterPage/actions/elementAction";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 // 도매 코드 생성
 
 
@@ -310,15 +311,15 @@ export const fetchUserIdByWholesaleCodeIdAction = atom(
   }
 );
 
-export const getUserIdByUsernameAction = atom(null, async (get, set, username) => {
-  if (!username || username.trim() === '') {
+export const getUserIdByUsernameAction = atom(null, async (get, set, storeName) => {
+  if (!storeName || storeName.trim() === '') {
     message.warning('닉네임이 비어 있습니다.');
     return null;
   }
 
   try {
     const response = await authAxios.get(`/wholesale/user-id/by-username`, {
-      params: { username },
+      params: { storeName },
     });
 
     const userId = response.data?.userId;
@@ -474,7 +475,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
 
     const newUserId = res.data?.newUserId;
     set(wholesalerIdAtom, newUserId);
-    set(currentUserIdAtom, newUserId);
+
     set(isClonedAtom, true);
     if (newUserId) {
       return newUserId;

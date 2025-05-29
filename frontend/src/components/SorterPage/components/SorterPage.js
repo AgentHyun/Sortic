@@ -973,7 +973,7 @@ const SorterPage = () => {
     const clonedId = await fetchClonedUsers(userId);
 
     setSelectedUserName(linkName);
-    setSelectedUserWholesaleLinkId(id);
+    
     setSelectedUserId(clonedId);
     setCards([]);
 

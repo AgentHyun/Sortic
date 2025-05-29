@@ -56,7 +56,7 @@ public interface WholesaleMapper {
 
     @Delete("DELETE FROM Wholesale_Link WHERE wholesale_link_id = #{wholesaleLinkId}")
     void deleteWholesaleLink(int wholesaleLinkId);
-    //래현 추가 user_id로 username찾는 로직
+
     @Select("SELECT store_name FROM Users WHERE user_id = #{userId}")
     String findStorenameByUserId(@Param("userId") String userId);
 
@@ -76,11 +76,11 @@ public interface WholesaleMapper {
         wc.wholesale_code_id,
         wc.wholesale_code,
         wc.user_id,
-        u.username AS ignored_username
+        u.store_name AS ignored_storename
     FROM Wholesale_Code wc
     JOIN Users u ON wc.user_id = u.user_id
     WHERE CAST(wc.wholesale_code AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
-       OR u.username LIKE CONCAT('%', #{keyword}, '%')
+       OR u.store_name LIKE CONCAT('%', #{keyword}, '%')
 """)
     @Results({
         @Result(column = "wholesale_code_id", property = "wholesaleCodeId"),
@@ -130,8 +130,8 @@ public interface WholesaleMapper {
 
     @Select("SELECT user_id FROM Wholesale_Code WHERE wholesale_code_id = #{wholesaleCodeId}")
     String findUserIdByWholesaleCodeId(@Param("wholesaleCodeId") int wholesaleCodeId);
-    @Select("SELECT user_id FROM Users WHERE username = #{username} AND user_id NOT LIKE '%!_%' ESCAPE '!' LIMIT 1")
-    String findUserIdByUsername(@Param("username") String username);
+    @Select("SELECT user_id FROM Users WHERE store_name = #{storeName} AND user_id NOT LIKE '%!_%' ESCAPE '!' LIMIT 1")
+    String findUserIdByUsername(@Param("storeName") String storeName);
 
 
     @Select("SELECT user_wholesale_code_id FROM User_Wholesale_Code WHERE user_wholesale_code = #{code}")
@@ -162,15 +162,14 @@ public interface WholesaleMapper {
     void updateWholesalerCode(@Param("userId") String userId, @Param("wholesalerCode") String wholesalerCode);
     @Insert("""
     INSERT INTO Users (
-        user_id, password, username, phone, wholesaler_code,
+        user_id, password, store_name, phone, wholesaler_code,
         email, region, grade, profile_image, is_cloned
     )
     VALUES (
-        #{userId}, #{password}, #{username}, #{phone}, #{wholesaler_code},
-        #{email}, #{region}, #{grade}, #{profile_image}, true
+        #{userId}, #{password}, #{storeName}, #{phone}, #{wholesalerCode},
+        #{email}, #{region}, #{grade}, #{profileImage}, true
     )
 """)
-
     void insertUser(Users user);
 
     @Select("SELECT COUNT(*) FROM Wholesale_Code WHERE user_id = #{userId}")
@@ -192,7 +191,7 @@ public interface WholesaleMapper {
     @Select("""
     SELECT user_id
     FROM Users
-    WHERE user_id LIKE CONCAT(#{originalUserId}, '!_%') ESCAPE '!'
+    WHERE user_id LIKE CONCAT(#{originalUserId}, '_%')
       AND is_cloned = TRUE
     LIMIT 1
 """)

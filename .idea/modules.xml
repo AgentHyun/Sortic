@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/merged.iml" filepath="$PROJECT_DIR$/.idea/merged.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.sortic.Sortic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.sortic.Sortic.main.iml" />
     </modules>
   </component>
 </project>

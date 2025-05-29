@@ -118,10 +118,15 @@ export const selectedUserIdAtom = atom(
     set(selectedUserIdInternalAtom, newUserId);
   }
 );
-export const currentUserIdAtom = atom((get) => {
-  const authUser = get(authUserAtom);
-  return authUser?.userId || null;
-});
+export const currentUserIdAtom = atom(
+  (get) => get(authUserAtom)?.userId || null,
+  (get, set, newUserId) => {
+    set(authUserAtom, {
+      ...get(authUserAtom),
+      userId: newUserId,
+    });
+  }
+);
 export const currentUserNameAtom = atom (null);
 export const isExternalUserAtom = atom(false);
 export const selectedUserNameAtom = atom(null);
