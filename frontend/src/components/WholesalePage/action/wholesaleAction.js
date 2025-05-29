@@ -202,7 +202,7 @@ export const searchWholesaleCodesAction = atom(null, async (get, set, keyword) =
 });
 export const getUsernameByUserIdAction = atom(null, async (get, set, userId) => {
   if (!userId) {
-    message.error('userId가 없습니다.');
+
     return null;
   }
 
@@ -475,7 +475,7 @@ export const cloneUserWithWholesalerCodeAction = atom(null, async (get, set, who
 
     const newUserId = res.data?.newUserId;
     set(wholesalerIdAtom, newUserId);
-
+    set(currentUserIdAtom, newUserId);
     set(isClonedAtom, true);
     if (newUserId) {
       return newUserId;
@@ -532,8 +532,7 @@ export const fetchClonedUserIdAction = atom(
       });
 
       const clonedUserId = res.data?.userId; // ✅ 이제 정확하게 동작해야 함
-      console.log("⬅️ 요청한 userId:", originalUserId);
-      console.log("➡️ 서버 응답:", res.data);
+
 
 
       if (clonedUserId) {

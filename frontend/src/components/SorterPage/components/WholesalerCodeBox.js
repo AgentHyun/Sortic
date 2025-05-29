@@ -98,7 +98,7 @@ const WholesalerCodeBox = () => {
       setCode(generatedCode);
       await cloneUserWithWholesalerCode(generatedCode);
       await createWholesaleCode(generatedCode);
-      setCurrentUserId(wholesalerId);
+
     } catch (err) {
       console.error("도매 코드 생성 실패:", err);
     }

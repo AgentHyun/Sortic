@@ -193,22 +193,23 @@ public class WholesaleController {
     }
 
     @GetMapping("/user-id/by-username")
-    public ResponseEntity<?> getUserIdByUsername(@RequestParam String username) {
-        System.out.println("요청 받은 username: " + username); // 디버깅용 로그
+    public ResponseEntity<?> getUserIdByUsername(@RequestParam String storeName) {
+        System.out.println("요청 받은 storeName: " + storeName); // 디버깅 로그
 
         try {
-            String userId = wholesaleService.findUserIdByUsername(username);
+            String userId = wholesaleService.findUserIdByUsername(storeName);
             if (userId == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("message", "해당 닉네임의 유저를 찾을 수 없습니다."));
             }
             return ResponseEntity.ok(Collections.singletonMap("userId", userId));
         } catch (Exception e) {
-            e.printStackTrace(); // 꼭 콘솔에서 전체 에러 로그 확인하세요
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap("message", "유저 ID 조회 중 오류 발생"));
         }
     }
+
 
     @DeleteMapping("/delete/user-code/{userWholesaleCode}")
     public ResponseEntity<?> deleteUserWholesaleCode(@PathVariable int userWholesaleCode) {

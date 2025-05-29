@@ -110,8 +110,8 @@ public class WholesaleService {
         }
         return userId;
     }
-    public String findUserIdByUsername(String username) {
-        return wholesaleMapper.findUserIdByUsername(username);
+    public String findUserIdByUsername(String storeName) {
+        return wholesaleMapper.findUserIdByUsername(storeName);
     }
 
     public void deleteUserWholesaleCode(int userWholesaleCode) {

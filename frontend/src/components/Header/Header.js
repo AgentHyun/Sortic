@@ -28,6 +28,7 @@ import {
   getUsernameByUserIdAction
 } from "../WholesalePage/action/wholesaleAction";
 import {fetchAndNumberCategoriesAction} from "../SorterPage/actions/categoryAction";
+import {userIdAtom} from "../../Atoms/UserAtom";
 const { Header } = Layout;
 
 const SorticHeader = () => {
@@ -100,6 +101,7 @@ const SorticHeader = () => {
           navigate('/sorter');
           const userId = authUser?.userId;
           setSelectedUserId(userId);
+          console.log(userId);
           setSelectedUserWholesaleLinkId(0);
         },
       },
@@ -109,6 +111,7 @@ const SorticHeader = () => {
         onClick: async () => {
           setSorterMode(1);
           navigate('/sorter');
+
           const code = await generateWholesalerCode();
           const userId = authUser?.userId;
           const clonedId = await fetchClonedUsers(userId);

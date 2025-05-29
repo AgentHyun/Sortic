@@ -252,6 +252,15 @@ const SorterPage = () => {
   const [showHintSorter, setShowHintSorter] = useState(null);
   const getLinkCount = useSetAtom(getWholesaleLinkCountByUserAction);
 
+
+  useEffect(() => {
+    if (authUser?.userId) {
+      setSelectedUserId(authUser.userId);
+    } else {
+      setSelectedUserId(null); // 로그아웃 시 초기화
+    }
+  }, [authUser?.userId]);
+
   useEffect(() => {
     if (currentCategory !== null) {
       fetchElementsByCategory(currentCategory);
@@ -973,7 +982,7 @@ const SorterPage = () => {
     const clonedId = await fetchClonedUsers(userId);
 
     setSelectedUserName(linkName);
-    
+
     setSelectedUserId(clonedId);
     setCards([]);
 
