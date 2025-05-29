@@ -20,67 +20,64 @@ import { authUserAtom } from '../../../auth/authAtoms';
 
 export const fetchAndNumberCategoriesByUserIdAction = atom(
   null,
-  async (get, set) => {
-    try {
-      // ✅ 무조건 초기화
-      set(categoriesAtom, []);
-      set(currentCategoryAtom, null);
-      set(currentCategoryNameAtom, '');
-      set(currentIndexAtom, -1);
+  (get, set) => {
+    // 기존 상태 유지: 렌더 차단 없음
+    const prevCategories = get(categoriesAtom);
 
-      // ✅ userId 우선 selectedUserIdAtom → 없으면 authUserAtom에서 가져옴
-      let userId = get(selectedUserIdAtom);
-      if (!userId) {
-        const authUser = get(authUserAtom);
-        userId = authUser?.userId;
-      }
+    // 즉시 초기화 제거하고 이전 상태 유지
+    // set(categoriesAtom, []); ← ❌ 제거
+    set(currentCategoryAtom, null); // 필요하면 유지
+    set(currentCategoryNameAtom, '');
+    set(currentIndexAtom, -1);
 
-      if (!userId) {
-        console.warn("⛔ userId가 비어 있음. 요청 중단.");
-        return [];
-      }
-
-      const response = await authAxios.get('/categories/get_category', {
-        params: { user_id: userId }  // ✅ 프론트-백 파라미터 명 일치시킴
-      });
-
-      const categories = response.data;
-
-      if (!categories || categories.length === 0) {
-        return [];
-      }
-
-      const numberedCategories = categories.map((category, index) => ({
-        ...category,
-        number: index + 1,
-      }));
-
-      set(categoriesAtom, numberedCategories);
-
-      const currentCategoryId = get(currentCategoryAtom);
-
-      if (!currentCategoryId && numberedCategories.length > 0) {
-        const firstCategory = numberedCategories[0];
-        set(currentCategoryAtom, firstCategory.category_id);
-        set(currentCategoryNameAtom, firstCategory.category_name);
-        set(currentIndexAtom, 0);
-      } else if (currentCategoryId) {
-        const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
-        if (currentIndex !== -1) {
-          set(currentIndexAtom, currentIndex);
-          set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
-        }
-      }
-
-      return numberedCategories;
-    } catch (error) {
-      console.error('🚨 카테고리 조회 실패:', error);
-      message.error('카테고리 조회에 실패했습니다.');
-      return [];
+    let userId = get(selectedUserIdAtom);
+    if (!userId) {
+      const authUser = get(authUserAtom);
+      userId = authUser?.userId;
     }
+
+    if (!userId) {
+      console.warn("⛔ userId가 비어 있음. 요청 중단.");
+      return;
+    }
+
+    // 비동기 요청을 setTimeout으로 감싸 비동기 우선 순위 낮춤
+    setTimeout(async () => {
+      try {
+        const response = await authAxios.get('/categories/get_category', {
+          params: { user_id: userId }
+        });
+
+        const categories = response.data;
+        if (!categories || categories.length === 0) return;
+
+        const numberedCategories = categories.map((category, index) => ({
+          ...category,
+          number: index + 1,
+        }));
+
+        set(categoriesAtom, numberedCategories);
+
+        const currentCategoryId = get(currentCategoryAtom);
+        if (!currentCategoryId && numberedCategories.length > 0) {
+          const firstCategory = numberedCategories[0];
+          set(currentCategoryAtom, firstCategory.category_id);
+          set(currentCategoryNameAtom, firstCategory.category_name);
+          set(currentIndexAtom, 0);
+        } else if (currentCategoryId) {
+          const currentIndex = numberedCategories.findIndex(cat => cat.category_id === currentCategoryId);
+          if (currentIndex !== -1) {
+            set(currentIndexAtom, currentIndex);
+            set(currentCategoryNameAtom, numberedCategories[currentIndex].category_name);
+          }
+        }
+      } catch (error) {
+        console.error('🚨 카테고리 조회 실패:', error);
+        message.error('카테고리 조회에 실패했습니다.');
+      }
+    }, 0); // 이벤트 루프에 등록하여 렌더 차단하지 않음
   }
 );
-
 
 
 

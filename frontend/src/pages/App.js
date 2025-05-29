@@ -1,7 +1,6 @@
 // src/pages/App.jsx
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useAtomValue } from 'jotai';
 import { Spin } from 'antd';
 
 import SorticHeader from '../components/Header/Header';
@@ -14,20 +13,26 @@ import ProfilePage from '../components/ProfilePage/components/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import WholesalePage from '../components/WholesalePage/WholesalePage';
 
-
-import { authLoadingAtom } from '../auth/authAtoms';
+import { useSetAtom, useAtomValue } from 'jotai';
+import { authUserAtom, authLoadingAtom } from '../auth/authAtoms';
+import {
+  selectedUserIdAtom,
+  resetCategoriesOnUserChangeAtom
+} from '../components/SorterPage/atoms/atoms'; // 경로 조정
 import Snb from "../components/Snb/components/Snb";
 
 const App = () => {
-  const authLoading = useAtomValue(authLoadingAtom); // ✅ 인증 로딩 여부
+  // ✅ 모든 Hook은 함수 안에서
+  const authUser = useAtomValue(authUserAtom);
+  const selectedUserId = useAtomValue(selectedUserIdAtom);
+  const resetCategories = useSetAtom(resetCategoriesOnUserChangeAtom);
+  const authLoading = useAtomValue(authLoadingAtom);
 
-  // ✅ 다크 모드 초기화 (최초 1회만 실행)
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-  }, []);
+    resetCategories();
+  }, [authUser, selectedUserId]);
 
-  // ✅ 인증 확인 중이면 로딩 표시
+  // ✅ 인증 로딩 중일 때 로딩 표시
   if (authLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '120px' }}>

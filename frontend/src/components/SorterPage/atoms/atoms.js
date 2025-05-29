@@ -23,6 +23,26 @@ export const currentCategoryNameAtom = atom('');
 export const isEditingCategoryAtom = atom(false);
 export const newCategoryNameAtom = atom('');
 export const currentIndexAtom = atom(0);
+// ✅ [추가] 유저 변경 시 카테고리 상태 초기화 용도
+export const previousUserIdAtom = atom(null);
+
+export const resetCategoriesOnUserChangeAtom = atom(null, (get, set) => {
+  let userId = get(selectedUserIdAtom);
+  if (!userId) {
+    const authUser = get(authUserAtom);
+    userId = authUser?.userId;
+  }
+
+  const previousUserId = get(previousUserIdAtom);
+
+  if (userId !== previousUserId) {
+    set(categoriesAtom, []);
+    set(currentCategoryAtom, 0); // 기본값에 맞춰 초기화
+    set(currentCategoryNameAtom, '');
+    set(currentIndexAtom, 0);
+    set(previousUserIdAtom, userId);
+  }
+});
 // 요소 관련 상태
 export const currentElementNameAtom = atom('');
 export const isEditingElementAtom = atom(false);
@@ -41,10 +61,10 @@ export const keyValuePairsAtom = atom([]);
 export const elementAttributesAtom = atom([])
 export const addedElementIdAtom = atom(null);
 export const contextMenuAtom = atom({
-    visible: false,
-    x: 0,
-    y: 0,
-    targetId: null,
+  visible: false,
+  x: 0,
+  y: 0,
+  targetId: null,
 });
 export const costErrorAtom = atom('');
 export const elementsIdListAtom = atom([]);
@@ -118,15 +138,10 @@ export const selectedUserIdAtom = atom(
     set(selectedUserIdInternalAtom, newUserId);
   }
 );
-export const currentUserIdAtom = atom(
-  (get) => get(authUserAtom)?.userId || null,
-  (get, set, newUserId) => {
-    set(authUserAtom, {
-      ...get(authUserAtom),
-      userId: newUserId,
-    });
-  }
-);
+export const currentUserIdAtom = atom((get) => {
+  const authUser = get(authUserAtom);
+  return authUser?.userId || null;
+});
 export const currentUserNameAtom = atom (null);
 export const isExternalUserAtom = atom(false);
 export const selectedUserNameAtom = atom(null);
