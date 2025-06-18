@@ -47,6 +47,10 @@ Sortic은 도소매 업자들이 매일 반복하는 **영수증 작성**, **상
 ![image](https://github.com/user-attachments/assets/4a17d566-34e7-4c79-8a30-fc4881378a30)
 
 
+## 🚀 실행 방법
+
+### Frontend
+
 ```bash
 cd frontend
 npm install
@@ -58,8 +62,8 @@ bash
 cd backend
 ./mvnw spring-boot:run
 
-
 🙌 협업 도구
+
 GitHub (버전 관리)
 
 Jira (기획 및 업무 정리)
