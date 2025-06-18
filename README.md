@@ -47,6 +47,31 @@ Sortic은 도소매 업자들이 매일 반복하는 **영수증 작성**, **상
 ![image](https://github.com/user-attachments/assets/4a17d566-34e7-4c79-8a30-fc4881378a30)
 
 
+
+## 🧱 Information Architecture
+
+> 서비스의 전반적인 구조를 표현한 정보 설계도입니다.
+
+![IA drawio](https://github.com/user-attachments/assets/f8a72487-bab1-454f-98cc-86cc01018583)
+
+---
+
+## 🏗️ 아키텍처 설계도
+
+> Frontend, Backend, DB 간의 흐름과 역할 분담을 시각적으로 표현한 아키텍처 다이어그램입니다.
+
+![Sortic_아키텍처_설계도 draw](https://github.com/user-attachments/assets/ea3accd7-0a48-4214-8674-e3ec3c0594bc)
+
+---
+
+## 🧩 유스케이스 다이어그램
+
+> 사용자와 시스템 간의 상호작용을 보여주는 유스케이스 다이어그램입니다.
+
+![유스케이스](https://github.com/user-attachments/assets/1cf0a42b-a3f7-4248-8f21-2b57387893eb)
+
+
+
 ## 🚀 실행 방법
 
 ### Frontend
@@ -56,18 +81,12 @@ cd frontend
 npm install
 npm start
 
-### BackEnd
 
-
-```bash
 cd backend
 ./mvnw spring-boot:run
 
-🙌 협업 도구
 
-GitHub (버전 관리)
-
-Jira (기획 및 업무 정리)
+![image](https://github.com/user-attachments/assets/252fc9da-cc54-4575-8a5c-da26056530c0)
 
 
 
