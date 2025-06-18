@@ -55,10 +55,11 @@ Sortic은 도소매 업자들이 매일 반복하는 **영수증 작성**, **상
 cd frontend
 npm install
 npm start
-Backend
-bash
-복사
-편집
+
+### Backend
+
+
+```bash
 cd backend
 ./mvnw spring-boot:run
 
