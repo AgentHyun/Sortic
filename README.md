@@ -56,7 +56,7 @@ cd frontend
 npm install
 npm start
 
-### Backend
+### BackEnd
 
 
 ```bash
