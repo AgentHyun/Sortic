@@ -86,7 +86,7 @@ cd backend
 ./mvnw spring-boot:run
 
 
-![image](https://github.com/user-attachments/assets/252fc9da-cc54-4575-8a5c-da26056530c0)
+
 
 
 
